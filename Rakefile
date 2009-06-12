@@ -8,7 +8,7 @@ begin
     gem.summary = %Q{TODO}
     gem.email = "dennis@jadedpixel.com"
     gem.homepage = "http://github.com/Soleone/shopify_api"
-    gem.authors = [""Dennis Theisen""]
+    gem.authors = ["Dennis Theisen"]
     gem.rubyforge_project = "shopify_api"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end

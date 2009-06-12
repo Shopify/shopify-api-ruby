@@ -1,7 +1,16 @@
-= shopify_api
+= Shopify API
 
-Description goes here.
+The Shopify API is implemented as XML over HTTP using all four verbs (GET/POST/PUT/DELETE). Each resource, like Order, Product, or Collection, has its own URL and is manipulated in isolation. In other words, we’ve tried to make the API follow the REST principles as much as possible.
+
+All API usage happens through Shopify applications, created by either shop owners for their own shops, or by Shopify Partners for use by shop owners.
+
+Shop owners can create applications for themselves through their own admin (under the Preferences > Applications tab).
+
+Shopify Partners create applications through their admin.
+
+For more information and detailed documentation visit http://api.shopify.com
+
 
 == Copyright
 
-Copyright (c) 2009 "Dennis Theisen". See LICENSE for details.
+Copyright (c) 2009 "JadedPixel inc.". See LICENSE for details.
