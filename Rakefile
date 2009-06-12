@@ -11,6 +11,7 @@ begin
     gem.homepage = "http://github.com/Shopify/shopify_api"
     gem.authors = ["Tobias Lütke", "Cody Fauser", "Dennis Theisen"]
     gem.rubyforge_project = "shopify_api"
+    gem.add_dependency('activeresource', '>= 2.2.2')
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
 
@@ -56,4 +57,3 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
-
