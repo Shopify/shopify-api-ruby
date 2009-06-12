@@ -1,0 +1,7 @@
+= shopify_api
+
+Description goes here.
+
+== Copyright
+
+Copyright (c) 2009 "Dennis Theisen". See LICENSE for details.
