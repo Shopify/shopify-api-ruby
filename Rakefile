@@ -5,10 +5,11 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "shopify_api"
-    gem.summary = %Q{TODO}
-    gem.email = "dennis@jadedpixel.com"
-    gem.homepage = "http://github.com/Soleone/shopify_api"
-    gem.authors = ["Dennis Theisen"]
+    gem.summary = "ShopifyAPI is a lightweight gem for accessing the Shopify admin REST web services"
+    gem.description = File.read(File.dirname(__FILE__) + "/README.rdoc")
+    gem.email = "developers@jadedpixel.com"
+    gem.homepage = "http://github.com/Shopify/shopify_api"
+    gem.authors = ["Tobias Lütke", "Cody Fauser", "Dennis Theisen"]
     gem.rubyforge_project = "shopify_api"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
