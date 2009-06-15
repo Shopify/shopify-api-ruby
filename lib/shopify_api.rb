@@ -97,6 +97,7 @@ module ShopifyAPI
     end
 
     def initialize(url, token = nil)
+      raise ArgumentError.new("You must provide at least a URL to a Shopify store!") if url.blank?
       url.gsub!(/https?:\/\//, '')                            # remove http:// or https://
       url = "#{url}.myshopify.com" unless url.include?('.')   # extend url to myshopify.com if no host is given
       

@@ -1,18 +1,21 @@
 require 'test_helper'
 
 class ShopifyApiTest < Test::Unit::TestCase
-  def setup
-    @session_no_token = ShopifyAPI::Session.new("testshop.myshopify.com")
-    @session = ShopifyAPI::Session.new("testshop.myshopify.com", "any-token")
+  
+  context "Session" do
+    test "should raise error when blank shop url is provided" do
+      assert_raise(ArgumentError) { ShopifyAPI::Session.new("") }
+    end
+
+    test "should not be valid without token" do
+      session = ShopifyAPI::Session.new("testshop.myshopify.com")
+      assert_not session.valid?
+    end
+
+    test "should be valid with any token" do
+      session = ShopifyAPI::Session.new("testshop.myshopify.com", "any-token")
+      assert session.valid?
+    end
+    
   end
-  
-  
-  def test_session_not_valid_without_token
-    assert_not @session_no_token.valid?
-  end
-  
-  def test_session_is_valid_with_any_token
-    assert @session.valid?
-  end
-  
 end
