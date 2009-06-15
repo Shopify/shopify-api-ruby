@@ -20,15 +20,16 @@ For more information and detailed documentation visit http://api.shopify.com
 
 ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveResource has to be configured with a fully authorized URL of a particular store first. To obtain that URL you can follow these steps:
 
-1. First create a new application to either the partners admin or your store admin and note your API_KEY and SHARED_SECRET.
+1. First create a new application in either the partners admin or your store admin and write down your API_KEY and SHARED_SECRET.
 
-2. You will need to supply there two parameters to the Session class before you instantiate it like this:
+2. You will need to supply two parameters to the Session class before you instantiate it:
 
     ShopifyAPI::Session.setup({:api_key => API_KEY, :secret => SHARED_SECRET})
 
-3. Create a new Session for a specific shop:
+3. Create a new Session for a specific shop. That session is not fully valid yet, but it can be used to create a URL that you will redirect your users to:
 
     session = ShopifyAPI::Session.new("yourshopname.myshopify.com")
+    session.valid?  # returns false
 
 4. To access the API shop owners need a "token" from that specific shop. In order to get this token they need to authorize with that shop first. The URL to redirect your user to can be generated via:
 
@@ -38,6 +39,7 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
 
     token = params[:t]
     session = ShopifyAPI::Session.new("yourshopname.myshopify.com", token)
+    session.valid?  # returns true
 
 6. Now you can finally get the fully authorized URL for that shop. Use that URL to configure ActiveResource and you're set:
 
