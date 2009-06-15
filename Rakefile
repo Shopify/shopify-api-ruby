@@ -10,7 +10,7 @@ begin
     gem.email = "developers@jadedpixel.com"
     gem.homepage = "http://github.com/Shopify/shopify_api"
     gem.authors = ["Tobias Lütke", "Cody Fauser", "Dennis Theisen"]
-    gem.rubyforge_project = "shopify_api"
+    gem.rubyforge_project = "shopify-api"
     gem.add_dependency('activeresource', '>= 2.2.2')
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end

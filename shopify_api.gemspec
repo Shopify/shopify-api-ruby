@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
      "Rakefile",
      "VERSION",
      "lib/shopify_api.rb",
+     "shopify_api.gemspec",
      "test/shopify_api_test.rb",
      "test/test_helper.rb"
   ]
@@ -29,7 +30,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/Shopify/shopify_api}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubyforge_project = %q{shopify_api}
+  s.rubyforge_project = %q{shopify-api}
   s.rubygems_version = %q{1.3.1}
   s.summary = %q{ShopifyAPI is a lightweight gem for accessing the Shopify admin REST web services}
   s.test_files = [
