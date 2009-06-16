@@ -12,6 +12,10 @@ class Test::Unit::TestCase
   def self.test(string, &block)
     define_method("test:#{string}", &block)
   end
+
+  def self.should(string, &block)
+    self.test("should_#{string}", &block)
+  end
   
   def self.context(string)
     yield
