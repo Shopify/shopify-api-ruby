@@ -9,12 +9,12 @@ The API is implemented as XML over HTTP using all four verbs (GET/POST/PUT/DELET
 
 === Requirements
 
-All API usage happens through Shopify applications, created by either shop owners for their own shops, or by Shopify Partners for use by shop owners:
+All API usage happens through Shopify applications, created by either shop owners for their own shops, or by Shopify Partners for use by other shop owners:
 
 * Shop owners can create applications for themselves through their own admin (under the Preferences > Applications tab).
-* Shopify Partners create applications through their admin.
+* Shopify Partners create applications through their admin: http://app.shopify.com/services/partners 
 
-For more information and detailed documentation visit http://api.shopify.com
+For more information and detailed documentation about the API visit http://api.shopify.com
 
 === Getting Started
 
