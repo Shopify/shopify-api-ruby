@@ -182,7 +182,11 @@ module ShopifyAPI
   class ShippingLine < ActiveResource::Base
   end  
 
-  class Order < ActiveResource::Base  
+  class NoteAttribute < ActiveResource::Base
+  end
+
+  class Order < ActiveResource::Base
+    
 
     def close; load_attributes_from_response(post(:close)); end
 
