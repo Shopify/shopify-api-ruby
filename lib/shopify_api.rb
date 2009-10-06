@@ -1,6 +1,4 @@
 require 'active_resource'
-
-require 'ostruct'
 require 'digest/md5'
 
 module ShopifyAPI
