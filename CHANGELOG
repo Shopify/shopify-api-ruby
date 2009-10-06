@@ -1,2 +1,4 @@
+  - Add latest changes from Shopify including asset support, token validation and a common base class
+
 1.0.0
   - extracting ShopifyAPI from Shopify into Gem
