@@ -2,12 +2,30 @@ require 'active_resource'
 require 'digest/md5'
 
 module ShopifyAPI
+  METAFIELD_ENABLED_CLASSES = %w( Order Product CustomCollection SmartCollection Page Blog Article )
 
   module Countable
     def count(options = {})
       Integer(get(:count, options))
     end
   end
+  
+  module Metafields
+     def metafields
+       Metafield.find(:all, :params => {:resource => self.class.collection_name, :resource_id => id})
+     end
+
+     def add_metafield(metafield)
+       raise ArgumentError, "You can only add metafields to resource that has been saved" if new?
+
+       metafield.prefix_options = {
+         :resource => self.class.collection_name,
+         :resource_id => id
+       }
+       metafield.save
+       metafield
+     end
+   end
   
   # 
   #  The Shopify API authenticates each call via HTTP Authentication, using
@@ -164,6 +182,16 @@ module ShopifyAPI
     def self.current
       find(:one, :from => "/admin/shop.xml")
     end
+    
+    def metafields
+      Metafield.find(:all)
+    end
+    
+    def add_metafield(metafield)
+      raise ArgumentError, "You can only add metafields to resource that has been saved" if new?      
+      metafield.save
+      metafield
+    end
   end               
 
   # Custom collection
@@ -299,6 +327,21 @@ module ShopifyAPI
   class Article < Base
     self.prefix = "/admin/blogs/:blog_id/"
   end
+  
+  class Metafield < Base
+     self.prefix = "/admin/:resource/:resource_id/"
+
+     # Hack to allow both Shop and other Metafields in through the same AR class
+     def self.prefix(options={})
+       options[:resource].nil? ? "/admin/" : "/admin/#{options[:resource]}/#{options[:resource_id]}/"
+     end
+
+     def value
+       return if attributes["value"].nil?
+       attributes["value_type"] == "integer" ? attributes["value"].to_i : attributes["value"]
+     end
+
+   end
 
   class Comment < Base 
     def remove; load_attributes_from_response(post(:remove)); end
@@ -411,5 +454,10 @@ module ShopifyAPI
   end
 
   class ApplicationCharge < Base
+  end
+  
+  # Include Metafields module in all enabled classes
+  METAFIELD_ENABLED_CLASSES.each do |klass|
+    "ShopifyAPI::#{klass}".constantize.send(:include, Metafields)
   end
 end
