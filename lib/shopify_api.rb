@@ -120,6 +120,7 @@ module ShopifyAPI
     end
 
     def initialize(url, token = nil, params = nil)
+      raise ArgumentError, "A valid Shopify shop URL must be provided" if url.blank?
       self.url, self.token = url, token
 
       if params && params[:signature]
