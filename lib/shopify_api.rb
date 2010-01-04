@@ -452,9 +452,16 @@ module ShopifyAPI
     def cancel
       load_attributes_from_response(self.destroy)
     end
+    
+    def activate
+      load_attributes_from_response(post(:activate))
+    end
   end
 
   class ApplicationCharge < Base
+    def activate
+      load_attributes_from_response(post(:activate))
+    end
   end
   
   # Include Metafields module in all enabled classes
