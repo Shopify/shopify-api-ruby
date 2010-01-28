@@ -2,7 +2,7 @@ require 'active_resource'
 require 'digest/md5'
 
 module ShopifyAPI
-  METAFIELD_ENABLED_CLASSES = %w( Order Product CustomCollection SmartCollection Page Blog Article )
+  METAFIELD_ENABLED_CLASSES = %w( Order Product CustomCollection SmartCollection Page Blog Article Variant)
 
   module Countable
     def count(options = {})
@@ -11,21 +11,21 @@ module ShopifyAPI
   end
   
   module Metafields
-     def metafields
-       Metafield.find(:all, :params => {:resource => self.class.collection_name, :resource_id => id})
-     end
-
-     def add_metafield(metafield)
-       raise ArgumentError, "You can only add metafields to resource that has been saved" if new?
-
-       metafield.prefix_options = {
-         :resource => self.class.collection_name,
-         :resource_id => id
-       }
-       metafield.save
-       metafield
-     end
-   end
+    def metafields
+      Metafield.find(:all, :params => {:resource => self.class.collection_name, :resource_id => id})
+    end
+    
+    def add_metafield(metafield)
+      raise ArgumentError, "You can only add metafields to resource that has been saved" if new?
+      
+      metafield.prefix_options = {
+        :resource => self.class.collection_name,
+        :resource_id => id
+      }
+      metafield.save
+      metafield
+    end
+  end
   
   # 
   #  The Shopify API authenticates each call via HTTP Authentication, using
@@ -215,8 +215,8 @@ module ShopifyAPI
     def products
       Product.find(:all, :params => {:collection_id => self.id})
     end
-  end                                                                 
-
+  end  
+  
   # For adding/removing products from custom collections
   class Collect < Base
   end
@@ -329,19 +329,19 @@ module ShopifyAPI
   end
   
   class Metafield < Base
-     self.prefix = "/admin/:resource/:resource_id/"
+    self.prefix = "/admin/:resource/:resource_id/"
+    
+    # Hack to allow both Shop and other Metafields in through the same AR class
+    def self.prefix(options={})
+      options[:resource].nil? ? "/admin/" : "/admin/#{options[:resource]}/#{options[:resource_id]}/"
+    end
+            
+    def value
+      return if attributes["value"].nil?
+      attributes["value_type"] == "integer" ? attributes["value"].to_i : attributes["value"]
+    end
 
-     # Hack to allow both Shop and other Metafields in through the same AR class
-     def self.prefix(options={})
-       options[:resource].nil? ? "/admin/" : "/admin/#{options[:resource]}/#{options[:resource_id]}/"
-     end
-
-     def value
-       return if attributes["value"].nil?
-       attributes["value_type"] == "integer" ? attributes["value"].to_i : attributes["value"]
-     end
-
-   end
+  end
 
   class Comment < Base 
     def remove; load_attributes_from_response(post(:remove)); end
