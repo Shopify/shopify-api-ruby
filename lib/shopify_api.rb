@@ -357,6 +357,8 @@ module ShopifyAPI
   class Redirect < Base
   end
   
+  class Webhook < Base
+  end
   
   # Assets represent the files that comprise your theme.
   # There are different buckets which hold different kinds
