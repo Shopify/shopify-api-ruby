@@ -128,7 +128,7 @@ module ShopifyAPI
         end
       end
 
-      self.class.prepare_url(self.url) if valid?
+      self.class.prepare_url(self.url)
     end
     
     def shop
@@ -136,6 +136,7 @@ module ShopifyAPI
     end
     
     def create_permission_url
+      return nil if url.blank? || api_key.blank?
       "http://#{url}/admin/api/auth?api_key=#{api_key}"
     end
 
@@ -160,6 +161,7 @@ module ShopifyAPI
     end
     
     def self.prepare_url(url)
+      return nil if url.blank?
       url.gsub!(/https?:\/\//, '')                            # remove http:// or https://
       url.concat(".myshopify.com") unless url.include?('.')   # extend url to myshopify.com if no host is given
     end
