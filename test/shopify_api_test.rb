@@ -17,5 +17,17 @@ class ShopifyApiTest < Test::Unit::TestCase
       session = ShopifyAPI::Session.new("testshop.myshopify.com", "any-token")
       assert session.valid?
     end
+    
+    should "not raise error without params" do
+      assert_nothing_raised do
+        session = ShopifyAPI::Session.new("testshop.myshopify.com", "any-token")
+      end
+    end
+    
+    should "raise error if params passed but signature omitted" do
+      assert_raises(RuntimeError) do
+        session = ShopifyAPI::Session.new("testshop.myshopify.com", "any-token", {'foo' => 'bar'})
+      end
+    end
   end
 end

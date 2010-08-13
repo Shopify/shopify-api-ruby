@@ -122,7 +122,7 @@ module ShopifyAPI
     def initialize(url, token = nil, params = nil)
       self.url, self.token = url, token
 
-      if params && params[:signature]
+      if params
         unless self.class.validate_signature(params) && params[:timestamp].to_i > 24.hours.ago.utc.to_i
           raise "Invalid Signature: Possible malicious login" 
         end
