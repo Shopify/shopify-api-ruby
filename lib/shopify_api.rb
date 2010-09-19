@@ -15,6 +15,11 @@ module ShopifyAPI
       Metafield.find(:all, :params => {:resource => self.class.collection_name, :resource_id => id})
     end
     
+    # Retrieves a metafield by namespace/key combo. nil is returned if namespace/key does not exist.
+    def metafield(namespace, key)
+      Metafield.find(:first, :params => {:resource => self.class.collection_name, :resource_id => id, :namespace => namespace, :key => key})
+    end
+    
     def add_metafield(metafield)
       raise ArgumentError, "You can only add metafields to resource that has been saved" if new?
       
