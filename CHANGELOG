@@ -1,5 +1,10 @@
-  - Add metafields
-  - Add latest changes from Shopify including asset support, token validation and a common base class
+* Rails 3 fix: attribute_accessors has to be explicitly included since activesupport 3.0.0
 
-1.0.0
-  - extracting ShopifyAPI from Shopify into Gem
+== Version 1.0.6
+
+* Add metafields
+* Add latest changes from Shopify including asset support, token validation and a common base class
+
+== Version 1.0.0
+
+* extracting ShopifyAPI from Shopify into Gem
