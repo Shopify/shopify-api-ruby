@@ -4,7 +4,8 @@ require 'digest/md5'
 
 module ShopifyAPI
   METAFIELD_ENABLED_CLASSES = %w( Order Product CustomCollection SmartCollection Page Blog Article Variant)
-
+  EVENT_ENABLED_CLASSES = %w( Order Product CustomCollection SmartCollection Page Blog Article )
+  
   module Countable
     def count(options = {})
       Integer(get(:count, options))
@@ -27,7 +28,13 @@ module ShopifyAPI
       metafield
     end
   end
-  
+
+  module Events
+    def events
+      Event.find(:all, :params => {:resource => self.class.collection_name, :resource_id => id})
+    end
+  end
+    
   # 
   #  The Shopify API authenticates each call via HTTP Authentication, using
   #    * the application's API key as the username, and
@@ -194,6 +201,10 @@ module ShopifyAPI
       raise ArgumentError, "You can only add metafields to resource that has been saved" if new?      
       metafield.save
       metafield
+    end
+    
+    def events
+      Event.find(:all)
     end
   end               
 
@@ -363,6 +374,15 @@ module ShopifyAPI
   class Webhook < Base
   end
   
+  class Event < Base
+    self.prefix = "/admin/:resource/:resource_id/"
+    
+    # Hack to allow both Shop and other Events in through the same AR class
+    def self.prefix(options={})
+      options[:resource].nil? ? "/admin/" : "/admin/#{options[:resource]}/#{options[:resource_id]}/"
+    end
+  end
+  
   # Assets represent the files that comprise your theme.
   # There are different buckets which hold different kinds
   # of assets, each corresponding to one of the folders
@@ -471,5 +491,10 @@ module ShopifyAPI
   # Include Metafields module in all enabled classes
   METAFIELD_ENABLED_CLASSES.each do |klass|
     "ShopifyAPI::#{klass}".constantize.send(:include, Metafields)
+  end
+  
+  # Include Events module in all enabled classes
+  EVENT_ENABLED_CLASSES.each do |klass|
+    "ShopifyAPI::#{klass}".constantize.send(:include, Events)
   end
 end
