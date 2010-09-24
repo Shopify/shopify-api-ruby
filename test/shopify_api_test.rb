@@ -29,5 +29,15 @@ class ShopifyApiTest < Test::Unit::TestCase
         session = ShopifyAPI::Session.new("testshop.myshopify.com", "any-token", {'foo' => 'bar'})
       end
     end
+
+    should "setup api_key and secret for all sessions" do
+      ShopifyAPI::Session.setup(:api_key => "My test key", :secret => "My test secret")
+      assert_equal "My test key", ShopifyAPI::Session.api_key
+      assert_equal "My test secret", ShopifyAPI::Session.secret
+    end
+    
+    should "use 'https' protocol by default for all sessions" do
+      assert_equal 'https', ShopifyAPI::Session.protocol
+    end
   end
 end

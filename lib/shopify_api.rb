@@ -1,4 +1,5 @@
 require 'active_resource'
+require 'active_support/core_ext/class/attribute_accessors'
 require 'digest/md5'
 
 module ShopifyAPI
