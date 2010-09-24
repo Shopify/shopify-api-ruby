@@ -1,3 +1,7 @@
+== Version 1.1.0 (September 24, 2010)
+
+* Add new Events API for Shop, Order, Product, CustomCollection, SmartCollection, Page, Blog and Article
+* Add new 'compact' product image size variant
 * Rails 3 fix: attribute_accessors has to be explicitly included since activesupport 3.0.0
 
 == Version 1.0.6
