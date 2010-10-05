@@ -11,6 +11,6 @@ Releasing ShopifyAPI
 7. Push out the tags
   $ git push --tags
 8. Build the new .gem from the updated .gemspec
-  $ gem build shopify_api-X.Y.Z.gemspec
+  $ gem build shopify_api.gemspec
 9. Publish the Gem to gemcutter
   $ gem push shopify_api-X.Y.Z.gem
