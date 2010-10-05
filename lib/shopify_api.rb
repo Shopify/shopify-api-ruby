@@ -190,7 +190,7 @@ module ShopifyAPI
   # the shop.
   class Shop < Base
     def self.current
-      find(:one, :from => "/admin/shop.xml")
+      find(:one, :from => "/admin/shop.#{format.extension}")
     end
     
     def metafields
@@ -423,7 +423,7 @@ module ShopifyAPI
       if args[0].is_a?(Symbol)
         super
       else
-        find(:one, :from => "/admin/assets.xml", :params => {:asset => {:key => args[0]}})
+        find(:one, :from => "/admin/assets.#{format.extension}", :params => {:asset => {:key => args[0]}})
       end
     end
     
