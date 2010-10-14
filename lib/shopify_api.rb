@@ -469,6 +469,8 @@ module ShopifyAPI
   end
   
   class RecurringApplicationCharge < Base
+    undef_method :test
+
     def self.current
       find(:all).find{|charge| charge.status == 'active'}
     end
@@ -483,6 +485,8 @@ module ShopifyAPI
   end
 
   class ApplicationCharge < Base
+    undef_method :test
+
     def activate
       load_attributes_from_response(post(:activate))
     end
