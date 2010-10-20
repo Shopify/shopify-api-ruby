@@ -1,3 +1,7 @@
+== Version 1.1.2 (October 20, 2010)
+
+* Fix for users of ActiveResource 3.x
+
 == Version 1.1.1 (October 5, 2010)
 
 * Remove hard coded xml formatting in API calls 
