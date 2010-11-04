@@ -1,3 +1,7 @@
+== Version 1.1.3 (November 4, 2010)
+
+* Add ProductSearchEngines resource
+
 == Version 1.1.2 (October 20, 2010)
 
 * Fix for users of ActiveResource 3.x
