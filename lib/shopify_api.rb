@@ -491,6 +491,9 @@ module ShopifyAPI
       load_attributes_from_response(post(:activate))
     end
   end
+
+  class ProductSearchEngine < Base
+  end
   
   # Include Metafields module in all enabled classes
   METAFIELD_ENABLED_CLASSES.each do |klass|
