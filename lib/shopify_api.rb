@@ -423,7 +423,9 @@ module ShopifyAPI
       if args[0].is_a?(Symbol)
         super
       else
-        find(:one, :from => "/admin/assets.#{format.extension}", :params => {:asset => {:key => args[0]}})
+        params = {:asset => {:key => args[0]}}
+        params = params.merge(args[1][:params]) if args[1] && args[1][:params]
+        find(:one, :from => "/admin/assets.#{format.extension}", :params => params)
       end
     end
     
