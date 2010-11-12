@@ -76,6 +76,7 @@ Copyright (c) 2009 "JadedPixel inc.". See LICENSE for details.
      "README.rdoc",
      "Rakefile",
      "lib/shopify_api.rb",
+     "lib/shopify_api/cli.rb",
      "shopify_api.gemspec",
      "test/order_test.rb",
      "test/shopify_api_test.rb",
@@ -92,18 +93,20 @@ Copyright (c) 2009 "JadedPixel inc.". See LICENSE for details.
      "test/shopify_api_test.rb",
      "test/test_helper.rb"
   ]
+  s.executables = ['shopify']
 
-  if s.respond_to? :specification_version then
+  if s.respond_to? :specification_version
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
-
-    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<activeresource>, [">= 2.2.2"])
-    else
-      s.add_dependency(%q<activeresource>, [">= 2.2.2"])
-    end
+  end
+  
+  s.add_dependency("activeresource", [">= 2.2.2"])
+  s.add_dependency("thor", [">= 0.14.4"])
+  
+  if s.respond_to?(:add_development_dependency)
+    s.add_development_dependency("mocha", ">= 0.9.8")
   else
-    s.add_dependency(%q<activeresource>, [">= 2.2.2"])
+    s.add_dependency("mocha", ">= 0.9.8")
   end
 end
 
