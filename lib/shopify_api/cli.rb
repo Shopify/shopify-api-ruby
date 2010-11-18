@@ -1,10 +1,15 @@
 require 'thor'
+require 'abbrev'
 
 module ShopifyAPI
   class Cli < Thor
     include Thor::Actions
     
     class ConfigFileError < StandardError
+    end
+
+    tasks.keys.abbrev.each do |shortcut, command|
+      map shortcut => command.to_sym
     end
     
     desc "list", "list available connections"
