@@ -1,6 +1,7 @@
 require 'active_resource'
 require 'active_support/core_ext/class/attribute_accessors'
 require 'digest/md5'
+require 'base64'
 
 module ShopifyAPI
   METAFIELD_ENABLED_CLASSES = %w( Order Product CustomCollection SmartCollection Page Blog Article Variant)
