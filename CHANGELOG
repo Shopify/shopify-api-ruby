@@ -1,3 +1,9 @@
+== Version 1.2.1
+
+* Allow abbreviated names for all commands like rails does, e.g. 'shopify c' instead of 'shopify console'
+* Fix Variant to support accessing both nested variants with a product prefix as well as top level variants directly
+* Add 'grande' to supported product image size variants
+
 == Version 1.2.0
 
 * Command-line interface
