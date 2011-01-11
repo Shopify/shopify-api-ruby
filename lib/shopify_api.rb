@@ -388,6 +388,12 @@ module ShopifyAPI
     end
   end
   
+  class Customer < Base
+  end
+
+  class CustomerGroup < Base
+  end
+  
   # Assets represent the files that comprise your theme.
   # There are different buckets which hold different kinds
   # of assets, each corresponding to one of the folders
