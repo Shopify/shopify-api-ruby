@@ -502,6 +502,9 @@ module ShopifyAPI
   class ProductSearchEngine < Base
   end
   
+  class ScriptTag < Base
+  end
+  
   # Include Metafields module in all enabled classes
   METAFIELD_ENABLED_CLASSES.each do |klass|
     "ShopifyAPI::#{klass}".constantize.send(:include, Metafields)

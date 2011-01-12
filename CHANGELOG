@@ -1,3 +1,7 @@
+== Version 1.2.2
+
+* Added ScriptTag support
+
 == Version 1.2.1
 
 * Allow abbreviated names for all commands like rails does, e.g. 'shopify c' instead of 'shopify console'
