@@ -1,3 +1,7 @@
+== Version 1.2.3
+
+* Added Customer, CustomerGroup support
+
 == Version 1.2.2
 
 * Added ScriptTag support
