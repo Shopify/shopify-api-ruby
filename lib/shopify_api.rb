@@ -252,19 +252,26 @@ module ShopifyAPI
   end
 
   class Order < Base
-    def close; load_attributes_from_response(post(:close)); end
+    def close;  load_attributes_from_response(post(:close, {}, only_id)); end
+    def open;   load_attributes_from_response(post(:open, {}, only_id)); end
 
-    def open; load_attributes_from_response(post(:open)); end
+    def cancel(options = {})
+      load_attributes_from_response(post(:cancel, options, only_id))
+    end
 
     def transactions
       Transaction.find(:all, :params => { :order_id => id })
     end
-    
+
     def capture(amount = "")
       Transaction.create(:amount => amount, :kind => "capture", :order_id => id)
     end
+
+    def only_id
+      encode(:only => :id, :include => [], :methods => [], :fields => [])
+    end
   end
-  
+
   class Product < Base
 
     # Share all items of this store with the 
@@ -362,13 +369,19 @@ module ShopifyAPI
 
   end
 
-  class Comment < Base 
-    def remove; load_attributes_from_response(post(:remove)); end
-    def ham; load_attributes_from_response(post(:ham)); end
-    def spam; load_attributes_from_response(post(:spam)); end
-    def approve; load_attributes_from_response(post(:approve)); end        
+  class Comment < Base
+    def remove;   load_attributes_from_response(post(:remove, {}, only_id)); end
+    def ham;      load_attributes_from_response(post(:ham, {}, only_id)); end
+    def spam;     load_attributes_from_response(post(:spam, {}, only_id)); end
+    def approve;  load_attributes_from_response(post(:approve, {}, only_id)); end
+    def restore;  load_attributes_from_response(post(:restore, {}, only_id)); end
+    def not_spam; load_attributes_from_response(post(:not_spam, {}, only_id)); end
+
+    def only_id
+      encode(:only => :id)
+    end
   end
-  
+
   class Province < Base
     self.prefix = "/admin/countries/:country_id/"
   end
