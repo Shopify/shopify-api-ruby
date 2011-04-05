@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
 
 The Shopify API gem allows Ruby developers to programmatically access the admin section of Shopify stores.
 
-The API is implemented as XML over HTTP using all four verbs (GET/POST/PUT/DELETE). Each resource, like Order, Product, or Collection, has its own URL and is manipulated in isolation. In other words, we’ve tried to make the API follow the REST principles as much as possible.
+The API is implemented as XML over HTTP using all four verbs (GET/POST/PUT/DELETE). Each resource, like Order, Product, or Collection, has its own URL and is manipulated in isolation. In other words, we've tried to make the API follow the REST principles as much as possible.
 
 
 == Usage
