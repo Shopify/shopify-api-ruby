@@ -505,8 +505,8 @@ module ShopifyAPI
       load_attributes_from_response(self.destroy)
     end
     
-    def activate(options = {})
-      load_attributes_from_response(post(:activate, options))
+    def activate
+      load_attributes_from_response(post(:activate))
     end
   end
 
