@@ -1,3 +1,7 @@
+== Version 1.2.4
+
+* Added Article#comments
+
 == Version 1.2.3
 
 * Added Customer, CustomerGroup support
