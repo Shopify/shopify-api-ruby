@@ -1,3 +1,9 @@
+== Version 1.2.4
+
+* Added Article#comments
+* Added Order#cancel
+* Added Comment#restore, #not_spam
+
 == Version 1.2.3
 
 * Added Customer, CustomerGroup support
