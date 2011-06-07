@@ -1,3 +1,7 @@
+== Version 1.2.5
+
+* Fix for Article#comments
+
 == Version 1.2.4
 
 * Added Article#comments
