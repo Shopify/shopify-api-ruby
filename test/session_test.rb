@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ShopifyApiTest < Test::Unit::TestCase
+class SessionTest < Test::Unit::TestCase
   
   context "Session" do
     should "not be valid without a url" do
