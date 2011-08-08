@@ -414,16 +414,17 @@ module ShopifyAPI
   # Assets represent the files that comprise your theme.
   # There are different buckets which hold different kinds
   # of assets, each corresponding to one of the folders
-  # within a theme's zip file: layout, templates, and
-  # assets. The full key of an asset always starts with the
-  # bucket name, and the path separator is a forward slash,
-  # like layout/theme.liquid or assets/bg-body.gif.
+  # within a theme's zip file: "layout", "templates",
+  # "snippets", "assets", and "config". The full key of an
+  # asset always starts with the bucket name, and the path
+  # separator is a forward slash, like layout/theme.liquid
+  # or assets/bg-body.gif.
   #
   # Initialize with a key:
-  #   asset = ShopifyAPI::Asset.new(:key => 'assets/special.css')
+  #   asset = ShopifyAPI::Asset.new(:key => 'assets/special.css', :theme_id => 12345)
   # 
   # Find by key:
-  #   asset = ShopifyAPI::Asset.find('assets/image.png')
+  #   asset = ShopifyAPI::Asset.find('assets/image.png', :params => {:theme_id => 12345})
   # 
   # Get the text or binary value:
   #   asset.value # decodes from attachment attribute if necessary
@@ -444,16 +445,27 @@ module ShopifyAPI
   #       asset.source_key = "assets/another_image.png"
   class Asset < Base
     self.primary_key = 'key'
+    self.prefix = "/admin/themes/:theme_id/"
+    
+    def self.prefix(options={})
+      options[:theme_id].nil? ? "/admin/" : "/admin/themes/#{options[:theme_id]}/"
+    end
+    
+    def self.element_path(id, prefix_options = {}, query_options = nil) #:nodoc:
+      prefix_options, query_options = split_options(prefix_options) if query_options.nil?
+      "#{prefix(prefix_options)}#{collection_name}.#{format.extension}#{query_string(query_options)}"
+    end
     
     # find an asset by key:
-    #   ShopifyAPI::Asset.find('layout/theme.liquid')
+    #   ShopifyAPI::Asset.find('layout/theme.liquid', :params => {:theme_id => 99})
     def self.find(*args)
       if args[0].is_a?(Symbol)
         super
       else
         params = {:asset => {:key => args[0]}}
         params = params.merge(args[1][:params]) if args[1] && args[1][:params]
-        find(:one, :from => "/admin/assets.#{format.extension}", :params => params)
+        path_prefix = params[:theme_id] ? "/admin/themes/#{params[:theme_id]}" : "/admin"
+        find(:one, :from => "#{path_prefix}/assets.#{format.extension}", :params => params)
       end
     end
     
@@ -469,17 +481,12 @@ module ShopifyAPI
       self.attachment = Base64.encode64(data)
     end
     
-    def destroy #:nodoc:
-      connection.delete(element_path(:asset => {:key => key}), self.class.headers)
+    def destroy
+      connection.delete(element_path(prefix_options.merge(:asset => {:key => key})), self.class.headers)
     end
     
-    def new? #:nodoc:
+    def new?
       false
-    end
-    
-    def self.element_path(id, prefix_options = {}, query_options = nil) #:nodoc:
-      prefix_options, query_options = split_options(prefix_options) if query_options.nil?
-      "#{prefix(prefix_options)}#{collection_name}.#{format.extension}#{query_string(query_options)}"
     end
     
     def method_missing(method_symbol, *arguments) #:nodoc:
