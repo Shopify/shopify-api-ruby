@@ -84,7 +84,7 @@ module ShopifyAPI
           remove_file(default_symlink)
           `ln -s #{target} #{default_symlink}`
         else
-          no_config_file_error(file)
+          no_config_file_error(target)
         end
       end
       if File.exist?(default_symlink)
@@ -155,7 +155,7 @@ module ShopifyAPI
     end
     
     def no_config_file_error(filename)
-      raise ConfigFileError, "There is no config file at #{file}"
+      raise ConfigFileError, "There is no config file at #{filename}"
     end
   end
 end
