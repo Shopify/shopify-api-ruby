@@ -87,10 +87,40 @@ module ShopifyAPI
 
     attr_accessor :url, :token, :name
     
-    def self.setup(params)
-      params.each { |k,value| send("#{k}=", value) }
-    end
+    class << self
+    
+      def setup(params)
+        params.each { |k,value| send("#{k}=", value) }
+      end
+      
+      def temp(domain, token, &block)
+        ShopifyAPI::Session.new(domain, token).temp { yield }
+      end
+      
+      def prepare_url(url)
+        return nil if url.blank?
+        url.gsub!(/https?:\/\//, '')                            # remove http:// or https://
+        url.concat(".myshopify.com") unless url.include?('.')   # extend url to myshopify.com if no host is given
+      end
+      
+      def validate_signature(params)
+        return false unless signature = params[:signature]
 
+        sorted_params = params.except(:signature, :action, :controller).collect{|k,v|"#{k}=#{v}"}.sort.join
+        Digest::MD5.hexdigest(secret + sorted_params) == signature
+      end
+    
+    end
+    
+    def temp(&block)
+      begin
+        ShopifyAPI::Base.site = site
+        yield
+      ensure 
+        ShopifyAPI::Base.site = nil
+      end
+    end
+    
     def initialize(url, token = nil, params = nil)
       self.url, self.token = url, token
 
@@ -132,17 +162,5 @@ module ShopifyAPI
       Digest::MD5.hexdigest(secret + token.to_s)
     end
     
-    def self.prepare_url(url)
-      return nil if url.blank?
-      url.gsub!(/https?:\/\//, '')                            # remove http:// or https://
-      url.concat(".myshopify.com") unless url.include?('.')   # extend url to myshopify.com if no host is given
-    end
-    
-    def self.validate_signature(params)
-      return false unless signature = params[:signature]
-
-      sorted_params = params.except(:signature, :action, :controller).collect{|k,v|"#{k}=#{v}"}.sort.join
-      Digest::MD5.hexdigest(secret + sorted_params) == signature
-    end
   end
 end
