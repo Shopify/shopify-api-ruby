@@ -8,10 +8,6 @@ module ShopifyAPI
     class ConfigFileError < StandardError
     end
 
-    tasks.keys.abbrev.each do |shortcut, command|
-      map shortcut => command.to_sym
-    end
-    
     desc "list", "list available connections"
     def list
       available_connections.each do |c|
@@ -107,7 +103,11 @@ module ShopifyAPI
       ARGV.clear
       IRB.start
     end
-    
+
+    tasks.keys.abbrev.each do |shortcut, command|
+      map shortcut => command.to_sym
+    end
+
     private
     
     def shop_config_dir
