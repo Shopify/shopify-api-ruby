@@ -51,7 +51,7 @@ module ShopifyAPI
       file = config_file(connection)
       if File.exist?(file)
         if ENV['EDITOR'].present?
-          `#{ENV['EDITOR']} #{file}`
+          system(ENV['EDITOR'], file)
         else
           puts "Please set an editor in the EDITOR environment variable"
         end
