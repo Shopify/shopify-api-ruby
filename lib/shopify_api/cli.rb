@@ -8,10 +8,6 @@ module ShopifyAPI
     class ConfigFileError < StandardError
     end
 
-    tasks.keys.abbrev.each do |shortcut, command|
-      map shortcut => command.to_sym
-    end
-    
     desc "list", "list available connections"
     def list
       available_connections.each do |c|
@@ -55,7 +51,7 @@ module ShopifyAPI
       file = config_file(connection)
       if File.exist?(file)
         if ENV['EDITOR'].present?
-          `#{ENV['EDITOR']} #{file}`
+          system(ENV['EDITOR'], file)
         else
           puts "Please set an editor in the EDITOR environment variable"
         end
@@ -84,7 +80,7 @@ module ShopifyAPI
           remove_file(default_symlink)
           `ln -s #{target} #{default_symlink}`
         else
-          no_config_file_error(file)
+          no_config_file_error(target)
         end
       end
       if File.exist?(default_symlink)
@@ -107,7 +103,11 @@ module ShopifyAPI
       ARGV.clear
       IRB.start
     end
-    
+
+    tasks.keys.abbrev.each do |shortcut, command|
+      map shortcut => command.to_sym
+    end
+
     private
     
     def shop_config_dir
@@ -155,7 +155,7 @@ module ShopifyAPI
     end
     
     def no_config_file_error(filename)
-      raise ConfigFileError, "There is no config file at #{file}"
+      raise ConfigFileError, "There is no config file at #{filename}"
     end
   end
 end
