@@ -3,24 +3,9 @@ module ShopifyAPI
     undef_method :test
     
     class << self
-      def current
-        all.find { |c| c.status == 'active' }
-      end
-      
-      def pending
-        all.find { |c| c.status == 'pending' }
-      end
-      
-      def cancelled
-        all.find { |c| c.status == 'cancelled' }
-      end
-      
-      def accepted
-        all.find { |c| c.status == 'accepted' }
-      end
-      
-      def declined
-        all.find { |c| c.status == 'declined' }
+      # generate a method for each type of recurring application charge
+      [:current, :pending, :cancelled, :accepted, :declined].each do |m|
+        define_method(m) { all.find { |c| c.status == m.to_s } }
       end
     end
     
