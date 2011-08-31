@@ -3,11 +3,6 @@ module ShopifyAPI
     include Events
     include Metafields
 
-    # Share all items of this store with the 
-    # shopify marketplace
-    def self.share; post :share;  end    
-    def self.unshare; delete :share; end
-
     # compute the price range
     def price_range
       prices = variants.collect(&:price)
