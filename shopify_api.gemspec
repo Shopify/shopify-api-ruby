@@ -14,29 +14,12 @@ Gem::Specification.new do |s|
     "LICENSE",
      "README.rdoc"
   ]
-  s.files = [
-    ".document",
-     ".gitignore",
-     "CHANGELOG",
-     "LICENSE",
-     "README.rdoc",
-     "Rakefile",
-     "lib/shopify_api.rb",
-     "lib/shopify_api/cli.rb",
-     "shopify_api.gemspec",
-     "test/order_test.rb",
-     "test/shopify_api_test.rb",
-     "test/test_helper.rb"
-  ]
+  s.files         = `git ls-files`.split("\n")
+  s.test_files    = `git ls-files -- {test}/*`.split("\n")
+  s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
 
   s.rdoc_options = ["--charset=UTF-8"]
   s.summary = %q{ShopifyAPI is a lightweight gem for accessing the Shopify admin REST web services}
-  s.test_files = [
-    "test/order_test.rb",
-     "test/shopify_api_test.rb",
-     "test/test_helper.rb"
-  ]
-  s.executables = ['shopify']
   s.license = 'MIT'
 
   s.add_dependency("activeresource", [">= 2.2.2"])
