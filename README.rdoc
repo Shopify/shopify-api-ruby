@@ -50,6 +50,11 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
      shop = ShopifyAPI::Shop.current
      latest_orders = ShopifyAPI::Order.find(:all)
 
+   Alternatively, you can use #temp to initialize a Session and execute a command which also handles temporarily setting ActiveResource::Base.site:
+
+    latest_orders = ShopifyAPI::Session.temp("yourshopname.myshopify.com", token) { ShopifyAPI::Order.find(:all) }
+
+
 == Copyright
 
-Copyright (c) 2009 "JadedPixel inc.". See LICENSE for details.
+Copyright (c) 2011 "JadedPixel inc.". See LICENSE for details.
