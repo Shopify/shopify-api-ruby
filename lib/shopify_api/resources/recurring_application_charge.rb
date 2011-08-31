@@ -6,21 +6,9 @@ module ShopifyAPI
       def current
         all.find { |c| c.status == 'active' }
       end
-      
-      def pending
-        all.find { |c| c.status == 'pending' }
-      end
-      
-      def cancelled
-        all.find { |c| c.status == 'cancelled' }
-      end
-      
-      def accepted
-        all.find { |c| c.status == 'accepted' }
-      end
-      
-      def declined
-        all.find { |c| c.status == 'declined' }
+
+      [:pending, :cancelled, :accepted, :declined].each do |status|
+        define_method(status) { all.select { |c| c.status == status.to_s } }
       end
     end
     
