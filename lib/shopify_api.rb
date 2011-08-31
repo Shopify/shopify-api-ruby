@@ -1,3 +1,5 @@
+$:.unshift File.dirname(__FILE__)
+
 require 'active_resource'
 require 'active_support/core_ext/class/attribute_accessors'
 require 'digest/md5'
@@ -7,7 +9,9 @@ require 'shopify_api/limits'
 
 module ShopifyAPI
   include Limits
-  require 'shopify_api/resources'
-  require 'shopify_api/metafields'
-  require 'shopify_api/events'
 end
+
+require 'shopify_api/events'
+require 'shopify_api/metafields'
+require 'shopify_api/resources'
+require 'shopify_api/session'

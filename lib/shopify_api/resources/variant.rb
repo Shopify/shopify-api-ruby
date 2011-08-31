@@ -1,5 +1,7 @@
 module ShopifyAPI
   class Variant < Base
+    include Metafields
+
     self.prefix = "/admin/products/:product_id/"
     
     def self.prefix(options={})

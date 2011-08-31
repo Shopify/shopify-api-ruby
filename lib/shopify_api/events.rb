@@ -1,8 +1,7 @@
 module ShopifyAPI
-  EVENT_ENABLED_CLASSES = %w( Order Product CustomCollection SmartCollection Page Blog Article )
-  
-  # Include Events module in all enabled classes
-  EVENT_ENABLED_CLASSES.each do |klass|
-    "ShopifyAPI::#{klass}".constantize.send(:include, Events)
+  module Events
+    def events
+      Event.find(:all, :params => {:resource => self.class.collection_name, :resource_id => id})
+    end
   end
 end

@@ -1,5 +1,7 @@
 module ShopifyAPI
   class Product < Base
+    include Events
+    include Metafields
 
     # Share all items of this store with the 
     # shopify marketplace
