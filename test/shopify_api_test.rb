@@ -39,5 +39,17 @@ class ShopifyApiTest < Test::Unit::TestCase
     should "use 'https' protocol by default for all sessions" do
       assert_equal 'https', ShopifyAPI::Session.protocol
     end
+
+    should "#temp reset ShopifyAPI::Base.site to original value" do
+      ShopifyAPI::Base.site = 'http://www.original.com'
+
+      ShopifyAPI::Session.setup(:api_key => "key", :secret => "secret")
+      assigned_site = nil
+      ShopifyAPI::Session.temp("testshop.myshopify.com", "any-token") {
+        assigned_site = ShopifyAPI::Base.site
+      }
+      assert_equal 'https://key:e56d5793b869753d87cf03ceb6bb5dfc@testshop.myshopify.com/admin', assigned_site.to_s
+      assert_equal 'http://www.original.com', ShopifyAPI::Base.site.to_s
+    end
   end
 end

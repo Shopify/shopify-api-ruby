@@ -94,7 +94,15 @@ module ShopifyAPI
       end
       
       def temp(domain, token, &block)
-        ShopifyAPI::Session.new(domain, token).temp { yield }
+        session = new(domain, token)
+
+        original_site = ShopifyAPI::Base.site
+        begin
+          ShopifyAPI::Base.site = session.site
+          yield
+        ensure
+          ShopifyAPI::Base.site = original_site
+        end
       end
       
       def prepare_url(url)
@@ -110,15 +118,6 @@ module ShopifyAPI
         Digest::MD5.hexdigest(secret + sorted_params) == signature
       end
     
-    end
-    
-    def temp(&block)
-      begin
-        ShopifyAPI::Base.site = site
-        yield
-      ensure 
-        ShopifyAPI::Base.site = nil
-      end
     end
     
     def initialize(url, token = nil, params = nil)
