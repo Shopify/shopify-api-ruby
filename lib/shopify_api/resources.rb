@@ -1,4 +1,3 @@
-require 'shopify_api/resources/countable'
 require 'shopify_api/resources/base'
 require 'shopify_api/resources/application_charge'
 require 'shopify_api/resources/article'
