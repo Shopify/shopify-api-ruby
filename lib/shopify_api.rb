@@ -2,8 +2,12 @@ require 'active_resource'
 require 'active_support/core_ext/class/attribute_accessors'
 require 'digest/md5'
 require 'base64'
+require 'active_resource/connection_ext'
+require 'shopify_api/limits'
 
 module ShopifyAPI
+  include Limits
+  
   METAFIELD_ENABLED_CLASSES = %w( Order Product CustomCollection SmartCollection Page Blog Article Variant)
   EVENT_ENABLED_CLASSES = %w( Order Product CustomCollection SmartCollection Page Blog Article )
   
@@ -547,4 +551,5 @@ module ShopifyAPI
   EVENT_ENABLED_CLASSES.each do |klass|
     "ShopifyAPI::#{klass}".constantize.send(:include, Events)
   end
+  
 end
