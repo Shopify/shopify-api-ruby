@@ -1,3 +1,8 @@
+== Version 1.2.6 (September 12th, 2011)
+
+* Refactored resources into their own source files
+* Added API limits functionality
+
 == Version 1.2.5
 
 * Fix for Article#comments
