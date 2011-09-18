@@ -1,6 +1,6 @@
 module ShopifyAPI
   class Metafield < Base
-    self.prefix = "/admin/:resource/:resource_id/"
+    self.prefix = "/admin/"
     
     # Hack to allow both Shop and other Metafields in through the same AR class
     def self.prefix(options={})
