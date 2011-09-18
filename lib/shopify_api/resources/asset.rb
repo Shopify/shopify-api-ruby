@@ -33,7 +33,7 @@ module ShopifyAPI
   #       asset.source_key = "assets/another_image.png"
   class Asset < Base
     self.primary_key = 'key'
-    self.prefix = "/admin/themes/:theme_id/"
+    self.prefix = "/admin/"
     
     def self.prefix(options={})
       options[:theme_id].nil? ? "/admin/" : "/admin/themes/#{options[:theme_id]}/"
