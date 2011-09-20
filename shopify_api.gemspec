@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{shopify_api}
-  s.version = "1.2.6"
+  s.version = "1.2.5"
   s.author = "Shopify"
 
   s.summary = %q{The Shopify API gem is a lightweight gem for accessing the Shopify admin REST web services}
