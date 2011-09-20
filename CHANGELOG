@@ -1,3 +1,13 @@
+== Version 2.0.0
+
+* Bump to 2.0.0 as this release breaks Rails 2 compatibility; we're now officially only supporting Rails 3. Rails 2 devs can follow the rails2 tag in this repo to know where we broke off
+* Refactored resources into their own source files
+* Added API limits functionality
+* Patched ActiveResource issue with roots in JSON
+* Added pending, cancelled, accepted, and declined convenience methods to ShopifyAPI::RecurringApplicationCharge
+* ShopifyAPI::Session#temp now available as a convenience method to support temporarily switching to other shops when making calls
+* Fixes to `shopify console` CLI tool
+
 == Version 1.2.5
 
 * Fix for Article#comments

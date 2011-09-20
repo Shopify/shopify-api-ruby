@@ -2,17 +2,17 @@
 
 Gem::Specification.new do |s|
   s.name = %q{shopify_api}
-  s.version = "1.2.5"
+  s.version = "2.0.0"
   s.author = "Shopify"
 
   s.summary = %q{The Shopify API gem is a lightweight gem for accessing the Shopify admin REST web services}
-  s.description = %q{The Shopify API gem allows Ruby developers to programmatically access the admin section of Shopify stores. The API is implemented as XML over HTTP using all four verbs (GET/POST/PUT/DELETE). Each resource, like Order, Product, or Collection, has its own URL and is manipulated in isolation.}
+  s.description = %q{The Shopify API gem allows Ruby developers to programmatically access the admin section of Shopify stores. The API is implemented as JSON or XML over HTTP using all four verbs (GET/POST/PUT/DELETE). Each resource, like Order, Product, or Collection, has its own URL and is manipulated in isolation.}
   s.email = %q{developers@jadedpixel.com}
   s.homepage = %q{http://www.shopify.com/partners/apps}
 
   s.extra_rdoc_files = [
     "LICENSE",
-     "README.rdoc"
+    "README.rdoc"
   ]
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test}/*`.split("\n")
@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   s.summary = %q{ShopifyAPI is a lightweight gem for accessing the Shopify admin REST web services}
   s.license = 'MIT'
 
-  s.add_dependency("activeresource", [">= 2.2.2"])
+  s.add_dependency("activeresource", [">= 3.0.0"])
   s.add_dependency("thor", [">= 0.14.4"])
   
   if s.respond_to?(:add_development_dependency)
@@ -31,4 +31,3 @@ Gem::Specification.new do |s|
     s.add_dependency("mocha", ">= 0.9.8")
   end
 end
-
