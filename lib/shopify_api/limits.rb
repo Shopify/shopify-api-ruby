@@ -1,4 +1,3 @@
-# based on code from https://github.com/christocracy/shopify-api-limits
 module ShopifyAPI
   module Limits
     def self.included(klass)
