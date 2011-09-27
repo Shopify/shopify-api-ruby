@@ -7,6 +7,7 @@ require 'base64'
 require 'active_resource/connection_ext'
 require 'shopify_api/limits'
 require 'shopify_api/json_format'
+require 'active_resource/json_errors'
 
 module ShopifyAPI
   include Limits
