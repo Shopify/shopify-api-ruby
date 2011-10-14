@@ -9,7 +9,6 @@ module ShopifyAPI
       # Takes form num_requests_executed/max_requests
       # Eg: 101/3000
       CREDIT_LIMIT_HEADER_PARAM = {
-        :global => 'http_x_shopify_api_call_limit',
         :shop => 'http_x_shopify_shop_api_call_limit'
       }
 
@@ -18,9 +17,7 @@ module ShopifyAPI
       # @return {Integer}
       #
       def credit_left
-        shop = credit_limit(:shop) - credit_used(:shop)
-        global = credit_limit(:global) - credit_used(:global)      
-        shop < global ? shop : global
+        credit_limit(:shop) - credit_used(:shop)
       end
       alias_method :available_calls, :credit_left
       
@@ -35,8 +32,8 @@ module ShopifyAPI
       
       ##
       # How many total API calls can I make?
-      # NOTE: subtracting 1 from credit_limit because I think ShopifyAPI cuts off at 299/2999 or shop/global limits.
-      # @param {Symbol} scope [:shop|:global]
+      # NOTE: subtracting 1 from credit_limit because I think ShopifyAPI cuts off at 299 or shop limits.
+      # @param {Symbol} scope [:shop]
       # @return {Integer}
       #
       def credit_limit(scope=:shop)
@@ -47,7 +44,7 @@ module ShopifyAPI
 
       ##
       # How many API calls have I made?
-      # @param {Symbol} scope [:shop|:global]
+      # @param {Symbol} scope [:shop]
       # @return {Integer}
       #
       def credit_used(scope=:shop)
