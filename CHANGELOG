@@ -1,3 +1,8 @@
+== Version 2.1.0
+
+* Fix JSON errors handling
+* Remove global limit from ShopifyAPI::Limits
+
 == Version 2.0.0
 
 * Bump to 2.0.0 as this release breaks Rails 2 compatibility; we're now officially only supporting Rails 3. Rails 2 devs can follow the rails2 tag in this repo to know where we broke off
