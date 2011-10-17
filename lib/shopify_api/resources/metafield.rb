@@ -1,5 +1,7 @@
 module ShopifyAPI
   class Metafield < Base
+    include DisablePrefixCheck
+
     self.prefix = "/admin/:resource/:resource_id/"
     
     # Hack to allow both Shop and other Metafields in through the same AR class

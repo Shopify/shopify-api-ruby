@@ -51,5 +51,15 @@ class SessionTest < Test::Unit::TestCase
       assert_equal 'https://key:e56d5793b869753d87cf03ceb6bb5dfc@testshop.myshopify.com/admin', assigned_site.to_s
       assert_equal 'http://www.original.com', ShopifyAPI::Base.site.to_s
     end
+
+    should "return permissions url" do
+      session = ShopifyAPI::Session.new("testshop.myshopify.com", "any-token")
+      assert_equal "http://testshop.myshopify.com/admin/api/auth?api_key=key", session.create_permission_url
+    end
+
+    should "return site for session" do
+      session = ShopifyAPI::Session.new("testshop.myshopify.com", "any-token")
+      assert_equal "https://key:e56d5793b869753d87cf03ceb6bb5dfc@testshop.myshopify.com/admin", session.site
+    end
   end
 end
