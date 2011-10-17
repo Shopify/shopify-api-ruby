@@ -27,7 +27,9 @@ Gem::Specification.new do |s|
   
   if s.respond_to?(:add_development_dependency)
     s.add_development_dependency("mocha", ">= 0.9.8")
+    s.add_development_dependency("fakeweb")
   else
     s.add_dependency("mocha", ">= 0.9.8")
+    s.add_dependency("fakeweb")
   end
 end

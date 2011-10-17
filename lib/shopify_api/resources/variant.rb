@@ -1,6 +1,7 @@
 module ShopifyAPI
   class Variant < Base
     include Metafields
+    include DisablePrefixCheck
 
     self.prefix = "/admin/products/:product_id/"
     
