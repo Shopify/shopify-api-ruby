@@ -32,6 +32,8 @@ module ShopifyAPI
   #     the value will be copied:
   #       asset.source_key = "assets/another_image.png"
   class Asset < Base
+    include DisablePrefixCheck
+
     self.primary_key = 'key'
     self.prefix = "/admin/themes/:theme_id/"
     

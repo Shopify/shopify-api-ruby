@@ -1,5 +1,7 @@
 module ShopifyAPI
   class Event < Base
+    include DisablePrefixCheck
+
     self.prefix = "/admin/:resource/:resource_id/"
     
     # Hack to allow both Shop and other Events in through the same AR class
