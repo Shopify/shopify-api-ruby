@@ -49,7 +49,7 @@ class Test::Unit::TestCase
   end
 
   def fake(endpoint, options={})
-    body = options.delete(:body) || load_fixture(endpoint)
+    body   = options.has_key?(:body) ? options.delete(:body) : load_fixture(endpoint)
     format = options.delete(:format) || :json
     method = options.delete(:method) || :get
     extension = ".#{options.delete(:extension)||'json'}" unless options[:extension]==false
