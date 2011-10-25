@@ -38,6 +38,10 @@ class Test::Unit::TestCase
     ShopifyAPI::Base.password = nil
     ShopifyAPI::Base.user = nil
   end
+
+  def teardown
+    FakeWeb.clean_registry
+  end
   
   # Custom Assertions
   def assert_not(expression)
