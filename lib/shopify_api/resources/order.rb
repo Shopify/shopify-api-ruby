@@ -17,9 +17,5 @@ module ShopifyAPI
     def capture(amount = "")
       Transaction.create(:amount => amount, :kind => "capture", :order_id => id)
     end
-
-    def only_id
-      encode(:only => :id, :include => [], :methods => [], :fields => [])
-    end
   end
 end
