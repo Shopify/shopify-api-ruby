@@ -1,3 +1,10 @@
+== Version 2.2.0
+
+* Fix issues with resources that have both direct and namespaced routes
+* Added detailed logger to help with debugging ActiveResource
+requests/responses
+* Add fulfillment#cancel
+
 == Version 2.1.0
 
 * Fix JSON errors handling
