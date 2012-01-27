@@ -29,7 +29,7 @@ class ShopTest < Test::Unit::TestCase
     fake "metafields", :method => :post, :status => 201, :body =>load_fixture('metafield')
 
     field = @shop.add_metafield(ShopifyAPI::Metafield.new(:namespace => "contact", :key => "email", :value => "123@example.com", :value_type => "string"))
-
+    assert_equal '{"metafield":{"namespace":"contact","key":"email","value":"123@example.com","value_type":"string"}}', FakeWeb.last_request.body
     assert !field.new_record?
     assert_equal "contact", field.namespace
     assert_equal "email", field.key
