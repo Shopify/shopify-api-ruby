@@ -26,14 +26,14 @@ module ActiveModel
   module Serializers
     module JSON
       def as_json(options = nil)
-          root = options[:root] if options.try(:key?, :root)
-          if include_root_in_json
-            root = self.class.model_name.element if root == true
-            { root => serializable_hash(options) }
-          else
-            serializable_hash(options)
-          end
+        root = options[:root] if options.try(:key?, :root)
+        if include_root_in_json
+          root = self.class.model_name.element if root == true
+          { root => serializable_hash(options) }
+        else
+          serializable_hash(options)
         end
       end
+    end
   end
 end
