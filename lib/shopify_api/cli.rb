@@ -25,6 +25,9 @@ module ShopifyAPI
         config = {'protocol' => 'https'}
         config['domain']   = ask("Domain? (leave blank for #{connection}.myshopify.com)")
         config['domain']   = "#{connection}.myshopify.com" if config['domain'].blank?
+        # this next line allows us to name a site ccm when the actual is coolio-coolio-manna, so we talk to coolio-coolio-manna with cli.rb console ccm
+        config['domain'] = "#{config['domain']}.myshopify.com" if (/\.myshopify\.com/ =~ config['domain']).nil?
+        
         puts "\nopen https://#{config['domain']}/admin/api in your browser to get API credentials\n"
         config['api_key']  = ask("API key?")
         config['password'] = ask("Password?")
