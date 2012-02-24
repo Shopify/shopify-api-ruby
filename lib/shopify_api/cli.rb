@@ -25,6 +25,7 @@ module ShopifyAPI
         config = {'protocol' => 'https'}
         config['domain']   = ask("Domain? (leave blank for #{connection}.myshopify.com)")
         config['domain']   = "#{connection}.myshopify.com" if config['domain'].blank?
+        config['domain']   = "#{config['domain']}.myshopify.com" unless config['domain'].match(/[.:]/)
         puts "\nopen https://#{config['domain']}/admin/api in your browser to get API credentials\n"
         config['api_key']  = ask("API key?")
         config['password'] = ask("Password?")
