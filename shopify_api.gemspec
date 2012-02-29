@@ -1,8 +1,9 @@
 # -*- encoding: utf-8 -*-
+$:.push File.expand_path("../lib", __FILE__)
 
 Gem::Specification.new do |s|
   s.name = %q{shopify_api}
-  s.version = "1.2.5"
+  s.version = ShopifyAPI::VERSION
   s.author = "Shopify"
 
   s.summary = %q{The Shopify API gem is a lightweight gem for accessing the Shopify admin REST web services}
