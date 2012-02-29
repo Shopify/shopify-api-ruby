@@ -7,6 +7,7 @@ class LogSubscriberTest < Test::Unit::TestCase
   def setup
     super
     @page = { :page => { :id => 1, :title => 'Shopify API' } }.to_json
+    @ua_header = "\"User-Agent\"=>\"ShopifyAPI/#{ShopifyAPI::VERSION} ActiveResource/#{ActiveResource::VERSION::STRING} Ruby/#{RUBY_VERSION}\""
 
     ShopifyAPI::Base.site = "http://localhost/admin"
 
@@ -26,7 +27,7 @@ class LogSubscriberTest < Test::Unit::TestCase
     assert_equal 4, @logger.logged(:info).size
     assert_equal "GET http://localhost:80/admin/pages/1.json",                  @logger.logged(:info)[0]
     assert_match /\-\-\> 200/,                                                  @logger.logged(:info)[1]
-    assert_equal "Headers: {\"Accept\"=>\"application/json\"}",                 @logger.logged(:info)[2]
+    assert_equal "Headers: {\"Accept\"=>\"application/json\", #{@ua_header}}",  @logger.logged(:info)[2]
     assert_match /Response:\n\{\"page\"\:\{((\"id\"\:1)|(\"title\"\:\"Shopify API\")),((\"id\"\:1)|(\"title\"\:\"Shopify API\"))\}\}/,  @logger.logged(:info)[3]
 
   end
@@ -41,7 +42,7 @@ class LogSubscriberTest < Test::Unit::TestCase
     assert_equal 4, @logger.logged(:info).size
     assert_equal "GET http://localhost:80/admin/pages/2.json",  @logger.logged(:info)[0]
     assert_match /\-\-\> 404/,                                  @logger.logged(:info)[1]
-    assert_equal "Headers: {\"Accept\"=>\"application/json\"}", @logger.logged(:info)[2]
+    assert_equal "Headers: {\"Accept\"=>\"application/json\", #{@ua_header}}", @logger.logged(:info)[2]
     assert_equal "Response:",                                   @logger.logged(:info)[3]
   end
 end
