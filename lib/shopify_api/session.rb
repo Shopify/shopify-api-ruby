@@ -122,13 +122,6 @@ module ShopifyAPI
     
     def initialize(url, token = nil, params = nil)
       self.url, self.token = url, token
-
-      if params
-        unless self.class.validate_signature(params) && params[:timestamp].to_i > 24.hours.ago.utc.to_i
-          raise "Invalid Signature: Possible malicious login" 
-        end
-      end
-
       self.class.prepare_url(self.url)
     end
     
@@ -158,7 +151,7 @@ module ShopifyAPI
     # registring this third party application and concating the request_to it, 
     # and then calculating a MD5 hexdigest. 
     def computed_password
-      Digest::MD5.hexdigest(secret + token.to_s)
+      token.to_s
     end
     
   end
