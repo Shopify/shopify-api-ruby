@@ -23,12 +23,6 @@ class SessionTest < Test::Unit::TestCase
         session = ShopifyAPI::Session.new("testshop.myshopify.com", "any-token")
       end
     end
-    
-    should "raise error if params passed but signature omitted" do
-      assert_raises(RuntimeError) do
-        session = ShopifyAPI::Session.new("testshop.myshopify.com", "any-token", {'foo' => 'bar'})
-      end
-    end
 
     should "setup api_key and secret for all sessions" do
       ShopifyAPI::Session.setup(:api_key => "My test key", :secret => "My test secret")
@@ -48,18 +42,13 @@ class SessionTest < Test::Unit::TestCase
       ShopifyAPI::Session.temp("testshop.myshopify.com", "any-token") {
         assigned_site = ShopifyAPI::Base.site
       }
-      assert_equal 'https://key:e56d5793b869753d87cf03ceb6bb5dfc@testshop.myshopify.com/admin', assigned_site.to_s
+      assert_equal 'https://:any-token@testshop.myshopify.com/admin', assigned_site.to_s
       assert_equal 'http://www.original.com', ShopifyAPI::Base.site.to_s
-    end
-
-    should "return permissions url" do
-      session = ShopifyAPI::Session.new("testshop.myshopify.com", "any-token")
-      assert_equal "http://testshop.myshopify.com/admin/api/auth?api_key=key", session.create_permission_url
     end
 
     should "return site for session" do
       session = ShopifyAPI::Session.new("testshop.myshopify.com", "any-token")
-      assert_equal "https://key:e56d5793b869753d87cf03ceb6bb5dfc@testshop.myshopify.com/admin", session.site
+      assert_equal "https://:any-token@testshop.myshopify.com/admin", session.site
     end
   end
 end
