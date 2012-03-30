@@ -18,12 +18,15 @@ module ShopifyAPI
       def temp(domain, token, &block)
         session = new(domain, token)
 
-        original_site = ShopifyAPI::Base.site
+        original_domain  = URI.parse(ShopifyAPI::Base.site).host
+        original_token   = ShopifyAPI::Base.headers['X-Shopify-Access-Token']
+        original_session = new(original_domain, original_token)
+
         begin
-          ShopifyAPI::Base.site = session.site
+          activate_session(session)
           yield
         ensure
-          ShopifyAPI::Base.site = original_site
+          activate_session(original_session)
         end
       end
       
@@ -32,7 +35,6 @@ module ShopifyAPI
         url.gsub!(/https?:\/\//, '')                            # remove http:// or https://
         url.concat(".myshopify.com") unless url.include?('.')   # extend url to myshopify.com if no host is given
       end
-    
     end
     
     def initialize(url, token = nil, params = nil)
@@ -45,7 +47,7 @@ module ShopifyAPI
     end
 
     def site
-      "#{protocol}://:#{token}@#{url}/admin"
+      "#{protocol}://#{url}/admin"
     end
 
     def valid?
