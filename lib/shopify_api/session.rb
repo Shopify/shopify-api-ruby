@@ -17,16 +17,18 @@ module ShopifyAPI
       
       def temp(domain, token, &block)
         session = new(domain, token)
-
-        original_domain  = URI.parse(ShopifyAPI::Base.site).host
+        begin
+          original_domain  = URI.parse(ShopifyAPI::Base.site.to_s).host
+        rescue URI::InvalidURIError
+        end
         original_token   = ShopifyAPI::Base.headers['X-Shopify-Access-Token']
         original_session = new(original_domain, original_token)
 
         begin
-          activate_session(session)
+          ShopifyAPI::Base.activate_session(session)
           yield
         ensure
-          activate_session(original_session)
+          ShopifyAPI::Base.activate_session(original_session)
         end
       end
       
