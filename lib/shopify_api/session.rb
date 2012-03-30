@@ -37,11 +37,25 @@ module ShopifyAPI
         url.gsub!(/https?:\/\//, '')                            # remove http:// or https://
         url.concat(".myshopify.com") unless url.include?('.')   # extend url to myshopify.com if no host is given
       end
+
+      def validate_signature(params)
+        return false unless signature = params[:signature]
+
+        sorted_params = params.except(:signature, :action, :controller).collect{|k,v|"#{k}=#{v}"}.sort.join
+        Digest::MD5.hexdigest(secret + sorted_params) == signature
+      end
+
     end
     
     def initialize(url, token = nil, params = nil)
       self.url, self.token = url, token
       self.class.prepare_url(self.url)
+
+      if params
+        unless self.class.validate_signature(params) && params[:timestamp].to_i > 24.hours.ago.utc.to_i
+          raise "Invalid Signature: Possible malicious login" 
+        end
+      end
     end
     
     def shop
