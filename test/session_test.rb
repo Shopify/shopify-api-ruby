@@ -35,20 +35,21 @@ class SessionTest < Test::Unit::TestCase
     end
 
     should "#temp reset ShopifyAPI::Base.site to original value" do
-      ShopifyAPI::Base.site = 'http://www.original.com'
-
+      
       ShopifyAPI::Session.setup(:api_key => "key", :secret => "secret")
-      assigned_site = nil
+      session1 = ShopifyAPI::Session.new('fakeshop.myshopify.com', 'token1')
+      ShopifyAPI::Base.activate_session(session1)
+
       ShopifyAPI::Session.temp("testshop.myshopify.com", "any-token") {
-        assigned_site = ShopifyAPI::Base.site
+        @assigned_site = ShopifyAPI::Base.site
       }
-      assert_equal 'https://:any-token@testshop.myshopify.com/admin', assigned_site.to_s
-      assert_equal 'http://www.original.com', ShopifyAPI::Base.site.to_s
+      assert_equal 'https://testshop.myshopify.com/admin', @assigned_site.to_s
+      assert_equal 'https://fakeshop.myshopify.com/admin', ShopifyAPI::Base.site.to_s
     end
 
     should "return site for session" do
       session = ShopifyAPI::Session.new("testshop.myshopify.com", "any-token")
-      assert_equal "https://:any-token@testshop.myshopify.com/admin", session.site
+      assert_equal "https://testshop.myshopify.com/admin", session.site
     end
   end
 end
