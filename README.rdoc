@@ -31,19 +31,25 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
     session = ShopifyAPI::Session.new("yourshopname.myshopify.com")
     session.valid?  # returns false
 
-4. To access the API shop owners need a "token" from that specific shop. In order to get this token they need to authorize with that shop first. The URL to redirect your user to can be generated via:
+4. To access the API shop owners need a "token" from that specific shop. In order to get this token they need to authorize with that shop first. To get this token they should redirect the user to the following URL:
 
-    url = session.create_permission_url
+     GET https://SHOP_NAME.myshopify.com/admin/oauth/authorize
 
-5. After visiting this URL, the shop redirects the owner to a custom URL of your application where the "token" gets sent to (it's param name is just "t"). Use that token to instantiate a "valid" session, that is ready to make calls to that particular shop.
+with the following parameters:
+
+* client_id – Required – The API key for your app
+* scope – Required – The list of required scopes (explained below)
+* redirect_uri – Optional – The URL that the merchant will be sent to once authentication is complete. Must be the same host as the Return URL specified in the application settings
+
+5. Once authorized, the shop redirects the owner to the return URL of your application where the "token" gets sent to (it's param name is just "t"). Use that token to instantiate a "valid" session, that is ready to make calls to that particular shop.
 
     token = params[:t]
     session = ShopifyAPI::Session.new("yourshopname.myshopify.com", token)
     session.valid?  # returns true
 
-6. Now you can finally get the fully authorized URL for that shop. Use that URL to configure ActiveResource and you're set:
+6. Now you can activate the session and you're set:
 
-     ActiveResource::Base.site = session.site
+     ActiveResource::Base.activate_session = session
 
 7. Get data from that shop (returns ActiveResource instances):
 
@@ -54,7 +60,11 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
 
     latest_orders = ShopifyAPI::Session.temp("yourshopname.myshopify.com", token) { ShopifyAPI::Order.find(:all) }
 
+8. Finally, you can also clear the session (for example if you want to work with another shop):
+
+     ShopifyAPI::Base.clear_session
+
 
 == Copyright
 
-Copyright (c) 2011 "JadedPixel inc.". See LICENSE for details.
+Copyright (c) 2012 "Shopify inc.". See LICENSE for details.
