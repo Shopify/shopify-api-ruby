@@ -49,7 +49,7 @@ with the following parameters:
 
 6. Now you can activate the session and you're set:
 
-     ActiveResource::Base.activate_session = session
+     ActiveResource::Base.activate_session(session)
 
 7. Get data from that shop (returns ActiveResource instances):
 
