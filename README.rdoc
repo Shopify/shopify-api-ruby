@@ -26,32 +26,39 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
 
     ShopifyAPI::Session.setup({:api_key => API_KEY, :secret => SHARED_SECRET})
 
-3. Create a new Session for a specific shop. That session is not fully valid yet, but it can be used to create a URL that you will redirect your users to:
-
-    session = ShopifyAPI::Session.new("yourshopname.myshopify.com")
-    session.valid?  # returns false
-
-4. To access the API shop owners need a "token" from that specific shop. In order to get this token they need to authorize with that shop first. To get this token they should redirect the user to the following URL:
+3. To access a shop's data apps need an access token from that specific shop. This is a two-stage process. Before interacting with a shop for the first time an app should redirect the user to the following URL:
 
      GET https://SHOP_NAME.myshopify.com/admin/oauth/authorize
 
-with the following parameters:
+   with the following parameters:
 
-* client_id – Required – The API key for your app
-* scope – Required – The list of required scopes (explained below)
-* redirect_uri – Optional – The URL that the merchant will be sent to once authentication is complete. Must be the same host as the Return URL specified in the application settings
+   * client_id – Required – The API key for your app
+   * scope – Required – The list of required scopes (explained below)
+   * redirect_uri – Optional – The URL that the merchant will be sent to once authentication is complete. Must be the same host as the Return URL specified in the application settings
 
-5. Once authorized, the shop redirects the owner to the return URL of your application where the "token" gets sent to (it's param name is "code"). Use that token to instantiate a "valid" session, that is ready to make calls to that particular shop.
+4. Once authorized, the shop redirects the owner to the return URL of your application with a parameter named 'code'. This is a temporary token the the app can exchange for a permanent access token. Make the following call:
+
+    POST https://SHOP_NAME.myshopify.com/admin/oauth/access_token
+
+   with the following parameters:
+   
+   * client_id – Required – The API key for your app
+   * client_secret – Required – The shared secret for your app
+   * code – Required – The token you received in step 3
+
+   and you'll get your permanent access token back in the response.
+
+5. Use that token to instantiate a session that is ready to make calls to the given shop.
 
     token = params[:code]
     session = ShopifyAPI::Session.new("yourshopname.myshopify.com", token)
     session.valid?  # returns true
 
-6. Now you can activate the session and you're set:
+5. Now you can activate the session and you're set:
 
      ActiveResource::Base.activate_session(session)
 
-7. Get data from that shop (returns ActiveResource instances):
+6. Get data from that shop (returns ActiveResource instances):
 
      shop = ShopifyAPI::Shop.current
      latest_orders = ShopifyAPI::Order.find(:all)
@@ -60,7 +67,7 @@ with the following parameters:
 
     latest_orders = ShopifyAPI::Session.temp("yourshopname.myshopify.com", token) { ShopifyAPI::Order.find(:all) }
 
-8. Finally, you can also clear the session (for example if you want to work with another shop):
+7. Finally, you can also clear the session (for example if you want to work with another shop):
 
      ShopifyAPI::Base.clear_session
 
