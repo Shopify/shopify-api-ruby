@@ -56,7 +56,7 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
 
 5. Now you can activate the session and you're set:
 
-     ActiveResource::Base.activate_session(session)
+     ShopifyAPI::Base.activate_session(session)
 
 6. Get data from that shop (returns ActiveResource instances):
 
