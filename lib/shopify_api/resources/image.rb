@@ -3,9 +3,13 @@ module ShopifyAPI
     self.prefix = "/admin/products/:product_id/"
     
     # generate a method for each possible image variant
-    [:pico, :icon, :thumb, :small, :compact, :medium, :large, :grande, :original].each do |m|
+    [:pico, :icon, :thumb, :small, :compact, :medium, :large, :grande].each do |m|
       reg_exp_match = "/\\1_#{m}.\\2"
       define_method(m) { src.gsub(/\/(.*)\.(\w{2,4})/, reg_exp_match) }
+    end
+    # Original is the src URL
+    def original()
+        src
     end
     
     def attach_image(data, filename = nil)
