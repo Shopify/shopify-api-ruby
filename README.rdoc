@@ -71,6 +71,13 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
 
      ShopifyAPI::Base.clear_session
 
+== Questions or Problems?
+
+http://api.shopify.com <= Read the tech docs!
+
+http://wiki.shopify.com/Developer_Home <= Read the wiki!
+
+http://stackoverflow.com/questions/tagged/shopify <= Ask questions on Stack Overflow!
 
 == Copyright
 
