@@ -28,7 +28,11 @@ module ShopifyAPI
         self.site = nil
         self.headers.delete('X-Shopify-Access-Token')
       end
-    end                  
+    end
+
+    def persisted?
+      !id.nil?
+    end
 
     private
     def only_id

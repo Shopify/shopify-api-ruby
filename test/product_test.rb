@@ -27,4 +27,12 @@ class ProductTest < Test::Unit::TestCase
     assert_equal 2, metafields.length
     assert metafields.all?{|m| m.is_a?(ShopifyAPI::Metafield)}
   end
+
+  def test_update_loaded_variant
+    fake "products/632910392/variants/808950810", :method => :put, :status => 200, :body => load_fixture('variant')
+
+    variant = @product.variants.first
+    variant.price = "0.50"
+    variant.save
+  end
 end
