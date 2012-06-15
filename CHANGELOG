@@ -1,8 +1,11 @@
+== Version 3.0.1
+
+* Fix saving nested resources in ActiveResource 3.1+
+
 == Version 3.0.0
 
 * Added support for OAuth Authentication
 * Removal of support for Legacy Authentication
-* Fix saving nested resources in ActiveResource 3.1+
 * Added Cart resource
 
 == Version 2.3.0
