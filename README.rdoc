@@ -50,7 +50,7 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
 
 5. Use that token to instantiate a session that is ready to make calls to the given shop.
 
-    token = params[:code]
+    token = params[:access_token]
     session = ShopifyAPI::Session.new("yourshopname.myshopify.com", token)
     session.valid?  # returns true
 
