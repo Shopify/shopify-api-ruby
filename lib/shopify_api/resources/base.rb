@@ -34,9 +34,23 @@ module ShopifyAPI
       !id.nil?
     end
 
+    def encode(options = {})
+      obj = dup
+
+      if self.class.format.extension == 'json' && !already_has_root_element?(obj.attributes)
+        obj.attributes = {self.class.element_name => obj.attributes}
+      end
+
+      obj.send("to_#{self.class.format.extension}", options)
+    end
     private
     def only_id
       encode(:only => :id, :include => [], :methods => [])
     end
+
+    def already_has_root_element?(attributes)
+      attributes.keys.size == 1 && attributes.values.first.kind_of?(Hash)
+    end
   end
 end
+ 
