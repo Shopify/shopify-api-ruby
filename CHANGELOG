@@ -1,3 +1,7 @@
+== Version 3.0.2
+
+* Brevity in require statements
+
 == Version 3.0.1
 
 * Fix saving nested resources in ActiveResource 3.1+
