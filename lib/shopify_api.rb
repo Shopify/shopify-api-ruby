@@ -7,7 +7,6 @@ require 'shopify_api/limits'
 
 module ShopifyAPI
   include Limits
-  VERSION = "1.2.5"
   
   METAFIELD_ENABLED_CLASSES = %w( Order Product CustomCollection SmartCollection Page Blog Article Variant)
   EVENT_ENABLED_CLASSES = %w( Order Product CustomCollection SmartCollection Page Blog Article )
@@ -19,6 +18,7 @@ module ShopifyAPI
   end
 end
 
+require 'shopify_api/version'
 require 'shopify_api/base'
   
 ignore_files = ['cli.rb']
