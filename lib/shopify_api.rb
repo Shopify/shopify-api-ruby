@@ -21,7 +21,7 @@ end
 require 'shopify_api/version'
 require 'shopify_api/base'
   
-ignore_files = ['cli.rb']
+ignore_files = ['cli.rb', 'limits.rb', 'version.rb', 'base.rb']
 Dir[File.join(File.dirname(__FILE__), 'shopify_api', '**/*.rb')].each do |file|
   require file unless ignore_files.include?(File.basename(file))
 end
