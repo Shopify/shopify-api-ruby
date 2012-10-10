@@ -1,3 +1,5 @@
+require 'active_resource/version'
+
 module ShopifyAPI
   class Base < ActiveResource::Base
     extend Countable
