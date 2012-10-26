@@ -5,7 +5,7 @@ module ShopifyAPI
 
     # compute the price range
     def price_range
-      prices = variants.collect(&:price)
+      prices = variants.collect(&:price).collect(&:to_f)
       format =  "%0.2f"
       if prices.min != prices.max
         "#{format % prices.min} - #{format % prices.max}"
