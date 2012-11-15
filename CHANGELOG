@@ -1,3 +1,7 @@
+== Version 3.0.3
+
+* Add a `customers` helper method to the CustomerGroup resource
+
 == Version 3.0.2
 
 * Brevity in require statements
