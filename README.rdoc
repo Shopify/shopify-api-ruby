@@ -77,7 +77,7 @@ http://api.shopify.com <= Read the tech docs!
 
 http://wiki.shopify.com/Developer_Home <= Read the wiki!
 
-http://stackoverflow.com/questions/tagged/shopify <= Ask questions on Stack Overflow!
+http://ecommerce.shopify.com/c/shopify-apis-and-technology <= Ask questions on the forums!
 
 == Copyright
 
