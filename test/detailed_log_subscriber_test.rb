@@ -9,6 +9,7 @@ class LogSubscriberTest < Test::Unit::TestCase
     @page = { :page => { :id => 1, :title => 'Shopify API' } }.to_json
     @ua_header = "\"User-Agent\"=>\"ShopifyAPI/#{ShopifyAPI::VERSION} ActiveResource/#{ActiveResource::VERSION::STRING} Ruby/#{RUBY_VERSION}\""
 
+    ShopifyAPI::Base.clear_session
     ShopifyAPI::Base.site = "http://localhost/admin"
 
     ActiveResource::LogSubscriber.attach_to :active_resource

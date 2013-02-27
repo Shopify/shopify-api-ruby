@@ -34,6 +34,7 @@ class Test::Unit::TestCase
       end
     end
 
+    ShopifyAPI::Base.clear_session
     ShopifyAPI::Base.site = "http://localhost/admin"
     ShopifyAPI::Base.password = nil
     ShopifyAPI::Base.user = nil
