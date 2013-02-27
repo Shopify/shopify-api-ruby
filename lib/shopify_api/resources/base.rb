@@ -8,6 +8,15 @@ module ShopifyAPI
                                   "ActiveResource/#{ActiveResource::VERSION::STRING}",
                                   "Ruby/#{RUBY_VERSION}"].join(' ')
 
+    if ActiveResource::VERSION::MAJOR == 3 && ActiveResource::VERSION::MINOR <= 1
+      def encode(options = {})
+        same = dup
+        same.attributes = {self.class.element_name => same.attributes} if self.class.format.extension == 'json'
+
+        same.send("to_#{self.class.format.extension}", options)
+      end
+    end
+
     class << self
       def headers
         if defined?(@headers)
