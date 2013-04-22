@@ -9,20 +9,20 @@ class ArticleTest < Test::Unit::TestCase
   end
 
   def test_get_articles
-    fake "articles", :method => :get, :body => load_fixture('article')
+    fake "articles", :method => :get, :body => load_fixture('articles')
     articles = ShopifyAPI::Article.all
-    asert_equal 3, articles.length
+    assert_equal 3, articles.length
   end
 
   def test_get_articles_namespaced
-    fake "blogs/1008414260/articles", :method => :get, :body => load_fixture('article')
+    fake "blogs/1008414260/articles", :method => :get, :body => load_fixture('articles')
     articles = ShopifyAPI::Article.find(:all, :params => {:blog_id => 1008414260})
-    asert_equal 3, articles.length
+    assert_equal 3, articles.length
   end
 
   def test_get_article_namespaced
     fake "blogs/1008414260/articles/6242736", :method => :get, :body => load_fixture('article')
-    articles = ShopifyAPI::Article.find(6242736, :params => {:blog_id => 1008414260})
+    article = ShopifyAPI::Article.find(6242736, :params => {:blog_id => 1008414260})
     assert_equal "First Post", article.title
   end
 end
