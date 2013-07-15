@@ -17,5 +17,8 @@ module ShopifyAPI
     def capture(amount = "")
       Transaction.create(:amount => amount, :kind => "capture", :order_id => id)
     end
+
+    class ClientDetails < Base
+    end
   end
 end
