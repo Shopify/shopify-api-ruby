@@ -12,7 +12,11 @@ module ShopifyAPI
 
     class << self
       def headers
-        super.merge!('User-Agent' => USER_AGENT)
+        if superclass != ActiveResource::Base
+          superclass.headers
+        else
+          super.merge!('User-Agent' => USER_AGENT)
+        end
       end
 
       def activate_session(session)
