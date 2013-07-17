@@ -3,9 +3,10 @@ require 'shopify_api/version'
 module ShopifyAPI
   class Base < ActiveResource::Base
     extend Countable
-    self.headers['User-Agent'] = ["ShopifyAPI/#{ShopifyAPI::VERSION}",
-                                  "ActiveResource/#{ActiveResource::VERSION::STRING}",
-                                  "Ruby/#{RUBY_VERSION}"].join(' ')
+
+    USER_AGENT = ["ShopifyAPI/#{ShopifyAPI::VERSION}",
+                  "ActiveResource/#{ActiveResource::VERSION::STRING}",
+                  "Ruby/#{RUBY_VERSION}"].join(' ')
 
     if ActiveResource::VERSION::MAJOR == 3 && ActiveResource::VERSION::MINOR <= 1
       self.include_root_in_json = false
@@ -20,6 +21,10 @@ module ShopifyAPI
     end
 
     class << self
+      def headers
+        super.merge!('User-Agent' => USER_AGENT)
+      end
+
       def activate_session(session)
         self.site = session.site
         self.headers.merge!('X-Shopify-Access-Token' => session.token)
