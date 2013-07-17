@@ -3,18 +3,20 @@ require 'shopify_api/version'
 module ShopifyAPI
   class Base < ActiveResource::Base
     extend Countable
-    self.include_root_in_json = false
     self.headers['User-Agent'] = ["ShopifyAPI/#{ShopifyAPI::VERSION}",
                                   "ActiveResource/#{ActiveResource::VERSION::STRING}",
                                   "Ruby/#{RUBY_VERSION}"].join(' ')
 
     if ActiveResource::VERSION::MAJOR == 3 && ActiveResource::VERSION::MINOR <= 1
+      self.include_root_in_json = false
       def encode(options = {})
         same = dup
         same.attributes = {self.class.element_name => same.attributes} if self.class.format.extension == 'json'
 
         same.send("to_#{self.class.format.extension}", options)
       end
+    else
+      self.include_root_in_json = true
     end
 
     class << self
