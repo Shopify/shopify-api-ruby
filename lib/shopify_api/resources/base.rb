@@ -8,17 +8,7 @@ module ShopifyAPI
                   "ActiveResource/#{ActiveResource::VERSION::STRING}",
                   "Ruby/#{RUBY_VERSION}"].join(' ')
 
-    if ActiveResource::VERSION::MAJOR == 3 && ActiveResource::VERSION::MINOR <= 1
-      self.include_root_in_json = false
-      def encode(options = {})
-        same = dup
-        same.attributes = {self.class.element_name => same.attributes} if self.class.format.extension == 'json'
-
-        same.send("to_#{self.class.format.extension}", options)
-      end
-    else
-      self.include_root_in_json = true
-    end
+    self.include_root_in_json = true
 
     class << self
       def headers
