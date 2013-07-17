@@ -18,16 +18,6 @@ module ShopifyAPI
     end
 
     class << self
-      def headers
-        if defined?(@headers)
-          @headers
-        elsif superclass != Object && superclass.headers
-          superclass.headers
-        else
-          @headers ||= {}
-        end
-      end
-
       def activate_session(session)
         self.site = session.site
         self.headers.merge!('X-Shopify-Access-Token' => session.token)
