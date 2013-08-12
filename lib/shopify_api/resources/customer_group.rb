@@ -1,7 +1,5 @@
+require 'shopify_api/resources/customer_saved_search'
+
 module ShopifyAPI
-  class CustomerGroup < Base
-    def customers
-      Customers.find(:all, :params => {:customer_group_id => self.id})
-    end
-  end
+  CustomerGroup = CustomerSavedSearch
 end
