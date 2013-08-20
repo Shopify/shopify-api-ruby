@@ -2,6 +2,9 @@ module ShopifyAPI
   # Shop object. Use Shop.current to receive 
   # the shop.
   class Shop < Base
+    class Announcement < Base
+    end
+
     def self.current
       find(:one, :from => "/admin/shop.#{format.extension}")
     end
