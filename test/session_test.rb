@@ -53,6 +53,18 @@ class SessionTest < Test::Unit::TestCase
       assert_equal 'https://fakeshop.myshopify.com/admin', ShopifyAPI::Base.site.to_s
     end
 
+    should "#temp reset ShopifyAPI::Base.site to original value when using a non-standard port" do
+      ShopifyAPI::Session.setup(:api_key => "key", :secret => "secret")
+      session1 = ShopifyAPI::Session.new('fakeshop.myshopify.com:3000', 'token1')
+      ShopifyAPI::Base.activate_session(session1)
+
+      ShopifyAPI::Session.temp("testshop.myshopify.com", "any-token") {
+        @assigned_site = ShopifyAPI::Base.site
+      }
+      assert_equal 'https://testshop.myshopify.com/admin', @assigned_site.to_s
+      assert_equal 'https://fakeshop.myshopify.com:3000/admin', ShopifyAPI::Base.site.to_s
+    end
+
     should "return site for session" do
       session = ShopifyAPI::Session.new("testshop.myshopify.com", "any-token")
       assert_equal "https://testshop.myshopify.com/admin", session.site
