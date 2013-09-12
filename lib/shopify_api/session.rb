@@ -18,7 +18,7 @@ module ShopifyAPI
       def temp(domain, token, &block)
         session = new(domain, token)
         begin
-          original_domain  = URI.parse(ShopifyAPI::Base.site.to_s).host
+          original_domain = host_with_port(ShopifyAPI::Base.site.to_s)
         rescue URI::InvalidURIError
         end
         original_token   = ShopifyAPI::Base.headers['X-Shopify-Access-Token']
@@ -43,6 +43,17 @@ module ShopifyAPI
 
         sorted_params = params.except(:signature, :action, :controller).collect{|k,v|"#{k}=#{v}"}.sort.join
         Digest::MD5.hexdigest(secret + sorted_params) == signature
+      end
+
+      def host_with_port(site)
+        parsed_site = URI.parse(site)
+        host = parsed_site.host or return
+        port = parsed_site.port
+        if (protocol == 'http' && port == 80) || (protocol == 'https' && port == 443)
+          host
+        else
+          "#{host}:#{port}"
+        end
       end
 
     end
