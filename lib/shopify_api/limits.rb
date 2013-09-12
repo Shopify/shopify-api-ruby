@@ -1,9 +1,11 @@
 module ShopifyAPI
   module Limits
+    class LimitUnavailable < StandardError; end
+
     def self.included(klass)
       klass.send(:extend, ClassMethods)
     end
-    
+
     module ClassMethods
 
       # Takes form num_requests_executed/max_requests
@@ -20,7 +22,7 @@ module ShopifyAPI
         credit_limit(:shop) - credit_used(:shop)
       end
       alias_method :available_calls, :credit_left
-      
+
       ##
       # Have I reached my API call limit?
       # @return {Boolean}
@@ -29,7 +31,7 @@ module ShopifyAPI
         credit_left <= 0
       end
       alias_method :maxed?, :credit_maxed?
-      
+
       ##
       # How many total API calls can I make?
       # NOTE: subtracting 1 from credit_limit because I think ShopifyAPI cuts off at 299 or shop limits.
@@ -38,7 +40,7 @@ module ShopifyAPI
       #
       def credit_limit(scope=:shop)
         @api_credit_limit ||= {}
-        @api_credit_limit[scope] ||= api_credit_limit_param(scope).pop.to_i - 1     
+        @api_credit_limit[scope] ||= api_credit_limit_param(scope).pop.to_i - 1
       end
       alias_method :call_limit, :credit_limit
 
@@ -51,7 +53,7 @@ module ShopifyAPI
         api_credit_limit_param(scope).shift.to_i
       end
       alias_method :call_count, :credit_used
-      
+
       ##
       # @return {HTTPResonse}
       #
@@ -65,9 +67,11 @@ module ShopifyAPI
       ##
       # @return {Array}
       #
-      def api_credit_limit_param(scope)    
-        response[CREDIT_LIMIT_HEADER_PARAM[scope]].split('/')
-      end    
+      def api_credit_limit_param(scope)
+        header = response[CREDIT_LIMIT_HEADER_PARAM[scope]]
+        raise LimitUnavailable unless header
+        header.split('/')
+      end
     end
   end
 end
