@@ -1,3 +1,7 @@
+== Version 3.1.0
+
+* Expose the `order` action in SmartCollection for general use
+
 == Version 3.0.3
 
 * Add a `customers` helper method to the CustomerGroup resource
