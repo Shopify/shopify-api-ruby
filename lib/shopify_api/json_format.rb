@@ -1,4 +1,6 @@
 module ActiveResource
+
+  # ActiveResource 3.1 removes root on decoding, so this patch is only needed in 3.0
   if ActiveResource::VERSION::MAJOR == 3 && ActiveResource::VERSION::MINOR == 0
     module Formats
       module JsonFormat
