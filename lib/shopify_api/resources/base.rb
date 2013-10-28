@@ -3,12 +3,15 @@ require 'shopify_api/version'
 module ShopifyAPI
   class Base < ActiveResource::Base
     extend Countable
-    self.include_root_in_json = false
+    self.include_root_in_json = true
     self.headers['User-Agent'] = ["ShopifyAPI/#{ShopifyAPI::VERSION}",
                                   "ActiveResource/#{ActiveResource::VERSION::STRING}",
                                   "Ruby/#{RUBY_VERSION}"].join(' ')
 
+    # this patch only needed until 3.1 because ActiveResouce 3.2 passes :root to as_json (and encode regardless of include_root_in_json)
     if ActiveResource::VERSION::MAJOR == 3 && ActiveResource::VERSION::MINOR <= 1
+      self.include_root_in_json = false
+
       def encode(options = {})
         same = dup
         same.attributes = {self.class.element_name => same.attributes} if self.class.format.extension == 'json'
