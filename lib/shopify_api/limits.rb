@@ -11,7 +11,7 @@ module ShopifyAPI
       # Takes form num_requests_executed/max_requests
       # Eg: 101/3000
       CREDIT_LIMIT_HEADER_PARAM = {
-        :shop => 'http_x_shopify_shop_api_call_limit'
+        :shop => 'X-Shopify-Shop-Api-Call-Limit'
       }
 
         ##

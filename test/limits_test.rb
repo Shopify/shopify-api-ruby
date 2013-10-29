@@ -4,7 +4,7 @@ require 'mocha'
 class LimitsTest < Test::Unit::TestCase
   def setup
     ShopifyAPI::Base.site = "test.myshopify.com"
-    @header_hash = {'http_x_shopify_shop_api_call_limit' => '100/300'}
+    @header_hash = {'X-Shopify-Shop-Api-Call-Limit' => '100/300'}
     ShopifyAPI::Base.connection.expects(:response).at_least(0).returns(@header_hash)
   end
 
@@ -23,7 +23,7 @@ class LimitsTest < Test::Unit::TestCase
 
     should "flag maxed out credits" do
       assert !ShopifyAPI.maxed?
-      @header_hash = {'http_x_shopify_shop_api_call_limit' => '299/300'}
+      @header_hash = {'X-Shopify-Shop-Api-Call-Limit' => '299/300'}
       ShopifyAPI::Base.connection.expects(:response).at_least(1).returns(@header_hash)
       assert ShopifyAPI.maxed?
     end
