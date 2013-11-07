@@ -1,3 +1,7 @@
+== Version 3.1.3
+
+* Expose `complete` action on Fulfillment
+
 == Version 3.1.2
 
 * Includes port in domain URI (when other than http/80 or https/443)
