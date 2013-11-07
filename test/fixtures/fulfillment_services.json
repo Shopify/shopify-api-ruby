@@ -1,0 +1,14 @@
+{
+  "fulfillment_services": [{
+    "credential1": null,
+    "email": "steve@apple.com",
+    "handle": "fulfillment", 
+    "id": 89750,
+    "include_pending_stock": false,
+    "name": "Fulfillment",
+    "service_name": "Fulfillment",
+    "inventory_management": false,
+    "provider_id": 1,
+    "credential2_exists": false
+  }]
+}
