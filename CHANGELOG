@@ -1,3 +1,7 @@
+== Version 3.1.6
+
+* Add LineItem::Property resource
+
 == Version 3.1.5
 
 * Expose `orders` action on Customer
