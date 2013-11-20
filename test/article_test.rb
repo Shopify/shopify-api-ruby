@@ -33,6 +33,12 @@ class ArticleTest < Test::Unit::TestCase
     assert_equal "development shop", authors.last
   end
 
+  def test_get_authors_for_blog_id
+    fake "blogs/1008414260/articles/authors", :method => :get, :body => load_fixture('authors')
+    authors = ShopifyAPI::Article.authors(:blog_id => 1008414260)
+    assert_equal 3, authors.length
+  end
+
   def test_get_tags
     fake "articles/tags", :method => :get, :body => load_fixture('tags')
     tags = ShopifyAPI::Article.tags
@@ -50,7 +56,7 @@ class ArticleTest < Test::Unit::TestCase
   def test_get_popular_tags
     fake "articles/tags.json?limit=1&popular=1", :extension => false, :method => :get, :body => load_fixture('tags')
     tags = ShopifyAPI::Article.tags(:popular => 1, :limit => 1)
-    puts tags
+    assert_equal 3, tags.length
   end
 
 end
