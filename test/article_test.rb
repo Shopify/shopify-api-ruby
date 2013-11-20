@@ -25,4 +25,32 @@ class ArticleTest < Test::Unit::TestCase
     article = ShopifyAPI::Article.find(6242736, :params => {:blog_id => 1008414260})
     assert_equal "First Post", article.title
   end
+
+  def test_get_authors
+    fake "articles/authors", :method => :get, :body => load_fixture('authors')
+    authors = ShopifyAPI::Article.authors
+    assert_equal "Shopify", authors.first
+    assert_equal "development shop", authors.last
+  end
+
+  def test_get_tags
+    fake "articles/tags", :method => :get, :body => load_fixture('tags')
+    tags = ShopifyAPI::Article.tags
+    assert_equal "consequuntur", tags.first
+    assert_equal "repellendus", tags.last
+  end
+
+  def test_get_tags_for_blog_id
+    fake "blogs/1008414260/articles/tags", :method => :get, :body => load_fixture('tags')
+    tags = ShopifyAPI::Article.tags(:blog_id => 1008414260)
+    assert_equal "consequuntur", tags.first
+    assert_equal "repellendus", tags.last
+  end
+
+  def test_get_popular_tags
+    fake "articles/tags.json?limit=1&popular=1", :extension => false, :method => :get, :body => load_fixture('tags')
+    tags = ShopifyAPI::Article.tags(:popular => 1, :limit => 1)
+    puts tags
+  end
+
 end
