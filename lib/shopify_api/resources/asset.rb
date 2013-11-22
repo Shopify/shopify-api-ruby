@@ -35,12 +35,9 @@ module ShopifyAPI
     include DisablePrefixCheck
 
     self.primary_key = 'key'
-    self.prefix = "/admin/themes/:theme_id/"
-    
-    def self.prefix(options={})
-      options[:theme_id].nil? ? "/admin/" : "/admin/themes/#{options[:theme_id]}/"
-    end
-    
+
+    conditional_prefix :theme
+
     def self.element_path(id, prefix_options = {}, query_options = nil) #:nodoc:
       prefix_options, query_options = split_options(prefix_options) if query_options.nil?
       "#{prefix(prefix_options)}#{collection_name}.#{format.extension}#{query_string(query_options)}"

@@ -1,5 +1,5 @@
 module ShopifyAPI
   class Province < Base
-    self.prefix = "/admin/countries/:country_id/"
+    init_prefix :country
   end
 end

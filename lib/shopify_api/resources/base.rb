@@ -45,6 +45,14 @@ module ShopifyAPI
         self.site = nil
         self.headers.delete('X-Shopify-Access-Token')
       end
+
+      def init_prefix(resource)
+        init_prefix_explicit(resource.to_s.pluralize, "#{resource}_id")
+      end
+
+      def init_prefix_explicit(resource_type, resource_id)
+        self.prefix = "/admin/#{resource_type}/:#{resource_id}/"
+      end
     end
 
     def persisted?
