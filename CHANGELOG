@@ -1,3 +1,7 @@
+== Version 3.1.7
+
+* Expose `authors` and `tags` action on Article
+
 == Version 3.1.6
 
 * Add LineItem::Property resource
