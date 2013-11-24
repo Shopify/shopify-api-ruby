@@ -1,5 +1,5 @@
 module ShopifyAPI
   class Transaction < Base
-    self.prefix = "/admin/orders/:order_id/"
+    init_prefix :order
   end
 end

@@ -4,11 +4,7 @@ module ShopifyAPI
     include Metafields
     include DisablePrefixCheck
 
-    self.prefix = "/admin/blogs/:blog_id/"
-     
-    def self.prefix(options={})
-      options[:blog_id].nil? ? "/admin/" : "/admin/blogs/#{options[:blog_id]}/"
-    end
+    conditional_prefix :blog
 
     def comments
       Comment.find(:all, :params => { :article_id => id })

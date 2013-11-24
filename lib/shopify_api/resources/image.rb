@@ -1,6 +1,6 @@
 module ShopifyAPI
   class Image < Base
-    self.prefix = "/admin/products/:product_id/"
+    init_prefix :product
     
     # generate a method for each possible image variant
     [:pico, :icon, :thumb, :small, :compact, :medium, :large, :grande, :original].each do |m|
