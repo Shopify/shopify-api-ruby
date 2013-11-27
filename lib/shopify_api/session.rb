@@ -38,6 +38,23 @@ module ShopifyAPI
         url.concat(".myshopify.com") unless url.include?('.')   # extend url to myshopify.com if no host is given
       end
 
+      def create_permission_url(shop_url, scope, redirect_uri=nil)
+        self.prepare_url(shop_url)
+        params = {:client_id => self.api_key, :scope => scope.join(',')}
+        params[:redirect_uri => redirect_uri] if redirect_uri
+        "#{self.protocol}://#{shop_url}/admin/oauth/authorize?#{parameterize(params)}"
+      end
+
+      def create_auth_url(shop_url, code)
+        self.prepare_url(shop_url)
+        params = {:client_id => self.api_key, :client_secret => self.secret, :code => code}
+        "#{self.protocol}://#{shop_url}/admin/oauth/access_token?#{parameterize(params)}"
+      end
+
+      def parameterize(params)
+        URI.escape(params.collect{|k,v| "#{k}=#{v}"}.join('&'))
+      end
+
       def validate_signature(params)
         return false unless signature = params[:signature]
 

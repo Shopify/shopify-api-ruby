@@ -2,7 +2,7 @@
 
 The Shopify API gem allows Ruby developers to programmatically access the admin section of Shopify stores.
 
-The API is implemented as XML over HTTP using all four verbs (GET/POST/PUT/DELETE). Each resource, like Order, Product, or Collection, has its own URL and is manipulated in isolation. In other words, we’ve tried to make the API follow the REST principles as much as possible.
+The API is implemented as JSON over HTTP using all four verbs (GET/POST/PUT/DELETE). Each resource, like Order, Product, or Collection, has its own URL and is manipulated in isolation. In other words, we’ve tried to make the API follow the REST principles as much as possible.
 
 
 == Usage
@@ -11,32 +11,50 @@ The API is implemented as XML over HTTP using all four verbs (GET/POST/PUT/DELET
 
 All API usage happens through Shopify applications, created by either shop owners for their own shops, or by Shopify Partners for use by other shop owners:
 
-* Shop owners can create applications for themselves through their own admin (under the Preferences > Applications tab).
+* Shop owners can create applications for themselves through their own admin: http://docs.shopify.com/api/tutorials/creating-a-private-app
 * Shopify Partners create applications through their admin: http://app.shopify.com/services/partners 
 
 For more information and detailed documentation about the API visit http://api.shopify.com
+
+
+=== Installation
+
+To easily install or upgrade to the latest release, use {gem}[http://rubygems.org/]
+
+    gem install shopify_api
+
 
 === Getting Started
 
 ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveResource has to be configured with a fully authorized URL of a particular store first. To obtain that URL you can follow these steps:
 
-1. First create a new application in either the partners admin or your store admin and write down your API_KEY and SHARED_SECRET.
+1. First create a new application in either the partners admin or your store admin. For a private App you'll need the API_KEY and the PASSWORD otherwise you'll need the API_KEY and SHARED_SECRET.
 
-2. You will need to supply two parameters to the Session class before you instantiate it:
+2. For a private App you just need to set the base site url as follows (where hostname is your site) 
+    
+    shop_url = "https://#{API_KEY}:#{PASSWORD}@SHOP_NAME.myshopify.com/admin"
+    ShopifyAPI::Base.site = shop_url
+
+   That's it you're done, skip to step 7 and start using the API!
+
+   For a partner app you will need to supply two parameters to the Session class before you instantiate it:
 
     ShopifyAPI::Session.setup({:api_key => API_KEY, :secret => SHARED_SECRET})
 
 3. To access a shop's data apps need an access token from that specific shop. This is a two-stage process. Before interacting with a shop for the first time an app should redirect the user to the following URL:
 
-     GET https://SHOP_NAME.myshopify.com/admin/oauth/authorize
+    GET https://SHOP_NAME.myshopify.com/admin/oauth/authorize
 
    with the following parameters:
 
    * client_id – Required – The API key for your app
-   * scope – Required – The list of required scopes (explained below)
+   * scope – Required – The list of required scopes (explained here: http://docs.shopify.com/api/tutorials/oauth)
    * redirect_uri – Optional – The URL that the merchant will be sent to once authentication is complete. Must be the same host as the Return URL specified in the application settings
 
-4. Once authorized, the shop redirects the owner to the return URL of your application with a parameter named 'code'. This is a temporary token the the app can exchange for a permanent access token. Make the following call:
+   We've added the create_permision_url method to make this easier:
+    permission_url = ShopifyAPI::Session.create_permission_url("SHOP_NAME.myshopify.com", scope=["write_products"], redirect_uri=nil)  
+
+4. Once authorized, the shop redirects the owner to the return URL of your application with a parameter named 'code'. This is a temporary token that the app can exchange for a permanent access token. Make the following call:
 
     POST https://SHOP_NAME.myshopify.com/admin/oauth/access_token
 
@@ -48,34 +66,75 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
 
    and you'll get your permanent access token back in the response.
 
+   There is also a method to create this url for you:
+    auth_url = ShopifyAPI::Session.create_auth_url("SHOP_NAME.myshopify.com", code)
+
 5. Use that token to instantiate a session that is ready to make calls to the given shop.
 
-    token = params[:access_token]
-    session = ShopifyAPI::Session.new("yourshopname.myshopify.com", token)
+    session = ShopifyAPI::Session.new("SHOP_NAME.myshopify.com", token)
     session.valid?  # returns true
 
-5. Now you can activate the session and you're set:
+6. Now you can activate the session and you're set:
 
-     ShopifyAPI::Base.activate_session(session)
+    ShopifyAPI::Base.activate_session(session)
 
-6. Get data from that shop (returns ActiveResource instances):
+7. Start making authorized API requests for that shop. Data is returned as ActiveResource instances:
 
-     shop = ShopifyAPI::Shop.current
-     latest_orders = ShopifyAPI::Order.find(:all)
+    shop = ShopifyAPI::Shop.current
+
+    # Get a specific product
+    product = ShopifyAPI::Product.find(179761209)
+
+    # Create a new product
+    new_product = ShopifyAPI::Product.new
+    new_product.title = "Burton Custom Freestlye 151"
+    new_product.product_type = "Snowboard"
+    new_product.vendor = "Burton"
+    new_product.save
+
+    # Update a product
+    product.handle = "burton-snowboard"
+    product.save
 
    Alternatively, you can use #temp to initialize a Session and execute a command which also handles temporarily setting ActiveResource::Base.site:
 
-    latest_orders = ShopifyAPI::Session.temp("yourshopname.myshopify.com", token) { ShopifyAPI::Order.find(:all) }
+    products = ShopifyAPI::Session.temp("SHOP_NAME.myshopify.com", token) { ShopifyAPI::Product.find(:all) }
 
-7. Finally, you can also clear the session (for example if you want to work with another shop):
+8. Finally, you can also clear the session (for example if you want to work with another shop):
 
-     ShopifyAPI::Base.clear_session
+    ShopifyAPI::Base.clear_session
 
-== Questions or Problems?
+
+=== Console
+
+This package also includes the `shopify` executable to make it easy to open up an interactive console to use the API with a shop.
+
+1. Obtain a private API key and password to use with your shop (step 2 in "Getting Started")
+
+2. Use the `shopify` script to save the credentials for the shop to quickly login.
+
+    shopify add yourshopname
+
+   Follow the prompts for the shop domain, API key and password.
+
+3. Start the console for the connection.
+
+    shopify console
+
+4. Enter the following for the full list of the commands.
+
+    shopify help
+
+
+== Using Development Version
+
+Download the source code and run:
+    
+    rake install
+
+== Additional Resources
 
 http://api.shopify.com <= Read the tech docs!
-
-http://wiki.shopify.com/Developer_Home <= Read the wiki!
 
 http://ecommerce.shopify.com/c/shopify-apis-and-technology <= Ask questions on the forums!
 

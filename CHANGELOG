@@ -1,6 +1,8 @@
 == Version 3.1.8
 
 * Expose `Location`
+* Added create_permission_url and create_auth_url methods
+* Edited the readme to better describe the getting started procedure
 
 == Version 3.1.7
 
