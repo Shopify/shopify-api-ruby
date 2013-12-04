@@ -45,12 +45,6 @@ module ShopifyAPI
         "#{self.protocol}://#{shop_url}/admin/oauth/authorize?#{parameterize(params)}"
       end
 
-      def create_auth_url(shop_url, code)
-        self.prepare_url(shop_url)
-        params = {:client_id => self.api_key, :client_secret => self.secret, :code => code}
-        "#{self.protocol}://#{shop_url}/admin/oauth/access_token?#{parameterize(params)}"
-      end
-
       def parameterize(params)
         URI.escape(params.collect{|k,v| "#{k}=#{v}"}.join('&'))
       end
@@ -85,7 +79,24 @@ module ShopifyAPI
         end
       end
     end
-    
+
+    def request_token(code)
+      return self.token if self.token
+      
+      uri = URI.parse("#{self.protocol}://#{self.url}/admin/oauth/access_token")      
+      https = Net::HTTP.new(uri.host, uri.port)
+      https.use_ssl = true
+      request = Net::HTTP::Post.new(uri.request_uri)
+      request.set_form_data({"client_id" => self.api_key, "client_secret" => self.secret, "code" => code})
+      response = https.request(request)
+
+      if response.code == "200"
+        self.token = JSON.parse(response.body)['access_token']
+      else
+        raise response.msg
+      end
+    end
+
     def shop
       Shop.current
     end
