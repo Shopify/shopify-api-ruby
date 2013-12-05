@@ -53,6 +53,23 @@ class SessionTest < Test::Unit::TestCase
       assert_equal 'https://fakeshop.myshopify.com/admin', ShopifyAPI::Base.site.to_s
     end
 
+    should "request token should get token" do
+      ShopifyAPI::Session.setup(:api_key => "My test key", :secret => "My test secret")
+      session = ShopifyAPI::Session.new('http://localhost.myshopify.com')
+      fake nil, :url => 'https://localhost.myshopify.com/admin/oauth/access_token',:method => :post, :body => '{"access_token" : "token"}'
+      assert_equal "token", session.request_token("code")
+    end
+
+    should "raise exception if code invalid in request token" do
+      ShopifyAPI::Session.setup(:api_key => "My test key", :secret => "My test secret")
+      session = ShopifyAPI::Session.new('http://localhost.myshopify.com')
+      fake nil, :url => 'https://localhost.myshopify.com/admin/oauth/access_token',:method => :post, :status => 404, :body => '{"error" : "invalid_request"}'
+      assert_raises(RuntimeError) do
+        session.request_token("bad_code")
+      end
+      assert_equal false, session.valid?
+    end
+
     should "#temp reset ShopifyAPI::Base.site to original value when using a non-standard port" do
       ShopifyAPI::Session.setup(:api_key => "key", :secret => "secret")
       session1 = ShopifyAPI::Session.new('fakeshop.myshopify.com:3000', 'token1')

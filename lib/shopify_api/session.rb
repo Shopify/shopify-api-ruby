@@ -93,7 +93,7 @@ module ShopifyAPI
       if response.code == "200"
         self.token = JSON.parse(response.body)['access_token']
       else
-        raise response.msg
+        raise RuntimeError, response.msg
       end
     end
 
