@@ -70,27 +70,18 @@ module ShopifyAPI
     end
 
     def create_permission_url(scope, redirect_uri = nil)
-      params = {:client_id => self.api_key, :scope => scope.join(',')}
+      params = {:client_id => api_key, :scope => scope.join(',')}
       params[:redirect_uri] = redirect_uri if redirect_uri
-      "#{self.protocol}://#{url}/admin/oauth/authorize?#{parameterize(params)}"
-    end
-
-    def parameterize(params)
-      URI.escape(params.collect{|k,v| "#{k}=#{v}"}.join('&'))
+      "#{protocol}://#{url}/admin/oauth/authorize?#{parameterize(params)}"
     end
 
     def request_token(code)
-      return self.token if self.token
+      return token if token
       
-      uri = URI.parse("#{self.protocol}://#{self.url}/admin/oauth/access_token")      
-      https = Net::HTTP.new(uri.host, uri.port)
-      https.use_ssl = true
-      request = Net::HTTP::Post.new(uri.request_uri)
-      request.set_form_data({"client_id" => self.api_key, "client_secret" => self.secret, "code" => code})
-      response = https.request(request)
+      response = access_token_request(code)
 
       if response.code == "200"
-        self.token = JSON.parse(response.body)['access_token']
+        token = JSON.parse(response.body)['access_token']
       else
         raise RuntimeError, response.msg
       end
@@ -108,5 +99,18 @@ module ShopifyAPI
       url.present? && token.present?
     end
   
+    private
+      def parameterize(params)
+        URI.escape(params.collect{|k,v| "#{k}=#{v}"}.join('&'))
+      end
+
+      def access_token_request(code)
+        uri = URI.parse("#{protocol}://#{url}/admin/oauth/access_token")      
+        https = Net::HTTP.new(uri.host, uri.port)
+        https.use_ssl = true
+        request = Net::HTTP::Post.new(uri.request_uri)
+        request.set_form_data({"client_id" => api_key, "client_secret" => secret, "code" => code})
+        https.request(request)
+      end
   end
 end
