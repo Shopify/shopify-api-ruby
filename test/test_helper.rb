@@ -58,8 +58,13 @@ class Test::Unit::TestCase
     format = options.delete(:format) || :json
     method = options.delete(:method) || :get
     extension = ".#{options.delete(:extension)||'json'}" unless options[:extension]==false
-
-    url = "http://localhost/admin/#{endpoint}#{extension}"
+    
+    url = if options.has_key?(:url)
+      options[:url]
+    else  
+      "http://localhost/admin/#{endpoint}#{extension}"
+    end
+    
     FakeWeb.register_uri(method, url, {:body => body, :status => 200, :content_type => "text/#{format}", :content_length => 1}.merge(options))
   end
 end

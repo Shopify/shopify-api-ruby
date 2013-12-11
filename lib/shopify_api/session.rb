@@ -68,7 +68,25 @@ module ShopifyAPI
         end
       end
     end
-    
+
+    def create_permission_url(scope, redirect_uri = nil)
+      params = {:client_id => api_key, :scope => scope.join(',')}
+      params[:redirect_uri] = redirect_uri if redirect_uri
+      "#{protocol}://#{url}/admin/oauth/authorize?#{parameterize(params)}"
+    end
+
+    def request_token(code)
+      return token if token
+      
+      response = access_token_request(code)
+
+      if response.code == "200"
+        token = JSON.parse(response.body)['access_token']
+      else
+        raise RuntimeError, response.msg
+      end
+    end
+
     def shop
       Shop.current
     end
@@ -81,5 +99,18 @@ module ShopifyAPI
       url.present? && token.present?
     end
   
+    private
+      def parameterize(params)
+        URI.escape(params.collect{|k,v| "#{k}=#{v}"}.join('&'))
+      end
+
+      def access_token_request(code)
+        uri = URI.parse("#{protocol}://#{url}/admin/oauth/access_token")      
+        https = Net::HTTP.new(uri.host, uri.port)
+        https.use_ssl = true
+        request = Net::HTTP::Post.new(uri.request_uri)
+        request.set_form_data({"client_id" => api_key, "client_secret" => secret, "code" => code})
+        https.request(request)
+      end
   end
 end
