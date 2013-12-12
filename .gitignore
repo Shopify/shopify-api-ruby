@@ -4,3 +4,4 @@ coverage
 rdoc
 doc
 pkg
+.ruby-version
