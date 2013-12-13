@@ -1,0 +1,32 @@
+language: ruby
+
+rvm:
+  - 2.0.0
+  - 1.9.3
+
+gemfile:
+  - Gemfile
+  - Gemfile_ar30
+  - Gemfile_ar31
+  - Gemfile_ar32
+
+install: bundle install
+
+before_script: echo $OLD_RAKE
+
+matrix:
+  include:
+    - rvm: 1.9.2
+      gemfile: Gemfile_ar30
+      env: OLD_RAKE=1
+    - rvm: 1.9.2
+      gemfile: Gemfile_ar31
+      env: OLD_RAKE=1
+    - rvm: 1.9.2
+      gemfile: Gemfile_ar32
+      env: OLD_RAKE=1
+
+
+notifications:
+  flowdock: 
+    secure: "RCgSxzMScnqK6bOwkv9sWSdieLBeJla8NcDtM/QmuFW8soTgV6qCTAPAGd4lpjg4vGTaM3DsdHU5GMDbgdWN5dE2Rf09ayFqiZg8OloPMQ63KIwLJyVcw3cVJO5i7smjIpsSjPjBkvAXHIOFcKdsnuYGS4YD8hjl+QrZ3ghi440="

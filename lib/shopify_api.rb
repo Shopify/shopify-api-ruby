@@ -11,6 +11,7 @@ require 'shopify_api/json_format'
 require 'active_resource/json_errors'
 require 'active_resource/disable_prefix_check'
 require 'active_resource/base_ext'
+require 'active_resource/to_query'
 
 module ShopifyAPI
   include Limits

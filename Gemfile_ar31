@@ -1,0 +1,9 @@
+source "https://rubygems.org"
+
+gemspec
+
+gem "activeresource", "~> 3.1.0"
+
+if ENV['OLD_RAKE'] == '1'
+  gem "rake", "~> 0.9.2"
+end
