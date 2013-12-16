@@ -1,3 +1,4 @@
+{<img src="https://travis-ci.org/Shopify/shopify_api.png?branch=master" alt="Build Status" />}[https://travis-ci.org/Shopify/shopify_api]
 = Shopify API
 
 The Shopify API gem allows Ruby developers to programmatically access the admin section of Shopify stores.
