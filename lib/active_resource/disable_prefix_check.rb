@@ -17,6 +17,12 @@ module DisablePrefixCheck
 
         options[resource_id].nil? ? "/admin/" : "/admin/#{resource_type}/#{options[resource_id]}/"
       end
+
+      define_singleton_method :instantiate_record do |record, prefix_options = {}|
+        new(record, true).tap do |resource|
+          resource.prefix_options = prefix_options unless prefix_options.blank?
+        end
+      end
     end
   end
 end
