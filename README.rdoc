@@ -145,7 +145,7 @@ Download the source code and run:
 
 == Additional Resources
 
-http://api.shopify.com <= Read the tech docs!
+http://docs.shopify.com/api <= Read the tech docs!
 
 http://ecommerce.shopify.com/c/shopify-apis-and-technology <= Ask questions on the forums!
 
