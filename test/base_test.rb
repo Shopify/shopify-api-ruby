@@ -54,11 +54,4 @@ class BaseTest < Test::Unit::TestCase
     ShopifyAPI::Base.delete "1"
   end
 
-  test "#build should send custom headers with request" do
-    ShopifyAPI::Base.activate_session @session1
-    ShopifyAPI::Base.expects(:headers).returns({'X-Custom' => 'abc'})
-    ShopifyAPI::Base.connection.expects(:delete).with('/admin/bases/1.json', {'X-Custom' => 'abc'})
-    ShopifyAPI::Base.delete "1"
-  end
-
 end
