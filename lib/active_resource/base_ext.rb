@@ -16,11 +16,19 @@ module ActiveResource
       def self.delete(id, options = {})
         connection.delete(element_path(id, options), headers)
       end
+
+      def self.build(attributes = {})
+        attrs = self.format.decode(connection.get("#{new_element_path}", headers).body).merge(attributes)
+        self.new(attrs)
+      end
     end
 
-    def self.build(attributes = {})
-      attrs = self.format.decode(connection.get("#{new_element_path}", headers).body).merge(attributes)
-      self.new(attrs)
+    if ActiveResource::VERSION::MAJOR >= 4
+      # can remove this clause when https://github.com/peterjm/activeresource/commit/1d166614f0103df7a972ea80aff11ff5a32e71ad is merged
+      def self.build(attributes = {})
+        attrs = self.format.decode(connection.get("#{new_element_path(attributes)}", headers).body).merge(attributes)
+        self.new(attrs)
+      end
     end
   end
 end
