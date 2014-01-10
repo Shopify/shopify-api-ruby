@@ -36,7 +36,7 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
     shop_url = "https://#{API_KEY}:#{PASSWORD}@SHOP_NAME.myshopify.com/admin"
     ShopifyAPI::Base.site = shop_url
 
-   That's it you're done, skip to step 7 and start using the API!
+   That's it, you're done, skip to step 7 and start using the API!
 
    For a partner app you will need to supply two parameters to the Session class before you instantiate it:
 
@@ -56,12 +56,12 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
     
     session = ShopifyAPI::Session.new("SHOP_NAME.myshopify.com")
 
-  Then call:
+   Then call:
 
     scope = ["write_products"]
     permission_url = session.create_permission_url(scope)
 
-  or if you want a custom redirect_uri:  
+   or if you want a custom redirect_uri:
 
     permission_url = session.create_permission_url(scope, "https://my_redirect_uri.com")
 
@@ -111,18 +111,18 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
 
     products = ShopifyAPI::Session.temp("SHOP_NAME.myshopify.com", token) { ShopifyAPI::Product.find(:all) }
 
-8. If you want to work with another shop, you'll first need to clear the session::
+8. If you want to work with another shop, you'll first need to clear the session:
 
     ShopifyAPI::Base.clear_session
 
 
 === Console
 
-This package also includes the `shopify` executable to make it easy to open up an interactive console to use the API with a shop.
+This package also includes the +shopify+ executable to make it easy to open up an interactive console to use the API with a shop.
 
 1. Obtain a private API key and password to use with your shop (step 2 in "Getting Started")
 
-2. Use the `shopify` script to save the credentials for the shop to quickly log in.
+2. Use the +shopify+ script to save the credentials for the shop to quickly log in.
 
     shopify add yourshopname
 
