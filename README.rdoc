@@ -77,9 +77,9 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
 
    and you'll get your permanent access token back in the response.
 
-   There is a method to make the request and get the token for you, pass
-   all the params recieved from the previous call and the method will verify
-   the params, extract the temp code and then request your token::
+   There is a method to make the request and get the token for you. Pass
+   all the params received from the previous call and the method will verify
+   the params, extract the temp code and then request your token:
 
     token = session.request_token(params)
 
