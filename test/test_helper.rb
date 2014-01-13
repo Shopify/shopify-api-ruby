@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'test/unit'
 require 'fakeweb'
-require 'mocha'
+require 'mocha/setup'
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
@@ -19,7 +19,7 @@ class Test::Unit::TestCase
   def self.should(string, &block)
     self.test("should_#{string}", &block)
   end
-  
+
   def self.context(string)
     yield
   end
@@ -43,7 +43,7 @@ class Test::Unit::TestCase
   def teardown
     FakeWeb.clean_registry
   end
-  
+
   # Custom Assertions
   def assert_not(expression)
     assert_block("Expected <#{expression}> to be false!") { not expression }
@@ -58,13 +58,13 @@ class Test::Unit::TestCase
     format = options.delete(:format) || :json
     method = options.delete(:method) || :get
     extension = ".#{options.delete(:extension)||'json'}" unless options[:extension]==false
-    
+
     url = if options.has_key?(:url)
       options[:url]
-    else  
+    else
       "http://localhost/admin/#{endpoint}#{extension}"
     end
-    
+
     FakeWeb.register_uri(method, url, {:body => body, :status => 200, :content_type => "text/#{format}", :content_length => 1}.merge(options))
   end
 end

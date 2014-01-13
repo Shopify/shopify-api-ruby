@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'mocha'
 
 class LimitsTest < Test::Unit::TestCase
   def setup
