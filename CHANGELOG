@@ -1,6 +1,10 @@
+== Version 3.1.9
+
+* in Session::request_token params is no longer optional, you must pass all the params and the method will now extract the code
+
 == Version 3.1.8
 
-* Expose `index` and `show` actions of `Location` 
+* Expose `index` and `show` actions of `Location`
 * Added create_permission_url and request_token helper methods
 * Edited the readme to better describe the getting started procedure
 
@@ -114,7 +118,7 @@ requests/responses
 
 == Version 1.1.1 (October 5, 2010)
 
-* Remove hard coded xml formatting in API calls 
+* Remove hard coded xml formatting in API calls
 * Remove jeweler stuff
 * Ruby 1.9 encoding fix
 

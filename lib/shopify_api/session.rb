@@ -1,20 +1,20 @@
 
 module ShopifyAPI
-  
+
   class Session
     cattr_accessor :api_key
     cattr_accessor :secret
-    cattr_accessor :protocol 
+    cattr_accessor :protocol
     self.protocol = 'https'
 
     attr_accessor :url, :token, :name
-    
+
     class << self
-    
+
       def setup(params)
         params.each { |k,value| send("#{k}=", value) }
       end
-      
+
       def temp(domain, token, &block)
         session = new(domain, token)
         begin
@@ -31,7 +31,7 @@ module ShopifyAPI
           ShopifyAPI::Base.activate_session(original_session)
         end
       end
-      
+
       def prepare_url(url)
         return nil if url.blank?
         url.gsub!(/https?:\/\//, '')                            # remove http:// or https://
@@ -57,16 +57,10 @@ module ShopifyAPI
       end
 
     end
-    
-    def initialize(url, token = nil, params = nil)
+
+    def initialize(url, token = nil)
       self.url, self.token = url, token
       self.class.prepare_url(self.url)
-
-      if params
-        unless self.class.validate_signature(params) && params[:timestamp].to_i > 24.hours.ago.utc.to_i
-          raise "Invalid Signature: Possible malicious login" 
-        end
-      end
     end
 
     def create_permission_url(scope, redirect_uri = nil)
@@ -75,9 +69,15 @@ module ShopifyAPI
       "#{protocol}://#{url}/admin/oauth/authorize?#{parameterize(params)}"
     end
 
-    def request_token(code)
+    def request_token(params)
       return token if token
-      
+
+      unless self.class.validate_signature(params) && params[:timestamp].to_i > 24.hours.ago.utc.to_i
+        raise "Invalid Signature: Possible malicious login"
+      end
+
+      code = params['code']
+
       response = access_token_request(code)
 
       if response.code == "200"
@@ -98,14 +98,14 @@ module ShopifyAPI
     def valid?
       url.present? && token.present?
     end
-  
+
     private
       def parameterize(params)
         URI.escape(params.collect{|k,v| "#{k}=#{v}"}.join('&'))
       end
 
       def access_token_request(code)
-        uri = URI.parse("#{protocol}://#{url}/admin/oauth/access_token")      
+        uri = URI.parse("#{protocol}://#{url}/admin/oauth/access_token")
         https = Net::HTTP.new(uri.host, uri.port)
         https.use_ssl = true
         request = Net::HTTP::Post.new(uri.request_uri)

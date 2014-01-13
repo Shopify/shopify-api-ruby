@@ -1,13 +1,13 @@
 require 'test_helper'
 
 class SessionTest < Test::Unit::TestCase
-  
+
   context "Session" do
     should "not be valid without a url" do
       session = ShopifyAPI::Session.new(nil, "any-token")
       assert_not session.valid?
     end
-    
+
     should "not be valid without token" do
       session = ShopifyAPI::Session.new("testshop.myshopify.com")
       assert_not session.valid?
@@ -17,7 +17,7 @@ class SessionTest < Test::Unit::TestCase
       session = ShopifyAPI::Session.new("testshop.myshopify.com", "any-token")
       assert session.valid?
     end
-    
+
     should "not raise error without params" do
       assert_nothing_raised do
         session = ShopifyAPI::Session.new("testshop.myshopify.com", "any-token")
@@ -26,7 +26,8 @@ class SessionTest < Test::Unit::TestCase
 
     should "raise error if params passed but signature omitted" do
       assert_raises(RuntimeError) do
-        session = ShopifyAPI::Session.new("testshop.myshopify.com", "any-token", {'foo' => 'bar'})
+        session = ShopifyAPI::Session.new("testshop.myshopify.com")
+        session.request_token({'code' => 'any-code'})
       end
     end
 
@@ -35,13 +36,13 @@ class SessionTest < Test::Unit::TestCase
       assert_equal "My test key", ShopifyAPI::Session.api_key
       assert_equal "My test secret", ShopifyAPI::Session.secret
     end
-    
+
     should "use 'https' protocol by default for all sessions" do
       assert_equal 'https', ShopifyAPI::Session.protocol
     end
 
     should "#temp reset ShopifyAPI::Base.site to original value" do
-      
+
       ShopifyAPI::Session.setup(:api_key => "key", :secret => "secret")
       session1 = ShopifyAPI::Session.new('fakeshop.myshopify.com', 'token1')
       ShopifyAPI::Base.activate_session(session1)
@@ -85,19 +86,12 @@ class SessionTest < Test::Unit::TestCase
       assert_equal "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&scope=", permission_url
     end
 
-    should "request token should get token" do
-      ShopifyAPI::Session.setup(:api_key => "My test key", :secret => "My test secret")
-      session = ShopifyAPI::Session.new('http://localhost.myshopify.com')
-      fake nil, :url => 'https://localhost.myshopify.com/admin/oauth/access_token',:method => :post, :body => '{"access_token" : "token"}'
-      assert_equal "token", session.request_token("code")
-    end
-
     should "raise exception if code invalid in request token" do
       ShopifyAPI::Session.setup(:api_key => "My test key", :secret => "My test secret")
       session = ShopifyAPI::Session.new('http://localhost.myshopify.com')
       fake nil, :url => 'https://localhost.myshopify.com/admin/oauth/access_token',:method => :post, :status => 404, :body => '{"error" : "invalid_request"}'
       assert_raises(RuntimeError) do
-        session.request_token("bad_code")
+        session.request_token(params={:code => "bad-code"})
       end
       assert_equal false, session.valid?
     end
@@ -119,13 +113,46 @@ class SessionTest < Test::Unit::TestCase
       assert_equal "https://testshop.myshopify.com/admin", session.site
     end
 
+    should "return_token_if_signature_is_valid" do
+      ShopifyAPI::Session.secret = 'secret'
+      params = {:code => 'any-code', :timestamp => Time.now}
+      sorted_params = make_sorted_params(params)
+      signature = Digest::MD5.hexdigest(ShopifyAPI::Session.secret + sorted_params)
+      fake nil, :url => 'https://testshop.myshopify.com/admin/oauth/access_token',:method => :post, :body => '{"access_token" : "any-token"}'
+      session = ShopifyAPI::Session.new("testshop.myshopify.com")
+      token = session.request_token(params.merge(:signature => signature))
+      assert_equal "any-token", token
+    end
+
     should "raise error if signature does not match expected" do
       ShopifyAPI::Session.secret = 'secret'
-      params = {:foo => 'hello', :foo => 'world', :timestamp => Time.now}
-      sorted_params = params.except(:signature, :action, :controller).collect{|k,v|"#{k}=#{v}"}.sort.join
+      params = {:code => "any-code", :timestamp => Time.now}
+      sorted_params = make_sorted_params(params)
       signature = Digest::MD5.hexdigest(ShopifyAPI::Session.secret + sorted_params)
-
-      session = ShopifyAPI::Session.new("testshop.myshopify.com", "any-token", params.merge(:signature => signature))
+      params[:foo] = 'world'
+      assert_raises(RuntimeError) do
+        session = ShopifyAPI::Session.new("testshop.myshopify.com")
+        session.request_token(params.merge(:signature => signature))
+      end
     end
+
+    should "raise error if timestamp is too old" do
+      ShopifyAPI::Session.secret = 'secret'
+      params = {:code => "any-code", :timestamp => Time.now - 2.days}
+      sorted_params = make_sorted_params(params)
+      signature = Digest::MD5.hexdigest(ShopifyAPI::Session.secret + sorted_params)
+      params[:foo] = 'world'
+      assert_raises(RuntimeError) do
+        session = ShopifyAPI::Session.new("testshop.myshopify.com")
+        session.request_token(params.merge(:signature => signature))
+      end
+    end
+
+    private
+
+    def make_sorted_params(params)
+      sorted_params = params.except(:signature, :action, :controller).collect{|k,v|"#{k}=#{v}"}.sort.join
+    end
+
   end
 end
