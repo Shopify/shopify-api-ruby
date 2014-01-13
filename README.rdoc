@@ -13,7 +13,7 @@ The API is implemented as JSON over HTTP using all four verbs (GET/POST/PUT/DELE
 All API usage happens through Shopify applications, created by either shop owners for their own shops, or by Shopify Partners for use by other shop owners:
 
 * Shop owners can create applications for themselves through their own admin: http://docs.shopify.com/api/tutorials/creating-a-private-app
-* Shopify Partners create applications through their admin: http://app.shopify.com/services/partners 
+* Shopify Partners create applications through their admin: http://app.shopify.com/services/partners
 
 For more information and detailed documentation about the API visit http://api.shopify.com
 
@@ -32,7 +32,7 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
 1. First create a new application in either the partners admin or your store admin. For a private App you'll need the API_KEY and the PASSWORD otherwise you'll need the API_KEY and SHARED_SECRET.
 
 2. For a private App you just need to set the base site url as follows:
-    
+
     shop_url = "https://#{API_KEY}:#{PASSWORD}@SHOP_NAME.myshopify.com/admin"
     ShopifyAPI::Base.site = shop_url
 
@@ -53,7 +53,7 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
    * redirect_uri – Optional – The URL that the merchant will be sent to once authentication is complete. Defaults to the URL specified in the application settings and must be the same host as that URL.
 
    We've added the create_permision_url method to make this easier, first instantiate your session object:
-    
+
     session = ShopifyAPI::Session.new("SHOP_NAME.myshopify.com")
 
    Then call:
@@ -70,18 +70,20 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
     POST https://SHOP_NAME.myshopify.com/admin/oauth/access_token
 
    with the following parameters:
-   
+
    * client_id – Required – The API key for your app
    * client_secret – Required – The shared secret for your app
    * code – Required – The token you received in step 3
 
    and you'll get your permanent access token back in the response.
 
-   There is a method to make the request and get the token for you:
+   There is a method to make the request and get the token for you, pass
+   all the params recieved from the previous call and the method will verify
+   the params, extract the temp code and then request your token::
 
-    token = session.request_token(code)
+    token = session.request_token(params)
 
-   Which will request the token, save it to the session object and return it. For future sessions simply pass the token in when creating the session object:
+   This method will save the token to the session object and return it. For future sessions simply pass the token in when creating the session object:
 
     session = ShopifyAPI::Session.new("SHOP_NAME.myshopify.com", token)
 
@@ -140,7 +142,7 @@ This package also includes the +shopify+ executable to make it easy to open up a
 == Using Development Version
 
 Download the source code and run:
-    
+
     rake install
 
 == Additional Resources
