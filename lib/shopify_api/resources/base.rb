@@ -4,9 +4,10 @@ module ShopifyAPI
   class Base < ActiveResource::Base
     extend Countable
     self.include_root_in_json = false
-    self.headers['User-Agent'] = ["ShopifyAPI/#{ShopifyAPI::VERSION}",
-                                  "ActiveResource/#{ActiveResource::VERSION::STRING}",
-                                  "Ruby/#{RUBY_VERSION}"].join(' ')
+
+    USER_AGENT = ["ShopifyAPI/#{ShopifyAPI::VERSION}",
+                  "ActiveResource/#{ActiveResource::VERSION::STRING}",
+                  "Ruby/#{RUBY_VERSION}"].join(' ')
 
     def encode(options = {})
       same = dup
@@ -14,7 +15,7 @@ module ShopifyAPI
 
       same.send("to_#{self.class.format.extension}", options)
     end
-    
+
     def as_json(options = nil)
       root = options[:root] if options.try(:key?, :root)
       if include_root_in_json
@@ -27,12 +28,10 @@ module ShopifyAPI
 
     class << self
       def headers
-        if defined?(@headers)
-          @headers
-        elsif superclass != Object && superclass.headers
+        if superclass != ActiveResource::Base
           superclass.headers
         else
-          @headers ||= {}
+          super.merge!('User-Agent' => USER_AGENT)
         end
       end
 
