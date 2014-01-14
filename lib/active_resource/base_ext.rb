@@ -17,9 +17,16 @@ module ActiveResource
         connection.delete(element_path(id, options), headers)
       end
 
-      def self.build(attributes = {})
-        attrs = self.format.decode(connection.get("#{new_element_path}", headers).body).merge(attributes)
-        self.new(attrs)
+      if ActiveResource::VERSION::MAJOR == 3 && ActiveResource::VERSION::MINOR == 0
+        def self.build(attributes = {})
+          attrs = connection.get("#{new_element_path}", headers).merge(attributes)
+          self.new(attrs)
+        end
+      else
+        def self.build(attributes = {})
+          attrs = self.format.decode(connection.get("#{new_element_path}", headers).body).merge(attributes)
+          self.new(attrs)
+        end
       end
     end
 
