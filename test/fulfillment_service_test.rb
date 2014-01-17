@@ -8,7 +8,7 @@ class FulFillmentServiceTest < Test::Unit::TestCase
 	end
 
 	test 'find should return the fulfillment service' do
-		fake "fulfillment_service/123456.json", :method => :get, :body => load_fixture('fulfillment_service')
+		fake "fulfillment_services/123456", :method => :get, :body => load_fixture('fulfillment_service')
 		fulfillment_service = ShopifyAPI::FulfillmentService.find(123456)
 		assert_equal 123456 , fulfillment_service.id
 		assert_equal "SomeService", fulfillment_service.name
