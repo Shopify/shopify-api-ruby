@@ -1,6 +1,7 @@
-== Version 3.1.9
+== Version 3.1.9 (Unreleased)
 
 * in Session::request_token params is no longer optional, you must pass all the params and the method will now extract the code
+* Add access to FulfillmentService endpoint
 
 == Version 3.1.8
 
