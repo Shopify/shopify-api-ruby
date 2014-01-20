@@ -8,6 +8,10 @@ class BaseTest < Test::Unit::TestCase
     @session2 = ShopifyAPI::Session.new('shop2.myshopify.com', 'token2')
   end
 
+  def teardown
+    clear_header('X-Custom')
+  end
+
   test '#activate_session should set site and headers for given session' do
     ShopifyAPI::Base.activate_session @session1
 
@@ -49,12 +53,13 @@ class BaseTest < Test::Unit::TestCase
 
   test "#delete should send custom headers with request" do
     ShopifyAPI::Base.activate_session @session1
-    ShopifyAPI::Base.expects(:headers).returns({'X-Custom' => 'abc'})
-    ShopifyAPI::Base.connection.expects(:delete).with('/admin/bases/1.json', {'X-Custom' => 'abc'})
+    ShopifyAPI::Base.headers['X-Custom'] = 'abc'
+    ShopifyAPI::Base.connection.expects(:delete).with('/admin/bases/1.json', has_entry('X-Custom', 'abc'))
     ShopifyAPI::Base.delete "1"
   end
 
   test "#headers includes the User-Agent" do
+    assert_not_includes ActiveResource::Base.headers.keys, 'User-Agent'
     assert_includes ShopifyAPI::Base.headers.keys, 'User-Agent'
     thread = Thread.new do
       assert_includes ShopifyAPI::Base.headers.keys, 'User-Agent'
@@ -63,18 +68,37 @@ class BaseTest < Test::Unit::TestCase
   end
 
   if ActiveResource::VERSION::MAJOR >= 4
-    test "#headers is threadsafe" do
-      thread1 = Thread.new do
-        ShopifyAPI::Base.headers['X-Custom'] = "My header value"
-        assert_includes ShopifyAPI::Base.headers.keys, 'X-Custom'
-      end
-      thread1.join
-      thread2 = Thread.new do
-        assert_not_includes ShopifyAPI::Base.headers.keys, 'X-Custom'
-      end
-      thread2.join
+    test "#headers propagates changes to subclasses" do
+      ShopifyAPI::Base.headers['X-Custom'] = "the value"
+      assert_equal "the value", ShopifyAPI::Base.headers['X-Custom']
+      assert_equal "the value", ShopifyAPI::Product.headers['X-Custom']
+    end
 
+    test "#headers clears changes to subclasses" do
+      ShopifyAPI::Base.headers['X-Custom'] = "the value"
+      assert_equal "the value", ShopifyAPI::Product.headers['X-Custom']
+      ShopifyAPI::Base.headers['X-Custom'] = nil
+      assert_nil ShopifyAPI::Product.headers['X-Custom']
+    end
+
+    test "#headers set in the main thread affect spawned threads" do
+      ShopifyAPI::Base.headers['X-Custom'] = "the value"
+      Thread.new do
+        assert_equal "the value", ShopifyAPI::Base.headers['X-Custom']
+      end.join
+    end
+
+    test "#headers set in spawned threads do not affect the main thread" do
+      Thread.new do
+        ShopifyAPI::Base.headers['X-Custom'] = "the value"
+      end.join
       assert_nil ShopifyAPI::Base.headers['X-Custom']
+    end
+  end
+
+  def clear_header(header)
+    [ActiveResource::Base, ShopifyAPI::Base, ShopifyAPI::Product].each do |klass|
+      klass.headers.delete(header)
     end
   end
 end
