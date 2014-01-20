@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'uri'
 
 class OrderRiskTest < Test::Unit::TestCase
   def test_create_order_risk
