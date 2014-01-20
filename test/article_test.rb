@@ -2,6 +2,13 @@ require 'test_helper'
 
 class ArticleTest < Test::Unit::TestCase
 
+  def test_create_article
+    fake "blogs/1008414260/articles", :method => :post, :body => load_fixture('article')
+    article = ShopifyAPI::Article.new(:blog_id => 1008414260)
+    article.save
+    assert_equal "First Post", article.title
+  end
+
   def test_get_article
     fake "articles/6242736", :method => :get, :body => load_fixture('article')
     article = ShopifyAPI::Article.find(6242736)
