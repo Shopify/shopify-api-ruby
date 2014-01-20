@@ -12,10 +12,20 @@ module ActiveResource
       end
     end
 
-    # Grabs errors from a json response.
+    def from_string(error, save_cache = false)
+      clear unless save_cache
+
+      add("message", error)
+    end
+
     def from_json(json, save_cache = false)
-      hash = ActiveSupport::JSON.decode(json)['errors'] || {} rescue {}
-      from_hash hash, save_cache
+      data = ActiveSupport::JSON.decode(json)['errors'] || {} rescue {}
+      case data
+      when String
+        from_string(data, save_cache)
+      else
+        from_hash data, save_cache
+      end
     end
   end
 end
