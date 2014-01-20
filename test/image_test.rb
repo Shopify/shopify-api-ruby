@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'uri'
 
 class ImageTest < Test::Unit::TestCase
   def test_create_image
