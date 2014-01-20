@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'uri'
 
 class AssetTest < Test::Unit::TestCase
   def test_get_assetss
