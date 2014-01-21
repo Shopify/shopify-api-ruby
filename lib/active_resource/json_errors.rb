@@ -8,7 +8,7 @@ module ActiveResource
       when String
         from_string(data, save_cache)
       else
-        from_hash data, save_cache
+        from_hash(data, save_cache)
       end
     end
 
