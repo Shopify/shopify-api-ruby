@@ -85,7 +85,7 @@ class RecurringApplicationChargeTest < Test::Unit::TestCase
 
     charge = ShopifyAPI::RecurringApplicationCharge.accepted
 
-    assert_equal true, charge.last.activate
+    assert charge.last.activate
   end
 
   def test_cancel_recurring_application_charge
@@ -93,7 +93,7 @@ class RecurringApplicationChargeTest < Test::Unit::TestCase
     fake "recurring_application_charges/455696194", :method => :delete, :status => 200, :body => "{}"
 
     charge = ShopifyAPI::RecurringApplicationCharge.current
-    assert_equal true, charge.cancel
+    assert charge.cancel
   end
 
   def test_no_recurring_application_charge_found
