@@ -7,7 +7,7 @@ module ShopifyAPI
     end
 
     def self.search(params)
-      find(:all, from: '/admin/customers/search.json', params: params)
+      find(:all, from: :search, params: params)
     end
   end
 end
