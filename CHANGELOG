@@ -3,6 +3,7 @@
 * in Session::request_token params is no longer optional, you must pass all the params and the method will now extract the code
 * Add access to FulfillmentService endpoint
 * Fix JSON errors handling (#103)
+* Add convenience method Customer#search (#45)
 
 == Version 3.1.8
 
