@@ -148,10 +148,20 @@ class SessionTest < Test::Unit::TestCase
       end
     end
 
+    should "return true when the signature is valid and the keys of params are strings" do
+      now = Time.now
+      params = {"code" => "any-code", "timestamp" => now}
+      sorted_params = make_sorted_params(params)
+      signature = Digest::MD5.hexdigest(ShopifyAPI::Session.secret + sorted_params)
+      params = {"code" => "any-code", "timestamp" => now, "signature" => signature}
+
+      assert_equal true, ShopifyAPI::Session.validate_signature(params)
+    end
+
     private
 
     def make_sorted_params(params)
-      sorted_params = params.except(:signature, :action, :controller).collect{|k,v|"#{k}=#{v}"}.sort.join
+      sorted_params = params.with_indifferent_access.except(:signature, :action, :controller).collect{|k,v|"#{k}=#{v}"}.sort.join
     end
 
   end
