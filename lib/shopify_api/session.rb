@@ -39,6 +39,7 @@ module ShopifyAPI
       end
 
       def validate_signature(params)
+        params = params.with_indifferent_access
         return false unless signature = params[:signature]
 
         sorted_params = params.except(:signature, :action, :controller).collect{|k,v|"#{k}=#{v}"}.sort.join
