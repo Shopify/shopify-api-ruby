@@ -1,0 +1,17 @@
+{
+   "gift_card":{
+      "api_client_id":162289,
+      "balance":"45.75",
+      "created_at":"2013-09-30T19:31:38-04:00",
+      "currency":"CAD",
+      "disabled_at":null,
+      "expires_at":null,
+      "id":439,
+      "initial_value":"45.75",
+      "line_item_id":null,
+      "note":null,
+      "updated_at":"2013-10-17T11:43:32-04:00",
+      "user_id":0,
+      "masked_code":"\u00b7\u00b7\u00b7\u00b7 \u00b7\u00b7\u00b7\u00b7 \u00b7\u00b7\u00b7\u00b7 36f0"
+   }
+}
