@@ -35,7 +35,7 @@ class Test::Unit::TestCase
     end
 
     ShopifyAPI::Base.clear_session
-    ShopifyAPI::Base.site = "http://localhost/admin"
+    ShopifyAPI::Base.site = "https://this-is-my-test-show.myshopify.com/admin"
     ShopifyAPI::Base.password = nil
     ShopifyAPI::Base.user = nil
   end
@@ -62,7 +62,7 @@ class Test::Unit::TestCase
     url = if options.has_key?(:url)
       options[:url]
     else
-      "http://localhost/admin/#{endpoint}#{extension}"
+      "https://this-is-my-test-show.myshopify.com/admin/#{endpoint}#{extension}"
     end
 
     FakeWeb.register_uri(method, url, {:body => body, :status => 200, :content_type => "text/#{format}", :content_length => 1}.merge(options))
