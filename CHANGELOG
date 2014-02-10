@@ -1,3 +1,7 @@
+== Version 3.2.1 (Unreleased)
+
+* Added CarrierService resource
+
 == Version 3.2.0
 
 * in Session::request_token params is no longer optional, you must pass all the params and the method will now extract the code
