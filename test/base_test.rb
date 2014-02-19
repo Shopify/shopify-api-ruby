@@ -80,7 +80,9 @@ class BaseTest < Test::Unit::TestCase
       ShopifyAPI::Base.headers['X-Custom'] = nil
       assert_nil ShopifyAPI::Product.headers['X-Custom']
     end
+  end
 
+  if ActiveResource::VERSION::MAJOR >= 4 && ActiveResource::VERSION::PRE == "threadsafe"
     test "#headers set in the main thread affect spawned threads" do
       ShopifyAPI::Base.headers['X-Custom'] = "the value"
       Thread.new do
