@@ -1,0 +1,5 @@
+source "https://rubygems.org"
+
+gemspec
+
+gem 'activeresource', :git => 'git://github.com/peterjm/activeresource', :ref => '47e7f181d9'
