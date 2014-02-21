@@ -151,7 +151,7 @@ variables. Using this forked version will allow ShopifyAPI to be used in a threa
 To enable threadsafety with ShopifyAPI, add the following to your Gemfile:
 
 ```
-gem 'activeresource', :git => 'git://github.com/peterjm/activeresource', :ref => '47e7f181d9'
+gem 'activeresource', :git => 'git://github.com/Shopify/activeresource', :ref => 'e9dc76b4aa'
 gem 'shopify_api', '>= 3.3.0'
 ```
 
