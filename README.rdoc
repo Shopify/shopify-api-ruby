@@ -141,8 +141,8 @@ This package also includes the +shopify+ executable to make it easy to open up a
 
 == Threadsafety
 
-ActiveResource is inherently non-threadsafe, because class variables like `ActiveResource::Base.site` and
-`ActiveResource::Base.headers` are shared between threads. This can cause conflicts when using
+ActiveResource is inherently non-threadsafe, because class variables like ActiveResource::Base.site
+and ActiveResource::Base.headers are shared between threads. This can cause conflicts when using
 threaded libraries, like Sidekiq.
 
 We have a forked version of ActiveResource that stores these class variables in threadlocal
@@ -150,10 +150,8 @@ variables. Using this forked version will allow ShopifyAPI to be used in a threa
 
 To enable threadsafety with ShopifyAPI, add the following to your Gemfile:
 
-```
-gem 'activeresource', :git => 'git://github.com/Shopify/activeresource', :ref => 'e9dc76b4aa'
-gem 'shopify_api', '>= 3.3.0'
-```
+    gem 'activeresource', :git => 'git://github.com/Shopify/activeresource', :ref => 'e9dc76b4aa'
+    gem 'shopify_api', '>= 3.2.1'
 
 == Using Development Version
 
