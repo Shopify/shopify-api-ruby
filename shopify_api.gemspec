@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
   s.summary = %q{ShopifyAPI is a lightweight gem for accessing the Shopify admin REST web services}
   s.license = 'MIT'
 
-  s.add_dependency("activeresource", ["~> 4.0.0"])
+  s.add_dependency("activeresource", [">= 3.0.0"])
   s.add_dependency("thor", [">= 0.14.4"])
   
   if s.respond_to?(:add_development_dependency)
