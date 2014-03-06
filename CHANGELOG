@@ -1,6 +1,8 @@
-== Version 3.2.1 (Unreleased)
+== Version 3.2.1
 
 * Added CarrierService resource
+* Added optionally using threadsafe ActiveResource (see readme)
+* Fixed bug in validate_signature
 
 == Version 3.2.0
 

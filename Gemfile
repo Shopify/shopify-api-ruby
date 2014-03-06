@@ -1,4 +1,7 @@
 source "https://rubygems.org"
 
 gemspec
-require 'activeresource-response', :git => 'https://github.com/benjlcox/activeresource-response.git'
+
+gem 'activeresource-response', :git => 'https://github.com/benjlcox/activeresource-response.git'
+gem "activeresource", "~> 4.0.0"
+

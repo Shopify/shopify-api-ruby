@@ -9,6 +9,7 @@ gemfile:
   - Gemfile_ar30
   - Gemfile_ar31
   - Gemfile_ar32
+  - Gemfile_ar40threadsafe
 
 install: bundle install
 
@@ -28,5 +29,5 @@ matrix:
 
 
 notifications:
-  flowdock: 
+  flowdock:
     secure: "RCgSxzMScnqK6bOwkv9sWSdieLBeJla8NcDtM/QmuFW8soTgV6qCTAPAGd4lpjg4vGTaM3DsdHU5GMDbgdWN5dE2Rf09ayFqiZg8OloPMQ63KIwLJyVcw3cVJO5i7smjIpsSjPjBkvAXHIOFcKdsnuYGS4YD8hjl+QrZ3ghi440="

@@ -14,7 +14,7 @@ module ShopifyAPI
 
       same.send("to_#{self.class.format.extension}", options)
     end
-    
+
     def as_json(options = nil)
       root = options[:root] if options.try(:key?, :root)
       if include_root_in_json
@@ -26,13 +26,25 @@ module ShopifyAPI
     end
 
     class << self
-      def headers
-        if defined?(@headers)
-          @headers
-        elsif superclass != Object && superclass.headers
-          superclass.headers
-        else
-          @headers ||= {}
+      if ActiveResource::VERSION::MAJOR == 4 && ActiveResource::VERSION::PRE == 'threadsafe'
+        def headers
+          if _headers_defined?
+            _headers
+          elsif superclass != Object && superclass.headers
+            superclass.headers
+          else
+            _headers ||= {}
+          end
+        end
+      else
+        def headers
+          if defined?(@headers)
+            @headers
+          elsif superclass != Object && superclass.headers
+            superclass.headers
+          else
+            @headers ||= {}
+          end
         end
       end
 
