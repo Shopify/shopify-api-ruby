@@ -16,6 +16,8 @@ module ActiveResource
       def self.delete(id, options = {})
         connection.delete(element_path(id, options), headers)
       end
+
+      add_response_method :api_response
     end
   end
 end
