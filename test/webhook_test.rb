@@ -3,7 +3,7 @@ require 'test_helper'
 class WebhookTest < Test::Unit::TestCase
   test 'create should create a webhook' do
     fake 'webhooks', :method => :post, :status => 201, :body => load_fixture('webhook')
-    webhook = ShopifyAPI::Webhook.create(address: "http://www.yoloship.it/webhook",topic: "orders/create",format: "json")
+    webhook = ShopifyAPI::Webhook.create(address: "http://www.yoloship.it/webhook", topic: "orders/create", format: "json")
     assert_equal "http://www.yoloship.it/webhook", webhook.address
   end
 
