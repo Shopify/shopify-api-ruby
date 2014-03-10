@@ -1,48 +1,32 @@
 require 'test_helper'
 
 class OrderTest < Test::Unit::TestCase
-  def setup
-    ActiveResource::Base.site = "http://localhost"
+
+  test "create should create order" do
+    fake 'orders', :method => :post, :status => 201, :body => load_fixture('order')
+    order = ShopifyAPI::Order.create(line_items: [{quantity:1, variant_id:39072856}], financial_status:"authorized")
+    assert_equal 39072856, order.line_items.first.variant_id
   end
 
-  context "Order" do
-    context "#note_attributes" do
+  test "get should get an order" do
+    fake 'orders/450789469', :method => :get, :status => 200, :body => load_fixture('order')
+    order = ShopifyAPI::Order.find(450789469)
+    assert_equal 450789469, order.id
+  end
 
-      should "be loaded correctly from order xml" do
-        order_xml = <<-XML
-          <?xml version="1.0" encoding="UTF-8"?>
-          <order>
-            <note-attributes type="array">
-              <note-attribute>
-                <name>size</name>
-                <value>large</value>
-              </note-attribute>
-            </note-attributes>
-          </order>
-        XML
+  test "get all should get all orders" do
+    fake 'orders', :method => :get, :status => 200, :body => load_fixture('orders')
+    order = ShopifyAPI::Order.all
+    assert_equal 450789469, order.first.id
+  end
 
-        order = ShopifyAPI::Order.new(Hash.from_xml(order_xml)["order"])
-
-        assert_equal 1, order.note_attributes.size
-
-        note_attribute = order.note_attributes.first
-        assert_equal "size", note_attribute.name
-        assert_equal "large", note_attribute.value
-      end
-      
-      should "be able to add note attributes to an order" do
-        order = ShopifyAPI::Order.new
-        order.note_attributes = []
-        order.note_attributes << ShopifyAPI::NoteAttribute.new(:name => "color", :value => "blue")
-        
-        order_xml = Hash.from_xml(order.to_xml)
-        assert note_attributes = order_xml["order"]["note_attributes"]
-        assert_instance_of Array, note_attributes
-        
-        attribute = note_attributes.first
-        assert_equal "color", attribute["name"]
-        assert_equal "blue", attribute["value"]
-      end
-    end
+  test "add note should add a note to order" do
+    fake 'orders/450789469', :method => :get, :status => 200, :body => load_fixture('order')
+    order = ShopifyAPI::Order.find(450789469)
+    order.note = "Test note"
+    fake 'orders/450789469', :method => :put, :status => 200, :body => load_fixture('order')
+    order.save
+    assert_equal "Test note", order.note
   end
 end
+
