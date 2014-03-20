@@ -1,31 +1,32 @@
-require 'active_support/core_ext/module/aliasing'
-
 module ActiveResource
   class Connection
-
     attr_reader :response
 
-    def handle_response_with_response_capture(response)
-      @response = handle_response_without_response_capture(response)
-    end
-
-    def request_with_detailed_log_subscriber(method, path, *arguments)
-      result = request_without_detailed_log_subscriber(method, path, *arguments)
-      detailed_log_subscriber(result, arguments)
-      result
-    rescue => e
-      detailed_log_subscriber(e.response, arguments) if e.respond_to?(:response)
-      raise
-    end
-
-    def detailed_log_subscriber(response, arguments)
-      ActiveSupport::Notifications.instrument("request.active_resource_detailed") do |payload|
-        payload[:response] = response
-        payload[:data]     = arguments
+    module ResponseCapture
+      def handle_response(response)
+        @response = super
       end
     end
 
-    alias_method_chain :handle_response, :response_capture
-    alias_method_chain :request, :detailed_log_subscriber
+    module RequestNotification
+      def request(method, path, *arguments)
+        super.tap do |response|
+          notify_about_request(response, arguments)
+        end
+      rescue => e
+        notify_about_request(e.response, arguments) if e.respond_to?(:response)
+        raise
+      end
+
+      def notify_about_request(response, arguments)
+        ActiveSupport::Notifications.instrument("request.active_resource_detailed") do |payload|
+          payload[:response] = response
+          payload[:data]     = arguments
+        end
+      end
+    end
+
+    prepend ResponseCapture
+    prepend RequestNotification
   end
 end
