@@ -1,6 +1,9 @@
 
 module ShopifyAPI
 
+  class ValidationException < StandardError
+  end
+
   class Session
     cattr_accessor :api_key
     cattr_accessor :secret
@@ -74,7 +77,7 @@ module ShopifyAPI
       return token if token
 
       unless self.class.validate_signature(params) && params[:timestamp].to_i > 24.hours.ago.utc.to_i
-        raise "Invalid Signature: Possible malicious login"
+        raise ShopifyAPI::ValidationException, "Invalid Signature: Possible malicious login"
       end
 
       code = params['code']
