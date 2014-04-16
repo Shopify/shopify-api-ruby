@@ -44,6 +44,7 @@ PLATFORMS
 DEPENDENCIES
   activeresource (~> 4.0.0)
   fakeweb
+  minitest (~> 4.0)
   mocha (>= 0.9.8)
   rake
   shopify_api!

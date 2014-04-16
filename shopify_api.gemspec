@@ -30,10 +30,12 @@ Gem::Specification.new do |s|
   if s.respond_to?(:add_development_dependency)
     s.add_development_dependency("mocha", ">= 0.9.8")
     s.add_development_dependency("fakeweb")
+    s.add_development_dependency("minitest", "~> 4.0")
     s.add_development_dependency("rake")
   else
     s.add_dependency("mocha", ">= 0.9.8")
     s.add_dependency("fakeweb")
+    s.add_dependency("minitest", "~> 4.0")
     s.add_dependency("rake")
   end
 end
