@@ -1,3 +1,7 @@
+== Version 3.2.2
+
+* Temporary fix for the CLI
+
 == Version 3.2.1
 
 * Added CarrierService resource

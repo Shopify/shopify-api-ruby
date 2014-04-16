@@ -25,8 +25,8 @@ Gem::Specification.new do |s|
   s.license = 'MIT'
 
   s.add_dependency("activeresource", [">= 3.0.0"])
-  s.add_dependency("thor", [">= 0.14.4"])
-  
+  s.add_dependency("thor", ["~> 0.18.1"])
+
   if s.respond_to?(:add_development_dependency)
     s.add_development_dependency("mocha", ">= 0.9.8")
     s.add_development_dependency("fakeweb")
