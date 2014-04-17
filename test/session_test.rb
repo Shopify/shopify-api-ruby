@@ -25,7 +25,7 @@ class SessionTest < Test::Unit::TestCase
     end
 
     should "raise error if params passed but signature omitted" do
-      assert_raises(RuntimeError) do
+      assert_raises(ShopifyAPI::ValidationException) do
         session = ShopifyAPI::Session.new("testshop.myshopify.com")
         session.request_token({'code' => 'any-code'})
       end
@@ -90,7 +90,7 @@ class SessionTest < Test::Unit::TestCase
       ShopifyAPI::Session.setup(:api_key => "My test key", :secret => "My test secret")
       session = ShopifyAPI::Session.new('http://localhost.myshopify.com')
       fake nil, :url => 'https://localhost.myshopify.com/admin/oauth/access_token',:method => :post, :status => 404, :body => '{"error" : "invalid_request"}'
-      assert_raises(RuntimeError) do
+      assert_raises(ShopifyAPI::ValidationException) do
         session.request_token(params={:code => "bad-code"})
       end
       assert_equal false, session.valid?
@@ -130,7 +130,7 @@ class SessionTest < Test::Unit::TestCase
       sorted_params = make_sorted_params(params)
       signature = Digest::MD5.hexdigest(ShopifyAPI::Session.secret + sorted_params)
       params[:foo] = 'world'
-      assert_raises(RuntimeError) do
+      assert_raises(ShopifyAPI::ValidationException) do
         session = ShopifyAPI::Session.new("testshop.myshopify.com")
         session.request_token(params.merge(:signature => signature))
       end
@@ -142,7 +142,7 @@ class SessionTest < Test::Unit::TestCase
       sorted_params = make_sorted_params(params)
       signature = Digest::MD5.hexdigest(ShopifyAPI::Session.secret + sorted_params)
       params[:foo] = 'world'
-      assert_raises(RuntimeError) do
+      assert_raises(ShopifyAPI::ValidationException) do
         session = ShopifyAPI::Session.new("testshop.myshopify.com")
         session.request_token(params.merge(:signature => signature))
       end
