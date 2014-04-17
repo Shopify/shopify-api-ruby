@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    shopify_api (3.2.1)
-      activeresource (~> 4.0.0)
-      thor (>= 0.14.4)
+    shopify_api (3.2.2)
+      activeresource (>= 3.0.0)
+      thor (~> 0.18.1)
 
 GEM
   remote: https://rubygems.org/
@@ -42,7 +42,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  activeresource (~> 4.0.0)
   fakeweb
+  minitest (~> 4.0)
   mocha (>= 0.9.8)
   rake
   shopify_api!

@@ -1,10 +1,11 @@
 require 'thor'
 require 'abbrev'
+require 'yaml'
 
 module ShopifyAPI
   class Cli < Thor
     include Thor::Actions
-    
+
     class ConfigFileError < StandardError
     end
 
@@ -15,7 +16,7 @@ module ShopifyAPI
         puts prefix + c
       end
     end
-    
+
     desc "add CONNECTION", "create a config file for a connection named CONNECTION"
     def add(connection)
       file = config_file(connection)
@@ -35,7 +36,7 @@ module ShopifyAPI
         default(connection)
       end
     end
-    
+
     desc "remove CONNECTION", "remove the config file for CONNECTION"
     def remove(connection)
       file = config_file(connection)
@@ -46,7 +47,7 @@ module ShopifyAPI
         no_config_file_error(file)
       end
     end
-    
+
     desc "edit [CONNECTION]", "open the config file for CONNECTION with your default editor"
     def edit(connection=nil)
       file = config_file(connection)
@@ -60,7 +61,7 @@ module ShopifyAPI
         no_config_file_error(file)
       end
     end
-    
+
     desc "show [CONNECTION]", "output the location and contents of the CONNECTION's config file"
     def show(connection=nil)
       connection ||= default_connection
@@ -72,7 +73,7 @@ module ShopifyAPI
         no_config_file_error(file)
       end
     end
-    
+
     desc "default [CONNECTION]", "show the default connection, or make CONNECTION the default"
     def default(connection=nil)
       if connection
@@ -90,15 +91,15 @@ module ShopifyAPI
         puts "There is no default connection set"
       end
     end
-    
+
     desc "console [CONNECTION]", "start an API console for CONNECTION"
     def console(connection=nil)
       file = config_file(connection)
-      
+
       config = YAML.load(File.read(file))
       puts "using #{config['domain']}"
       ShopifyAPI::Base.site = site_from_config(config)
-      
+
       require 'irb'
       require 'irb/completion'
       ARGV.clear
@@ -110,15 +111,15 @@ module ShopifyAPI
     end
 
     private
-    
+
     def shop_config_dir
       @shop_config_dir ||= File.join(ENV['HOME'], '.shopify', 'shops')
     end
-    
+
     def default_symlink
       @default_symlink ||= File.join(shop_config_dir, 'default')
     end
-    
+
     def config_file(connection)
       if connection
         File.join(shop_config_dir, "#{connection}.yml")
@@ -126,35 +127,35 @@ module ShopifyAPI
         default_symlink
       end
     end
-    
+
     def site_from_config(config)
       protocol = config['protocol'] || 'https'
       api_key  = config['api_key']
       password = config['password']
       domain   = config['domain']
-    
+
       ShopifyAPI::Base.site = "#{protocol}://#{api_key}:#{password}@#{domain}/admin"
     end
-    
+
     def available_connections
       @available_connections ||= begin
         pattern = File.join(shop_config_dir, "*.yml")
         Dir.glob(pattern).map { |f| File.basename(f, ".yml") }
       end
     end
-    
+
     def default_connection_target
       @default_connection_target ||= File.readlink(default_symlink)
     end
-    
+
     def default_connection
       @default_connection ||= File.basename(default_connection_target, ".yml")
     end
-    
+
     def default?(connection)
       default_connection == connection
     end
-    
+
     def no_config_file_error(filename)
       raise ConfigFileError, "There is no config file at #{filename}"
     end
