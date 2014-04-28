@@ -1,4 +1,4 @@
-== Version 3.2.2 unreleased
+== Version 3.2.2
 
 * Temporary fix for the CLI
 * Add a specific exception for signature validation failures
