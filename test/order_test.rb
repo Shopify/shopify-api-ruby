@@ -2,6 +2,13 @@ require 'test_helper'
 
 class OrderTest < Test::Unit::TestCase
 
+  test "fulfill should create a fullfillment for the order" do
+    fake 'orders/450789469', :method => :get, :status => 200, :body => load_fixture('order')
+    order = ShopifyAPI::Order.find(450789469)
+    fake 'orders/450789469/fulfillments', :method => :post, :status => 200, :body => load_fixture('fulfillment')
+    order.fulfill
+  end
+
   test "create should create order" do
     fake 'orders', :method => :post, :status => 201, :body => load_fixture('order')
     order = ShopifyAPI::Order.create(line_items: [{quantity:1, variant_id:39072856}], financial_status:"authorized")
