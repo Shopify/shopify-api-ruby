@@ -1,3 +1,7 @@
+== Version 3.2.3 (Unreleased)
+
+* Added pry to the CLI
+
 == Version 3.2.2
 
 * Temporary fix for the CLI

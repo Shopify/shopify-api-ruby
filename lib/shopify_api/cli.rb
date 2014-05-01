@@ -1,6 +1,7 @@
 require 'thor'
 require 'abbrev'
 require 'yaml'
+require 'pry'
 
 module ShopifyAPI
   class Cli < Thor
