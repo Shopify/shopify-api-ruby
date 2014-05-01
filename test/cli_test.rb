@@ -26,11 +26,7 @@ class CliTest < Test::Unit::TestCase
   end
 
   test "add with blank domain" do
-    `rm -rf #{@shop_config_dir}/*`
-    $stdout.expects(:print).with("Domain? (leave blank for foo.myshopify.com) ")
-    $stdout.expects(:print).with("API key? ")
-    $stdout.expects(:print).with("Password? ")
-    $stdout.expects(:print).with("Would you like to use pry as your shell? (y/n) ")
+    standard_add_shop_prompts
     $stdin.expects(:gets).times(4).returns("", "key", "pass", "y")
     @cli.expects(:puts).with("\nopen https://foo.myshopify.com/admin/api in your browser to get API credentials\n")
     @cli.expects(:puts).with("Default connection is foo")
@@ -47,11 +43,7 @@ class CliTest < Test::Unit::TestCase
   end
 
   test "add with explicit domain" do
-    `rm -rf #{@shop_config_dir}/*`
-    $stdout.expects(:print).with("Domain? (leave blank for foo.myshopify.com) ")
-    $stdout.expects(:print).with("API key? ")
-    $stdout.expects(:print).with("Password? ")
-    $stdout.expects(:print).with("Would you like to use pry as your shell? (y/n) ")
+    standard_add_shop_prompts
     $stdin.expects(:gets).times(4).returns("bar.myshopify.com", "key", "pass", "y")
     @cli.expects(:puts).with("\nopen https://bar.myshopify.com/admin/api in your browser to get API credentials\n")
     @cli.expects(:puts).with("Default connection is foo")
@@ -63,11 +55,7 @@ class CliTest < Test::Unit::TestCase
   end
 
   test "add with irb as shell" do
-    `rm -rf #{@shop_config_dir}/*`
-    $stdout.expects(:print).with("Domain? (leave blank for foo.myshopify.com) ")
-    $stdout.expects(:print).with("API key? ")
-    $stdout.expects(:print).with("Password? ")
-    $stdout.expects(:print).with("Would you like to use pry as your shell? (y/n) ")
+    standard_add_shop_prompts
     $stdin.expects(:gets).times(4).returns("bar.myshopify.com", "key", "pass", "fuuuuuuu")
     @cli.expects(:puts).with("\nopen https://bar.myshopify.com/admin/api in your browser to get API credentials\n")
     @cli.expects(:puts).with("Default connection is foo")
@@ -123,6 +111,14 @@ class CliTest < Test::Unit::TestCase
 
   def config_file(connection)
     File.join(@shop_config_dir, "#{connection}.yml")
+  end
+
+  def standard_add_shop_prompts
+    `rm -rf #{@shop_config_dir}/*`
+    $stdout.expects(:print).with("Domain? (leave blank for foo.myshopify.com) ")
+    $stdout.expects(:print).with("API key? ")
+    $stdout.expects(:print).with("Password? ")
+    $stdout.expects(:print).with("Would you like to use pry as your shell? (y/n) ")
   end
 
 end
