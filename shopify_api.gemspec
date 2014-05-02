@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency("activeresource", [">= 3.0.0"])
   s.add_dependency("thor", ["~> 0.18.1"])
+  s.add_dependency("pry", [">= 0.9.12.6"])
 
   if s.respond_to?(:add_development_dependency)
     s.add_development_dependency("mocha", ">= 0.9.8")

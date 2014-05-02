@@ -30,6 +30,11 @@ module ShopifyAPI
         puts "\nopen https://#{config['domain']}/admin/api in your browser to get API credentials\n"
         config['api_key']  = ask("API key?")
         config['password'] = ask("Password?")
+        if ask("Would you like to use pry as your shell? (y/n)") === "y"
+          config["shell"] = "pry"
+        else
+          config["shell"] = "irb"
+        end
         create_file(file, config.to_yaml)
       end
       if available_connections.one?
@@ -100,10 +105,7 @@ module ShopifyAPI
       puts "using #{config['domain']}"
       ShopifyAPI::Base.site = site_from_config(config)
 
-      require 'irb'
-      require 'irb/completion'
-      ARGV.clear
-      IRB.start
+      launch_shell(config)
     end
 
     tasks.keys.abbrev.each do |shortcut, command|
@@ -135,6 +137,19 @@ module ShopifyAPI
       domain   = config['domain']
 
       ShopifyAPI::Base.site = "#{protocol}://#{api_key}:#{password}@#{domain}/admin"
+    end
+
+    def launch_shell(config)
+      if config["shell"] === "pry"
+        require 'pry'
+        ARGV.clear
+        Pry.start
+      else
+        require 'irb'
+        require 'irb/completion'
+        ARGV.clear
+        IRB.start
+      end
     end
 
     def available_connections
