@@ -2,6 +2,7 @@ require 'shopify_api/version'
 
 module ShopifyAPI
   class Base < ActiveResource::Base
+    class InvalidSessionError < StandardError; end
     extend Countable
     self.include_root_in_json = false
     self.headers['User-Agent'] = ["ShopifyAPI/#{ShopifyAPI::VERSION}",
@@ -49,6 +50,7 @@ module ShopifyAPI
       end
 
       def activate_session(session)
+        raise InvalidSessionError.new("Session cannot be nil") if session.nil?
         self.site = session.site
         self.headers.merge!('X-Shopify-Access-Token' => session.token)
       end

@@ -51,6 +51,12 @@ class BaseTest < Test::Unit::TestCase
     assert_equal 'token2', ShopifyAPI::Shop.headers['X-Shopify-Access-Token']
   end
 
+  test '#activate_session with nil raises an InvalidSessionError' do
+    assert_raises ShopifyAPI::Base::InvalidSessionError do
+      ShopifyAPI::Base.activate_session nil
+    end
+  end
+
   test "#delete should send custom headers with request" do
     ShopifyAPI::Base.activate_session @session1
     ShopifyAPI::Base.headers['X-Custom'] = 'abc'
