@@ -28,5 +28,12 @@ class OrderTest < Test::Unit::TestCase
     order.save
     assert_equal "Test note", order.note
   end
+
+  test "delete should delete an order" do
+    fake 'orders/450789469', :method => :get, :status => 200, :body => load_fixture('order')
+    fake 'orders/450789469', :method => :delete, :body => 'destroyed'
+    order = ShopifyAPI::Order.find(450789469)
+    assert order.destroy
+  end
 end
 

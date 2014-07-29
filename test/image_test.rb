@@ -1,6 +1,7 @@
 require 'test_helper'
 
 class ImageTest < Test::Unit::TestCase
+
   def test_create_image
     fake "products/632910392/images", :method => :post, :body => load_fixture('image')
     image = ShopifyAPI::Image.new(:product_id => 632910392)
@@ -22,5 +23,18 @@ class ImageTest < Test::Unit::TestCase
     fake "products/632910392/images/850703190", :method => :get, :body => load_fixture('image')
     image = ShopifyAPI::Image.find(850703190, :params => {:product_id => 632910392})
     assert_equal 850703190, image.id
+  end
+
+  def test_delete_image
+    fake "products/632910392/images/850703190", :method => :get, :body => load_fixture('image')
+    fake "products/632910392/images/850703190", :method => :delete, :body => "destroyed"
+    image = ShopifyAPI::Image.find(850703190, :params => {:product_id => 632910392})
+    assert image.destroy
+  end
+
+  def test_delete_image_without_fetching
+    fake "products/632910392/images/850703190", :method => :delete, :body => "destroyed"
+    image = ShopifyAPI::Image.new(product_id: 632910392, id: 850703190)
+    assert image.destroy
   end
 end
