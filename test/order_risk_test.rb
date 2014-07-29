@@ -35,7 +35,7 @@ class OrderRiskTest < Test::Unit::TestCase
     assert v.destroy
   end
 
-  def test_delete_order_risk
+  def test_update_order_risk
     fake "orders/450789469/risks/284138680", :method => :get, :body => load_fixture('order_risk')
     fake "orders/450789469/risks/284138680", :method => :put, :body => load_fixture('order_risk')
 
