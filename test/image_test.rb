@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class ImageTest < Test::Unit::TestCase
-
   def test_create_image
     fake "products/632910392/images", :method => :post, :body => load_fixture('image')
     image = ShopifyAPI::Image.new(:product_id => 632910392)
