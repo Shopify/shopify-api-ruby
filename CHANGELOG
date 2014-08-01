@@ -3,6 +3,10 @@
 * More useful error messages for activating nil sessions
 * Add tests for commonly deleted objects, and metafield tests, fix naming error in order_risk_test.rb
 
+== Version 3.2.4
+
+* No API changes
+
 == Version 3.2.3
 
 * Added pry to the CLI
