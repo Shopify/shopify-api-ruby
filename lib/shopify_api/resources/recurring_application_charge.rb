@@ -4,11 +4,11 @@ module ShopifyAPI
 
     class << self
       def current
-        all.find { |c| c.status == 'active' }
+        (all || []).find { |c| c.status == 'active' }
       end
 
       [:pending, :cancelled, :accepted, :declined].each do |status|
-        define_method(status) { all.select { |c| c.status == status.to_s } }
+        define_method(status) { (all || []).select { |c| c.status == status.to_s } }
       end
     end
 
