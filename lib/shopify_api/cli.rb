@@ -27,7 +27,7 @@ module ShopifyAPI
         config['domain']   = ask("Domain? (leave blank for #{connection}.myshopify.com)")
         config['domain']   = "#{connection}.myshopify.com" if config['domain'].blank?
         config['domain']   = "#{config['domain']}.myshopify.com" unless config['domain'].match(/[.:]/)
-        puts "\nopen https://#{config['domain']}/admin/api in your browser to get API credentials\n"
+        puts "\nopen https://#{config['domain']}/admin/apps/private in your browser to create a private app and get API credentials\n"
         config['api_key']  = ask("API key?")
         config['password'] = ask("Password?")
         if ask("Would you like to use pry as your shell? (y/n)") === "y"

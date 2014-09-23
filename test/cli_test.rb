@@ -28,7 +28,7 @@ class CliTest < Test::Unit::TestCase
   test "add with blank domain" do
     standard_add_shop_prompts
     $stdin.expects(:gets).times(4).returns("", "key", "pass", "y")
-    @cli.expects(:puts).with("\nopen https://foo.myshopify.com/admin/api in your browser to get API credentials\n")
+    @cli.expects(:puts).with("\nopen https://foo.myshopify.com/admin/apps/private in your browser to create a private app and get API credentials\n")
     @cli.expects(:puts).with("Default connection is foo")
 
     @cli.add('foo')
@@ -45,7 +45,7 @@ class CliTest < Test::Unit::TestCase
   test "add with explicit domain" do
     standard_add_shop_prompts
     $stdin.expects(:gets).times(4).returns("bar.myshopify.com", "key", "pass", "y")
-    @cli.expects(:puts).with("\nopen https://bar.myshopify.com/admin/api in your browser to get API credentials\n")
+    @cli.expects(:puts).with("\nopen https://bar.myshopify.com/admin/apps/private in your browser to create a private app and get API credentials\n")
     @cli.expects(:puts).with("Default connection is foo")
 
     @cli.add('foo')
@@ -57,7 +57,7 @@ class CliTest < Test::Unit::TestCase
   test "add with irb as shell" do
     standard_add_shop_prompts
     $stdin.expects(:gets).times(4).returns("bar.myshopify.com", "key", "pass", "fuuuuuuu")
-    @cli.expects(:puts).with("\nopen https://bar.myshopify.com/admin/api in your browser to get API credentials\n")
+    @cli.expects(:puts).with("\nopen https://bar.myshopify.com/admin/apps/private in your browser to create a private app and get API credentials\n")
     @cli.expects(:puts).with("Default connection is foo")
 
     @cli.add('foo')
