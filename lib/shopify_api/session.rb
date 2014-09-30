@@ -64,7 +64,7 @@ module ShopifyAPI
 
     def initialize(url, token = nil)
       self.url, self.token = url, token
-      self.class.prepare_url(self.url)
+      self.class.prepare_url(self.url.dup)
     end
 
     def create_permission_url(scope, redirect_uri = nil)
