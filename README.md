@@ -1,14 +1,13 @@
-{<img src="https://travis-ci.org/Shopify/shopify_api.png?branch=master" alt="Build Status" />}[https://travis-ci.org/Shopify/shopify_api]
-= Shopify API
+[![Build Status](https://travis-ci.org/Shopify/shopify_api.svg?branch=master)](https://travis-ci.org/Shopify/shopify_api)
+# Shopify API
 
 The Shopify API gem allows Ruby developers to programmatically access the admin section of Shopify stores.
 
 The API is implemented as JSON over HTTP using all four verbs (GET/POST/PUT/DELETE). Each resource, like Order, Product, or Collection, has its own URL and is manipulated in isolation. In other words, we’ve tried to make the API follow the REST principles as much as possible.
 
+## Usage
 
-== Usage
-
-=== Requirements
+### Requirements
 
 All API usage happens through Shopify applications, created by either shop owners for their own shops, or by Shopify Partners for use by other shop owners:
 
@@ -17,15 +16,15 @@ All API usage happens through Shopify applications, created by either shop owner
 
 For more information and detailed documentation about the API visit http://api.shopify.com
 
+### Installation
 
-=== Installation
+To easily install or upgrade to the latest release, use [gem](http://rubygems.org/)
 
-To easily install or upgrade to the latest release, use {gem}[http://rubygems.org/]
+```bash
+gem install shopify_api
+```
 
-    gem install shopify_api
-
-
-=== Getting Started
+### Getting Started
 
 ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveResource has to be configured with a fully authorized URL of a particular store first. To obtain that URL you can follow these steps:
 
@@ -33,41 +32,55 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
 
 2. For a private App you just need to set the base site url as follows:
 
-    shop_url = "https://#{API_KEY}:#{PASSWORD}@SHOP_NAME.myshopify.com/admin"
-    ShopifyAPI::Base.site = shop_url
+   ```ruby
+   shop_url = "https://#{API_KEY}:#{PASSWORD}@SHOP_NAME.myshopify.com/admin"
+   ShopifyAPI::Base.site = shop_url
+   ```
 
    That's it, you're done, skip to step 6 and start using the API!
 
    For a partner app you will need to supply two parameters to the Session class before you instantiate it:
 
-    ShopifyAPI::Session.setup({:api_key => API_KEY, :secret => SHARED_SECRET})
+  ```ruby
+  ShopifyAPI::Session.setup({:api_key => API_KEY, :secret => SHARED_SECRET})
+  ```
 
 3. In order to access a shop's data, apps need an access token from that specific shop. This is a two-stage process. Before interacting with a shop for the first time an app should redirect the user to the following URL:
 
-    GET https://SHOP_NAME.myshopify.com/admin/oauth/authorize
+   ```
+   GET https://SHOP_NAME.myshopify.com/admin/oauth/authorize
+   ```
 
    with the following parameters:
 
-   * client_id – Required – The API key for your app
-   * scope – Required – The list of required scopes (explained here: http://docs.shopify.com/api/tutorials/oauth)
-   * redirect_uri – Optional – The URL that the merchant will be sent to once authentication is complete. Defaults to the URL specified in the application settings and must be the same host as that URL.
+   * ``client_id``– Required – The API key for your app
+   * ``scope`` – Required – The list of required scopes (explained here: http://docs.shopify.com/api/tutorials/oauth)
+   * ``redirect_uri`` – Optional – The URL that the merchant will be sent to once authentication is complete. Defaults to the URL specified in the application settings and must be the same host as that URL.
 
    We've added the create_permision_url method to make this easier, first instantiate your session object:
 
-    session = ShopifyAPI::Session.new("SHOP_NAME.myshopify.com")
+   ```ruby
+   session = ShopifyAPI::Session.new("SHOP_NAME.myshopify.com")
+   ```
 
    Then call:
 
-    scope = ["write_products"]
-    permission_url = session.create_permission_url(scope)
+   ```ruby
+   scope = ["write_products"]
+   permission_url = session.create_permission_url(scope)
+   ```
 
    or if you want a custom redirect_uri:
 
-    permission_url = session.create_permission_url(scope, "https://my_redirect_uri.com")
+   ```ruby
+   permission_url = session.create_permission_url(scope, "https://my_redirect_uri.com")
+   ```
 
 4. Once authorized, the shop redirects the owner to the return URL of your application with a parameter named 'code'. This is a temporary token that the app can exchange for a permanent access token. Make the following call:
 
-    POST https://SHOP_NAME.myshopify.com/admin/oauth/access_token
+   ```
+   POST https://SHOP_NAME.myshopify.com/admin/oauth/access_token
+   ```
 
    with the following parameters:
 
@@ -81,65 +94,81 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
    all the params received from the previous call and the method will verify
    the params, extract the temp code and then request your token:
 
-    token = session.request_token(params)
+   ```ruby
+   token = session.request_token(params)
+   ```
 
    This method will save the token to the session object and return it. For future sessions simply pass the token in when creating the session object:
 
-    session = ShopifyAPI::Session.new("SHOP_NAME.myshopify.com", token)
+   ```ruby
+   session = ShopifyAPI::Session.new("SHOP_NAME.myshopify.com", token)
+   ```
 
 5. The session must be activated before use:
 
+   ```ruby
     ShopifyAPI::Base.activate_session(session)
 
 6. Now you're ready to make authorized API requests to your shop! Data is returned as ActiveResource instances:
 
-    shop = ShopifyAPI::Shop.current
+   ```ruby
+   shop = ShopifyAPI::Shop.current
 
-    # Get a specific product
-    product = ShopifyAPI::Product.find(179761209)
+   # Get a specific product
+   product = ShopifyAPI::Product.find(179761209)
 
-    # Create a new product
-    new_product = ShopifyAPI::Product.new
-    new_product.title = "Burton Custom Freestlye 151"
-    new_product.product_type = "Snowboard"
-    new_product.vendor = "Burton"
-    new_product.save
+   # Create a new product
+   new_product = ShopifyAPI::Product.new
+   new_product.title = "Burton Custom Freestlye 151"
+   new_product.product_type = "Snowboard"
+   new_product.vendor = "Burton"
+   new_product.save
 
-    # Update a product
-    product.handle = "burton-snowboard"
-    product.save
+   # Update a product
+   product.handle = "burton-snowboard"
+   product.save
+   ```
 
    Alternatively, you can use #temp to initialize a Session and execute a command which also handles temporarily setting ActiveResource::Base.site:
 
-    products = ShopifyAPI::Session.temp("SHOP_NAME.myshopify.com", token) { ShopifyAPI::Product.find(:all) }
+   ```ruby
+   products = ShopifyAPI::Session.temp("SHOP_NAME.myshopify.com", token) { ShopifyAPI::Product.find(:all) }
+   ```
 
 7. If you want to work with another shop, you'll first need to clear the session:
 
-    ShopifyAPI::Base.clear_session
+   ```ruby
+   ShopifyAPI::Base.clear_session
+   ```
 
 
-=== Console
+### Console
 
-This package also includes the +shopify+ executable to make it easy to open up an interactive console to use the API with a shop.
+This package also includes the ``shopify`` executable to make it easy to open up an interactive console to use the API with a shop.
 
 1. Obtain a private API key and password to use with your shop (step 2 in "Getting Started")
 
-2. Use the +shopify+ script to save the credentials for the shop to quickly log in.
+2. Use the ``shopify`` script to save the credentials for the shop to quickly log in.
 
-    shopify add yourshopname
+   ```bash
+   shopify add yourshopname
+   ```
 
    Follow the prompts for the shop domain, API key and password.
 
 3. Start the console for the connection.
 
-    shopify console
+   ```bash
+   shopify console
+   ```
 
 4. To see the full list of commands, type:
 
-    shopify help
+   ```bash
+   shopify help
+   ```
 
-
-== Threadsafety
+## Threadsafety
 
 ActiveResource is inherently non-threadsafe, because class variables like ActiveResource::Base.site
 and ActiveResource::Base.headers are shared between threads. This can cause conflicts when using
@@ -150,21 +179,25 @@ variables. Using this forked version will allow ShopifyAPI to be used in a threa
 
 To enable threadsafety with ShopifyAPI, add the following to your Gemfile:
 
-    gem 'activeresource', git: 'git://github.com/Shopify/activeresource', branch: 'threadsafe'
-    gem 'shopify_api', '>= 3.2.1'
+```
+gem 'activeresource', git: 'git://github.com/Shopify/activeresource', branch: 'threadsafe'
+gem 'shopify_api', '>= 3.2.1'
+```
 
-== Using Development Version
+## Using Development Version
 
 Download the source code and run:
 
-    rake install
+```bash
+rake install
+```
 
-== Additional Resources
+## Additional Resources
 
 http://docs.shopify.com/api <= Read the tech docs!
 
 http://ecommerce.shopify.com/c/shopify-apis-and-technology <= Ask questions on the forums!
 
-== Copyright
+## Copyright
 
 Copyright (c) 2012 "Shopify inc.". See LICENSE for details.
