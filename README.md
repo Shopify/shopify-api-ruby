@@ -84,9 +84,9 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
 
    with the following parameters:
 
-   * client_id – Required – The API key for your app
-   * client_secret – Required – The shared secret for your app
-   * code – Required – The token you received in step 3
+   * ``client_id`` – Required – The API key for your app
+   * ``client_secret`` – Required – The shared secret for your app
+   * ``code`` – Required – The token you received in step 3
 
    and you'll get your permanent access token back in the response.
 
@@ -107,7 +107,8 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
 5. The session must be activated before use:
 
    ```ruby
-    ShopifyAPI::Base.activate_session(session)
+   ShopifyAPI::Base.activate_session(session)
+   ```
 
 6. Now you're ready to make authorized API requests to your shop! Data is returned as ActiveResource instances:
 
@@ -170,12 +171,9 @@ This package also includes the ``shopify`` executable to make it easy to open up
 
 ## Threadsafety
 
-ActiveResource is inherently non-threadsafe, because class variables like ActiveResource::Base.site
-and ActiveResource::Base.headers are shared between threads. This can cause conflicts when using
-threaded libraries, like Sidekiq.
+ActiveResource is inherently non-threadsafe, because class variables like ActiveResource::Base.site and ActiveResource::Base.headers are shared between threads. This can cause conflicts when using threaded libraries, like Sidekiq.
 
-We have a forked version of ActiveResource that stores these class variables in threadlocal
-variables. Using this forked version will allow ShopifyAPI to be used in a threaded environment.
+We have a forked version of ActiveResource that stores these class variables in threadlocal variables. Using this forked version will allow ShopifyAPI to be used in a threaded environment.
 
 To enable threadsafety with ShopifyAPI, add the following to your Gemfile:
 
@@ -194,9 +192,9 @@ rake install
 
 ## Additional Resources
 
-http://docs.shopify.com/api <= Read the tech docs!
+API Docs: http://docs.shopify.com/api
 
-http://ecommerce.shopify.com/c/shopify-apis-and-technology <= Ask questions on the forums!
+Ask questions on the forums: http://ecommerce.shopify.com/c/shopify-apis-and-technology
 
 ## Copyright
 
