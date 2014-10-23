@@ -57,7 +57,7 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
    * ``scope`` – Required – The list of required scopes (explained here: http://docs.shopify.com/api/tutorials/oauth)
    * ``redirect_uri`` – Optional – The URL that the merchant will be sent to once authentication is complete. Defaults to the URL specified in the application settings and must be the same host as that URL.
 
-   We've added the create_permision_url method to make this easier, first instantiate your session object:
+   We've added the create_permission_url method to make this easier, first instantiate your session object:
 
    ```ruby
    session = ShopifyAPI::Session.new("SHOP_NAME.myshopify.com")
@@ -198,4 +198,4 @@ Ask questions on the forums: http://ecommerce.shopify.com/c/shopify-apis-and-tec
 
 ## Copyright
 
-Copyright (c) 2012 "Shopify inc.". See LICENSE for details.
+Copyright (c) 2014 "Shopify Inc.". See LICENSE for details.
