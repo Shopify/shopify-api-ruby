@@ -11,7 +11,7 @@ gemfile:
   - Gemfile_ar32
   - Gemfile_ar40threadsafe
 
-install: bundle install
+sudo: false
 
 before_script: echo $OLD_RAKE
 
