@@ -2,6 +2,7 @@ require 'rubygems'
 require 'test/unit'
 require 'fakeweb'
 require 'mocha/setup'
+require 'debugger'
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
@@ -50,7 +51,7 @@ class Test::Unit::TestCase
   end
 
   def load_fixture(name, format=:json)
-    File.read(File.dirname(__FILE__) + "/fixtures/#{name}.#{format}")
+    fixture = File.read(File.dirname(__FILE__) + "/fixtures/#{name}.#{format}").force_encoding("UTF-8")
   end
 
   def fake(endpoint, options={})
