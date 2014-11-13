@@ -50,7 +50,7 @@ class Test::Unit::TestCase
   end
 
   def load_fixture(name, format=:json)
-    fixture = File.read(File.dirname(__FILE__) + "/fixtures/#{name}.#{format}").force_encoding("UTF-8")
+    fixture = File.read(File.dirname(__FILE__) + "/fixtures/#{name}.#{format}")
   end
 
   def fake(endpoint, options={})

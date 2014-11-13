@@ -4,6 +4,7 @@ module ActiveResource
   if ActiveResource::VERSION::MAJOR == 3 && ActiveResource::VERSION::MINOR == 0
     module Formats
       module JsonFormat
+        ActiveSupport::JSON.backend = "JSONGem" if RUBY_VERSION <= "1.9.3"
         def decode(json)
           data = ActiveSupport::JSON.decode(json)
           if data.is_a?(Hash) && data.keys.size == 1
