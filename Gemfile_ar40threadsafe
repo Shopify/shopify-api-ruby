@@ -3,3 +3,5 @@ source "https://rubygems.org"
 gemspec
 
 gem 'activeresource', :git => 'git://github.com/Shopify/activeresource', :ref => 'e9dc76b4aa'
+
+gem 'minitest', "~> 4.2"
