@@ -67,7 +67,7 @@ class SessionTest < Test::Unit::TestCase
       session = ShopifyAPI::Session.new('http://localhost.myshopify.com')
       scope = ["write_products"]
       permission_url = session.create_permission_url(scope, "http://my_redirect_uri.com")
-      assert_equal "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&scope=write_products&redirect_uri=http://my_redirect_uri.com", permission_url
+      assert_equal "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&redirect_uri=http%3A%2F%2Fmy_redirect_uri.com&scope=write_products", permission_url
     end
 
     should "create_permission_url returns correct url with dual scope no redirect uri" do
@@ -75,7 +75,7 @@ class SessionTest < Test::Unit::TestCase
       session = ShopifyAPI::Session.new('http://localhost.myshopify.com')
       scope = ["write_products","write_customers"]
       permission_url = session.create_permission_url(scope)
-      assert_equal "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&scope=write_products,write_customers", permission_url
+      assert_equal "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&scope=write_products%2Cwrite_customers", permission_url
     end
 
     should "create_permission_url returns correct url with no scope no redirect uri" do
