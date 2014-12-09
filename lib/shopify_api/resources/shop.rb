@@ -3,9 +3,9 @@ module ShopifyAPI
   # the shop.
   class Shop < Base
     def self.current
-      find(:one, :from => "/admin/shop.#{format.extension}")
+      find(:one, from: "/admin/shop.#{format.extension}")
     end
-    
+
     def metafields
       Metafield.find(:all)
     end
