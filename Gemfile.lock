@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    shopify_api (3.2.5)
+    shopify_api (3.2.6)
       activeresource (>= 3.0.0)
       pry (>= 0.9.12.6)
       thor (~> 0.18.1)
