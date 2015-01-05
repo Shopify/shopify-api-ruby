@@ -178,7 +178,7 @@ We have a forked version of ActiveResource that stores these class variables in 
 To enable threadsafety with ShopifyAPI, add the following to your Gemfile:
 
 ```
-gem 'activeresource', git: 'git://github.com/Shopify/activeresource', branch: 'threadsafe'
+gem 'activeresource', git: 'git://github.com/Shopify/activeresource', branch: 'threadsafe_2015_01'
 gem 'shopify_api', '>= 3.2.1'
 ```
 
