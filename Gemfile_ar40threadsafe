@@ -2,6 +2,6 @@ source "https://rubygems.org"
 
 gemspec
 
-gem 'activeresource', :git => 'git://github.com/Shopify/activeresource', :ref => 'e9dc76b4aa'
+gem 'activeresource', :git => 'git://github.com/Shopify/activeresource', tag: '4.0-threadsafe'
 
 gem 'minitest', "~> 4.2"

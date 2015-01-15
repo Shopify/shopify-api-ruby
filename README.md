@@ -175,10 +175,10 @@ ActiveResource is inherently non-threadsafe, because class variables like Active
 
 We have a forked version of ActiveResource that stores these class variables in threadlocal variables. Using this forked version will allow ShopifyAPI to be used in a threaded environment.
 
-To enable threadsafety with ShopifyAPI, add the following to your Gemfile:
+To enable threadsafety with ShopifyAPI, add the following to your Gemfile. There are various threadsafe tags that you can use, [depending on which version of rails you are using](https://github.com/shopify/activeresource/tags).
 
 ```
-gem 'activeresource', git: 'git://github.com/Shopify/activeresource', branch: 'threadsafe'
+gem 'activeresource', git: 'git://github.com/Shopify/activeresource', tag: '4.2-threadsafe'
 gem 'shopify_api', '>= 3.2.1'
 ```
 
