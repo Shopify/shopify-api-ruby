@@ -117,10 +117,10 @@ class SessionTest < Test::Unit::TestCase
       ShopifyAPI::Session.secret = 'secret'
       params = {:code => 'any-code', :timestamp => Time.now}
       sorted_params = make_sorted_params(params)
-      signature = Digest::MD5.hexdigest(ShopifyAPI::Session.secret + sorted_params)
+      signature = OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new(), ShopifyAPI::Session.secret, sorted_params)
       fake nil, :url => 'https://testshop.myshopify.com/admin/oauth/access_token',:method => :post, :body => '{"access_token" : "any-token"}'
       session = ShopifyAPI::Session.new("testshop.myshopify.com")
-      token = session.request_token(params.merge(:signature => signature))
+      token = session.request_token(params.merge(:hmac => signature))
       assert_equal "any-token", token
     end
 
@@ -128,11 +128,11 @@ class SessionTest < Test::Unit::TestCase
       ShopifyAPI::Session.secret = 'secret'
       params = {:code => "any-code", :timestamp => Time.now}
       sorted_params = make_sorted_params(params)
-      signature = Digest::MD5.hexdigest(ShopifyAPI::Session.secret + sorted_params)
+      signature = OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new(), ShopifyAPI::Session.secret, sorted_params)
       params[:foo] = 'world'
       assert_raises(ShopifyAPI::ValidationException) do
         session = ShopifyAPI::Session.new("testshop.myshopify.com")
-        session.request_token(params.merge(:signature => signature))
+        session.request_token(params.merge(:hmac => signature))
       end
     end
 
@@ -140,11 +140,11 @@ class SessionTest < Test::Unit::TestCase
       ShopifyAPI::Session.secret = 'secret'
       params = {:code => "any-code", :timestamp => Time.now - 2.days}
       sorted_params = make_sorted_params(params)
-      signature = Digest::MD5.hexdigest(ShopifyAPI::Session.secret + sorted_params)
+      signature = OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new(), ShopifyAPI::Session.secret, sorted_params)
       params[:foo] = 'world'
       assert_raises(ShopifyAPI::ValidationException) do
         session = ShopifyAPI::Session.new("testshop.myshopify.com")
-        session.request_token(params.merge(:signature => signature))
+        session.request_token(params.merge(:hmac => signature))
       end
     end
 
@@ -152,8 +152,8 @@ class SessionTest < Test::Unit::TestCase
       now = Time.now
       params = {"code" => "any-code", "timestamp" => now}
       sorted_params = make_sorted_params(params)
-      signature = Digest::MD5.hexdigest(ShopifyAPI::Session.secret + sorted_params)
-      params = {"code" => "any-code", "timestamp" => now, "signature" => signature}
+      signature = OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new(), ShopifyAPI::Session.secret, sorted_params)
+      params = {"code" => "any-code", "timestamp" => now, "hmac" => signature}
 
       assert_equal true, ShopifyAPI::Session.validate_signature(params)
     end
@@ -161,7 +161,7 @@ class SessionTest < Test::Unit::TestCase
     private
 
     def make_sorted_params(params)
-      sorted_params = params.with_indifferent_access.except(:signature, :action, :controller).collect{|k,v|"#{k}=#{v}"}.sort.join
+      sorted_params = params.with_indifferent_access.except(:signature, :hmac, :action, :controller).collect{|k,v|"#{k}=#{v}"}.sort.join('&')
     end
 
   end

@@ -1,3 +1,4 @@
+require 'openssl'
 
 module ShopifyAPI
 
@@ -43,10 +44,10 @@ module ShopifyAPI
 
       def validate_signature(params)
         params = params.with_indifferent_access
-        return false unless signature = params[:signature]
+        return false unless signature = params[:hmac]
 
-        sorted_params = params.except(:signature, :action, :controller).collect{|k,v|"#{k}=#{v}"}.sort.join
-        Digest::MD5.hexdigest(secret + sorted_params) == signature
+        sorted_params = params.except(:signature, :hmac, :action, :controller).collect{|k,v|"#{k}=#{v}"}.sort.join('&')
+        OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new(), secret, sorted_params) == signature
       end
 
       def host_with_port(site)
