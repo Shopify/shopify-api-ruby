@@ -25,18 +25,18 @@ Gem::Specification.new do |s|
   s.license = 'MIT'
 
   s.add_dependency("activeresource")
-  s.add_dependency("thor", ["~> 0.18.1"])
-  s.add_dependency("pry", [">= 0.9.12.6"])
+
+  dev_dependencies = [['mocha', '>= 0.9.8'],
+                      ['fakeweb'], 
+                      ['minitest', '~> 4.0'],
+                      ['rake'],
+                      ['thor', '~> 0.18.1'],
+                      ['pry', ">= 0.9.12.6"]
+  ]
 
   if s.respond_to?(:add_development_dependency)
-    s.add_development_dependency("mocha", ">= 0.9.8")
-    s.add_development_dependency("fakeweb")
-    s.add_development_dependency("minitest", "~> 4.0")
-    s.add_development_dependency("rake")
+    dev_dependencies.each { |dep| s.add_development_dependency(*dep) }
   else
-    s.add_dependency("mocha", ">= 0.9.8")
-    s.add_dependency("fakeweb")
-    s.add_dependency("minitest", "~> 4.0")
-    s.add_dependency("rake")
+    dev_dependencies.each { |dep| s.add_dependency(*dep) }
   end
 end
