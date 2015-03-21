@@ -3,8 +3,6 @@ PATH
   specs:
     shopify_api (3.2.7)
       activeresource
-      pry (>= 0.9.12.6)
-      thor (~> 0.18.1)
 
 GEM
   remote: https://rubygems.org/
@@ -52,5 +50,7 @@ DEPENDENCIES
   fakeweb
   minitest (~> 4.0)
   mocha (>= 0.9.8)
+  pry (>= 0.9.12.6)
   rake
   shopify_api!
+  thor (~> 0.18.1)
