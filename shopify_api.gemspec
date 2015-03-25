@@ -29,9 +29,7 @@ Gem::Specification.new do |s|
   dev_dependencies = [['mocha', '>= 0.9.8'],
                       ['fakeweb'], 
                       ['minitest', '~> 4.0'],
-                      ['rake'],
-                      ['thor', '~> 0.18.1'],
-                      ['pry', ">= 0.9.12.6"]
+                      ['rake']
   ]
 
   if s.respond_to?(:add_development_dependency)
