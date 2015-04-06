@@ -1,3 +1,12 @@
+A forked version of the https://github.com/Shopify/shopify_api with the ability to search products via attributes
+
+```
+ShopifyAPI::Product.search(query: "sku:IPOD2008PINK")
+```
+
+enjoy and have fun :)
+
+
 [![Build Status](https://travis-ci.org/Shopify/shopify_api.svg?branch=master)](https://travis-ci.org/Shopify/shopify_api)
 # Shopify API
 
