@@ -29,5 +29,9 @@ module ShopifyAPI
     def remove_from_collection(collection)
       collection.remove_product(self)
     end
+
+    def self.search(params)
+      find(:all, from: :search, params: params)
+    end
   end
 end
