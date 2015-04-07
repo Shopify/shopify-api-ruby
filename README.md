@@ -10,6 +10,8 @@ gem 'shopify_api', git: 'git://github.com/achadee/shopify_api'
 Step 2: run a query
 ```
 ShopifyAPI::Product.search({:sku => "XFUS-63912"})
+
+ShopifyAPI::Product.search({:sku => "XFUS-63912", :handle => "hey hey"})
 ```
 It will dynammically search any field on the product and the variants of that product
 
