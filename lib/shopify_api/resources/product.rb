@@ -31,7 +31,36 @@ module ShopifyAPI
     end
 
     def self.search(params)
-      find(:all, from: :search, params: params)
+      products = self.all
+      result = []
+      products.each do |product|
+        meets_criteria = true
+        temp = product.as_json
+        params.each do |key, value|
+          if !temp[key.to_s].nil?
+            if temp[key.to_s] != value.to_s
+              meets_criteria = false
+            end
+          else
+            product.variants.each do |variant|
+              v_temp = variant.as_json
+              params.each do |v_key, v_value|
+                if !v_temp[v_key.to_s].nil?
+                  if v_temp[v_key.to_s] != v_value.to_s
+                    meets_criteria = false
+                  end
+                end
+              end
+            end
+          end
+        end
+
+        if meets_criteria
+          result << product
+        end
+      end
+
+      return result
     end
   end
 end
