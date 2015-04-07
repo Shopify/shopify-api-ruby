@@ -1,5 +1,13 @@
 A forked version of the https://github.com/Shopify/shopify_api with the ability to search products via attributes
 
+
+Step 1: install gem
+
+```
+gem 'shopify_api', git: 'git://github.com/achadee/shopify_api'
+```
+
+Step 2: run a query
 ```
 ShopifyAPI::Product.search(query: "sku:IPOD2008PINK")
 ```
