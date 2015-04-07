@@ -41,16 +41,20 @@ module ShopifyAPI
             if temp[key.to_s] != value.to_s
               meets_criteria = false
             end
+            puts "searching products"
           else
             product.variants.each do |variant|
               v_temp = variant.as_json
               params.each do |v_key, v_value|
-                if !v_temp[v_key.to_s].nil?
-                  if v_temp[v_key.to_s] != v_value.to_s
+                if !v_temp[key.to_s].nil?
+                  if v_temp[key.to_s] != value.to_s
                     meets_criteria = false
                   end
                 end
               end
+              if meets_criteria
+                break
+              end 
             end
           end
         end
