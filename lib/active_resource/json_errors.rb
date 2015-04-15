@@ -16,7 +16,7 @@ module ActiveResource
       clear unless save_cache
 
       messages.each do |key,errors|
-        errors.each do |error|
+        [errors].flatten.each do |error|
           add(key, error)
         end
       end

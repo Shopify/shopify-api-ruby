@@ -13,6 +13,11 @@ module ActiveResource
       assert_equal(["some generic error"], errors)
     end
 
+    def test_parsing_of_error_json_hash_with_plain_strings
+      errors = some_error.from_json({errors: {name: 'missing'}}.to_json)
+      assert_equal({"name"=>"missing"}, errors)
+    end
+
     private
 
     def some_error
