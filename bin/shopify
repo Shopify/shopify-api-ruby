@@ -1,4 +1,3 @@
 #!/usr/bin/env ruby
-require File.expand_path('../../lib/shopify_api',__FILE__)
-require File.expand_path('../../lib/shopify_api/cli',__FILE__)
-ShopifyAPI::Cli.start(ARGV)
+puts "shopify command is no longer bundled with shopify_api."
+puts "if you need these tools, install the shopify_cli gem"
