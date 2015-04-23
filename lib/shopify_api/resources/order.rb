@@ -7,7 +7,7 @@ module ShopifyAPI
     def open;   load_attributes_from_response(post(:open, {}, only_id)); end
 
     def cancel(options = {})
-      load_attributes_from_response(post(:cancel, options, only_id))
+      load_attributes_from_response(post(:cancel, {}, options.to_json))
     end
 
     def transactions

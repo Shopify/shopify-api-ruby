@@ -36,7 +36,7 @@ class LogSubscriberTest < Test::Unit::TestCase
   test "logging on #find with an error" do
     fake "pages/2", :method => :get, :body => nil, :status => 404
 
-    assert_raise ActiveResource::ResourceNotFound do
+    assert_raises ActiveResource::ResourceNotFound do
       ShopifyAPI::Page.find(2)
     end
 
