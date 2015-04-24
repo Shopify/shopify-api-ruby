@@ -8,8 +8,6 @@ class ShopTest < Test::Unit::TestCase
   end
 
   def test_current_should_return_current_shop
-    fake "shop"
-    @shop = ShopifyAPI::Shop.current
     assert @shop.is_a?(ShopifyAPI::Shop)
     assert_equal "Apple Computers", @shop.name
     assert_equal "apple.myshopify.com", @shop.myshopify_domain
@@ -28,9 +26,6 @@ class ShopTest < Test::Unit::TestCase
   end
 
   def test_get_metafields_for_shop
-    fake "shop"
-    @shop = ShopifyAPI::Shop.current
-
     fake "metafields"
 
     metafields = @shop.metafields
@@ -40,9 +35,6 @@ class ShopTest < Test::Unit::TestCase
   end
 
   def test_add_metafield
-    fake "shop"
-    @shop = ShopifyAPI::Shop.current
-
     fake "metafields", :method => :post, :status => 201, :body =>load_fixture('metafield')
 
     field = @shop.add_metafield(ShopifyAPI::Metafield.new(:namespace => "contact", :key => "email", :value => "123@example.com", :value_type => "string"))
@@ -54,9 +46,6 @@ class ShopTest < Test::Unit::TestCase
   end
 
   def test_events
-    fake "shop"
-    @shop = ShopifyAPI::Shop.current
-
     fake "events"
 
     events = @shop.events
