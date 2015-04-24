@@ -16,6 +16,15 @@ class ShopTest < Test::Unit::TestCase
     assert_nil @shop.tax_shipping
   end
 
+  def test_current_with_options_should_return_current_shop
+    fake "shop.json?fields%5B%5D=name&fields%5B%5D=myshopify_domain", :extension => false, :method => :get, :status => 201, :body => load_fixture('shop')
+
+    @shop = ShopifyAPI::Shop.current(params: { fields: [:name, :myshopify_domain]})
+    assert @shop.is_a?(ShopifyAPI::Shop)
+    assert_equal "Apple Computers", @shop.name
+    assert_equal "apple.myshopify.com", @shop.myshopify_domain
+  end
+
   def test_get_metafields_for_shop
     fake "metafields"
 
