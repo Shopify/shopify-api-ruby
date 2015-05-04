@@ -18,6 +18,14 @@ class SessionTest < Test::Unit::TestCase
       assert session.valid?
     end
 
+    should "ignore everything but the subdomain in the shop" do
+      assert_equal "https://testshop.myshopify.com/admin", ShopifyAPI::Session.new("http://user:pass@testshop.notshopify.net/path", "any-token").site
+    end
+
+    should "append the myshopify domain if not given" do
+      assert_equal "https://testshop.myshopify.com/admin", ShopifyAPI::Session.new("testshop", "any-token").site
+    end
+
     should "not raise error without params" do
       assert_nothing_raised do
         session = ShopifyAPI::Session.new("testshop.myshopify.com", "any-token")
@@ -96,16 +104,21 @@ class SessionTest < Test::Unit::TestCase
       assert_equal false, session.valid?
     end
 
-    should "#temp reset ShopifyAPI::Base.site to original value when using a non-standard port" do
-      ShopifyAPI::Session.setup(:api_key => "key", :secret => "secret")
-      session1 = ShopifyAPI::Session.new('fakeshop.myshopify.com:3000', 'token1')
-      ShopifyAPI::Base.activate_session(session1)
+    should "myshopify_domain supports non-standard ports" do
+      begin
+        ShopifyAPI::Session.setup(:api_key => "key", :secret => "secret", :myshopify_domain => 'localhost', port: '3000')
 
-      ShopifyAPI::Session.temp("testshop.myshopify.com", "any-token") {
-        @assigned_site = ShopifyAPI::Base.site
-      }
-      assert_equal 'https://testshop.myshopify.com/admin', @assigned_site.to_s
-      assert_equal 'https://fakeshop.myshopify.com:3000/admin', ShopifyAPI::Base.site.to_s
+        session = ShopifyAPI::Session.new('fakeshop.localhost:3000', 'token1')
+        ShopifyAPI::Base.activate_session(session)
+        assert_equal 'https://fakeshop.localhost:3000/admin', ShopifyAPI::Base.site.to_s
+
+        session = ShopifyAPI::Session.new('fakeshop', 'token1')
+        ShopifyAPI::Base.activate_session(session)
+        assert_equal 'https://fakeshop.localhost:3000/admin', ShopifyAPI::Base.site.to_s
+      ensure
+        ShopifyAPI::Session.myshopify_domain = "myshopify.com"
+        ShopifyAPI::Session.port = nil
+      end
     end
 
     should "return site for session" do
