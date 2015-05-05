@@ -5,3 +5,4 @@ rdoc
 doc
 pkg
 .ruby-version
+*.lock
