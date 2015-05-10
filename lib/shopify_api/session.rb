@@ -1,4 +1,5 @@
 require 'openssl'
+require 'rack'
 
 module ShopifyAPI
 
@@ -53,8 +54,16 @@ module ShopifyAPI
         params = params.with_indifferent_access
         return false unless signature = params[:hmac]
 
-        sorted_params = params.except(:signature, :hmac, :action, :controller).collect{|k,v|"#{k}=#{v}"}.sort.join('&')
-        OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new(), secret, sorted_params) == signature
+        calculated_signature = OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new(), secret, encoded_params_for_signature(params))
+
+        Rack::Utils.secure_compare(calculated_signature, signature)
+      end
+
+      private
+
+      def encoded_params_for_signature(params)
+        params = params.except(:signature, :hmac, :action, :controller)
+        params.map{|k,v| "#{URI.escape(k.to_s, '&=%')}=#{URI.escape(v.to_s, '&%')}"}.sort.join('&')
       end
     end
 
