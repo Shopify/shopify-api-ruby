@@ -180,6 +180,15 @@ class SessionTest < Test::Unit::TestCase
       assert_equal true, ShopifyAPI::Session.validate_signature(params)
     end
 
+    test "return true when validating signature of params with percent sign characters" do
+      ShopifyAPI::Session.secret = 'secret'
+      params = {'a%3D1%26b' => '2%26c%3D3'}
+      to_sign = "a%253D1%2526b=2%2526c%253D3"
+      params['hmac'] = OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha256'), ShopifyAPI::Session.secret, to_sign)
+
+      assert_equal true, ShopifyAPI::Session.validate_signature(params)
+    end
+
     private
 
     def make_sorted_params(params)
