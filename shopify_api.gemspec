@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
   s.license = 'MIT'
 
   s.add_dependency("activeresource")
+  s.add_dependency("rack")
 
   dev_dependencies = [['mocha', '>= 0.9.8'],
                       ['fakeweb'], 
