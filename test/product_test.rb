@@ -35,4 +35,19 @@ class ProductTest < Test::Unit::TestCase
     variant.price = "0.50"
     variant.save
   end
+
+  def test_search
+    fake "products/search.json?query=sku%3AIPOD2008PINK", extension: false, body: load_fixture('products_search')
+
+    results = ShopifyAPI::Product.search(query: "sku:IPOD2008PINK")
+    # puts results.as_json
+
+    results.first.variants.each do |variant|
+      puts variant.sku
+      if variant.sku == 'IPOD2008PINK'
+        return  assert true
+      end
+    end
+    assert false
+  end
 end

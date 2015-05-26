@@ -29,5 +29,42 @@ module ShopifyAPI
     def remove_from_collection(collection)
       collection.remove_product(self)
     end
+
+    def self.search(params)
+      products = self.all
+      result = []
+      products.each do |product|
+        meets_criteria = true
+        temp = product.as_json
+        params.each do |key, value|
+          if !temp[key.to_s].nil?
+            if temp[key.to_s] != value.to_s
+              meets_criteria = false
+            end
+            puts "searching products"
+          else
+            product.variants.each do |variant|
+              v_temp = variant.as_json
+              params.each do |v_key, v_value|
+                if !v_temp[key.to_s].nil?
+                  if v_temp[key.to_s] != value.to_s
+                    meets_criteria = false
+                  end
+                end
+              end
+              if meets_criteria
+                break
+              end 
+            end
+          end
+        end
+
+        if meets_criteria
+          result << product
+        end
+      end
+
+      return result
+    end
   end
 end

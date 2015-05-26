@@ -1,3 +1,23 @@
+A forked version of the https://github.com/Shopify/shopify_api with the ability to search products via attributes
+
+
+Step 1: install gem
+
+```
+gem 'shopify_api', git: 'git://github.com/achadee/shopify_api'
+```
+
+Step 2: run a query
+```
+ShopifyAPI::Product.search({:sku => "XFUS-63912"})
+
+ShopifyAPI::Product.search({:sku => "XFUS-63912", :handle => "hey hey"})
+```
+It will dynammically search any field on the product and the variants of that product
+
+enjoy and have fun :)
+
+
 [![Build Status](https://travis-ci.org/Shopify/shopify_api.svg?branch=master)](https://travis-ci.org/Shopify/shopify_api)
 # Shopify API
 
