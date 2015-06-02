@@ -1,3 +1,7 @@
+== Version 4.0.4
+
+* Fixed truthiness for order cancellations. Requests are now sent in the request body and as JSON
+
 == Version 4.0.3
 
 * Fixed hmac signature validation for params with delimiters (`&`, `=` or `%`)
