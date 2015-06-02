@@ -35,5 +35,13 @@ class OrderTest < Test::Unit::TestCase
     order = ShopifyAPI::Order.find(450789469)
     assert order.destroy
   end
+
+  test "cancel an order with params" do
+    fake 'orders/450789469', :method => :get, :status => 200, :body => load_fixture('order')
+    fake 'orders/450789469/cancel', :method => :post, :body => load_fixture('order')
+    order = ShopifyAPI::Order.find(450789469)
+    order.cancel(email: false, restock: true)
+    assert_request_body({'email' => false, 'restock' => true}.to_json)
+  end
 end
 

@@ -1,5 +1,5 @@
 require 'rubygems'
-require 'test/unit'
+require 'minitest/autorun'
 require 'fakeweb'
 require 'mocha/setup'
 
@@ -10,8 +10,12 @@ require 'shopify_api'
 FakeWeb.allow_net_connect = false
 
 # setup ShopifyAPI with fake api_key and secret
+module Test
+  module Unit
+  end
+end
 
-class Test::Unit::TestCase
+class Test::Unit::TestCase < Minitest::Unit::TestCase
   def self.test(string, &block)
     define_method("test:#{string}", &block)
   end
@@ -46,11 +50,27 @@ class Test::Unit::TestCase
 
   # Custom Assertions
   def assert_not(expression)
-    assert_block("Expected <#{expression}> to be false!") { not expression }
+    refute expression, "Expected <#{expression}> to be false!"
+  end
+
+  def assert_nothing_raised
+    yield
+  end
+
+  def assert_not_includes(array, value)
+    refute array.include?(value)
+  end
+
+  def assert_includes(array, value)
+    assert array.include?(value)
   end
 
   def load_fixture(name, format=:json)
     File.read(File.dirname(__FILE__) + "/fixtures/#{name}.#{format}")
+  end
+
+  def assert_request_body(expected)
+    assert_equal expected, FakeWeb.last_request.body
   end
 
   def fake(endpoint, options={})
