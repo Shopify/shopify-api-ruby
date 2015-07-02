@@ -19,5 +19,9 @@ module ShopifyAPI
     def activate
       load_attributes_from_response(post(:activate))
     end
+
+    def adjust(amount = nil)
+      load_attributes_from_response(post(:adjust, {amount: amount}))
+    end
   end
 end
