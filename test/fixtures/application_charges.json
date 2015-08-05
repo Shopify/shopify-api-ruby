@@ -1,0 +1,57 @@
+{
+  "application_charges": [
+    {
+      "api_client_id": 861378,
+      "created_at": "2015-07-10T15:16:14+10:00",
+      "id": 803750,
+      "name": "Magic Mouse",
+      "price": "99.00",
+      "return_url": "http:\/\/google.com",
+      "status": "declined",
+      "test": null,
+      "updated_at": "2015-07-10T15:18:09+10:00",
+      "charge_type": null,
+      "decorated_return_url": "http:\/\/google.com?charge_id=803750"
+    },
+    {
+      "api_client_id": 861378,
+      "created_at": "2015-07-10T15:10:10+10:00",
+      "id": 803748,
+      "name": "Screen Replacement",
+      "price": "499.00",
+      "return_url": "http:\/\/google.com",
+      "status": "pending",
+      "test": null,
+      "updated_at": "2015-07-10T15:10:10+10:00",
+      "charge_type": null,
+      "decorated_return_url": "http:\/\/google.com?charge_id=803748",
+      "confirmation_url": "https:\/\/this-is-my-test-shop.myshopify.com\/admin\/charges\/803748\/confirm_application_charge?signature=BAhpA6RDDA%3D%3D--ef4769e2c1149de0ed19dee9ecddaa155baa7baf"
+    },
+    {
+      "api_client_id": 861378,
+      "created_at": "2015-07-10T15:03:51+10:00",
+      "id": 803742,
+      "name": "iPod Cleaning",
+      "price": "5.00",
+      "return_url": "http:\/\/google.com",
+      "status": "cancelled",
+      "test": null,
+      "updated_at": "2015-07-10T15:03:51+10:00",
+      "charge_type": null,
+      "decorated_return_url": "http:\/\/google.com?charge_id=803742"
+    },
+    {
+      "api_client_id": 861378,
+      "created_at": "2015-07-10T15:03:51+10:00",
+      "id": 803740,
+      "name": "iPhone Case",
+      "price": "23.00",
+      "return_url": "http:\/\/google.com",
+      "status": "accepted",
+      "test": null,
+      "updated_at": "2015-07-10T15:03:51+10:00",
+      "charge_type": null,
+      "decorated_return_url": "http:\/\/google.com?charge_id=803740"
+    }
+  ]
+}
