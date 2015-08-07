@@ -34,7 +34,7 @@
       "name": "iPod Cleaning",
       "price": "5.00",
       "return_url": "http:\/\/google.com",
-      "status": "cancelled",
+      "status": "expired",
       "test": null,
       "updated_at": "2015-07-10T15:03:51+10:00",
       "charge_type": null,
