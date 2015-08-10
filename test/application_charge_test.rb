@@ -40,13 +40,13 @@ class ApplicationChargeTest < Test::Unit::TestCase
     assert_equal "Screen Replacement", pending_charges.first.name
   end
 
-  def test_list_cancelled_application_charges
+  def test_list_expired_application_charges
     fake "application_charges", :method => :get, :status => 201, :body => load_fixture('application_charges')
 
-    cancelled_charges = ShopifyAPI::ApplicationCharge.cancelled
+    expired_charges = ShopifyAPI::ApplicationCharge.expired
 
-    assert_equal 1, cancelled_charges.size
-    assert_equal "iPod Cleaning", cancelled_charges.first.name
+    assert_equal 1, expired_charges.size
+    assert_equal "iPod Cleaning", expired_charges.first.name
   end
 
   def test_list_accepted_application_charges
