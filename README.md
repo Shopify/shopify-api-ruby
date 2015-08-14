@@ -11,7 +11,7 @@ The API is implemented as JSON over HTTP using all four verbs (GET/POST/PUT/DELE
 
 All API usage happens through Shopify applications, created by either shop owners for their own shops, or by Shopify Partners for use by other shop owners:
 
-* Shop owners can create applications for themselves through their own admin: http://docs.shopify.com/api/tutorials/creating-a-private-app
+* Shop owners can create applications for themselves through their own admin: https://docs.shopify.com/api/authentication/creating-a-private-app
 * Shopify Partners create applications through their admin: http://app.shopify.com/services/partners
 
 For more information and detailed documentation about the API visit http://api.shopify.com
@@ -55,7 +55,8 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
 
    * ``client_id``– Required – The API key for your app
    * ``scope`` – Required – The list of required scopes (explained here: http://docs.shopify.com/api/tutorials/oauth)
-   * ``redirect_uri`` – Optional – The URL that the merchant will be sent to once authentication is complete. Defaults to the URL specified in the application settings and must be the same host as that URL.
+   * ``redirect_uri`` – Required – The URL where you want to redirect the users after they authorize the client. The complete URL specified here must be identical to one of the Application Redirect URLs set in the App's section of the Partners dashboard. Note: in older applications, this parameter was optional, and redirected to the Application Callback URL when no other value was specified.
+   * ``state`` – Optional – A randomly selected value provided by your application, which is unique for each authorization request. During the OAuth callback phase, your application must check that this value matches the one you provided during authorization. [This mechanism is important for the security of your application](https://tools.ietf.org/html/rfc6819#section-3.6).
 
    We've added the create_permission_url method to make this easier, first instantiate your session object:
 
@@ -76,7 +77,15 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
    permission_url = session.create_permission_url(scope, "https://my_redirect_uri.com")
    ```
 
-4. Once authorized, the shop redirects the owner to the return URL of your application with a parameter named 'code'. This is a temporary token that the app can exchange for a permanent access token. Make the following call:
+4. Once authorized, the shop redirects the owner to the return URL of your application with a parameter named 'code'. This is a temporary token that the app can exchange for a permanent access token.
+
+   Before you proceed, make sure your application performs the following security checks. If any of the checks fails, your application must reject the request with an error, and must not proceed further.
+
+   * Ensure the provided ``state`` is the same one that your application provided to Shopify during Step 3.
+   * Ensure the provided hmac is valid. The hmac is signed by Shopify as explained below, in the Verification section.
+   * Ensure the provided hostname parameter is a valid hostname, ends with myshopify.com, and does not contain characters other than letters (a-z), numbers (0-9), dots, and hyphens.
+
+   If all security checks pass, the authorization code can be exchanged once for a permanent access token. The exchange is made with a request to the shop.
 
    ```
    POST https://SHOP_NAME.myshopify.com/admin/oauth/access_token
@@ -145,28 +154,34 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
 
 ### Console
 
-This package also includes the ``shopify`` executable to make it easy to open up an interactive console to use the API with a shop.
+This package also supports the ``shopify-cli`` executable to make it easy to open up an interactive console to use the API with a shop.
 
-1. Obtain a private API key and password to use with your shop (step 2 in "Getting Started")
+1. Install the ``shopify_cli`` gem.
 
-2. Use the ``shopify`` script to save the credentials for the shop to quickly log in.
+```bash
+gem install shopify_cli
+```
+
+2. Obtain a private API key and password to use with your shop (step 2 in "Getting Started")
+
+3. Use the ``shopify-cli`` script to save the credentials for the shop to quickly log in.
 
    ```bash
-   shopify add yourshopname
+   shopify-cli add yourshopname
    ```
 
    Follow the prompts for the shop domain, API key and password.
 
-3. Start the console for the connection.
+4. Start the console for the connection.
 
    ```bash
-   shopify console
+   shopify-cli console
    ```
 
-4. To see the full list of commands, type:
+5. To see the full list of commands, type:
 
    ```bash
-   shopify help
+   shopify-cli help
    ```
 
 ## Threadsafety
