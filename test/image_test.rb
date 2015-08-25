@@ -36,4 +36,10 @@ class ImageTest < Test::Unit::TestCase
     image = ShopifyAPI::Image.new(product_id: 632910392, id: 850703190)
     assert image.destroy
   end
+
+  def test_delete_image_with_one_call
+    fake "products/632910392/images/850703190", :method => :delete, :body => "destroyed"
+    response = ShopifyAPI::Image.delete(850703190, product_id: 632910392)
+    assert_equal '200', response.code
+  end
 end
