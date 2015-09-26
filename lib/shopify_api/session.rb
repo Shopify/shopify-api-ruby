@@ -16,7 +16,7 @@ module ShopifyAPI
     class << self
 
       def setup(params)
-        params.each { |k,value| send("#{k}=", value) }
+        params.each { |k,value| public_send("#{k}=", value) }
       end
 
       def temp(domain, token, &block)
