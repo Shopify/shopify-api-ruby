@@ -5,4 +5,4 @@ Please open an issue here if you encounter a specific bug with this API client l
 
 General questions about the Shopify API and usage of this package (not neccessarily a bug) should be posted on the [Shopify forums](https://ecommerce.shopify.com/c/shopify-apis-and-technology).
 
-When in doubt post on the forum first as more people are monitoring there and you'll likely get your answer quicker. 
+When in doubt, post on the forum first. You'll likely have your questions answered more quickly if you post there; more people monitor the forum than Github.
