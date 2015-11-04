@@ -12,12 +12,20 @@ module ShopifyAPI
       end
     end
 
+    def usage_charges
+      UsageCharge.find(:all, params: { recurring_application_charge_id: id })
+    end
+
     def cancel
       load_attributes_from_response(self.destroy)
     end
 
     def activate
       load_attributes_from_response(post(:activate))
+    end
+
+    def customize(customize_recurring_app_charge_params = {})
+      load_attributes_from_response(put(:customize, recurring_application_charge: customize_recurring_app_charge_params ))
     end
   end
 end
