@@ -25,7 +25,7 @@ module ActiveResource
     def from_string(error, save_cache = false)
       clear unless save_cache
 
-      add("message", error)
+      add(:base, error)
     end
   end
 end
