@@ -1,3 +1,7 @@
+== Version 4.0.7
+
+* Added `ShippingAPI::ShippingZone`
+
 == Version 4.0.6
 
 * Replaced `cancelled` with `expired` in `ShopifyAPI::ApplicationCharge`
