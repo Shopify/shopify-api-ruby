@@ -1,0 +1,20 @@
+{
+  "usage_charges": [
+    {
+      "description": "1000 emails",
+      "id": 359376005,
+      "price": "1.00",
+      "billing_on": "2015-07-08",
+      "balance_remaining": "83.00",
+      "balance_used": "17.00"
+    },
+    {
+      "description": "1000 emails",
+      "id": 359376006,
+      "price": "1.00",
+      "billing_on": "2015-07-08",
+      "balance_remaining": "83.00",
+      "balance_used": "17.00"
+    }
+  ]
+}
