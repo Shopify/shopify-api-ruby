@@ -5,6 +5,15 @@ module ActiveResource
 
     attr_reader :response
 
+    alias_method :raw_initialize, :initialize
+
+    def initialize(site, *args)
+      if site.blank?
+        raise ArgumentError, 'Missing site URI. Make sure ShopifyAPI calls are wrapped in a Shopify session'
+      end
+      raw_initialize(site, *args)
+    end
+
     def handle_response_with_response_capture(response)
       @response = handle_response_without_response_capture(response)
     end
