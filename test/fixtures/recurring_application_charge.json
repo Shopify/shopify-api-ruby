@@ -13,6 +13,8 @@
     "test": null,
     "trial_days": 0,
     "trial_ends_on": null,
+    "terms": "$1 per 1000 emails",
+    "capped_amount": "100.00",
     "updated_at": "2014-01-20T13:42:19-05:00",
     "decorated_return_url": "http://super-duper.shopifyapps.com?charge_id=654381177",
     "confirmation_url": "http://apple.myshopify.com/admin/charges/654381177/confirm_recurring_application_charge?signature=BAhpBHkQASc%3D--419fc7424f8c290ac2b21b9004ed223e35b52164"
