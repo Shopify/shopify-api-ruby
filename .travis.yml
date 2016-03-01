@@ -10,6 +10,8 @@ gemfile:
   - Gemfile_ar31
   - Gemfile_ar32
   - Gemfile_ar40threadsafe
+  - Gemfile_ar42threadsafe
+  - Gemfile_ar50
 
 sudo: false
 
