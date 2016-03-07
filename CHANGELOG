@@ -1,3 +1,7 @@
+== Version 4.2.0
+
+* Threadsafety is now compatible with the latest ActiveResource master
+
 == Version 4.1.1
 
 * Added explicit 90 second timeout to `ShopifyAPI::Base`
