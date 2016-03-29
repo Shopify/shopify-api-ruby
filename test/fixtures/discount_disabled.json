@@ -1,0 +1,17 @@
+{
+  "discount": {
+    "id": 680866,
+    "code": "TENOFF",
+    "value": "10.0",
+    "ends_at": null,
+    "starts_at": null,
+    "status": "disabled",
+    "minimum_order_amount": "0.00",
+    "usage_limit": null,
+    "applies_to_id": null,
+    "applies_once": false,
+    "discount_type": "percentage",
+    "applies_to_resource": null,
+    "times_used": 1
+  }
+}
