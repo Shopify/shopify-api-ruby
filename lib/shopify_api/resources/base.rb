@@ -28,7 +28,7 @@ module ShopifyAPI
     end
 
     class << self
-      if ActiveResource::VERSION::MAJOR == 4 && ActiveResource::VERSION::PRE == 'threadsafe'
+      if ActiveResource::Base.respond_to?(:_headers) && ActiveResource::Base.respond_to?(:_headers_defined?)
         def headers
           if _headers_defined?
             _headers

@@ -88,7 +88,7 @@ class BaseTest < Test::Unit::TestCase
     end
   end
 
-  if ActiveResource::VERSION::MAJOR >= 4 && ActiveResource::VERSION::PRE == "threadsafe"
+  if ActiveResource::VERSION::MAJOR >= 5 || (ActiveResource::VERSION::MAJOR >= 4 && ActiveResource::VERSION::PRE == "threadsafe")
     test "#headers set in the main thread affect spawned threads" do
       ShopifyAPI::Base.headers['X-Custom'] = "the value"
       Thread.new do
