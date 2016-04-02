@@ -11,6 +11,11 @@
     "published_scope": "global",
     "disjunctive": false,
     "rules": [
+      {
+        "column": "title",
+        "relation": "starts_with",
+        "condition": "mac"
+      }
     ]
   }
 }
