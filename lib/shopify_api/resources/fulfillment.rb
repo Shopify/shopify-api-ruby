@@ -8,5 +8,6 @@ module ShopifyAPI
 
     def cancel; load_attributes_from_response(post(:cancel, {}, only_id)); end
     def complete; load_attributes_from_response(post(:complete, {}, only_id)); end
+    def open; load_attributes_from_response(post(:open, {}, only_id)); end
   end
 end
