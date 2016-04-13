@@ -33,6 +33,14 @@ class FulFillmentTest < Test::Unit::TestCase
         assert_equal 'cancelled', fulfillment.status
       end
     end
+
+    context "#find" do
+      should "be able to find fulfillment" do
+        fulfillment = ShopifyAPI::Fulfillment.find(255858046, :params => {:order_id => 450789469})
+        assert_equal 255858046, fulfillment.id
+        assert_equal 450789469, fulfillment.order_id
+      end
+    end
   end
 
 end
