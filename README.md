@@ -30,6 +30,8 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
 
 1. First create a new application in either the partners admin or your store admin. For a private App you'll need the API_KEY and the PASSWORD otherwise you'll need the API_KEY and SHARED_SECRET.
 
+   If you're not sure how to create a new application in the partner/store admin and/or if you're not sure how to generate the required credentials, you can [read the related shopify docs](https://docs.shopify.com/api/guides/api-credentials) on the same.
+
 2. For a private App you just need to set the base site url as follows:
 
    ```ruby
