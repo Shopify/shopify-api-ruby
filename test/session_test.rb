@@ -95,6 +95,22 @@ class SessionTest < Test::Unit::TestCase
     assert_equal "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&scope=write_products,write_customers", permission_url
   end
 
+  test "create_permission_url returns correct url with dual string scope no redirect uri" do
+    ShopifyAPI::Session.setup(:api_key => "My_test_key", :secret => "My test secret")
+    session = ShopifyAPI::Session.new('http://localhost.myshopify.com')
+    scope = "write_products","write_customers"
+    permission_url = session.create_permission_url(scope)
+    assert_equal "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&scope=write_products,write_customers", permission_url
+  end
+
+  test "create_permission_url returns correct url with string scope no redirect uri" do
+    ShopifyAPI::Session.setup(:api_key => "My_test_key", :secret => "My test secret")
+    session = ShopifyAPI::Session.new('http://localhost.myshopify.com')
+    scope = "write_products"
+    permission_url = session.create_permission_url(scope)
+    assert_equal "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&scope=write_products", permission_url
+  end
+
   test "create_permission_url returns correct url with no scope no redirect uri" do
     ShopifyAPI::Session.setup(:api_key => "My_test_key", :secret => "My test secret")
     session = ShopifyAPI::Session.new('http://localhost.myshopify.com')
