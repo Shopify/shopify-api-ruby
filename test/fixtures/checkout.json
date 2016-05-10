@@ -1,0 +1,148 @@
+{
+  "checkout": {
+    "completed_at":null,
+    "created_at":"2012-10-12T07:05:27-04:00",
+    "currency":"USD",
+    "customer_id":207119551,
+    "device_id":null,
+    "discount_code":null,
+    "email":"bob.norman@hostmail.com",
+    "location_id":null,
+    "name":"#862052962",
+    "note":"",
+    "order_id":null,
+    "order":null,
+    "payment_due":"379.69",
+    "payment_url":"https:\\/\\/app.local\\/cardserver\\/sessions",
+    "privacy_policy_url":null,
+    "refund_policy_url":null,
+    "requires_shipping":true,
+    "reservation_time_left":0,
+    "reservation_time":null,
+    "source_identifier":null,
+    "source_name":"web",
+    "source_url":null,
+    "subtotal_price":"398.00",
+    "tax_exempt":false,
+    "taxes_included":false,
+    "terms_of_service_url":null,
+    "token":"exuw7apwoycchjuwtiqg8nytfhphr62a",
+    "total_price":"379.69",
+    "total_tax":"21.49",
+    "updated_at":"2012-10-12T07:05:27-04:00",
+    "user_id":null,
+    "web_url":"https:\\/\\/checkout.local\\/690933842\\/checkouts\\/exuw7apwoycchjuwtiqg8nytfhphr62a",
+    "attributes":[
+      {
+        "name":"custom engraving",
+        "value":"Happy Birthday"
+      },
+      {
+        "name":"colour",
+        "value":"green"
+      }
+    ],
+    "line_items":[
+      {
+        "id":"87ddf742e6723675",
+        "key":"87ddf742e6723675",
+        "product_id":632910392,
+        "variant_id":49148385,
+        "sku":"IPOD2008RED",
+        "vendor":"Apple",
+        "title":"IPod Nano - 8GB",
+        "variant_title":"Red",
+        "taxable":true,
+        "requires_shipping":true,
+        "price":"199.00",
+        "compare_at_price":null,
+        "line_price":"199.00",
+        "properties":{
+
+        },
+        "quantity":1,
+        "grams":200,
+        "fulfillment_service":"manual",
+        "applied_discounts":[
+
+        ]
+      },
+      {
+        "id":"937376156bb92d12",
+        "key":"937376156bb92d12",
+        "product_id":632910392,
+        "variant_id":808950810,
+        "sku":"IPOD2008PINK",
+        "vendor":"Apple",
+        "title":"IPod Nano - 8GB",
+        "variant_title":"Pink",
+        "taxable":true,
+        "requires_shipping":true,
+        "price":"199.00",
+        "compare_at_price":null,
+        "line_price":"199.00",
+        "properties":{
+
+        },
+        "quantity":1,
+        "grams":200,
+        "fulfillment_service":"manual",
+        "applied_discounts":[
+
+        ]
+      }
+    ],
+    "gift_cards":[
+
+    ],
+    "tax_lines":[
+      {
+        "price":"21.49",
+        "rate":0.06,
+        "title":"State Tax",
+        "compare_at":0.06
+      }
+    ],
+    "tax_manipulations":[
+
+    ],
+    "shipping_line":{
+      "handle":"shopify-Free%20Shipping-0.00",
+      "price":"0.00",
+      "title":"Free Shipping"
+    },
+    "shipping_address":{
+      "id":550558813,
+      "first_name":"Bob",
+      "last_name":"Norman",
+      "phone":"555-625-1199",
+      "company":null,
+      "address1":"Chestnut Street 92",
+      "address2":"",
+      "city":"Louisville",
+      "province":"Kentucky",
+      "province_code":"KY",
+      "country":"United States",
+      "country_code":"US",
+      "zip":"40202"
+    },
+    "credit_card":null,
+    "billing_address":{
+      "id":550558813,
+      "first_name":"Bob",
+      "last_name":"Norman",
+      "phone":"555-625-1199",
+      "company":null,
+      "address1":"Chestnut Street 92",
+      "address2":"",
+      "city":"Louisville",
+      "province":"Kentucky",
+      "province_code":"KY",
+      "country":"United States",
+      "country_code":"US",
+      "zip":"40202"
+    },
+    "applied_discount":null,
+    "discount":null
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "payment": {
+    "id": 123456789,
+    "unique_token": "my_idempotency_token",
+    "transaction": null,
+    "credit_card": {
+      "first_digits": "42424",
+      "last_digits": "4242",
+      "first_name": "Bob",
+      "last_name": "Norman",
+      "expiry_month": "12",
+      "expiry_year": "2019"
+    }
+  }
+}

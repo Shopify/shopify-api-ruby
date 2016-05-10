@@ -44,4 +44,3 @@ class OrderTest < Test::Unit::TestCase
     assert_request_body({'email' => false, 'restock' => true}.to_json)
   end
 end
-
