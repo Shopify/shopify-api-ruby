@@ -1,3 +1,9 @@
+== Version 4.2.1
+
+* Support for Users and Discounts (Shopify Plus only)
+* Adds Customer#account_activation_url method
+* Adds ability to open a fulfillment.
+
 == Version 4.2.0
 
 * Threadsafety is now compatible with the latest ActiveResource master
