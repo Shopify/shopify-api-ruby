@@ -42,10 +42,11 @@ class SessionTest < Test::Unit::TestCase
   end
 
   test "raise error if params passed but signature omitted" do
-    assert_raises(ShopifyAPI::ValidationException) do
+    exception = assert_raises(ShopifyAPI::ValidationException) do
       session = ShopifyAPI::Session.new("testshop.myshopify.com")
       session.request_token({'code' => 'any-code'})
     end
+    assert_match /Invalid Signature/, exception.message
   end
 
   test "setup api_key and secret for all sessions" do
@@ -106,10 +107,14 @@ class SessionTest < Test::Unit::TestCase
   test "raise exception if code invalid in request token" do
     ShopifyAPI::Session.setup(:api_key => "My test key", :secret => "My test secret")
     session = ShopifyAPI::Session.new('http://localhost.myshopify.com')
+    params = {:code => 'bad-code', :timestamp => Time.now}
+    sorted_params = make_sorted_params(params)
+    signature = OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new(), ShopifyAPI::Session.secret, sorted_params)
     fake nil, :url => 'https://localhost.myshopify.com/admin/oauth/access_token',:method => :post, :status => 404, :body => '{"error" : "invalid_request"}'
-    assert_raises(ShopifyAPI::ValidationException) do
-      session.request_token(params={:code => "bad-code"})
+    exception = assert_raises(RuntimeError) do
+      session.request_token(params.merge(:hmac => signature))
     end
+    assert_match /RuntimeError/, exception.message
     assert_equal false, session.valid?
   end
 
@@ -155,21 +160,22 @@ class SessionTest < Test::Unit::TestCase
     sorted_params = make_sorted_params(params)
     signature = OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new(), ShopifyAPI::Session.secret, sorted_params)
     params[:foo] = 'world'
-    assert_raises(ShopifyAPI::ValidationException) do
+    exception = assert_raises(ShopifyAPI::ValidationException) do
       session = ShopifyAPI::Session.new("testshop.myshopify.com")
       session.request_token(params.merge(:hmac => signature))
     end
+    assert_match /Invalid Signature/, exception.message
   end
 
   test "raise error if timestamp is too old" do
     params = {:code => "any-code", :timestamp => Time.now - 2.days}
     sorted_params = make_sorted_params(params)
     signature = OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new(), ShopifyAPI::Session.secret, sorted_params)
-    params[:foo] = 'world'
-    assert_raises(ShopifyAPI::ValidationException) do
+    exception = assert_raises(ShopifyAPI::ValidationException) do
       session = ShopifyAPI::Session.new("testshop.myshopify.com")
       session.request_token(params.merge(:hmac => signature))
     end
+    assert_match /Invalid Signature/, exception.message
   end
 
   test "return true when the signature is valid and the keys of params are strings" do
@@ -178,6 +184,8 @@ class SessionTest < Test::Unit::TestCase
     sorted_params = make_sorted_params(params)
     signature = OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new(), ShopifyAPI::Session.secret, sorted_params)
     params = {"code" => "any-code", "timestamp" => now, "hmac" => signature}
+
+    assert_equal true, ShopifyAPI::Session.validate_signature(params)
   end
 
   test "return true when validating signature of params with ampersand and equal sign characters" do
