@@ -5,6 +5,8 @@ module ShopifyAPI
 
   class ValidationException < StandardError
   end
+  class SessionException < StandardError
+  end
 
   class Session
     cattr_accessor :api_key, :secret, :protocol, :myshopify_domain, :port
@@ -91,8 +93,10 @@ module ShopifyAPI
 
       if response.code == "200"
         token = JSON.parse(response.body)['access_token']
+      elsif response.code == "400"
+        raise ShopifyAPI::ValidationException, "Invalid Code: Possible malicious login"
       else
-        raise RuntimeError, response.msg
+        raise ShopifyAPI::SessionException, response.msg
       end
     end
 

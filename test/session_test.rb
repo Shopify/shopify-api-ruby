@@ -110,11 +110,24 @@ class SessionTest < Test::Unit::TestCase
     params = {:code => 'bad-code', :timestamp => Time.now}
     sorted_params = make_sorted_params(params)
     signature = OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new(), ShopifyAPI::Session.secret, sorted_params)
-    fake nil, :url => 'https://localhost.myshopify.com/admin/oauth/access_token',:method => :post, :status => 404, :body => '{"error" : "invalid_request"}'
-    exception = assert_raises(RuntimeError) do
+    fake nil, :url => 'https://localhost.myshopify.com/admin/oauth/access_token',:method => :post, :status => 400, :body => '{"error" : "invalid_request"}'
+    exception = assert_raises(ShopifyAPI::ValidationException) do
       session.request_token(params.merge(:hmac => signature))
     end
-    assert_match /RuntimeError/, exception.message
+    assert_match /Invalid Code/, exception.message
+    assert_equal false, session.valid?
+  end
+
+  test "raise exception if request token fails" do
+    ShopifyAPI::Session.setup(:api_key => "My test key", :secret => "My test secret")
+    session = ShopifyAPI::Session.new('http://localhost.myshopify.com')
+    params = {:code => 'any-code', :timestamp => Time.now}
+    sorted_params = make_sorted_params(params)
+    signature = OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new(), ShopifyAPI::Session.secret, sorted_params)
+    fake nil, :url => 'https://localhost.myshopify.com/admin/oauth/access_token',:method => :post, :status => 500, :body => ''
+    exception = assert_raises(ShopifyAPI::SessionException) do
+      session.request_token(params.merge(:hmac => signature))
+    end
     assert_equal false, session.valid?
   end
 
