@@ -28,8 +28,8 @@ Gem::Specification.new do |s|
   s.add_dependency("rack")
 
   dev_dependencies = [['mocha', '>= 0.9.8'],
-                      ['fakeweb'], 
-                      ['minitest', '~> 4.0'],
+                      ['fakeweb'],
+                      ['minitest'],
                       ['rake']
   ]
 
