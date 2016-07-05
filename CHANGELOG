@@ -1,3 +1,8 @@
+== Version 4.3.0
+
+* Require Ruby >= `2.3.0`
+* Use inheritance instead of the deprecated Rails `Module#alias_method_chain`
+
 == Version 4.2.2
 
 * Support for AccessToken#delegate endpoint
