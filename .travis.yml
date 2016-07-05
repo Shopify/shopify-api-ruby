@@ -1,4 +1,5 @@
 language: ruby
+sudo: false
 
 rvm:
   - 2.0.0
@@ -10,22 +11,5 @@ gemfile:
   - Gemfile_ar31
   - Gemfile_ar32
   - Gemfile_ar40threadsafe
-  - Gemfile_ar42threadsafe
-
-sudo: false
-
-before_script: echo $OLD_RAKE
-
-matrix:
-  include:
-    - rvm: 2.2.1
-      gemfile: Gemfile_ar50
-    - rvm: 1.9.2
-      gemfile: Gemfile_ar30
-      env: OLD_RAKE=1
-    - rvm: 1.9.2
-      gemfile: Gemfile_ar31
-      env: OLD_RAKE=1
-    - rvm: 1.9.2
-      gemfile: Gemfile_ar32
-      env: OLD_RAKE=1
+  - Gemfile_ar41
+  - Gemfile_ar50
