@@ -16,6 +16,10 @@ All API usage happens through Shopify applications, created by either shop owner
 
 For more information and detailed documentation about the API visit http://api.shopify.com
 
+#### Ruby version
+
+This gem requires Ruby 2.3.1 as of version 4.3. If you need to use an older Ruby version then update your Gemfile to lock onto an older release than 4.3.
+
 ### Installation
 
 To easily install or upgrade to the latest release, use [gem](http://rubygems.org/)
