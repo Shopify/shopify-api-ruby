@@ -1,4 +1,5 @@
 require 'shopify_api/version'
+require 'shopify_api/connection'
 
 module ShopifyAPI
   class Base < ActiveResource::Base
@@ -70,6 +71,12 @@ module ShopifyAPI
 
         define_method resource_id.to_sym do
           @prefix_options[resource_id]
+        end
+
+        private
+
+        def connection_klass
+          Connection
         end
       end
     end
