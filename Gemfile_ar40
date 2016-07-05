@@ -2,4 +2,4 @@ source "https://rubygems.org"
 
 gemspec
 
-gem 'activeresource', '~> 4.1.0'
+gem "activeresource", "4.0.0"

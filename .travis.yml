@@ -2,14 +2,31 @@ language: ruby
 sudo: false
 
 rvm:
-  - 2.0.0
-  - 1.9.3
+  - 2.3.1
+  - 2.4.0-preview1
 
 gemfile:
   - Gemfile
   - Gemfile_ar30
   - Gemfile_ar31
   - Gemfile_ar32
-  - Gemfile_ar40threadsafe
-  - Gemfile_ar41
-  - Gemfile_ar50
+  - Gemfile_ar40
+  - Gemfile_ar_master
+
+matrix:
+  fast_finish: true
+  allow_failures:
+    - rvm: 2.4.0-preview1
+      gemfile: Gemfile
+    - rvm: 2.4.0-preview1
+      gemfile: Gemfile_ar30
+    - rvm: 2.4.0-preview1
+      gemfile: Gemfile_ar31
+    - rvm: 2.4.0-preview1
+      gemfile: Gemfile_ar32
+    - rvm: 2.4.0-preview1
+      gemfile: Gemfile_ar40
+    - rvm: 2.4.0-preview1
+      gemfile: Gemfile_ar_master
+    - rvm: 2.3.1
+      gemfile: Gemfile_ar_master
