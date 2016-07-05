@@ -1,5 +1,5 @@
 module ShopifyAPI
-  class Connection
+  class Connection < ActiveResource::Connection
     attr_reader :response
 
     def handle_response(response)
