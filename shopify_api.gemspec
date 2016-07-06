@@ -1,4 +1,3 @@
-$:.push File.expand_path("../lib", __FILE__)
 require "shopify_api/version"
 
 Gem::Specification.new do |s|
@@ -23,7 +22,7 @@ Gem::Specification.new do |s|
   s.summary = %q{ShopifyAPI is a lightweight gem for accessing the Shopify admin REST web services}
   s.license = "MIT"
 
-  s.add_dependency("activeresource", " >= 3.0.0")
+  s.add_dependency("activeresource", ">= 3.0.0")
   s.add_dependency("rack")
 
   s.add_development_dependency("mocha", ">= 0.9.8")
