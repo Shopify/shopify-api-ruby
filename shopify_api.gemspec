@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
 require "shopify_api/version"
 
@@ -22,20 +21,13 @@ Gem::Specification.new do |s|
 
   s.rdoc_options = ["--charset=UTF-8"]
   s.summary = %q{ShopifyAPI is a lightweight gem for accessing the Shopify admin REST web services}
-  s.license = 'MIT'
+  s.license = "MIT"
 
-  s.add_dependency("activeresource")
+  s.add_dependency("activeresource", " >= 3.0.0")
   s.add_dependency("rack")
 
-  dev_dependencies = [['mocha', '>= 0.9.8'],
-                      ['fakeweb'],
-                      ['minitest'],
-                      ['rake']
-  ]
-
-  if s.respond_to?(:add_development_dependency)
-    dev_dependencies.each { |dep| s.add_development_dependency(*dep) }
-  else
-    dev_dependencies.each { |dep| s.add_dependency(*dep) }
-  end
+  s.add_development_dependency("mocha", ">= 0.9.8")
+  s.add_development_dependency("fakeweb")
+  s.add_development_dependency("minitest", ">= 4.0")
+  s.add_development_dependency("rake")
 end

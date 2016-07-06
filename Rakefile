@@ -1,5 +1,3 @@
-# encoding: UTF-8
-require 'rubygems'
 require 'rake'
 require "bundler/gem_tasks"
 
@@ -22,7 +20,6 @@ rescue LoadError
     abort "RCov is not available. In order to run rcov, you must: sudo gem install spicycode-rcov"
   end
 end
-
 
 task :default => :test
 
