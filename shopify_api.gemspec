@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
 require "shopify_api/version"
 
@@ -27,15 +26,8 @@ Gem::Specification.new do |s|
   s.add_dependency("activeresource")
   s.add_dependency("rack")
 
-  dev_dependencies = [['mocha', '>= 0.9.8'],
-                      ['fakeweb'],
-                      ['minitest'],
-                      ['rake']
-  ]
-
-  if s.respond_to?(:add_development_dependency)
-    dev_dependencies.each { |dep| s.add_development_dependency(*dep) }
-  else
-    dev_dependencies.each { |dep| s.add_dependency(*dep) }
-  end
+  s.add_development_dependency("mocha", ">= 0.9.8")
+  s.add_development_dependency("fakeweb")
+  s.add_development_dependency("minitest", ">= 4.0")
+  s.add_development_dependency("rake")
 end
