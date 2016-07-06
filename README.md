@@ -18,7 +18,7 @@ For more information and detailed documentation about the API visit http://api.s
 
 #### Ruby version
 
-This gem requires Ruby 2.3.1 as of version 4.3. If you need to use an older Ruby version then update your Gemfile to lock onto an older release than 4.3.
+This gem requires Ruby 2.3.1 as of version 4.3. If you need to use an older Ruby version then update your `Gemfile` to lock onto an older release than 4.3.
 
 ### Installation
 
@@ -192,16 +192,9 @@ gem install shopify_cli
 
 ## Threadsafety
 
-ActiveResource is inherently non-threadsafe, because class variables like ActiveResource::Base.site and ActiveResource::Base.headers are shared between threads. This can cause conflicts when using threaded libraries, like Sidekiq.
+ActiveResource is threadsafe as of version 4.1 (which works with Rails 4.x and above).
 
-We have a forked version of ActiveResource that stores these class variables in threadlocal variables. Using this forked version will allow ShopifyAPI to be used in a threaded environment.
-
-To enable threadsafety with ShopifyAPI, add the following to your Gemfile. There are various threadsafe tags that you can use, [depending on which version of rails you are using](https://github.com/shopify/activeresource/tags).
-
-```
-gem 'activeresource', git: 'git://github.com/Shopify/activeresource', tag: '4.2-threadsafe'
-gem 'shopify_api', '>= 3.2.1'
-```
+If you were previously using Shopify's [activeresource fork](https://github.com/shopify/activeresource) then you should remove it and use ActiveResource 4.1.
 
 ## Using Development Version
 
