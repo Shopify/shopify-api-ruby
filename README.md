@@ -22,10 +22,25 @@ This gem requires Ruby 2.3.1 as of version 4.3. If you need to use an older Ruby
 
 ### Installation
 
-To easily install or upgrade to the latest release, use [gem](http://rubygems.org/)
+Add `shopify_api` to your `Gemfile`:
+
+```ruby
+gem 'shopify_api'
+```
+
+Or install via [gem](http://rubygems.org/)
 
 ```bash
 gem install shopify_api
+```
+
+#### Rails 5
+
+shopify_api is compatible with Rails 5 but since the latest ActiveResource release (4.1) is locked on Rails 4.x, you'll need to use the unreleased master version:
+
+```ruby
+gem 'shopify_api'
+gem 'activeresource', github: 'rails/activeresource'
 ```
 
 ### Getting Started
