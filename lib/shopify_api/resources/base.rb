@@ -7,6 +7,7 @@ module ShopifyAPI
     extend Countable
     self.timeout = 90
     self.include_root_in_json = false
+    self.connection_klass = ::ShopifyAPI::Connection
     self.headers['User-Agent'] = ["ShopifyAPI/#{ShopifyAPI::VERSION}",
                                   "ActiveResource/#{ActiveResource::VERSION::STRING}",
                                   "Ruby/#{RUBY_VERSION}"].join(' ')
@@ -71,12 +72,6 @@ module ShopifyAPI
 
         define_method resource_id.to_sym do
           @prefix_options[resource_id]
-        end
-
-        private
-
-        def connection_klass
-          Connection
         end
       end
     end
