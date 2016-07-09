@@ -7,7 +7,7 @@ module ShopifyAPI
     extend Countable
     self.timeout = 90
     self.include_root_in_json = false
-    self.connection_klass = ::ShopifyAPI::Connection
+    self.connection_class = ::ShopifyAPI::Connection
     self.headers['User-Agent'] = ["ShopifyAPI/#{ShopifyAPI::VERSION}",
                                   "ActiveResource/#{ActiveResource::VERSION::STRING}",
                                   "Ruby/#{RUBY_VERSION}"].join(' ')
