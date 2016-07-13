@@ -1,3 +1,3 @@
 module ShopifyAPI
-  VERSION = "4.3.1"
+  VERSION = "4.3.0"
 end
