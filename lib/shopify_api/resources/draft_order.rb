@@ -12,7 +12,8 @@ module ShopifyAPI
 
     def checkout(params = only_id)
       response = post(:checkout)
-      instantiate_record(format.decode(resource.body), {})
+
+      Checkout.new(self.class.format.decode(response.body))
     end
   end
 end
