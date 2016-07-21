@@ -23,7 +23,6 @@ require 'shopify_api/resources'
 require 'shopify_api/session'
 require 'shopify_api/connection'
 
-# ActiveResource::Base.connection_class was introduced in https://github.com/rails/activeresource/pull/222
 if ShopifyAPI::Base.respond_to?(:connection_class)
   ShopifyAPI::Base.connection_class = ShopifyAPI::Connection
 else
