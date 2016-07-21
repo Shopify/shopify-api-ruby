@@ -1,9 +1,10 @@
+Shopify API
+===========
 [![Version][gem]][gem_url] [![Build Status](https://travis-ci.org/Shopify/shopify_api.svg?branch=master)](https://travis-ci.org/Shopify/shopify_api)
 
 [gem]: https://img.shields.io/gem/v/shopify_api.svg
 [gem_url]: https://rubygems.org/gems/shopify_api
 
-# Shopify API
 
 The Shopify API gem allows Ruby developers to programmatically access the admin section of Shopify stores.
 
