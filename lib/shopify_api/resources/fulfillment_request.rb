@@ -6,6 +6,10 @@ module ShopifyAPI
       @prefix_options[:order_id]
     end
 
-    def cancel; load_attributes_from_response(post(:cancel, {}, only_id)); end
+    def mark_as_failed
+      load_attributes_from_response(
+        put(:mark_as_failed, message: failure_message)
+      )
+    end
   end
 end
