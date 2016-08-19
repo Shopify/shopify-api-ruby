@@ -12,7 +12,7 @@ module DisablePrefixCheck
 
       init_prefix_explicit resource_type, resource_id
 
-      define_singleton_method :prefix do |options|
+      define_singleton_method :prefix do |options = {}|
         resource_type =  options[resource] if flexible
 
         options[resource_id].nil? ? "/admin/" : "/admin/#{resource_type}/#{options[resource_id]}/"
