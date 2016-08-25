@@ -9,7 +9,7 @@ class RefundTest < Test::Unit::TestCase
       :restock => true,
       :note => "wrong size",
       :shipping => { :full_refund => true },
-      :refund_line_items => [{ :line_item => 518995019, :quantity => 1 }]
+      :refund_line_items => [{ :line_item_id => 518995019, :quantity => 1 }]
     )
     assert_equal 703073504, refund.refund_line_items.first.line_item_id
   end
