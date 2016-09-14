@@ -58,6 +58,8 @@ module ShopifyAPI
 
       def clear_session
         self.site = nil
+        self.password = nil
+        self.user = nil
         self.headers.delete('X-Shopify-Access-Token')
       end
 

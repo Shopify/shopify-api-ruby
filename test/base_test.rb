@@ -24,6 +24,19 @@ class BaseTest < Test::Unit::TestCase
     assert_equal 'token1', ShopifyAPI::Shop.headers['X-Shopify-Access-Token']
   end
 
+  test '#clear_session should clear base site settings from Base' do
+    ShopifyAPI::Base.site = "https://foo:bar@www.zombo.com"
+
+    assert_equal "foo", ShopifyAPI::Base.user
+    assert_equal "bar", ShopifyAPI::Base.password
+
+    ShopifyAPI::Base.clear_session
+
+    assert_equal nil, ShopifyAPI::Base.user
+    assert_equal nil, ShopifyAPI::Base.password
+    assert_equal nil, ShopifyAPI::Base.site
+  end
+
   test '#clear_session should clear site and headers from Base' do
     ShopifyAPI::Base.activate_session @session1
     ShopifyAPI::Base.clear_session
