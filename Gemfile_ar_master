@@ -3,3 +3,4 @@ source "https://rubygems.org"
 gemspec
 
 gem 'activeresource', git: 'git://github.com/rails/activeresource'
+gem "rack", "< 2" if RUBY_VERSION < "2.2"
