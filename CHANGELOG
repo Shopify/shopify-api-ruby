@@ -1,3 +1,7 @@
+== Version 4.3.2
+
+* Relax Ruby version requirement to >= `2.0`
+
 == Version 4.3.1
 
 * Support for ShopifyAPI::ApplicationCredit
