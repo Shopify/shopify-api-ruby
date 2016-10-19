@@ -11,7 +11,7 @@ module ShopifyAPI
     self.protocol = 'https'
     self.myshopify_domain = 'myshopify.com'
 
-    attr_accessor :url, :token, :name
+    attr_accessor :url, :token, :name, :extra
 
     class << self
 
@@ -67,9 +67,10 @@ module ShopifyAPI
       end
     end
 
-    def initialize(url, token = nil)
+    def initialize(url, token = nil, extra = {})
       self.url = self.class.prepare_url(url)
       self.token = token
+      self.extra = extra
     end
 
     def create_permission_url(scope, redirect_uri = nil)
@@ -85,12 +86,15 @@ module ShopifyAPI
         raise ShopifyAPI::ValidationException, "Invalid Signature: Possible malicious login"
       end
 
-      code = params['code']
-
-      response = access_token_request(code)
-
+      response = access_token_request(params['code'])
       if response.code == "200"
-        token = JSON.parse(response.body)['access_token']
+        self.extra = JSON.parse(response.body)
+        self.token = extra.delete('access_token')
+
+        if expires_in = extra.delete('expires_in')
+          extra['expires_at'] = Time.now.utc.to_i + expires_in
+        end
+        token
       else
         raise RuntimeError, response.msg
       end
@@ -106,6 +110,21 @@ module ShopifyAPI
 
     def valid?
       url.present? && token.present?
+    end
+
+    def expires_in
+      return unless expires_at.present?
+      [0, expires_at.to_i - Time.now.utc.to_i].max
+    end
+
+    def expires_at
+      return unless extra.present?
+      @expires_at ||= Time.at(extra['expires_at']).utc
+    end
+
+    def expired?
+      return false if expires_in.nil?
+      expires_in <= 0
     end
 
     private
