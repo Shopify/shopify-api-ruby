@@ -1,76 +1,48 @@
 module ShopifyAPI
   module Pollable
-    ACCEPTED_RESPONSE_CODE = "202"
-    INTERVAL_HEADER = "Retry-After"
-    LOCATION_HEADER = "Location"
+    extend self
 
-    def self.included(klass)
-      klass.extend(ClassMethods)
-      klass.polling_max_retries = 35
-      klass.polling_interval = 500
-      klass.polling_enabled = true
-      klass.use_suggested_interval = true
-    end
+    DEFAULT_POLLING_STRATEGY = -> (interval: 2) { sleep(interval) }
+    MAX_RETRIES = 500
+    INTERVAL = 2
 
-    module ClassMethods
-      attr_accessor(
-        :polling_max_retries,
-        :polling_interval,
-        :polling_enabled,
-        :use_suggested_interval,
-      )
+    def poll(**options)
+      options = defaults.merge(options)
+      retry_n = 0
 
-      def with_polling(enabled = true)
-        @old_polling_enabled, @polling_enabled = @polling_enabled, enabled
-        yield
-      ensure
-        @polling_enabled = @old_polling_enabled
-      end
-
-      def without_polling(&block)
-        without_polling(false, &block)
-      end
-
-      def polling_enabled?
-        !!@polling_enabled
+      loop do
+        previous_response = instance_exec(&block)
+        binding.pry
+        break if previous_response
       end
     end
 
     private
 
-    def load_attributes_from_response(response)
-      ready_response = poll_from_previous_response(response)
-      super(ready_response)
+    def defaults
+      {
+        interval: INTERVAL,
+        max_retries: MAX_RETRIES,
+        polling_strategy: DEFAULT_POLLING_STRATEGY,
+        follow_location: true,
+      }
     end
 
-    def ready?(response)
-      response.code == ACCEPTED_RESPONSE_CODE
-    end
-
-    def poll_from_previous_response(response)
-      return response unless polling_enabled?
-      return response if ready?(response)
-
-      poll do
-        connection.get()
-      end
-    end
-
-    def poll
-      retry_n = 0
-      result = nil
-
-      loop do
-        result = yield
-
-        break if ready?(result)
-        break if retry_n > self.class.max_retries
-
-        retry_n += 1
-        sleep(self.class.polling_interval)
-      end
-
-      result
-    end
+# RETRY_MAX = 500
+#
+# def self.poll_until_ready(klass)
+#   retry_n = 1
+#   result = nil
+#
+#   loop do
+#     result = yield
+#
+#     break if klass.connection.response.code != '202' || retry_n > RETRY_MAX
+#     retry_n += 1
+#     sleep 2
+#   end
+#
+#   result
+# end
   end
 end
