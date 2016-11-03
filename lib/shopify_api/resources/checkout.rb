@@ -1,5 +1,9 @@
+require 'shopify_api/resources/shipping_rate'
+
 module ShopifyAPI
   class Checkout < Base
+    has_many :shipping_rates, class_name: ShopifyAPI::ShippingRate
+
     def id
       @attributes[:token]
     end
@@ -11,10 +15,6 @@ module ShopifyAPI
 
     def pay_with(vault_session, &block)
       Payment.create_from(self, vault_session).tap(&block)
-    end
-
-    class ShippingRate < Base
-      self.prefix = "/admin/checkouts/:checkout_id/"
     end
 
     class Payment < Base
