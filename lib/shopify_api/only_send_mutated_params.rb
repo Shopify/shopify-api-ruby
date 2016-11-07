@@ -1,12 +1,5 @@
 module ShopifyAPI
   module OnlySendMutatedParams
-    def self.included(base)
-      base.class_eval do
-        before_save :slice_attributes_on_changed
-        after_save :clear_changed_attributes
-      end
-    end
-
     def method_missing(method_symbol, *args)
       method_name = method_symbol.to_s
 
@@ -15,6 +8,13 @@ module ShopifyAPI
       end
 
       super
+    end
+
+    def save
+      slice_attributes_on_changed
+      base = super
+      clear_changed_attributes
+      base
     end
 
     private
