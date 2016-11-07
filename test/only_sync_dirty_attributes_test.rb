@@ -5,10 +5,6 @@ class OnlySyncDirtyAttributesTest < Test::Unit::TestCase
     include ShopifyAPI::OnlySyncDirtyAttributes
   end
 
-  def setup
-    super
-  end
-
   def test_creating_a_record_syncs_attributes
     fake "fakes", method: :post, status: 201, body: {
       id: 2112,
