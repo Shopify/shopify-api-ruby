@@ -22,7 +22,7 @@ require 'shopify_api/countable'
 require 'shopify_api/resources'
 require 'shopify_api/session'
 require 'shopify_api/connection'
-require 'shopify_api/only_send_mutated_params'
+require 'shopify_api/only_sync_dirty_attributes'
 
 if ShopifyAPI::Base.respond_to?(:connection_class)
   ShopifyAPI::Base.connection_class = ShopifyAPI::Connection

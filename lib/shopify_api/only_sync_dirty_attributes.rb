@@ -1,5 +1,5 @@
 module ShopifyAPI
-  module OnlySendMutatedParams
+  module OnlySyncDirtyAttributes
     def method_missing(method_symbol, *args)
       method_name = method_symbol.to_s
 

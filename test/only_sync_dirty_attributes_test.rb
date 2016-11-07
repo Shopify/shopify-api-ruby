@@ -1,8 +1,8 @@
 require "test_helper"
 
-class OnlySendMutatedParamsTest < Test::Unit::TestCase
+class OnlySyncDirtyAttributesTest < Test::Unit::TestCase
   class Fake < ShopifyAPI::Base
-    include ShopifyAPI::OnlySendMutatedParams
+    include ShopifyAPI::OnlySyncDirtyAttributes
   end
 
   def setup
