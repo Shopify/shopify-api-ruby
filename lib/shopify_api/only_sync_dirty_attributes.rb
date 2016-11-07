@@ -3,8 +3,8 @@ module ShopifyAPI
     def method_missing(method_symbol, *args)
       method_name = method_symbol.to_s
 
-      if method_name =~ /(=)$/
-        changed << $`
+      if match_data = /(?<attribute_name>.+)(?:=)$/.match(method_name)
+        changed << match_data[:attribute_name]
       end
 
       super
