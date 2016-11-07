@@ -10,14 +10,23 @@ module ShopifyAPI
       super
     end
 
-    def save
-      slice_attributes_on_changed
-      base = super
-      clear_changed_attributes
-      base
+    def save(*)
+      with_dirty_attributes { super }
     end
 
     private
+
+    def with_dirty_attributes
+      old_attributes = @attributes.dup
+      slice_attributes_on_changed
+      yield
+      clear_changed_attributes
+    rescue ActiveResource::ClientError,
+      ActiveResource::ConnectionError,
+      ActiveResource::TimeoutError => e
+      @attributes = old_attributes
+      raise(e)
+    end
 
     def slice_attributes_on_changed
       @attributes.slice!(*[changed, self.class.primary_key].flatten)
