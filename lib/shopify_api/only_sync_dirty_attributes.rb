@@ -23,9 +23,9 @@ module ShopifyAPI
       clear_changed_attributes
     rescue ActiveResource::ClientError,
       ActiveResource::ConnectionError,
-      ActiveResource::TimeoutError => e
+      ActiveResource::TimeoutError
       @attributes = old_attributes
-      raise(e)
+      raise
     end
 
     def slice_attributes_on_changed
