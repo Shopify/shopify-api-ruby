@@ -2,6 +2,7 @@ require "test_helper"
 
 class OnlySyncDirtyAttributesTest < Test::Unit::TestCase
   class Fake < ShopifyAPI::Base
+    self.format = :json
     include ShopifyAPI::OnlySyncDirtyAttributes
   end
 
