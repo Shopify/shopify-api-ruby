@@ -25,13 +25,25 @@ class ShopTest < Test::Unit::TestCase
     assert_equal "apple.myshopify.com", @shop.myshopify_domain
   end
 
-  def test_get_metafields_for_shop
+  def test_get_all_metafields_for_shop
     fake "metafields"
 
     metafields = @shop.metafields
 
-    assert_equal 2, metafields.length
+    assert_equal 3, metafields.length
     assert metafields.all?{|m| m.is_a?(ShopifyAPI::Metafield)}
+  end
+
+  def test_get_2_metafields_for_shop
+    body = ActiveSupport::JSON.decode load_fixture 'metafields'
+    body['metafields'].slice! 2, 1
+
+    fake 'metafields.json?limit=2', body: body.to_json, extension: false
+
+    metafields = @shop.metafields limit: 2
+
+    assert_equal 2, metafields.length
+    assert metafields.all?{ |m| m.is_a? ShopifyAPI::Metafield }
   end
 
   def test_add_metafield

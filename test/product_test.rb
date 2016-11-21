@@ -19,13 +19,25 @@ class ProductTest < Test::Unit::TestCase
     assert_equal "123@example.com", field.value
   end
 
-  def test_get_metafields_for_product
+  def test_get_all_metafields_for_product
     fake "products/632910392/metafields", :body => load_fixture('metafields')
 
     metafields = @product.metafields
 
+    assert_equal 3, metafields.length
+    assert metafields.all?{ |m| m.is_a? ShopifyAPI::Metafield }
+  end
+
+  def test_get_2_metafields_for_product
+    body = ActiveSupport::JSON.decode load_fixture 'metafields'
+    body['metafields'].slice! 2, 1
+
+    fake 'products/632910392/metafields.json?limit=2', body: body.to_json, extension: false
+
+    metafields = @product.metafields limit: 2
+
     assert_equal 2, metafields.length
-    assert metafields.all?{|m| m.is_a?(ShopifyAPI::Metafield)}
+    assert metafields.all?{ |m| m.is_a? ShopifyAPI::Metafield }
   end
 
   def test_update_loaded_variant

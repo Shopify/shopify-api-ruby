@@ -6,10 +6,10 @@ module ShopifyAPI
       find(:one, options.merge({from: "/admin/shop.#{format.extension}"}))
     end
 
-    def metafields
-      Metafield.find(:all)
+    def metafields(**options)
+      Metafield.find :all, params: options
     end
-    
+
     def add_metafield(metafield)
       raise ArgumentError, "You can only add metafields to resource that has been saved" if new?      
       metafield.save
