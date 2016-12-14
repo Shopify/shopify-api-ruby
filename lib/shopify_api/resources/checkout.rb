@@ -13,8 +13,16 @@ module ShopifyAPI
       pay_with(vault_session, &block)
     end
 
+    def shipping_rates
+      AsyncResource.poll(:retry) do
+        ShippingRate.find(:all, params: { checkout_id: id })
+      end
+    end
+
     def pay_with(vault_session, &block)
-      Payment.create_from(self, vault_session).tap(&block)
+      AsyncResource.poll(:follow_location) do
+        Payment.create_from(self, vault_session).tap(&block)
+      end
     end
 
     class Payment < Base

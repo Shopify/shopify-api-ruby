@@ -59,6 +59,27 @@ class CheckoutTest < Test::Unit::TestCase
     end
   end
 
+  def test_zzz_with_pollable_payment
+    vault_url = "#{ShopifyAPI::VaultSession.site}#{ShopifyAPI::VaultSession.collection_path}"
+
+    fake "vault_session", method: :post, status: 201, url: vault_url,
+      body: load_fixture("vault_session")
+    fake "checkouts/exuw7apwoycchjuwtiqg8nytfhphr62a/payments", method: :post, status: 202,
+      body: load_fixture("checkout_payment"),
+      headers: {
+        "Location" => "https://this-is-my-test-shop.myshopify.com/checkouts/exuw7apwoycchjuwtiqg8nytfhphr62a/payments/123456789"
+      }
+    fake "checkouts/exuw7apwoycchjuwtiqg8nytfhphr62a/payments/123456789", method: :get, status: 202,
+      body: { payment: { id: 999 } }, headers: { "Location" => "" }
+
+    vault_session = ShopifyAPI::VaultSession.create(payment: credit_card_payment_params)
+    checkout = ShopifyAPI::Checkout.new(token: "exuw7apwoycchjuwtiqg8nytfhphr62a")
+    checkout.pay_with(vault_session) do |payment|
+      puts "ASDASD"
+      # assert_equal 999, payment.id
+    end
+  end
+
   private
 
   def setup_fake_payment_with_vault_session
