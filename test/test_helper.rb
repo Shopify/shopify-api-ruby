@@ -38,6 +38,8 @@ class Test::Unit::TestCase < Minitest::Unit::TestCase
       end
     end
 
+    ShopifyAPI::VaultSession.format = ShopifyAPI::VaultSessionFormat
+
     ShopifyAPI::Base.clear_session
     ShopifyAPI::Base.site = "https://this-is-my-test-shop.myshopify.com/admin"
     ShopifyAPI::Base.password = nil

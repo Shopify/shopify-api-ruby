@@ -1,11 +1,6 @@
 require "test_helper"
 
 class CheckoutTest < Test::Unit::TestCase
-  def setup
-    super
-    ShopifyAPI::VaultSession.format = ShopifyAPI::VaultSessionFormat
-  end
-
   test "get all should get all orders" do
     fake "checkouts", :method => :get, :status => 200, :body => load_fixture("checkouts")
     checkout = ShopifyAPI::Checkout.all
