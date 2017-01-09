@@ -12,13 +12,13 @@ class CollectionListingTest < Test::Unit::TestCase
     assert_equal 'Home page', collection_listings.first.title
   end
 
-  # def test_get_collection_listing_for_collection_id
-  #   fake "applications/999/collection_listings/2", method: :get, status: 201, body: load_fixture('collection_listing')
+  def test_get_collection_listing_for_collection_id
+    fake "applications/999/collection_listings/1", method: :get, status: 201, body: load_fixture('collection_listing')
 
-  #   collection_listing = ShopifyAPI::CollectionListing.find(2, params: { application_id: 999 })
+    collection_listing = ShopifyAPI::CollectionListing.find(1, params: { application_id: 999 })
 
-  #   assert_equal 'Synergistic Silk Chair', collection_listing.title
-  # end
+    assert_equal 'Home page', collection_listing.title
+  end
 
   # def test_get_collection_listing_product_ids
   #   fake "applications/999/collection_listings/product_ids", method: :get, status: 201, body: load_fixture('collection_listing_product_ids')
