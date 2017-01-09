@@ -1,6 +1,6 @@
 require "test_helper"
 
-class CheckoutTest < Test::Unit::TestCase
+class VaultSessionTest < Test::Unit::TestCase
   def setup
     super
     ShopifyAPI::VaultSession.format = ShopifyAPI::VaultSessionFormat

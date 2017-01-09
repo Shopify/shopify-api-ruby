@@ -1,5 +1,3 @@
-require 'shopify_api/resources/shipping_rate'
-
 module ShopifyAPI
   class Checkout < Base
     def id
