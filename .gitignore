@@ -8,4 +8,3 @@ pkg
 *.lock
 .idea
 .dev/
-.bundle/
