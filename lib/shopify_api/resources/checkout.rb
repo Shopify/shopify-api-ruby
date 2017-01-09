@@ -2,8 +2,6 @@ require 'shopify_api/resources/shipping_rate'
 
 module ShopifyAPI
   class Checkout < Base
-    has_many :shipping_rates, class_name: ShopifyAPI::ShippingRate
-
     def id
       @attributes[:token]
     end
@@ -26,6 +24,10 @@ module ShopifyAPI
           payment: { session_id: vault_session.id },
         )
       end
+    end
+
+    class ShippingRate < Base
+      self.prefix = "/admin/checkouts/:checkout_id"
     end
   end
 end
