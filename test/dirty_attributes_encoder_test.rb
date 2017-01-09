@@ -1,9 +1,9 @@
 require "test_helper"
 
-class OnlySyncDirtyAttributesTest < Test::Unit::TestCase
+class DirtyAttributesEncoderTest < Test::Unit::TestCase
   class Fake < ShopifyAPI::Base
     self.format = :json
-    include ShopifyAPI::OnlySyncDirtyAttributes
+    include ShopifyAPI::DirtyAttributesEncoder
   end
 
   def test_creating_a_record_syncs_attributes
