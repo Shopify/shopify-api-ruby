@@ -30,14 +30,13 @@ class Test::Unit::TestCase < Minitest::Unit::TestCase
 
   def setup
     ActiveResource::Base.format = :json
-    ShopifyAPI.constants.each do |const|
-      begin
-        const = "ShopifyAPI::#{const}".constantize
-        const.format = :json if const.respond_to?(:format=)
-      rescue NameError
-      end
+
+    # Use ObjectSpace constant resolution to make sure all classes tests the :json format
+    ObjectSpace.each_object(ShopifyAPI::Base.singleton_class) do |klass|
+      klass.format = :json
     end
 
+    # Use a decoder that doesn't strip the root key
     ShopifyAPI::VaultSession.format = ShopifyAPI::VaultSessionFormat
 
     ShopifyAPI::Base.clear_session
