@@ -88,6 +88,6 @@ class DirtyAttributesEncoderTest < Test::Unit::TestCase
   end
 
   def assert_last_request_body(expected)
-    assert FakeWeb.last_request.body, expected
+    assert_equal FakeWeb.last_request.body, expected
   end
 end
