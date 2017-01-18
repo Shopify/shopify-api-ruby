@@ -10,15 +10,25 @@ module ShopifyAPI
       super
     end
 
-    def encode(options = {})
-      super(options.merge(only: changed_attributes_including_pk))
-      clear_changed_attributes
+    def encode(*)
+      with_dirty_attributes do
+        super
+        clear_changed_attributes
+      end
     end
 
     private
 
+    def with_dirty_attributes
+      @old_attributes = @attributes.dup
+      @attributes = @attributes.slice(changed_attributes_including_pk)
+      yield
+    ensure
+      @attributes = @old_attributes
+    end
+
     def changed_attributes_including_pk
-      [changed_attributes, self.class.primary_key].flatten
+      [changed_attributes, self.class.primary_key].flatten.map(&:to_sym)
     end
 
     def clear_changed_attributes

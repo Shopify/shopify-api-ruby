@@ -1,5 +1,6 @@
 require "test_helper"
 
+
 class DirtyAttributesEncoderTest < Test::Unit::TestCase
   class Fake < ShopifyAPI::Base
     self.format = :json
