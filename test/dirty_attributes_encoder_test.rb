@@ -1,6 +1,5 @@
 require "test_helper"
 
-
 class DirtyAttributesEncoderTest < Test::Unit::TestCase
   class Fake < ShopifyAPI::Base
     self.format = :json
@@ -29,7 +28,7 @@ class DirtyAttributesEncoderTest < Test::Unit::TestCase
     fake_resource.attr = "new attr"
     fake_resource.save
 
-    assert_last_request_body(fake: { attr: "new attr" })
+    assert_last_request_body("fake" => { "attr" => "new attr" })
   end
 
   def test_updating_a_record_only_sends_set_attributes
@@ -47,7 +46,7 @@ class DirtyAttributesEncoderTest < Test::Unit::TestCase
     fake_resource.attr = "new attr"
     fake_resource.save
 
-    assert_last_request_body(fake: { attr: "new attr" })
+    assert_last_request_body("fake" => { "id" => 2112, "attr" => "new attr" })
 
     assert_equal 2112, fake_resource.id
     assert_equal "new attr", fake_resource.attr
@@ -89,6 +88,6 @@ class DirtyAttributesEncoderTest < Test::Unit::TestCase
   end
 
   def assert_last_request_body(expected)
-    assert_equal FakeWeb.last_request.body, expected
+    assert_equal JSON.parse(FakeWeb.last_request.body), expected
   end
 end
