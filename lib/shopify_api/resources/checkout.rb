@@ -18,8 +18,8 @@ module ShopifyAPI
 
       def self.create_from(checkout, vault_session)
         create(
-        checkout_id: checkout.id,
-        payment: { session_id: vault_session.id },
+          checkout_id: checkout.id,
+          payment: { session_id: vault_session.id },
         )
       end
     end
