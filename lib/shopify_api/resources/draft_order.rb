@@ -3,8 +3,8 @@ module ShopifyAPI
     include Metafields
 
     def send_invoice(draft_order_invoice = ShopifyAPI::DraftOrderInvoice.new)
-      response = post(:send_invoice, {}, draft_order_invoice.encode)
-      load_attributes_from_response(response)
+      resource = post(:send_invoice, {}, draft_order_invoice.encode)
+      ShopifyAPI::DraftOrderInvoice.new(ShopifyAPI::DraftOrder.format.decode(resource.body))
     end
   end
 end

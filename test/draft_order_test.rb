@@ -26,12 +26,28 @@ class DraftOrderTest < Test::Unit::TestCase
     assert_equal 517119332, draft_orders.first.id
   end
 
+  def test_get_count_draft_orders
+    fake 'draft_orders/count', method: :get, status: 200, body: '{"count": 16}'
+
+    draft_orders_count = ShopifyAPI::DraftOrder.count
+
+    assert_equal 16, draft_orders_count
+  end
+
   def test_create_draft_order
     fake 'draft_orders', method: :post, status: 201, body: load_fixture('draft_order')
 
     draft_order = ShopifyAPI::DraftOrder.create(line_items: [{ quantity: 1, variant_id: 39072856 }])
 
     assert_equal '{"draft_order":{"line_items":[{"quantity":1,"variant_id":39072856}]}}', FakeWeb.last_request.body
+    assert_equal 39072856, draft_order.line_items.first.variant_id
+  end
+
+  def test_create_draft_order_202
+    fake 'draft_orders', method: :post, status: 202, body: load_fixture('draft_order')
+
+    draft_order = ShopifyAPI::DraftOrder.create(line_items: [{ quantity: 1, variant_id: 39072856 }])
+
     assert_equal 39072856, draft_order.line_items.first.variant_id
   end
 
@@ -47,11 +63,15 @@ class DraftOrderTest < Test::Unit::TestCase
   end
 
   def test_send_invoice_with_no_params
-    fake 'draft_orders/517119332/send_invoice', method: :post, body: load_fixture('draft_order_invoice_no_params')
+    draft_order_invoice_fixture = load_fixture('draft_order_invoice')
+    draft_order_invoice = ActiveSupport::JSON.decode(draft_order_invoice_fixture)
+    fake 'draft_orders/517119332/send_invoice', method: :post, body: draft_order_invoice_fixture
 
-    @draft_order.send_invoice
+    draft_order_invoice_response = @draft_order.send_invoice
 
     assert_equal '{"draft_order_invoice":{}}', FakeWeb.last_request.body
+    assert_kind_of ShopifyAPI::DraftOrderInvoice, draft_order_invoice_response
+    assert_equal draft_order_invoice['draft_order_invoice']['to'], draft_order_invoice_response.to
   end
 
   def test_send_invoice_with_params
@@ -59,9 +79,11 @@ class DraftOrderTest < Test::Unit::TestCase
     draft_order_invoice = ActiveSupport::JSON.decode(draft_order_invoice_fixture)
     fake 'draft_orders/517119332/send_invoice', method: :post, body: draft_order_invoice_fixture
 
-    @draft_order.send_invoice(ShopifyAPI::DraftOrderInvoice.new(draft_order_invoice['draft_order_invoice']))
+    draft_order_invoice_response = @draft_order.send_invoice(ShopifyAPI::DraftOrderInvoice.new(draft_order_invoice['draft_order_invoice']))
 
     assert_equal draft_order_invoice, ActiveSupport::JSON.decode(FakeWeb.last_request.body)
+    assert_kind_of ShopifyAPI::DraftOrderInvoice, draft_order_invoice_response
+    assert_equal draft_order_invoice['draft_order_invoice']['to'], draft_order_invoice_response.to
   end
 
   def test_delete_draft_order
