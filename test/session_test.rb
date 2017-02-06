@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'timecop'
 
 class SessionTest < Test::Unit::TestCase
 
@@ -141,19 +142,59 @@ class SessionTest < Test::Unit::TestCase
   end
 
   test "return_token_if_signature_is_valid" do
-    params = {:code => 'any-code', :timestamp => Time.now}
-    sorted_params = make_sorted_params(params)
-    signature = OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new(), ShopifyAPI::Session.secret, sorted_params)
-    fake nil, :url => 'https://testshop.myshopify.com/admin/oauth/access_token',:method => :post, :body => '{"access_token" : "any-token"}'
+    fake nil,
+      url: 'https://testshop.myshopify.com/admin/oauth/access_token',
+      method: :post,
+      body: '{"access_token":"any-token"}'
     session = ShopifyAPI::Session.new("testshop.myshopify.com")
-    token = session.request_token(params.merge(:hmac => signature))
+
+    params = { code: 'any-code', timestamp: Time.now }
+    token = session.request_token(params.merge(hmac: generate_signature(params)))
+
     assert_equal "any-token", token
+    assert_equal "any-token", session.token
+  end
+
+  test "extra parameters are stored in session" do
+    fake nil,
+      url: 'https://testshop.myshopify.com/admin/oauth/access_token',
+      method: :post,
+      body: '{"access_token":"any-token","foo":"example"}'
+    session = ShopifyAPI::Session.new("testshop.myshopify.com")
+
+    params = { code: 'any-code', timestamp: Time.now }
+    assert session.request_token(params.merge(hmac: generate_signature(params)))
+
+    assert_equal ({ "foo" => "example" }), session.extra
+  end
+
+  test "expires_in is automatically converted in expires_at" do
+    fake nil,
+      url: 'https://testshop.myshopify.com/admin/oauth/access_token',
+      method: :post,
+      body: '{"access_token":"any-token","expires_in":86393}'
+    session = ShopifyAPI::Session.new("testshop.myshopify.com")
+
+    Timecop.freeze do
+      params = { code: 'any-code', timestamp: Time.now }
+      assert session.request_token(params.merge(hmac: generate_signature(params)))
+
+      expires_at = Time.now.utc + 86393
+      assert_equal ({ "expires_at" => expires_at.to_i }), session.extra
+      assert session.expires_at.is_a?(Time)
+      assert_equal expires_at.to_i, session.expires_at.to_i
+      assert_equal 86393, session.expires_in
+      assert_equal false, session.expired?
+
+      Timecop.travel(session.expires_at) do
+        assert_equal true, session.expired?
+      end
+    end
   end
 
   test "raise error if signature does not match expected" do
     params = {:code => "any-code", :timestamp => Time.now}
-    sorted_params = make_sorted_params(params)
-    signature = OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new(), ShopifyAPI::Session.secret, sorted_params)
+    signature = generate_signature(params)
     params[:foo] = 'world'
     assert_raises(ShopifyAPI::ValidationException) do
       session = ShopifyAPI::Session.new("testshop.myshopify.com")
@@ -163,8 +204,7 @@ class SessionTest < Test::Unit::TestCase
 
   test "raise error if timestamp is too old" do
     params = {:code => "any-code", :timestamp => Time.now - 2.days}
-    sorted_params = make_sorted_params(params)
-    signature = OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new(), ShopifyAPI::Session.secret, sorted_params)
+    signature = generate_signature(params)
     params[:foo] = 'world'
     assert_raises(ShopifyAPI::ValidationException) do
       session = ShopifyAPI::Session.new("testshop.myshopify.com")
@@ -173,18 +213,16 @@ class SessionTest < Test::Unit::TestCase
   end
 
   test "return true when the signature is valid and the keys of params are strings" do
-    now = Time.now
-    params = {"code" => "any-code", "timestamp" => now}
-    sorted_params = make_sorted_params(params)
-    signature = OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new(), ShopifyAPI::Session.secret, sorted_params)
-    params = {"code" => "any-code", "timestamp" => now, "hmac" => signature}
+    params = {"code" => "any-code", "timestamp" => Time.now}
+    params["hmac"] = generate_signature(params)
+    assert_equal true, ShopifyAPI::Session.validate_signature(params)
   end
 
   test "return true when validating signature of params with ampersand and equal sign characters" do
     ShopifyAPI::Session.secret = 'secret'
     params = {'a' => '1&b=2', 'c=3&d' => '4'}
     to_sign = "a=1%26b=2&c%3D3%26d=4"
-    params['hmac'] = OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha256'), ShopifyAPI::Session.secret, to_sign)
+    params['hmac'] = generate_signature(to_sign)
 
     assert_equal true, ShopifyAPI::Session.validate_signature(params)
   end
@@ -193,7 +231,7 @@ class SessionTest < Test::Unit::TestCase
     ShopifyAPI::Session.secret = 'secret'
     params = {'a%3D1%26b' => '2%26c%3D3'}
     to_sign = "a%253D1%2526b=2%2526c%253D3"
-    params['hmac'] = OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha256'), ShopifyAPI::Session.secret, to_sign)
+    params['hmac'] = generate_signature(to_sign)
 
     assert_equal true, ShopifyAPI::Session.validate_signature(params)
   end
@@ -202,5 +240,10 @@ class SessionTest < Test::Unit::TestCase
 
   def make_sorted_params(params)
     sorted_params = params.with_indifferent_access.except(:signature, :hmac, :action, :controller).collect{|k,v|"#{k}=#{v}"}.sort.join('&')
+  end
+
+  def generate_signature(params)
+    params = make_sorted_params(params) if params.is_a?(Hash)
+    OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new, ShopifyAPI::Session.secret, params)
   end
 end

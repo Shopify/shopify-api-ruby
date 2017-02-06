@@ -67,9 +67,11 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
 
    For a partner app you will need to supply two parameters to the Session class before you instantiate it:
 
-  ```ruby
-  ShopifyAPI::Session.setup({:api_key => API_KEY, :secret => SHARED_SECRET})
-  ```
+   ```ruby
+   ShopifyAPI::Session.setup(api_key: API_KEY, secret: SHARED_SECRET)
+   ```
+
+   Shopify maintains [`omniauth-shopify-oauth2`](https://github.com/Shopify/omniauth-shopify-oauth2) which securely wraps the OAuth flow and interactions with Shopify (steps 3 and 4 above). Using this gem is the recommended way to use OAuth authentication in your application.
 
 3. In order to access a shop's data, apps need an access token from that specific shop. This is a two-stage process. Before interacting with a shop for the first time an app should redirect the user to the following URL:
 
@@ -79,10 +81,11 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
 
    with the following parameters:
 
-   * ``client_id``– Required – The API key for your app
-   * ``scope`` – Required – The list of required scopes (explained here: http://docs.shopify.com/api/tutorials/oauth)
+   * ``client_id`` – Required – The API key for your app
+   * ``scope`` – Required – The list of required scopes (explained here: https://help.shopify.com/api/guides/authentication/oauth#scopes)
    * ``redirect_uri`` – Required – The URL where you want to redirect the users after they authorize the client. The complete URL specified here must be identical to one of the Application Redirect URLs set in the App's section of the Partners dashboard. Note: in older applications, this parameter was optional, and redirected to the Application Callback URL when no other value was specified.
    * ``state`` – Optional – A randomly selected value provided by your application, which is unique for each authorization request. During the OAuth callback phase, your application must check that this value matches the one you provided during authorization. [This mechanism is important for the security of your application](https://tools.ietf.org/html/rfc6819#section-3.6).
+   * ``grant_options[]`` - Optional - Set this parameter to `per-user` to receive an access token that respects the user's permission level when making API requests (called online access). This is strongly recommended for embedded apps.
 
    We've added the create_permission_url method to make this easier, first instantiate your session object:
 
@@ -133,10 +136,28 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
    token = session.request_token(params)
    ```
 
-   This method will save the token to the session object and return it. For future sessions simply pass the token in when creating the session object:
+   This method will save the token to the session object and return it. All fields returned by Shopify, other than the access token itself, are stored in the session's `extra` attribute. For a list of all fields returned by Shopify, read [our OAuth documentation](https://help.shopify.com/api/guides/authentication/oauth#confirming-installation). If you requested an access token that is associated with a specific user, you can retreive information about this user from the `extra` hash:
 
    ```ruby
-   session = ShopifyAPI::Session.new("SHOP_NAME.myshopify.com", token)
+   # a list of all granted scopes
+   granted_scopes = session.extra['scope']
+   # a hash containing the user information
+   user = session.extra['associated_user']
+   # the access scopes available to this user, which may be a subset of the access scopes granted to this app.
+   active_scopes = session.extra['associated_user_scope']
+   # the time at which this token expires; this is automatically converted from 'expires_in' returned by Shopify
+   expires_at = session.extra['expires_at']
+   ```
+
+   For the security of your application, after retrieving an access token you must validate the following:
+   1) The list of scopes in `session.extra['scope']` is the same as you requested.
+   2) If you requested an online-mode access token, `session.extra['associated_user']` must be present.
+   Failing either of these tests means the end-user may have tampered with the url parameters during the OAuth authentication phase. You should avoid using this access token and revoke it immediately. If you use the [`omniauth-shopify-oauth2`](https://github.com/Shopify/omniauth-shopify-oauth2) gem these checks are done automatically for you.
+
+   For future sessions simply pass in the `token` and `extra` hash (optional) when creating the session object:
+
+   ```ruby
+   session = ShopifyAPI::Session.new("SHOP_NAME.myshopify.com", token, extra)
    ```
 
 5. The session must be activated before use:
@@ -176,7 +197,6 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
    ```ruby
    ShopifyAPI::Base.clear_session
    ```
-
 
 ### Console
 
