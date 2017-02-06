@@ -1,3 +1,9 @@
+== Version 4.3.5
+
+* Added support for online mode access tokens, token expiry, and associated_user information.
+* Added `ShopifyAPI::DraftOrder`
+* Added `ShopifyAPI::DraftOrderInvoice`
+
 == Version 4.3.4
 
 * Added `ShopifyAPI::ProductListing`
