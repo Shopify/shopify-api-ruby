@@ -4,6 +4,7 @@ require 'timecop'
 class SessionTest < Test::Unit::TestCase
 
   def setup
+    super
     ShopifyAPI::Session.secret = 'secret'
   end
 

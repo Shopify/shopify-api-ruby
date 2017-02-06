@@ -17,7 +17,7 @@ end
 
 class Test::Unit::TestCase < Minitest::Unit::TestCase
   def self.test(string, &block)
-    define_method("test:#{string}", &block)
+    define_method("test_#{string}", &block)
   end
 
   def self.should(string, &block)
@@ -46,6 +46,11 @@ class Test::Unit::TestCase < Minitest::Unit::TestCase
 
   def teardown
     FakeWeb.clean_registry
+
+    ShopifyAPI::Base.clear_session
+    ShopifyAPI::Base.site = nil
+    ShopifyAPI::Base.password = nil
+    ShopifyAPI::Base.user = nil
   end
 
   # Custom Assertions

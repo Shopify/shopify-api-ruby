@@ -2,6 +2,7 @@ require 'test_helper'
 
 class CountableTest < Test::Unit::TestCase
   def setup
+    super
     fake "products/count", :body => '{"count": 16}'
   end
 

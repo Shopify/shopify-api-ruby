@@ -2,7 +2,7 @@ require 'test_helper'
 
 class LimitsTest < Test::Unit::TestCase
   def setup
-    ShopifyAPI::Base.site = "test.myshopify.com"
+    super
     @header_hash = {'http_x_shopify_shop_api_call_limit' => '100/300'}
     ShopifyAPI::Base.connection.expects(:response).at_least(0).returns(@header_hash)
   end
