@@ -2,6 +2,7 @@ require 'test_helper'
 
 class FulFillmentTest < Test::Unit::TestCase
   def setup
+    super
     fake "orders/450789469/fulfillments/255858046", :method => :get, :body => load_fixture('fulfillment')
   end
 

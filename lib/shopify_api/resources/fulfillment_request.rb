@@ -7,9 +7,9 @@ module ShopifyAPI
     end
 
     def mark_as_failed
-      load_attributes_from_response(
-        put(:mark_as_failed, message: failure_message)
-      )
+      options = {}
+      options[:message] = failure_message if failure_message
+      load_attributes_from_response(put(:mark_as_failed, options))
     end
   end
 end

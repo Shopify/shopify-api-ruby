@@ -2,6 +2,7 @@ require 'test_helper'
 
 class TransactionTest < Test::Unit::TestCase
   def setup
+    super
     fake "orders/450789469/transactions/389404469", :method => :get, :body => load_fixture('transaction')
   end
 
