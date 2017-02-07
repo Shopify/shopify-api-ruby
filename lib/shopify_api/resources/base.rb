@@ -10,19 +10,6 @@ module ShopifyAPI
                                   "ActiveResource/#{ActiveResource::VERSION::STRING}",
                                   "Ruby/#{RUBY_VERSION}"].join(' ')
 
-    def as_json(options = nil)
-      opts = options || {}
-
-      root = opts.fetch(:root, include_root_in_json)
-      root = self.class.model_name.element if root == true
-
-      if root
-        { root => serializable_hash(options) }
-      else
-        serializable_hash(options)
-      end
-    end
-
     class << self
       if ActiveResource::Base.respond_to?(:_headers) && ActiveResource::Base.respond_to?(:_headers_defined?)
         def headers
