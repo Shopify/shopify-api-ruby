@@ -5,10 +5,16 @@ module ShopifyAPI
     class InvalidSessionError < StandardError; end
     extend Countable
     self.timeout = 90
-    self.include_root_in_json = true
+    self.include_root_in_json = false
     self.headers['User-Agent'] = ["ShopifyAPI/#{ShopifyAPI::VERSION}",
                                   "ActiveResource/#{ActiveResource::VERSION::STRING}",
                                   "Ruby/#{RUBY_VERSION}"].join(' ')
+    self.site = "https://maxime-bedard.myshopify.com"
+
+    def encode(options = {})
+      options = { root: self.class.element_name }.merge(options) if self.class.format.extension == "json"
+      super(options)
+    end
 
     class << self
       if ActiveResource::Base.respond_to?(:_headers) && ActiveResource::Base.respond_to?(:_headers_defined?)
