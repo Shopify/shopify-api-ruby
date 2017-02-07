@@ -9,7 +9,7 @@ module ShopifyAPI
     self.headers['User-Agent'] = ["ShopifyAPI/#{ShopifyAPI::VERSION}",
                                   "ActiveResource/#{ActiveResource::VERSION::STRING}",
                                   "Ruby/#{RUBY_VERSION}"].join(' ')
-    self.site = "https://maxime-bedard.myshopify.com"
+    # self.site = "https://maxime-bedard.myshopify.com"
 
     def encode(options = {})
       options = { root: self.class.element_name }.merge(options) if self.class.format.extension == "json"
