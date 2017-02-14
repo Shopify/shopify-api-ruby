@@ -73,6 +73,19 @@ class SessionTest < Test::Unit::TestCase
     assert_equal 'https://fakeshop.myshopify.com/admin', ShopifyAPI::Base.site.to_s
   end
 
+  test "#temp reset ShopifyAPI::Base.extra to original value" do
+
+    ShopifyAPI::Session.setup(:api_key => "key", :secret => "secret")
+    session1 = ShopifyAPI::Session.new('fakeshop.myshopify.com', 'token1', {associated_user: {id: 1234}})
+    ShopifyAPI::Base.activate_session(session1)
+
+    ShopifyAPI::Session.temp("fakeshop.myshopify.com", "any-token", {associated_user: {id: 5678}}) {
+      @assigned_extra = ShopifyAPI::Base.extra
+    }
+    assert_equal '{:associated_user=>{:id=>5678}}', @assigned_extra.to_s
+    assert_equal '{:associated_user=>{:id=>1234}}', ShopifyAPI::Base.extra.to_s
+  end
+
   test "create_permission_url returns correct url with single scope no redirect uri" do
     ShopifyAPI::Session.setup(:api_key => "My_test_key", :secret => "My test secret")
     session = ShopifyAPI::Session.new('http://localhost.myshopify.com')

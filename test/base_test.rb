@@ -6,6 +6,7 @@ class BaseTest < Test::Unit::TestCase
   def setup
     @session1 = ShopifyAPI::Session.new('shop1.myshopify.com', 'token1')
     @session2 = ShopifyAPI::Session.new('shop2.myshopify.com', 'token2')
+    @session3 = ShopifyAPI::Session.new('shop2.myshopify.com', 'token3', {associated_user: {id: 1234}})
   end
 
   def teardown
@@ -48,6 +49,18 @@ class BaseTest < Test::Unit::TestCase
     assert_nil ActiveResource::Base.headers['X-Shopify-Access-Token']
     assert_nil ShopifyAPI::Base.headers['X-Shopify-Access-Token']
     assert_nil ShopifyAPI::Shop.headers['X-Shopify-Access-Token']
+  end
+
+  test '#clear_session should clear session extra from Base' do
+    ShopifyAPI::Base.activate_session @session3
+
+    assert_equal "{:associated_user=>{:id=>1234}}", ShopifyAPI::Base.extra.to_s
+    assert_equal "{:associated_user=>{:id=>1234}}", ShopifyAPI::Shop.extra.to_s
+
+    ShopifyAPI::Base.clear_session
+
+    assert_equal "{}", ShopifyAPI::Base.extra.to_s
+    assert_equal "{}", ShopifyAPI::Shop.extra.to_s
   end
 
   test '#activate_session with one session, then clearing and activating with another session should send request to correct shop' do

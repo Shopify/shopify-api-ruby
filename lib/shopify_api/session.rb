@@ -19,11 +19,12 @@ module ShopifyAPI
         params.each { |k,value| public_send("#{k}=", value) }
       end
 
-      def temp(domain, token, extra = nil, &block)
+      def temp(domain, token, extra = {}, &block)
         session = new(domain, token, extra)
         original_site = ShopifyAPI::Base.site.to_s
         original_token = ShopifyAPI::Base.headers['X-Shopify-Access-Token']
-        original_session = new(original_site, original_token, extra)
+        original_extra = ShopifyAPI::Base.extra
+        original_session = new(original_site, original_token, original_extra)
 
         begin
           ShopifyAPI::Base.activate_session(session)
@@ -67,10 +68,10 @@ module ShopifyAPI
       end
     end
 
-    def initialize(url, token = nil, extra = nil)
+    def initialize(url, token = nil, extra = {})
       self.url = self.class.prepare_url(url)
       self.token = token
-      self.extra = extra || {}
+      self.extra = extra
     end
 
     def create_permission_url(scope, redirect_uri = nil)
