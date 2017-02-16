@@ -3,8 +3,7 @@ require 'shopify_api/resources/customer'
 module ShopifyAPI
   class CustomerSavedSearch < Base
     def customers(params = {})
-      url = "/admin/customer_saved_searches/#{id}/customers.json"
-      Customer.find(:all, from: url, params: params)
+      Customer.search(params.merge({:customer_saved_search_id => self.id}))
     end
   end
 end
