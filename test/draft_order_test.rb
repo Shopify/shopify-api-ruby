@@ -111,4 +111,29 @@ class DraftOrderTest < Test::Unit::TestCase
     assert_equal 2, metafields.length
     assert metafields.all? { |m| m.is_a?(ShopifyAPI::Metafield) }
   end
+
+  def test_complete_draft_order_with_no_params
+    completed_fixture = load_fixture('draft_order_completed')
+    completed_draft = ActiveSupport::JSON.decode(completed_fixture)['draft_order']
+    fake 'draft_orders/517119332/complete', method: :put, status: 200, body: completed_fixture
+
+    @draft_order.complete
+
+    assert_equal completed_draft['status'], @draft_order.status
+    assert_equal completed_draft['order_id'], @draft_order.order_id
+    refute_nil @draft_order.completed_at
+  end
+
+  def test_complete_draft_order_with_params
+    completed_fixture = load_fixture('draft_order_completed')
+    completed_draft = ActiveSupport::JSON.decode(completed_fixture)['draft_order']
+    complete_params = { payment_pending: true }
+    fake 'draft_orders/517119332/complete.json?payment_pending=true', extension: false, method: :put, status: 200, body: completed_fixture
+
+    @draft_order.complete(complete_params)
+
+    assert_equal completed_draft['status'], @draft_order.status
+    assert_equal completed_draft['order_id'], @draft_order.order_id
+    refute_nil @draft_order.completed_at
+  end
 end
