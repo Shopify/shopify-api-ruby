@@ -1,3 +1,7 @@
+== Version 4.3.6
+
+* Fixed the `customer_saved_search_id` param in `ShopifyAPI::CustomerSavedSearch#customers`.
+
 == Version 4.3.5
 
 * Added support for online mode access tokens, token expiry, and associated_user information.
