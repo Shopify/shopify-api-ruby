@@ -1,3 +1,7 @@
+== Version 4.3.7
+
+* Added support for `complete` in `ShopifyAPI::DraftOrder`
+
 == Version 4.3.6
 
 * Fixed the `customer_saved_search_id` param in `ShopifyAPI::CustomerSavedSearch#customers`.
