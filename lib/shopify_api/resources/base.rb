@@ -28,6 +28,33 @@ module ShopifyAPI
     end
 
     class << self
+      def self.list(params = {})
+        find(:all, params: params)
+      end
+
+      def self.auto_paging_each(opts = {})
+        opts[:limit] ||= 50
+        page_limit = opts[:limit]
+
+        total_count = self.count(opts)
+        pages = total_count/page_limit + 1
+        current_page = opts[:page] || 0
+        records = []
+
+        while current_page != pages
+          self.list(opts.merge(page: current_page)).each do |record|
+            records << record
+
+            yield(record) if block_given?
+          end
+
+          current_page += 1
+        end
+
+        records
+      end
+    end
+
       if ActiveResource::Base.respond_to?(:_headers) && ActiveResource::Base.respond_to?(:_headers_defined?)
         def headers
           if _headers_defined?
