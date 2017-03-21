@@ -13,7 +13,7 @@ class ResourceFeedbackTest < Test::Unit::TestCase
     assert_request_body body
   end
 
-  def test_save_notify_via_bugsnag_when_already_persisted
+  def test_save_raises_exception_when_already_persisted
     body = { resource_feedback: {} }.to_json
     fake 'resource_feedbacks', method: :post, body: body
     resource_feedback = ShopifyAPI::ResourceFeedback.new
