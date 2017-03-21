@@ -81,6 +81,7 @@ module ShopifyAPI
     end
 
     private
+
     def only_id
       encode(:only => :id, :include => [], :methods => [])
     end

@@ -1,3 +1,7 @@
+== Version 4.3.8
+
+* Added `ShopifyAPI::ResourceFeedback`
+
 == Version 4.3.7
 
 * Added support for `complete` in `ShopifyAPI::DraftOrder`
