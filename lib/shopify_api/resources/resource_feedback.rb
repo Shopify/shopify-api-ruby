@@ -5,6 +5,7 @@ module ShopifyAPI
     class ExistingFeedbackSaved < StandardError; end
     include DisablePrefixCheck
 
+    self.collection_name = 'resource_feedback'
     conditional_prefix :product, false
 
     EXISTING_FEEDBACK_SAVED_ERROR_MESSAGE = 'WARNING: Attempted call to ShopifyAPI::ResourceFeedback#save' \
