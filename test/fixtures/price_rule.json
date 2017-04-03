@@ -1,0 +1,33 @@
+{
+  "price_rule": {
+    "id": "456",
+    "target_type": "line_items",
+    "target_selection": "all",
+    "allocation_method": "across",
+    "value_type": "fixed_amount",
+    "value": "10.0",
+    "archived": true,
+    "once_per_customer": true,
+    "usage_limit": null,
+    "customer_selection": "all",
+    "prerequisite_subtotal_range": null,
+    "prerequisite_shipping_price_range": null,
+    "prerequisite_saved_search_ids": [
+      0
+    ],
+    "entitled_product_ids": [
+      0
+    ],
+    "entitled_variant_ids": [
+      0
+    ],
+    "entitled_collection_ids": [
+      0
+    ],
+    "entitled_country_ids": [
+      0
+    ],
+    "starts_at": "2017-04-03T22:32:18Z",
+    "ends_at": null
+  }
+}
