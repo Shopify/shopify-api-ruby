@@ -1,3 +1,8 @@
+== Version 4.4.0
+
+* Added `ShopifyAPI::CustomerInvite`
+* Support for Customer#send_invite endpoint
+
 == Version 4.3.8
 
 * Added `ShopifyAPI::ResourceFeedback`

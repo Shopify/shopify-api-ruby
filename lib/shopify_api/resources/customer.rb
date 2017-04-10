@@ -20,5 +20,10 @@ module ShopifyAPI
       end
       result
     end
+
+    def send_invite(customer_invite = ShopifyAPI::CustomerInvite.new)
+      resource = post(:send_invite, {}, customer_invite.encode)
+      ShopifyAPI::CustomerInvite.new(ShopifyAPI::CustomerInvite.format.decode(resource.body))
+    end
   end
 end
