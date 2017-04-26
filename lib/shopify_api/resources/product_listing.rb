@@ -1,9 +1,7 @@
 module ShopifyAPI
   class ProductListing < Base
-    init_prefix :application
-
-    def self.product_ids(options = {})
-      get(:product_ids, options[:params])
+    def self.product_ids
+      get(:product_ids)
     end
   end
 end
