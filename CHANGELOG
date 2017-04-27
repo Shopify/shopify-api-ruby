@@ -1,4 +1,4 @@
-== Version 4.6.0
+== Version 4.7.0
 
 * Removed the mandatory `application_id` parameter from `ShopifyAPI::ProductListing` and `ShopifyAPI::CollectionListing`
 * Fixed a bug related to the non-standard primary key for `ShopifyAPI::ProductListing` and `ShopifyAPI::CollectionListing`
