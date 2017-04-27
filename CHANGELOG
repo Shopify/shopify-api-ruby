@@ -1,5 +1,9 @@
 == Version 4.6.0
 
+* Removed the mandatory `application_id` parameter from `ShopifyAPI::ProductListing` and `ShopifyAPI::CollectionListing`
+
+== Version 4.6.0
+
 * Added `ShopifyAPI::Report`
 
 == Version 4.5.0
