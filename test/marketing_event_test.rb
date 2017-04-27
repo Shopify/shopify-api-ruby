@@ -49,7 +49,7 @@ class MarketingEventTest < Test::Unit::TestCase
 
   def test_add_engagements
     fake "marketing_events/1", method: :get, body: load_fixture('marketing_event')
-    marketing_events = ShopifyAPI::MarketingEvent.find(1)
+    marketing_event = ShopifyAPI::MarketingEvent.find(1)
     fake "marketing_events/1/engagements", method: :post, status: 201, body: load_fixture('engagement')
     engagement = ShopifyAPI::Engagement.new(
       occurred_on: "2017-04-20",
@@ -62,6 +62,7 @@ class MarketingEventTest < Test::Unit::TestCase
       ad_spend: nil,
       is_cumulative: true
     )
+    marketing_event.post(:engagements, {}, {engagements: Array(engagement)}.to_json)
     assert "2017-04-20", engagement.occurred_on
   end
 end
