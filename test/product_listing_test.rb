@@ -13,10 +13,19 @@ class ProductListingTest < Test::Unit::TestCase
     assert_equal 'Rustic Copper Bottle', product_listings.last.title
   end
 
-  def test_get_product_listing_for_product_id
+  def test_get_product_listing
     fake "product_listings/2", method: :get, status: 201, body: load_fixture('product_listing')
 
     product_listing = ShopifyAPI::ProductListing.find(2)
+    assert_equal 'Synergistic Silk Chair', product_listing.title
+  end
+
+  def test_reload_product_listing
+    fake "product_listings/2", method: :get, status: 201, body: load_fixture('product_listing')
+
+    product_listing = ShopifyAPI::ProductListing.new(product_id: 2)
+    product_listing.reload
+
     assert_equal 'Synergistic Silk Chair', product_listing.title
   end
 
