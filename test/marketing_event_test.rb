@@ -46,4 +46,22 @@ class MarketingEventTest < Test::Unit::TestCase
     marketing_events_count = ShopifyAPI::MarketingEvent.get(:count)
     assert_equal 2, marketing_events_count
   end
+
+  def test_add_engagements
+    fake "marketing_events/1", method: :get, body: load_fixture('marketing_event')
+    marketing_events = ShopifyAPI::MarketingEvent.find(1)
+    fake "marketing_events/1/engagements", method: :post, status: 201, body: load_fixture('engagement')
+    engagement = ShopifyAPI::Engagement.new(
+      occurred_on: "2017-04-20",
+      impressions_count: nil,
+      views_count: nil,
+      clicks_count: 10,
+      shares_count: nil,
+      favorites_count: nil,
+      comments_count: nil,
+      ad_spend: nil,
+      is_cumulative: true
+    )
+    assert "2017-04-20", engagement.occurred_on
+  end
 end
