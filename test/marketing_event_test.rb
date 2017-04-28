@@ -62,7 +62,7 @@ class MarketingEventTest < Test::Unit::TestCase
       ad_spend: nil,
       is_cumulative: true
     )
-    marketing_event.post(:engagements, {}, {engagements: Array(engagement)}.to_json)
+    marketing_event.add_engagements(engagement)
     assert "2017-04-20", engagement.occurred_on
   end
 end
