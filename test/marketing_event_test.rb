@@ -63,6 +63,6 @@ class MarketingEventTest < Test::Unit::TestCase
       is_cumulative: true
     }
     marketing_event.add_engagements(engagement)
-    assert "2017-04-20", engagement.occurred_on
+    assert "2017-04-20", engagement[:occurred_on]
   end
 end
