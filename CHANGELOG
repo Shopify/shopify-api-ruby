@@ -1,3 +1,8 @@
+== Version 4.7.1
+
+* Added support for URL parameter (e.g. limit & page) to ShopifyAPI::Metafields
+* Added support for URL parameter (e.g. limit & page) to metafield operator in ShopifyAPI::Shop
+
 == Version 4.7.0
 
 * Removed the mandatory `application_id` parameter from `ShopifyAPI::ProductListing` and `ShopifyAPI::CollectionListing`
