@@ -1,3 +1,7 @@
+== Version 4.8.0
+
+* Added `add_engagements` to `ShopifyAPI::MarketingEvent`
+
 == Version 4.7.1
 
 * Added support for URL parameter (e.g. limit & page) to ShopifyAPI::Metafields
