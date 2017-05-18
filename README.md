@@ -246,7 +246,7 @@ rake install
 
 ## Additional Resources
 
-API Docs: http://docs.shopify.com/api
+API Docs: https://help.shopify.com/api/reference
 
 Ask questions on the forums: http://ecommerce.shopify.com/c/shopify-apis-and-technology
 
