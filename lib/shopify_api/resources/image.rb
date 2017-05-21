@@ -12,5 +12,11 @@ module ShopifyAPI
       attributes['attachment'] = Base64.encode64(data)
       attributes['filename'] = filename unless filename.nil?
     end
+
+    # Specify the +url+ of an image that Shopify will download for the
+    # product image.
+    def attach_image_from_url(url)
+      attributes['src'] = url
+    end
   end
 end
