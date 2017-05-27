@@ -39,15 +39,6 @@ Or install via [gem](http://rubygems.org/)
 gem install shopify_api
 ```
 
-#### Rails 5
-
-shopify_api is compatible with Rails 5 but since the latest ActiveResource release (4.1) is locked on Rails 4.x, you'll need to use the unreleased master version:
-
-```ruby
-gem 'shopify_api'
-gem 'activeresource', github: 'rails/activeresource'
-```
-
 ### Getting Started
 
 ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveResource has to be configured with a fully authorized URL of a particular store first. To obtain that URL you can follow these steps:
