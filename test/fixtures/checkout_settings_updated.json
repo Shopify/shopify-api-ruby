@@ -1,0 +1,11 @@
+{
+  "id": 1,
+  "abandoned_checkout_email_time_delay": 2,
+  "auto_fulfill_risky_orders": false,
+  "confirmation_page": "thanks!",
+  "email_marketing_mode": "unchecked",
+  "notify_customers": false,
+  "order_closing": "auto",
+  "same_billing_and_shipping_address": true,
+  "shipping_behaviour": "auto"
+}
