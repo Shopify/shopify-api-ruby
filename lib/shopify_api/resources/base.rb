@@ -9,22 +9,11 @@ module ShopifyAPI
     self.headers['User-Agent'] = ["ShopifyAPI/#{ShopifyAPI::VERSION}",
                                   "ActiveResource/#{ActiveResource::VERSION::STRING}",
                                   "Ruby/#{RUBY_VERSION}"].join(' ')
+    # self.site = "https://maxime-bedard.myshopify.com"
 
     def encode(options = {})
-      same = dup
-      same.attributes = {self.class.element_name => same.attributes} if self.class.format.extension == 'json'
-
-      same.send("to_#{self.class.format.extension}", options)
-    end
-
-    def as_json(options = nil)
-      root = options[:root] if options.try(:key?, :root)
-      if include_root_in_json
-        root = self.class.model_name.element if root == true
-        { root => serializable_hash(options) }
-      else
-        serializable_hash(options)
-      end
+      options = { root: self.class.element_name }.merge(options) if self.class.format.extension == "json"
+      super(options)
     end
 
     class << self
