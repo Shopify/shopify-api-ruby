@@ -19,7 +19,7 @@ All API usage happens through Shopify applications, created by either shop owner
 * Shop owners can create applications for themselves through their own admin: https://docs.shopify.com/api/authentication/creating-a-private-app
 * Shopify Partners create applications through their admin: http://app.shopify.com/services/partners
 
-For more information and detailed documentation about the API visit http://api.shopify.com
+For more information and detailed documentation about the API visit https://developers.shopify.com/
 
 #### Ruby version
 
@@ -246,7 +246,7 @@ rake install
 
 ## Additional Resources
 
-API Docs: https://help.shopify.com/api/reference
+API Reference: https://help.shopify.com/api/reference
 
 Ask questions on the forums: http://ecommerce.shopify.com/c/shopify-apis-and-technology
 
