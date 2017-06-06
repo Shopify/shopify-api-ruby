@@ -10,6 +10,10 @@ module ShopifyAPI
       load_attributes_from_response(post(:cancel, {}, options.to_json))
     end
 
+    def fulfill(options = {})
+      Fulfillment.new(order_id: id, tracking_number: options[:tracking_number].to_s).save
+    end
+
     def transactions
       Transaction.find(:all, :params => { :order_id => id })
     end
