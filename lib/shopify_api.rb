@@ -22,6 +22,7 @@ require 'shopify_api/countable'
 require 'shopify_api/resources'
 require 'shopify_api/session'
 require 'shopify_api/connection'
+require 'shopify_api/dirty_attributes_encoder'
 
 if ShopifyAPI::Base.respond_to?(:connection_class)
   ShopifyAPI::Base.connection_class = ShopifyAPI::Connection
