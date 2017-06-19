@@ -1,3 +1,7 @@
+== Version 4.9.1
+
+* Fixed `rules` param in the Smart Collections test so that it's an array instead of a hash.
+
 == Version 4.9.0
 
 * Added `ShopifyAPI::PriceRule`
