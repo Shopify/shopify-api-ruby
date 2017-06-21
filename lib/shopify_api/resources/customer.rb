@@ -2,6 +2,10 @@ module ShopifyAPI
   class Customer < Base
     include Metafields
 
+    def customer_addresses(params = {})
+      @addresses || CustomerAddress.find(:all, params: params.merge(customer_id: self.id))
+    end
+
     def orders
       Order.find(:all, params: {customer_id: self.id})
     end
