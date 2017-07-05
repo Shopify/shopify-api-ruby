@@ -1,7 +1,8 @@
 module ShopifyAPI
   class Image < Base
     init_prefix :product
-    
+    include Metafields
+
     # generate a method for each possible image variant
     [:pico, :icon, :thumb, :small, :compact, :medium, :large, :grande, :original].each do |m|
       reg_exp_match = "/\\1_#{m}.\\2"
