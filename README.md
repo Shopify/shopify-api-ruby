@@ -23,7 +23,7 @@ For more information and detailed documentation about the API visit https://deve
 
 #### Ruby version
 
-This gem requires Ruby 2.3.1 as of version 4.3. If you need to use an older Ruby version then update your `Gemfile` to lock onto an older release than 4.3.
+This gem requires Ruby 2.0+ as of version 4.3.2. If you need to use an older Ruby version then update your `Gemfile` to lock onto release 4.2.2 or lower. Versions between 4.2.2 and 4.3.2 require Ruby 2.3+ (#308).
 
 ### Installation
 
