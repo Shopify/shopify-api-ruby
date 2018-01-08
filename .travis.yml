@@ -27,5 +27,5 @@ matrix:
       gemfile: Gemfile_ar_master
     - rvm: 2.3.6
       gemfile: Gemfile_ar_master
-    - rvm: 2.2
+    - rvm: '2.2'
       gemfile: Gemfile_ar_master
