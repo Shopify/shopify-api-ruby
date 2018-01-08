@@ -18,3 +18,14 @@ gemfile:
 
 matrix:
   fast_finish: true
+  allow_failures:
+    - rvm: 2.5.0
+      gemfile: Gemfile_ar30
+    - rvm: 2.5.0
+      gemfile: Gemfile_ar_master
+    - rvm: 2.4.3
+      gemfile: Gemfile_ar_master
+    - rvm: 2.3.6
+      gemfile: Gemfile_ar_master
+    - rvm: 2.2
+      gemfile: Gemfile_ar_master
