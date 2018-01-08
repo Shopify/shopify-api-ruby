@@ -204,7 +204,12 @@ class SessionTest < Test::Unit::TestCase
   end
 
   test "raise error if timestamp is too old" do
-    params = {:code => "any-code", :timestamp => Time.now - 2.days.to_i}
+    delay = begin
+      2.days.to_i
+    rescue TypeError # Bug with ActiveRecord 3.x and Ruby 2.4.3
+      172_800
+    end
+    params = {:code => "any-code", :timestamp => Time.now - delay}
     signature = generate_signature(params)
     params[:foo] = 'world'
     assert_raises(ShopifyAPI::ValidationException) do
