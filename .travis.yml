@@ -2,9 +2,10 @@ language: ruby
 sudo: false
 
 rvm:
-  - '2.0'
-  - 2.3.1
-  - 2.4.0-preview1
+  - '2.2'
+  - 2.3.6
+  - 2.4.3
+  - 2.5.0
 
 gemfile:
   - Gemfile
@@ -15,22 +16,4 @@ gemfile:
   - Gemfile_ar_master
 
 matrix:
-  exclude:
-    - rvm: '2.0'
-      gemfile: Gemfile_ar_master
   fast_finish: true
-  allow_failures:
-    - rvm: 2.4.0-preview1
-      gemfile: Gemfile
-    - rvm: 2.4.0-preview1
-      gemfile: Gemfile_ar30
-    - rvm: 2.4.0-preview1
-      gemfile: Gemfile_ar31
-    - rvm: 2.4.0-preview1
-      gemfile: Gemfile_ar32
-    - rvm: 2.4.0-preview1
-      gemfile: Gemfile_ar40
-    - rvm: 2.4.0-preview1
-      gemfile: Gemfile_ar_master
-    - rvm: 2.3.1
-      gemfile: Gemfile_ar_master
