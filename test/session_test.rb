@@ -204,7 +204,7 @@ class SessionTest < Test::Unit::TestCase
   end
 
   test "raise error if timestamp is too old" do
-    params = {:code => "any-code", :timestamp => Time.now - 2.days}
+    params = {:code => "any-code", :timestamp => Time.now - 2.days.to_i}
     signature = generate_signature(params)
     params[:foo] = 'world'
     assert_raises(ShopifyAPI::ValidationException) do
