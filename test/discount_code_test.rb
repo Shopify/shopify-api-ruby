@@ -52,7 +52,7 @@ class DiscountCodeTest < Test::Unit::TestCase
   end
 
   def test_lookup_discount_code
-    fake 'discount_code/lookup', method: :get, status: 200, body: load_fixture('discount_code'), url: 'https://this-is-my-test-shop.myshopify.com/admin/discount_codes/lookup.json?code=SUMMERSALE10'
+    fake 'discount_code/lookup', method: :get, status: 303, body: load_fixture('discount_code'), url: 'https://this-is-my-test-shop.myshopify.com/admin/discount_codes/lookup.json?code=SUMMERSALE10'
 
     begin
       result = ShopifyAPI::DiscountCode.lookup(code: "SUMMERSALE10")
