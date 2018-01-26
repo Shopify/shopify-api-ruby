@@ -41,7 +41,7 @@ class DiscountCodeTest < Test::Unit::TestCase
     fake 'price_rules/102586120/discount_codes/1002091923', method: :put, status: 200, body: ActiveSupport::JSON.encode(discount_code_response)
 
     @discount_code.save
-    
+
     assert_equal discount_code_response['discount_code']['code'], @discount_code.code
   end
 
@@ -49,5 +49,15 @@ class DiscountCodeTest < Test::Unit::TestCase
     fake 'price_rules/102586120/discount_codes/1002091923', method: :delete, body: 'destroyed'
 
     assert @discount_code.destroy
+  end
+
+  def test_lookup_discount_code
+    # fake 'discount_codes/lookup.json', method: :get, body: load_fixture('discount_code')
+    # FakeWeb.register_uri(:get, 'https://this-is-my-test-shop.myshopify.com/admin/discount_codes/lookup.json?code=SUMMERSALE10', {:body => load_fixture('discount_code'), :status => 200, })
+    fake 'discount_code/lookup', method: :get, status: 200, body: load_fixture('discount_code'), url: 'https://this-is-my-test-shop.myshopify.com/admin/discount_codes/lookup.json?code=SUMMERSALE10'
+
+    discount_code = ShopifyAPI::DiscountCode.lookup(code: "SUMMERSALE10")
+
+    assert_equal 1002091923, discount_code.id
   end
 end
