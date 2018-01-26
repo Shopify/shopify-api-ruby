@@ -52,12 +52,17 @@ class DiscountCodeTest < Test::Unit::TestCase
   end
 
   def test_lookup_discount_code
-    # fake 'discount_codes/lookup.json', method: :get, body: load_fixture('discount_code')
-    # FakeWeb.register_uri(:get, 'https://this-is-my-test-shop.myshopify.com/admin/discount_codes/lookup.json?code=SUMMERSALE10', {:body => load_fixture('discount_code'), :status => 200, })
     fake 'discount_code/lookup', method: :get, status: 200, body: load_fixture('discount_code'), url: 'https://this-is-my-test-shop.myshopify.com/admin/discount_codes/lookup.json?code=SUMMERSALE10'
 
-    discount_code = ShopifyAPI::DiscountCode.lookup(code: "SUMMERSALE10")
-
-    assert_equal 1002091923, discount_code.id
+    begin
+      result = ShopifyAPI::DiscountCode.lookup(code: "SUMMERSALE10")
+    rescue ActiveResource::Redirection
+      response = ShopifyAPI::Base.connection.http.session.response
+      assert_equal 303, response.status
+      assert_match(
+        /https:\/\/.*\/admin\/price_rules\/#{@discount_code.price_rule.id}\/discount_codes\/#{@discount_code.id}/,
+        response.headers['location']
+      )
+    end
   end
 end
