@@ -40,10 +40,12 @@ class LogSubscriberTest < Test::Unit::TestCase
       ShopifyAPI::Page.find(2)
     end
 
-    assert_equal 4, @logger.logged(:info).size
-    assert_equal "GET https://this-is-my-test-shop.myshopify.com:443/admin/pages/2.json", @logger.logged(:info)[0]
-    assert_match /\-\-\> 404/, @logger.logged(:info)[1]
-    assert_equal "Headers: {\"Accept\"=>\"application/json\", #{@ua_header}}", @logger.logged(:info)[2]
-    assert_equal "Response:", @logger.logged(:info)[3]
+    combined_logger = (@logger.logged(:error)).concat(@logger.logged(:info))
+
+    assert_equal 4, combined_logger.size
+    assert_equal "GET https://this-is-my-test-shop.myshopify.com:443/admin/pages/2.json", combined_logger[0]
+    assert_match /\-\-\> 404/, combined_logger[1]
+    assert_equal "Headers: {\"Accept\"=>\"application/json\", #{@ua_header}}", combined_logger[2]
+    assert_equal "Response:", combined_logger[3]
   end
 end
