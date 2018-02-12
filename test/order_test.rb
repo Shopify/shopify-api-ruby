@@ -8,8 +8,21 @@ class OrderTest < Test::Unit::TestCase
     assert_equal 39072856, order.line_items.first.variant_id
   end
 
+  test "create should create an order with custom properties" do
+    props = [{ :"By default may label with \"Roasted for " => { :"Your First Name" => { :"\". If you want something specific on the label, enter it here:" => "" }}}]
+    fake 'orders', :method => :post, :status => 201, :body => load_fixture('order_with_properties')
+    order = ShopifyAPI::Order.create(line_items: [{quantity:1, variant_id:39072856, properties:props}], financial_status:"authorized")
+    assert_equal 39072856, order.line_items.first.variant_id
+  end
+
   test "get should get an order" do
     fake 'orders/450789469', :method => :get, :status => 200, :body => load_fixture('order')
+    order = ShopifyAPI::Order.find(450789469)
+    assert_equal 450789469, order.id
+  end
+
+  test "get should get an order with custom properties" do
+    fake 'orders/450789469', :method => :get, :status => 200, :body => load_fixture('order_with_properties')
     order = ShopifyAPI::Order.find(450789469)
     assert_equal 450789469, order.id
   end
@@ -44,4 +57,3 @@ class OrderTest < Test::Unit::TestCase
     assert_request_body({'email' => false, 'restock' => true}.to_json)
   end
 end
-
