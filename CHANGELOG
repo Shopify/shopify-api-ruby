@@ -1,3 +1,7 @@
+== Version 4.10.0
+
+* Added `ShopifyAPI::AccessScope`
+
 == Version 4.9.1
 
 * Fix a bug with custom properties for orders
