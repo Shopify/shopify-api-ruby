@@ -42,7 +42,7 @@ module ShopifyAPI
       prefix_options, query_options = split_options(prefix_options) if query_options.nil?
       "#{prefix(prefix_options)}#{collection_name}.#{format.extension}#{query_string(query_options)}"
     end
-    
+
     # find an asset by key:
     #   ShopifyAPI::Asset.find('layout/theme.liquid', :params => {:theme_id => 99})
     def self.find(*args)
@@ -57,7 +57,7 @@ module ShopifyAPI
         resource
       end
     end
-    
+
     # For text assets, Shopify returns the data in the 'value' attribute.
     # For binary assets, the data is base-64-encoded and returned in the
     # 'attachment' attribute. This accessor returns the data in both cases.
@@ -65,28 +65,28 @@ module ShopifyAPI
       attributes['value'] ||
       (attributes['attachment'] ? Base64.decode64(attributes['attachment']) : nil)
     end
-    
+
     def attach(data)
       self.attachment = Base64.encode64(data)
     end
-    
+
     def destroy
       connection.delete(element_path(prefix_options.merge(:asset => {:key => key})), self.class.headers)
     end
-    
+
     def new?
       false
     end
-    
+
     def method_missing(method_symbol, *arguments) #:nodoc:
       if %w{value= attachment= src= source_key=}.include?(method_symbol)
         wipe_value_attributes
       end
       super
     end
-    
+
     private
-    
+
     def wipe_value_attributes
       %w{value attachment src source_key}.each do |attr|
         attributes.delete(attr)
