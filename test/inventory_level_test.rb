@@ -7,7 +7,7 @@ class InventoryLevelTest < Test::Unit::TestCase
     @inventory_level = ShopifyAPI::InventoryLevel.new(@inventory_level_response['inventory_level'])
   end
 
-  test 'Retrieve inventory levels for the specified inventory_items and locations' do
+  test ".find with inventory_item_ids and location_ids returns expected inventory levels" do
     params = { inventory_item_ids: [808950810, 39072856], location_ids: [905684977, 487838322] }
     fake "inventory_levels.json?#{params.to_param}", extension: false, method: :get,
           status: 200, body: load_fixture('inventory_levels')
@@ -19,7 +19,7 @@ class InventoryLevelTest < Test::Unit::TestCase
     }, message: 'Response contained inventory_items or locations not requested.'
   end
 
-  test 'Adjust an inventory level by 5' do
+  test '#adjust with adjustment value returns inventory_level with available increased by adjustment value' do
     adjustment = 5
     updated_available = @inventory_level.available + adjustment
     @inventory_level_response[:available] = updated_available
@@ -29,7 +29,7 @@ class InventoryLevelTest < Test::Unit::TestCase
     assert_equal updated_available, @inventory_level.available
   end
 
-  test 'Connect an inventory_item to a location' do
+  test '#connect saves an inventory_level associated with inventory_item and location_id' do
     params = { inventory_item_id: 808950810, location_id: 99999999 }
     response = params.clone
     response[:available] = 0
@@ -40,13 +40,13 @@ class InventoryLevelTest < Test::Unit::TestCase
     assert_equal 0, inventory_level.available, message: 'expected newly connected location to have 0 inventory'
   end
 
-  test 'Destroy an inventory_level' do
+  test '#destroy removes inventory_level and returns nil' do
     params = { inventory_item_id: @inventory_level.inventory_item_id, location_id: @inventory_level.location_id }
     fake "inventory_levels.json?#{params.to_param}", extension: false, method: :delete, status: 204, body: nil
     assert_nil @inventory_level.destroy
   end
 
-  test 'Set the available inventory for an inventory_level' do
+  test '#set with available value returns inventory_level with available as the available value' do
     available = 13
     response = @inventory_level_response.clone
     response['inventory_level']['available'] = available

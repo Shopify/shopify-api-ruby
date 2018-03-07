@@ -17,8 +17,7 @@ module ShopifyAPI
 
     def destroy
       load_attributes_from_response(
-        self.class.delete('/', location_id: location_id,
-                               inventory_item_id: inventory_item_id)
+        self.class.delete('/', location_id: location_id, inventory_item_id: inventory_item_id)
       )
     end
 
