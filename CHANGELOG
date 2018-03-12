@@ -1,3 +1,9 @@
+== Version 4.11.0
+
+* Added `ShopifyAPI::InventoryItem`
+* Added `ShopifyAPI::InventoryItem`
+* Added `inventory_levels` method to `ShopifyAPI::Location`
+
 == Version 4.10.0
 
 * Added `ShopifyAPI::AccessScope`
