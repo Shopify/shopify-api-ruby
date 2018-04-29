@@ -19,6 +19,7 @@ end
 require 'shopify_api/events'
 require 'shopify_api/metafields'
 require 'shopify_api/countable'
+require 'shopify_api/collection'
 require 'shopify_api/resources'
 require 'shopify_api/session'
 require 'shopify_api/connection'

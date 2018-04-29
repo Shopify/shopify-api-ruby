@@ -4,6 +4,7 @@ module ShopifyAPI
   class Base < ActiveResource::Base
     class InvalidSessionError < StandardError; end
     extend Countable
+    self.collection_parser = ShopifyAPI::Collection
     self.timeout = 90
     self.include_root_in_json = false
     self.headers['User-Agent'] = ["ShopifyAPI/#{ShopifyAPI::VERSION}",
