@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ShopifyAPI
   # The Shopify API paginates the resources on the server. By default it will
   # return 50 entries, and a maximum of 250. This custom collection for

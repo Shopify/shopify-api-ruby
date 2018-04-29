@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class CollectionTest < Test::Unit::TestCase
@@ -62,7 +64,7 @@ class CollectionTest < Test::Unit::TestCase
     @fake_products ||= 127.times.map { |index| { id: index } }
   end
 
-  def fetch(params={})
+  def fetch(params = {})
     options = params.empty? ? {} : { params: params }
 
     ShopifyAPI::Product.all(options)
@@ -84,7 +86,7 @@ class CollectionTest < Test::Unit::TestCase
     @page2 ||= fake_products[51..101]
   end
 
-  def products_url(params={})
+  def products_url(params = {})
     endpoint = 'products.json'
 
     query = params.empty? ? '' : "?#{params.to_query}"
