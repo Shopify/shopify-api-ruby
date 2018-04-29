@@ -15,62 +15,50 @@ class CollectionTest < Test::Unit::TestCase
     assert_equal ShopifyAPI::Base.collection_parser, ShopifyAPI::Collection
   end
 
-  test '#current_page on the first page' do
+  test '#current_page' do
     fake_first_page
     assert_equal 1, fetch.current_page
-  end
 
-  test '#current_page on the second page' do
     fake_page2
     assert_equal 2, fetch(page: 2).current_page
   end
 
-  test '#first_page? on the first page' do
+  test '#first_page?' do
     fake_first_page
     assert fetch.first_page?
-  end
 
-  test '#first_page? when not on the first page' do
     fake_page2
     refute fetch(page: 2).first_page?
   end
 
-  test '#last_page? when not on the last page' do
+  test '#last_page?' do
     fake_first_page
     refute fetch.last_page?
-  end
 
-  test '#last_page when on the last page' do
     fake_last_page
     assert fetch(page: 3).last_page?
   end
 
-  test 'default #limit' do
+  test '#limit' do
     fake_first_page
     assert_equal 50, fetch.limit
-  end
 
-  test 'custom #limit' do
     fake_limit25
     assert_equal 25, fetch(limit: 25).limit
   end
 
-  test '#next_page when not on the last page' do
+  test '#next_page' do
     fake_page2
     assert_equal 3, fetch(page: 2).next_page
-  end
 
-  test '#next_page when on the last page' do
     fake_last_page
     assert_nil fetch(page: 3).next_page
   end
 
-  test '#prev_page when not on the first page' do
+  test '#prev_page' do
     fake_last_page
     assert_equal 2, fetch(page: 3).prev_page
-  end
 
-  test '#prev_page when on the first page' do
     fake_first_page
     assert_nil fetch.prev_page
   end
