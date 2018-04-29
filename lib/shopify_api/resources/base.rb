@@ -4,7 +4,11 @@ module ShopifyAPI
   class Base < ActiveResource::Base
     class InvalidSessionError < StandardError; end
     extend Countable
-    self.collection_parser = ShopifyAPI::Collection
+
+    if ActiveResource::VERSION::MAJOR >= 4
+      self.collection_parser = ShopifyAPI::Collection
+    end
+
     self.timeout = 90
     self.include_root_in_json = false
     self.headers['User-Agent'] = ["ShopifyAPI/#{ShopifyAPI::VERSION}",
@@ -79,6 +83,21 @@ module ShopifyAPI
 
     def persisted?
       !id.nil?
+    end
+
+    if ActiveResource::VERSION::MAJOR < 4
+      def self.find_every(options)
+        collection = super(options)
+
+        return collection if collection.nil?
+
+        _, params = split_options(options[:params])
+
+        ShopifyAPI::Collection.new(collection).tap do |parser|
+          parser.resource_class = self
+          parser.original_params = params
+        end
+      end
     end
 
     private

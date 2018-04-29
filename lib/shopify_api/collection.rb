@@ -15,15 +15,68 @@ module ShopifyAPI
   #   products.total_pages # => 10
   #   products.prev_page # => 1
   #   products.next_page # => 3
-  class Collection < ActiveResource::Collection
+  class Collection
+    include Enumerable
+
+    delegate :to_yaml, :all?, *Array.instance_methods(false), to: :to_a
+
+    attr_accessor :elements, :resource_class, :original_params
+
     # The default amount of entries Shopify responds with if no limit is set.
     DEFAULT_LIMIT = 50
+
+    # @param [Array<ShopifyAPI::Base>] elements
+    # @return [ShopifyAPI::Collection]
+    def initialize(elements = [])
+      @elements = elements
+    end
+
+    # @return [self]
+    def collect!
+      return elements unless block_given?
+
+      set = []
+
+      each { |entry| set << yield(entry) }
+
+      @elements = set
+
+      self
+    end
+
+    alias map! collect!
 
     # The page number that the collection is currently populated with.
     #
     # @return [Integer] The current page.
     def current_page
       @current_page ||= original_params.fetch(:page, 1).to_i
+    end
+
+    # Finds the first entry with the given attributes, or creates it if it does
+    # not exist.
+    #
+    # @param [Hash] attributes The search attributes.
+    # @return [ShopifyAPI::Base] The entry that was found or created.
+    def first_or_create(attributes = {})
+      first || resource_class.create(original_params.update(attributes))
+    rescue NoMethodError
+      resource_type = resource_class.inspect
+
+      raise "Cannot create resource from resource type: #{resource_type}"
+    end
+
+    # Finds the first entry with the given attributes, or initializes a new
+    # one if it does not exist on the server.
+    #
+    # @param [Hash] attributes The search attributes.
+    # @return [ShopifyAPI::Base] The entry that was found or initialized.
+    def first_or_initialize(attributes = {})
+      first || resource_class.new(original_params.update(attributes))
+    rescue NoMethodError
+      resource_type = resource_class.inspect
+
+      raise "Cannot build resource from resource type: #{resource_type}"
     end
 
     # Checks if the collection is on the first page.
@@ -59,6 +112,13 @@ module ShopifyAPI
     # @return [Integer, NilClass] The previous page, or nil if on the first one.
     def prev_page
       current_page - 1 unless first_page?
+    end
+
+    # Converts the collection to an array.
+    #
+    # @return [Array<ShopifyAPI::Base>] All of the entries in the collection.
+    def to_a
+      elements
     end
 
     # Gets the total number of entries available for the given request. The
