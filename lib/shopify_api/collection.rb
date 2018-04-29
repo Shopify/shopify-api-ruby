@@ -44,7 +44,7 @@ module ShopifyAPI
     #
     # @return [Integer] Maximum number entries per page.
     def limit
-      @limit_value ||= original_params.fetch(:limit, DEFAULT_LIMIT).to_i
+      @limit ||= original_params.fetch(:limit, DEFAULT_LIMIT).to_i
     end
 
     # Gets the number of the next page.
