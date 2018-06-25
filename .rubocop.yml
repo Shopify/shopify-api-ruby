@@ -1,0 +1,8 @@
+inherit_from:
+  - https://shopify.github.io/ruby-style-guide/rubocop.yml
+
+AllCops:
+  TargetRubyVersion: 2.4
+
+Rails:
+  Enabled: false
