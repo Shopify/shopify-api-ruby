@@ -6,3 +6,6 @@ AllCops:
 
 Rails:
   Enabled: false
+
+Style/Documentation:
+  Enabled: false
