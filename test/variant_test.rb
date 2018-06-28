@@ -5,7 +5,7 @@ class VariantTest < Test::Unit::TestCase
   def test_get_variants
     fake "products/632910392/variants", :method => :get, :body => load_fixture('variants')
 
-    variants = ShopifyAPI::Variant.find(:all, :params => {:product_id => 632910392})
+    variants = ShopifyAPI::Variant.find(:all, :params => { :product_id => 632910392 })
     assert_equal variants.map(&:id).sort, [39072856, 49148385, 457924702, 808950810]
   end
 
