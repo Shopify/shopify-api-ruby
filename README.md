@@ -232,8 +232,8 @@ If you were previously using Shopify's [activeresource fork](https://github.com/
 Download the source code and run:
 
 ```bash
-bundle install --jobs=3 --retry=3
-bundle exec rake
+bundle install
+bundle exec rake test
 ```
 
 ## Additional Resources
