@@ -264,6 +264,8 @@ bundle exec rake test
 
 API Reference: https://help.shopify.com/api/reference
 
+`shopify_api` gem documentation: https://www.rubydoc.info/github/Shopify/shopify_api/
+
 Ask questions on the forums: http://ecommerce.shopify.com/c/shopify-apis-and-technology
 
 ## Copyright
