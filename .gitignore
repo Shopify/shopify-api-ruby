@@ -1,10 +1,7 @@
-*.sw?
+*.gem
+.bundle
+Gemfile.lock
+pkg/*
 .DS_Store
-coverage
-rdoc
-doc
-pkg
-.ruby-version
-*.lock
-.idea
-.dev/
+.yardoc
+doc/

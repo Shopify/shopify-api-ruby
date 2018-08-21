@@ -1,3 +1,0 @@
-#!/usr/bin/env ruby
-puts "shopify command is no longer bundled with shopify_api."
-puts "if you need these tools, install the shopify_cli gem"
