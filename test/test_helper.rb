@@ -30,11 +30,13 @@ class Test::Unit::TestCase < Minitest::Unit::TestCase
 
   def setup
     ActiveResource::Base.format = :json
-    ShopifyAPI.constants.each do |const|
-      begin
-        const = "ShopifyAPI::#{const}".constantize
-        const.format = :json if const.respond_to?(:format=)
-      rescue NameError
+    [ShopifyAPI, ShopifyAPI::Ping].each do |mod|
+      mod.constants.each do |const|
+        begin
+          const = mod.const_get(const)
+          const.format = :json if const.respond_to?(:format=)
+        rescue NameError
+        end
       end
     end
 
