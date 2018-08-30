@@ -2,7 +2,7 @@ require 'test_helper'
 
 class PingConversationTest < Test::Unit::TestCase
   def test_create_conversation
-    fake "api/ping-api/v1/conversations", :method => :post, :body => load_fixture('ping/conversation')
+    fake "api/ping-api/v1/conversations", method: :post, body: load_fixture('ping/conversation')
 
     conversation = ShopifyAPI::Ping::Conversation.new(
       topic: 'my topic',
@@ -11,7 +11,7 @@ class PingConversationTest < Test::Unit::TestCase
           name: 'foo',
           id: 'test',
           group: 'customer',
-        }
+        },
       ]
     )
 
@@ -21,7 +21,7 @@ class PingConversationTest < Test::Unit::TestCase
   end
 
   def test_send_message
-    fake "api/ping-api/v1/conversations/123/messages", :method => :post, :body => load_fixture('ping/message')
+    fake "api/ping-api/v1/conversations/123/messages", method: :post, body: load_fixture('ping/message')
 
     conversation = ShopifyAPI::Ping::Conversation.new(id: '123')
     message = conversation.send_message(

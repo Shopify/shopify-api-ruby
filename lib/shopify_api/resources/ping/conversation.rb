@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ShopifyAPI
   module Ping
     class Conversation < Base
@@ -5,7 +7,7 @@ module ShopifyAPI
 
       def send_message(message_attrs)
         message = ShopifyAPI::Ping::Message.new(
-          message_attrs.merge(conversation_id: self.id)
+          message_attrs.merge(conversation_id: id)
         )
 
         message.save
