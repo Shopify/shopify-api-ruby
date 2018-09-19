@@ -35,4 +35,37 @@ class CheckoutsTest < Test::Unit::TestCase
 
     checkout.complete
   end
+
+  test ":ready? returns true when status is 201" do
+    fake "checkouts/#{@expected_checkout_id}", method: :get, status: 201, body: load_fixture('checkout')
+    checkout = ShopifyAPI::Checkout.find(@expected_checkout_id)
+
+    assert_predicate checkout, :ready?
+  end
+
+  test ":ready? returns false when status is 202" do
+    fake "checkouts/#{@expected_checkout_id}", method: :get, status: 202, body: load_fixture('checkout')
+    checkout = ShopifyAPI::Checkout.find(@expected_checkout_id)
+
+    refute_predicate checkout, :ready?
+  end
+
+  test ":payments returns payments for a checkout" do
+    fake "checkouts/#{@expected_checkout_id}", method: :get, status: 200, body: load_fixture('checkout')
+    checkout = ShopifyAPI::Checkout.find(@expected_checkout_id)
+
+    fake "checkouts/#{@expected_checkout_id}/payments", method: :get, status: 202, body: load_fixture('payments')
+    assert_equal 10.00, checkout.payments.first.amount
+  end
+
+  test ":shipping_rates returns shipping rates for a checkout" do
+    fake "checkouts/#{@expected_checkout_id}", method: :get, status: 200, body: load_fixture('checkout')
+    checkout = ShopifyAPI::Checkout.find(@expected_checkout_id)
+
+    fake("checkouts/#{@expected_checkout_id}/shipping_rates",
+      method: :get,
+      status: 202,
+      body: load_fixture('shipping_rates'))
+    assert_equal "canada_post-INT.TP.BOGUS-4.00", checkout.shipping_rates.first.id
+  end
 end

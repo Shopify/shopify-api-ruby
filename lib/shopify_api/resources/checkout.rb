@@ -8,5 +8,20 @@ module ShopifyAPI
     def complete
       post(:complete)
     end
+
+    def ready?
+      return false unless persisted?
+
+      reload
+      [200, 201].include?(ShopifyAPI::Base.connection.response.code.to_i)
+    end
+
+    def payments
+      Payment.find(:all, params: { checkout_id: id })
+    end
+
+    def shipping_rates
+      ShippingRate.find(:all, params: { checkout_id: id })
+    end
   end
 end

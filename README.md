@@ -10,6 +10,13 @@ The Shopify API gem allows Ruby developers to programmatically access the admin 
 
 The API is implemented as JSON over HTTP using all four verbs (GET/POST/PUT/DELETE). Each resource, like Order, Product, or Collection, has its own URL and is manipulated in isolation. In other words, we’ve tried to make the API follow the REST principles as much as possible.
 
+## ⚠️ Breaking change notice for version 5.0.0 ⚠️
+The [Abandoned Checkout API](https://help.shopify.com/en/api/reference/orders/abandoned_checkouts) is now accessed through the `ShopifyAPI::AbandonedCheckout` resource. If you were previously accessing the Abandoned Checkout API through the `ShopifyAPI::Checkout` resource, you will need to update your code after upgrading from version 4.x.x or earlier.
+
+Going forward, the `ShopifyAPI::Checkout` resource is used to access the [Checkout API](https://help.shopify.com/en/api/reference/sales_channels/checkout), which can be used to create new checkouts.
+
+For more details, [please see this issue](https://github.com/Shopify/shopify_api/issues/471).
+
 ## Usage
 
 ### Requirements
