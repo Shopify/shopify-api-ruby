@@ -73,9 +73,10 @@ module ShopifyAPI
       self.extra = extra
     end
 
-    def create_permission_url(scope, redirect_uri = nil)
-      params = {:client_id => api_key, :scope => scope.join(',')}
+    def create_permission_url(scope, redirect_uri = nil, state: nil)
+      params = { client_id: api_key, scope: scope.join(',') }
       params[:redirect_uri] = redirect_uri if redirect_uri
+      params[:state] = state if state
       "#{site}/oauth/authorize?#{parameterize(params)}"
     end
 
