@@ -213,15 +213,13 @@ class SessionTest < Test::Unit::TestCase
     end
   end
 
-  test "return true when the signature is valid and the keys of params are \
-        strings" do
+  test "return true when the signature is valid and the keys of params are strings" do
     params = { 'code' => 'any-code', 'timestamp' => Time.now }
     params[:hmac] = generate_signature(params)
     assert_equal true, ShopifyAPI::Session.validate_signature(params)
   end
 
-  test "return true when validating signature of params with ampersand \
-        and equal sign characters" do
+  test "return true when validating signature of params with ampersand and equal sign characters" do
     ShopifyAPI::Session.secret = 'secret'
     params = { 'a' => '1&b=2', 'c=3&d' => '4' }
     to_sign = 'a=1%26b=2&c%3D3%26d=4'
@@ -229,8 +227,7 @@ class SessionTest < Test::Unit::TestCase
     assert_equal true, ShopifyAPI::Session.validate_signature(params)
   end
 
-  test "return true when validating signature of params with percent sign\
-        characters" do
+  test "return true when validating signature of params with percent sign characters" do
     ShopifyAPI::Session.secret = 'secret'
     params = { 'a%3D1%26b' => '2%26c%3D3' }
     to_sign = 'a%253D1%2526b=2%2526c%253D3'
@@ -249,9 +246,6 @@ class SessionTest < Test::Unit::TestCase
 
   def generate_signature(params)
     params = make_sorted_params(params) if params.is_a?(Hash)
-    OpenSSL::HMAC.hexdigest(
-      OpenSSL::Digest::SHA256.new,
-      ShopifyAPI::Session.secret, params
-    )
+    OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new, ShopifyAPI::Session.secret, params)
   end
 end
