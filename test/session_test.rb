@@ -215,7 +215,7 @@ class SessionTest < Test::Unit::TestCase
 
   test "return true when the signature is valid and the keys of params are strings" do
     params = {"code" => "any-code", "timestamp" => Time.now}
-    params["hmac"] = generate_signature(params)
+    params[:hmac] = generate_signature(params)
     assert_equal true, ShopifyAPI::Session.validate_signature(params)
   end
 
@@ -223,8 +223,7 @@ class SessionTest < Test::Unit::TestCase
     ShopifyAPI::Session.secret = 'secret'
     params = {'a' => '1&b=2', 'c=3&d' => '4'}
     to_sign = "a=1%26b=2&c%3D3%26d=4"
-    params['hmac'] = generate_signature(to_sign)
-
+    params[:hmac] = generate_signature(to_sign)
     assert_equal true, ShopifyAPI::Session.validate_signature(params)
   end
 
@@ -232,7 +231,7 @@ class SessionTest < Test::Unit::TestCase
     ShopifyAPI::Session.secret = 'secret'
     params = {'a%3D1%26b' => '2%26c%3D3'}
     to_sign = "a%253D1%2526b=2%2526c%253D3"
-    params['hmac'] = generate_signature(to_sign)
+    params[:hmac] = generate_signature(to_sign)
 
     assert_equal true, ShopifyAPI::Session.validate_signature(params)
   end
@@ -240,7 +239,7 @@ class SessionTest < Test::Unit::TestCase
   private
 
   def make_sorted_params(params)
-    sorted_params = params.with_indifferent_access.except(:signature, :hmac, :action, :controller).collect{|k,v|"#{k}=#{v}"}.sort.join('&')
+    sorted_params = params.except(:signature, :hmac, :action, :controller).collect{|k,v|"#{k}=#{v}"}.sort.join('&')
   end
 
   def generate_signature(params)
