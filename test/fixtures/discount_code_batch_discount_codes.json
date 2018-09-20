@@ -1,0 +1,19 @@
+{
+  "discount_codes": [
+    {
+      "id": null,
+      "code": "SUMMER1",
+      "errors": {}
+    },
+    {
+      "id": null,
+      "code": "SUMMER2",
+      "errors": {}
+    },
+    {
+      "id": null,
+      "code": "SUMMER3",
+      "errors": {}
+    }
+  ]
+}
