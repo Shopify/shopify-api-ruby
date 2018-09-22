@@ -51,6 +51,7 @@ module ShopifyAPI
       end
 
       def validate_signature(params)
+        params = (params.respond_to?(:to_unsafe_hash) ? params.to_unsafe_hash : params).with_indifferent_access
         return false unless signature = params[:hmac]
 
         calculated_signature = OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new(), secret, encoded_params_for_signature(params))
