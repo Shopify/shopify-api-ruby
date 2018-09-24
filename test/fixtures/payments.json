@@ -1,9 +1,10 @@
-[
-  {
-    "payment" : {
+{
+  "payments" : [
+    {
+      "id": "east-44a400ef20b36e38f10b882cb7260796",
       "amount": 10.00,
       "session_id": "east-44a400ef20b36e38f10b882cb7260796",
       "unique_token": "my-client-generated-idempotency-token"
     }
-  }
-]
+  ]
+}
