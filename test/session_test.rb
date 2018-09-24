@@ -232,7 +232,6 @@ class SessionTest < Test::Unit::TestCase
     params = { 'a%3D1%26b' => '2%26c%3D3' }
     to_sign = 'a%253D1%2526b=2%2526c%253D3'
     params[:hmac] = generate_signature(to_sign)
-
     assert_equal true, ShopifyAPI::Session.validate_signature(params)
   end
 
