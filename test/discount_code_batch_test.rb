@@ -21,6 +21,7 @@ class DiscountCodeBatchTest < Test::Unit::TestCase
     discount_code_job = batch.discount_code_job
 
     assert_equal 3, discount_code_job.count
+    assert discount_code_job[2].errors.present?
   end
 
   def test_create_batch

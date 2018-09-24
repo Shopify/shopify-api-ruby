@@ -12,8 +12,10 @@
     },
     {
       "id": null,
-      "code": "SUMMER3",
-      "errors": {}
+      "code": "SUMMER2",
+      "errors": {
+        "code": ["must be unique"]
+      }
     }
   ]
 }

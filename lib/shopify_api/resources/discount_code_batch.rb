@@ -12,7 +12,14 @@ module ShopifyAPI
       @discount_codes ||= begin
         if id
           path = "/admin/price_rules/#{price_rule_id}/batch/#{id}/discount_codes.json"
-          ShopifyAPI::DiscountCode.find :all, from: path
+          discount_codes  = ShopifyAPI::DiscountCode.find :all, from: path
+          discount_codes.each do |code|
+            errors = code.attributes['errors']
+            errors.attributes.each do |key, values|
+              values.each { |message| code.errors.add(key, message) }
+            end
+          end
+          discount_codes
         end
       end
     end
