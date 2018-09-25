@@ -56,7 +56,7 @@ class CheckoutsTest < Test::Unit::TestCase
 
     fake "checkouts/#{@expected_checkout_id}/payments", method: :get, status: 202, body: load_fixture('payments')
 
-    assert_equal 10.00, checkout.payments.first.attributes['amount']
+    assert_equal 10.00, checkout.payments.first.amount
   end
 
   test ":shipping_rates returns shipping rates for a checkout" do
