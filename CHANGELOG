@@ -1,3 +1,10 @@
+== Version 5.0.0
+
+* Added `ShopifyAPI::AbandonedCheckout`
+* Added support for X-Shopify-Checkout-Version header on `ShopifyAPI::Checkout`
+* Added `ShopifyAPI::ShippingRate`
+* Added support for Checkout::complete endpoint
+
 == Version 4.12.0
 
 * Added support for the GraphQL API
