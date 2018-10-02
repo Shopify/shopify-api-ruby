@@ -1,9 +1,17 @@
 == Version 5.0.0
 
+* Breaking change: `ShopifyAPI::Checkout` now maps to the Checkout API, rather than the Abandoned Checkouts API
+  * See the README for more details
 * Added `ShopifyAPI::AbandonedCheckout`
 * Added support for X-Shopify-Checkout-Version header on `ShopifyAPI::Checkout`
 * Added `ShopifyAPI::ShippingRate`
-* Added support for Checkout::complete endpoint
+* Added `ShopifyAPI::Payment`
+* Added support for `Checkout::complete` endpoint
+* Fixed session handling support for Rails 5.2.1
+
+== Version 4.13.0
+* Added `ShopifyAPI::ApiPermission` resource for uninstalling an application
+* Added a deprecation warning to `ShopifyAPI::OAuth`
 
 == Version 4.12.0
 
