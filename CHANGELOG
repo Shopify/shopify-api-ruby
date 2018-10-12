@@ -1,3 +1,10 @@
+== Version 5.1.0
+
+* Added `ShopifyAPI::Publications`
+* Added `ShopifyAPI::ProductPublications`
+* Added `ShopifyAPI::CollectionPublications`
+* Added support for new collection products endpoint from `ShopifyAPI::Collection#products`
+
 == Version 5.0.0
 
 * Breaking change: `ShopifyAPI::Checkout` now maps to the Checkout API, rather than the Abandoned Checkouts API
