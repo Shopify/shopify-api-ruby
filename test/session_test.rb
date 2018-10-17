@@ -56,10 +56,6 @@ class SessionTest < Test::Unit::TestCase
     assert_equal "My test secret", ShopifyAPI::Session.secret
   end
 
-  test "use 'https' protocol by default for all sessions" do
-    assert_equal 'https', ShopifyAPI::Session.protocol
-  end
-
   test "#temp reset ShopifyAPI::Base.site to original value" do
 
     ShopifyAPI::Session.setup(:api_key => "key", :secret => "secret")
@@ -113,28 +109,6 @@ class SessionTest < Test::Unit::TestCase
       session.request_token(params={:code => "bad-code"})
     end
     assert_equal false, session.valid?
-  end
-
-  test "#temp reset ShopifyAPI::Base.site to original value when using a non-standard port" do
-    ShopifyAPI::Session.setup(:api_key => "key", :secret => "secret")
-    session1 = ShopifyAPI::Session.new('fakeshop.myshopify.com:3000', 'token1')
-    ShopifyAPI::Base.activate_session(session1)
-  end
-
-  test "myshopify_domain supports non-standard ports" do
-    begin
-      ShopifyAPI::Session.setup(:api_key => "key", :secret => "secret", :myshopify_domain => 'localhost', port: '3000')
-      session = ShopifyAPI::Session.new('fakeshop.localhost:3000', 'token1')
-      ShopifyAPI::Base.activate_session(session)
-      assert_equal 'https://fakeshop.localhost:3000/admin', ShopifyAPI::Base.site.to_s
-
-      session = ShopifyAPI::Session.new('fakeshop', 'token1')
-      ShopifyAPI::Base.activate_session(session)
-      assert_equal 'https://fakeshop.localhost:3000/admin', ShopifyAPI::Base.site.to_s
-    ensure
-      ShopifyAPI::Session.myshopify_domain = "myshopify.com"
-      ShopifyAPI::Session.port = nil
-    end
   end
 
   test "return site for session" do

@@ -7,8 +7,7 @@ module ShopifyAPI
   end
 
   class Session
-    cattr_accessor :api_key, :secret, :protocol, :myshopify_domain, :port
-    self.protocol = 'https'
+    cattr_accessor :api_key, :secret, :myshopify_domain
     self.myshopify_domain = 'myshopify.com'
 
     attr_accessor :url, :token, :name, :extra
@@ -44,8 +43,7 @@ module ShopifyAPI
           shop = shop.slice(0, idx)
         end
         return nil if shop.empty?
-        shop = "#{shop}.#{myshopify_domain}"
-        port ? "#{shop}:#{port}" : shop
+        "#{shop}.#{myshopify_domain}"
       rescue URI::InvalidURIError
         nil
       end
@@ -105,7 +103,7 @@ module ShopifyAPI
     end
 
     def site
-      "#{protocol}://#{url}/admin"
+      "https://#{url}/admin"
     end
 
     def valid?
@@ -133,7 +131,7 @@ module ShopifyAPI
       end
 
       def access_token_request(code)
-        uri = URI.parse("#{protocol}://#{url}/admin/oauth/access_token")
+        uri = URI.parse("https://#{url}/admin/oauth/access_token")
         https = Net::HTTP.new(uri.host, uri.port)
         https.use_ssl = true
         request = Net::HTTP::Post.new(uri.request_uri)
