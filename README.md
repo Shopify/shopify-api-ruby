@@ -101,8 +101,7 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
    or if you want a custom redirect_uri and/or state:
 
    ```ruby
-   state = SecureRandom.hex
-   permission_url = session.create_permission_url(scope, "https://my_redirect_uri.com", state)
+   permission_url = session.create_permission_url(scope, :redirect_uri => "https://my_redirect_uri.com", :state => "foobar")
    ```
 
 4. Once authorized, the shop redirects the owner to the return URL of your application with a parameter named 'code'. This is a temporary token that the app can exchange for a permanent access token.
