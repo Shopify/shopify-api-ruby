@@ -73,7 +73,7 @@ class SessionTest < Test::Unit::TestCase
     assert_equal 'https://fakeshop.myshopify.com/admin', ShopifyAPI::Base.site.to_s
   end
 
-  test "create_permission_url returns correct url with single scope no redirect uri" do
+  test "create_permission_url returns correct url with single scope no redirect uri no state" do
     ShopifyAPI::Session.setup(:api_key => "My_test_key", :secret => "My test secret")
     session = ShopifyAPI::Session.new('http://localhost.myshopify.com')
     scope = ["write_products"]
@@ -81,15 +81,15 @@ class SessionTest < Test::Unit::TestCase
     assert_equal "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&scope=write_products", permission_url
   end
 
-  test "create_permission_url returns correct url with single scope and redirect uri" do
+  test "create_permission_url returns correct url with single scope and redirect uri no state" do
     ShopifyAPI::Session.setup(:api_key => "My_test_key", :secret => "My test secret")
     session = ShopifyAPI::Session.new('http://localhost.myshopify.com')
     scope = ["write_products"]
-    permission_url = session.create_permission_url(scope, "http://my_redirect_uri.com")
+    permission_url = session.create_permission_url(scope, :redirect_uri => "http://my_redirect_uri.com")
     assert_equal "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&scope=write_products&redirect_uri=http://my_redirect_uri.com", permission_url
   end
 
-  test "create_permission_url returns correct url with dual scope no redirect uri" do
+  test "create_permission_url returns correct url with dual scope no redirect uri no state" do
     ShopifyAPI::Session.setup(:api_key => "My_test_key", :secret => "My test secret")
     session = ShopifyAPI::Session.new('http://localhost.myshopify.com')
     scope = ["write_products","write_customers"]
@@ -97,12 +97,22 @@ class SessionTest < Test::Unit::TestCase
     assert_equal "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&scope=write_products,write_customers", permission_url
   end
 
-  test "create_permission_url returns correct url with no scope no redirect uri" do
+  test "create_permission_url returns correct url with single scope and redirect uri and state" do
     ShopifyAPI::Session.setup(:api_key => "My_test_key", :secret => "My test secret")
     session = ShopifyAPI::Session.new('http://localhost.myshopify.com')
-    scope = []
-    permission_url = session.create_permission_url(scope)
-    assert_equal "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&scope=", permission_url
+    scope = ["write_products"]
+    state = "My_test_state"
+    permission_url = session.create_permission_url(scope, :redirect_uri => "http://my_redirect_uri.com", :state => state)
+    assert_equal "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&scope=write_products&redirect_uri=http://my_redirect_uri.com&state=My_test_state", permission_url
+  end
+
+  test "create_permission_url returns correct url with single scope and state no redirect uri" do
+    ShopifyAPI::Session.setup(:api_key => "My_test_key", :secret => "My test secret")
+    session = ShopifyAPI::Session.new('http://localhost.myshopify.com')
+    scope = ["write_products"]
+    state = "My_test_state"
+    permission_url = session.create_permission_url(scope, :state => state)
+    assert_equal "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&scope=write_products&state=My_test_state", permission_url
   end
 
   test "raise exception if code invalid in request token" do
