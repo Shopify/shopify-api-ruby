@@ -1,3 +1,7 @@
+== Version 4.0.8
+
+* Fixed incorrect parameters in ActiveResource patch
+
 == Version 4.0.7
 
 * Added `ShippingAPI::ShippingZone`
