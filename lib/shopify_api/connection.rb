@@ -13,15 +13,17 @@ module ShopifyAPI
     module RequestNotification
       def request(method, path, *arguments)
         super.tap do |response|
-          notify_about_request(response, arguments)
+          notify_about_request(method, path, response, arguments)
         end
       rescue => e
-        notify_about_request(e.response, arguments) if e.respond_to?(:response)
+        notify_about_request(method, path, e.response, arguments) if e.respond_to?(:response)
         raise
       end
 
-      def notify_about_request(response, arguments)
+      def notify_about_request(method, path, response, arguments)
         ActiveSupport::Notifications.instrument("request.active_resource_detailed") do |payload|
+          payload[:method]   = method
+          payload[:path]     = path
           payload[:response] = response
           payload[:data]     = arguments
         end
