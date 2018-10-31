@@ -1,3 +1,9 @@
+== Version 5.2.0
+
+* Added `ShopifyAPI::Currency` to fetch list of supported currencies on a shop
+* Added `ShopifyAPI::TenderTransaction` to fetch list of transactions on a shop
+* Fixed bug with X-Shopify-Checkout-Version on ShopifyAPI::Checkout header being applied to all requests
+
 == Version 5.1.0
 
 * Added `ShopifyAPI::Publications`
