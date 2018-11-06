@@ -9,6 +9,11 @@ class CheckoutsTest < Test::Unit::TestCase
     @expected_checkout_id = JSON.parse(load_fixture('checkout'))['checkout']['token']
   end
 
+  test ".headers includes a version" do
+    assert_equal "2016-09-06", ShopifyAPI::Checkout.headers["X-Shopify-Checkout-Version"]
+    assert_nil ShopifyAPI::Base.headers["X-Shopify-Checkout-Version"]
+  end
+
   test ":create creates a checkout" do
     fake 'checkouts', method: :post, status: 201, body: load_fixture('checkout')
 
