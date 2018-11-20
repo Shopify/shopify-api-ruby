@@ -91,7 +91,7 @@ class Test::Unit::TestCase < Minitest::Unit::TestCase
     else
       "https://this-is-my-test-shop.myshopify.com/admin/#{endpoint}#{extension}"
     end
-
+    byebug if url&.include?("delivery_confirmation")
     FakeWeb.register_uri(method, url, {:body => body, :status => 200, :content_type => "text/#{format}", :content_length => 1}.merge(options))
   end
 end
