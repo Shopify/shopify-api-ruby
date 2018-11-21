@@ -35,7 +35,10 @@ class PingMessageTest < Test::Unit::TestCase
 
     message.save
 
-    fake "api/ping-api/v1/conversations/123/messages/#{message.id}/delivery_confirmation", method: :post, body: load_fixture('ping/delivery_confirmation')
+    fake "api/ping-api/v1/conversations/123/messages/#{message.id}/delivery_confirmation",
+      method: :post,
+      body: load_fixture('ping/delivery_confirmation')
+
     delivery_confirmation = message.confirm(conversation_id: '123', message_id: message.id)
 
     assert_equal "true", delivery_confirmation.delivered
