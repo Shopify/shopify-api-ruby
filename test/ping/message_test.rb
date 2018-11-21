@@ -20,8 +20,6 @@ class PingMessageTest < Test::Unit::TestCase
   end
 
   def test_confirm
-    # delivery_confirmation_fixture = load_fixture('ping/delivery_confirmation')
-    # delivery_confirmation_details = ActiveSupport::JSON.decode(delivery_confirmation_fixture)
     fake "api/ping-api/v1/conversations/123/messages", method: :post, body: load_fixture('ping/message')
 
     message = ShopifyAPI::Ping::Message.new(
