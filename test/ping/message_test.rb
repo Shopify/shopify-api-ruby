@@ -20,8 +20,9 @@ class PingMessageTest < Test::Unit::TestCase
   end
 
   def test_confirm
-    fake "api/ping-api/v1/conversations/123/messages/111/",
-      method: :post, body: load_fixture('ping/delivery_confirmation')
+    # delivery_confirmation_fixture = load_fixture('ping/delivery_confirmation')
+    # delivery_confirmation_details = ActiveSupport::JSON.decode(delivery_confirmation_fixture)
+    fake "api/ping-api/v1/conversations/123/messages", method: :post, body: load_fixture('ping/message')
 
     message = ShopifyAPI::Ping::Message.new(
       dedupe_key: SecureRandom.uuid,
@@ -29,10 +30,14 @@ class PingMessageTest < Test::Unit::TestCase
         text: "Hello from shopify_api",
       },
       sender_id: 'test',
+      conversation_id: '123',
     )
 
-    delivery_confirmation = message.confirm(conversation_id: '123', message_id: '111')
+    message.save
 
-    assert_equal true, delivery_confirmation.delivered
+    fake "api/ping-api/v1/conversations/123/messages/#{message.id}/delivery_confirmation", method: :post, body: load_fixture('ping/delivery_confirmation')
+    delivery_confirmation = message.confirm(conversation_id: '123', message_id: message.id)
+
+    assert_equal "true", delivery_confirmation.delivered
   end
 end
