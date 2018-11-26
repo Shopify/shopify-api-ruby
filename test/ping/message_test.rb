@@ -60,11 +60,14 @@ class PingMessageTest < Test::Unit::TestCase
       method: :post,
       body: ''
 
-    prefix_options = { conversation_id: '123', message_id: message.id, details: 'Message failed to be sent by integration.' }
+    options = {
+      conversation_id: '123',
+      message_id: message.id,
+      details: 'Message failed to be sent by integration.'
+    }
 
-    delivery_confirmation = message.failed_delivery(prefix_options)
+    delivery_confirmation = message.failed_delivery(options)
 
     assert_equal 'Message failed to be sent by integration.', delivery_confirmation.details
   end
-
 end
