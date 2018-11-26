@@ -63,7 +63,7 @@ class PingMessageTest < Test::Unit::TestCase
     options = {
       conversation_id: '123',
       message_id: message.id,
-      details: 'Message failed to be sent by integration.'
+      details: 'Message failed to be sent by integration.',
     }
 
     delivery_confirmation = message.failed_delivery(options)
