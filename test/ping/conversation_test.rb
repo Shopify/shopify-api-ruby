@@ -36,4 +36,29 @@ class PingConversationTest < Test::Unit::TestCase
 
     assert_equal "d0c7a2e6-8084-4e79-8483-e4a1352b81f7", message.id
   end
+
+  def test_successful_delivery
+   fake "api/ping-api/v1/conversations/123/messages/111/delivery_confirmation", method: :post, body: load_fixture('ping/successful_delivery_confirmation')
+
+    conversation = ShopifyAPI::Ping::Conversation.new(id: '123')
+    delivery_confirmation = conversation.successful_delivery(
+      message_id: '111',
+      confirmation_timestamp: Time.now.to_s
+    )
+
+    assert_equal "true", delivery_confirmation.delivered
+  end
+
+  def test_failed_delivery
+    fake "api/ping-api/v1/conversations/123/messages/111/delivery_confirmation", method: :post, body: load_fixture('ping/failed_delivery_confirmation')
+
+    conversation = ShopifyAPI::Ping::Conversation.new(id: '123')
+    delivery_confirmation = conversation.failed_delivery(
+      message_id: '111',
+      confirmation_timestamp: Time.now.to_s,
+      details: "Integration failed to deliver message."
+    )
+
+    assert_equal "false", delivery_confirmation.delivered
+  end
 end
