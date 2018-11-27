@@ -38,7 +38,9 @@ class PingConversationTest < Test::Unit::TestCase
   end
 
   def test_successful_delivery
-   fake "api/ping-api/v1/conversations/123/messages/111/delivery_confirmation", method: :post, body: load_fixture('ping/successful_delivery_confirmation')
+    fake "api/ping-api/v1/conversations/123/messages/111/delivery_confirmation",
+      method: :post,
+      body: load_fixture('ping/successful_delivery_confirmation')
 
     conversation = ShopifyAPI::Ping::Conversation.new(id: '123')
     delivery_confirmation = conversation.successful_delivery(
@@ -50,7 +52,9 @@ class PingConversationTest < Test::Unit::TestCase
   end
 
   def test_failed_delivery
-    fake "api/ping-api/v1/conversations/123/messages/111/delivery_confirmation", method: :post, body: load_fixture('ping/failed_delivery_confirmation')
+    fake "api/ping-api/v1/conversations/123/messages/111/delivery_confirmation",
+      method: :post,
+      body: load_fixture('ping/failed_delivery_confirmation')
 
     conversation = ShopifyAPI::Ping::Conversation.new(id: '123')
     delivery_confirmation = conversation.failed_delivery(
