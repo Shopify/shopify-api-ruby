@@ -4,7 +4,9 @@ require 'test_helper'
 
 class PingMessageTest < Test::Unit::TestCase
   def test_create_message
-    fake "api/ping-api/v1/conversations/123/messages", method: :post, body: load_fixture('ping/message')
+    fake( "api/ping-api/v1/conversations/123/messages",
+      method: :post,
+      body: load_fixture('ping/message'))
 
     message = ShopifyAPI::Ping::Message.new(
       dedupe_key: SecureRandom.uuid,
@@ -16,6 +18,6 @@ class PingMessageTest < Test::Unit::TestCase
     )
 
     message.save
-    assert_equal "d0c7a2e6-8084-4e79-8483-e4a1352b81f7", message.id
+    assert_equal( "d0c7a2e6-8084-4e79-8483-e4a1352b81f7", message.id)
   end
 end
