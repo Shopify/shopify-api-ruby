@@ -38,7 +38,7 @@ class PingConversationTest < Test::Unit::TestCase
   end
 
   def test_successful_delivery
-    fake( "api/ping-api/v1/conversations/123/messages/111/delivery_confirmation",
+    fake("api/ping-api/v1/conversations/123/messages/111/delivery_confirmation",
       method: :post,
       body: load_fixture('ping/successful_delivery_confirmation'))
 
@@ -48,11 +48,11 @@ class PingConversationTest < Test::Unit::TestCase
       delivery_timestamp: Time.now.to_s
     )
 
-    assert_equal( "true", delivery_confirmation.delivered)
+    assert_equal("true", delivery_confirmation.delivered)
   end
 
   def test_failed_delivery
-    fake( "api/ping-api/v1/conversations/123/messages/111/delivery_confirmation",
+    fake("api/ping-api/v1/conversations/123/messages/111/delivery_confirmation",
       method: :post,
       body: load_fixture('ping/failed_delivery_confirmation'))
 
@@ -63,6 +63,6 @@ class PingConversationTest < Test::Unit::TestCase
       details: "Integration failed to deliver message."
     )
 
-    assert_equal( "false", delivery_confirmation.delivered)
+    assert_equal("false", delivery_confirmation.delivered)
   end
 end
