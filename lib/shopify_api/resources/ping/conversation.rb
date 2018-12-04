@@ -20,7 +20,7 @@ module ShopifyAPI
           message_id: message_id,
           delivery_confirmation_details: {
             delivered: true,
-            delivery_timestamp: delivery_timestamp,
+            confirmation_timestamp: delivery_timestamp,
           }
         )
         delivery_details.save
@@ -33,7 +33,7 @@ module ShopifyAPI
           message_id: message_id,
           delivery_confirmation_details: {
             delivered: false,
-            delivery_timestamp: delivery_timestamp,
+            confirmation_timestamp: delivery_timestamp,
             details: details,
           }
         )
