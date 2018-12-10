@@ -45,10 +45,11 @@ class PingConversationTest < Test::Unit::TestCase
     conversation = ShopifyAPI::Ping::Conversation.new(id: '123')
     delivery_confirmation = conversation.successful_delivery(
       message_id: '111',
-      delivery_timestamp: Time.now.to_s
+      delivery_timestamp: "2018-08-29T22:16:05.589479Z"
     )
 
     assert_equal("true", delivery_confirmation.delivered)
+    assert_equal("2018-08-29T22:16:05.589479Z", delivery_confirmation.delivery_timestamp)
   end
 
   def test_failed_delivery
@@ -64,5 +65,7 @@ class PingConversationTest < Test::Unit::TestCase
     )
 
     assert_equal("false", delivery_confirmation.delivered)
+    assert_equal("2018-08-29T22:16:05.589479Z", delivery_confirmation.delivery_timestamp)
+    assert_equal("Integration failed to deliver message.", delivery_confirmation.details)
   end
 end
