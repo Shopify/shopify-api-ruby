@@ -1,3 +1,7 @@
+== Version 5.2.1
+
+* Log warning when Shopify indicates deprecated API call was performed
+
 == Version 5.2.0
 
 * Added `ShopifyAPI::Currency` to fetch list of supported currencies on a shop
