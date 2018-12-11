@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 module ShopifyAPI
   module Ping
     class Message < Base
