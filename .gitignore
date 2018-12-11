@@ -9,3 +9,5 @@ pkg
 *.gem
 .idea
 .dev/
+.bundle/
+vendor/
