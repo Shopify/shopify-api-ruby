@@ -15,27 +15,23 @@ module ShopifyAPI
       end
 
       def successful_delivery(message_id:, delivery_timestamp:)
-        delivery_details = ShopifyAPI::Ping::DeliveryConfirmation.new(
+        delivery_details = ShopifyAPI::Ping::DeliveryConfirmationDetails.new(
           conversation_id: id,
           message_id: message_id,
-          delivery_confirmation_details: {
-            delivered: true,
-            confirmation_timestamp: delivery_timestamp,
-          }
+          delivered: true,
+          confirmation_timestamp: delivery_timestamp
         )
         delivery_details.save
         delivery_details
       end
 
       def failed_delivery(message_id:, delivery_timestamp:, details:)
-        delivery_details = ShopifyAPI::Ping::DeliveryConfirmation.new(
+        delivery_details = ShopifyAPI::Ping::DeliveryConfirmationDetails.new(
           conversation_id: id,
           message_id: message_id,
-          delivery_confirmation_details: {
-            delivered: false,
-            confirmation_timestamp: delivery_timestamp,
-            details: details,
-          }
+          delivered: false,
+          confirmation_timestamp: delivery_timestamp,
+          details: details
         )
         delivery_details.save
         delivery_details
