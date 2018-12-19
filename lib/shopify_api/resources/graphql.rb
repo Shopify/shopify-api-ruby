@@ -5,18 +5,27 @@ require 'graphql/client/http'
 module ShopifyAPI
   # GraphQL API.
   class GraphQL
-    def initialize
+    class_attribute :graphql_client
+
+    def initialize(schema = nil)
       uri = Base.site.dup
       uri.path = '/admin/api/graphql.json'
-      @http = ::GraphQL::Client::HTTP.new(uri.to_s) do
+
+      @http_client = ::GraphQL::Client::HTTP.new(uri.to_s) do
         define_method(:headers) do |_context|
           Base.headers
         end
       end
-      @schema = ::GraphQL::Client.load_schema(@http)
-      @client = ::GraphQL::Client.new(schema: @schema, execute: @http)
+
+      unless graphql_client
+        schema ||= @http_client
+        schema = ::GraphQL::Client.load_schema(schema)
+        self.class.graphql_client = ::GraphQL::Client.new(schema: schema, execute: @http_client)
+      end
+
+      client.instance_variable_set(:@execute, @http_client)
     end
 
-    delegate :parse, :query, to: :@client
+    delegate :parse, :query, to: :graphql_client
   end
 end
