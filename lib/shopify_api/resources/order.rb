@@ -19,8 +19,15 @@ module ShopifyAPI
       Transaction.find(:all, :params => { :order_id => id })
     end
 
-    def capture(amount = "")
-      Transaction.create(:amount => amount, :kind => "capture", :order_id => id)
+    def capture(amount = "", currency: nil)
+      capture_transaction = {
+        amount: amount,
+        kind: "capture",
+        order_id: id,
+      }
+      capture_transaction[:currency] = currency if currency
+
+      Transaction.create(capture_transaction)
     end
 
     class ClientDetails < Base
