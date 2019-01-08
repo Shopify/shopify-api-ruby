@@ -1,3 +1,8 @@
+== Version 5.2.4
+
+* Added `currency` parameter to `ShopifyAPI::Order#capture`. This parameter is required for apps that belong to the
+multi-currency beta program.
+
 == Version 5.2.3
 
 * Update delivery confirmation resource to delivery confirmation details resource.
