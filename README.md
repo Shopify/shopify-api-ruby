@@ -88,20 +88,20 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
    We've added the create_permission_url method to make this easier, first instantiate your session object:
 
    ```ruby
-   session = ShopifyAPI::Session.new("SHOP_NAME.myshopify.com")
+   shopify_session = ShopifyAPI::Session.new("SHOP_NAME.myshopify.com")
    ```
 
    Then call:
 
    ```ruby
    scope = ["write_products"]
-   permission_url = session.create_permission_url(scope)
+   permission_url = shopify_session.create_permission_url(scope)
    ```
 
    or if you want a custom redirect_uri:
 
    ```ruby
-   permission_url = session.create_permission_url(scope, "https://my_redirect_uri.com")
+   permission_url = shopify_session.create_permission_url(scope, "https://my_redirect_uri.com")
    ```
 
 4. Once authorized, the shop redirects the owner to the return URL of your application with a parameter named 'code'. This is a temporary token that the app can exchange for a permanent access token.
@@ -131,37 +131,37 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
    the params, extract the temp code and then request your token:
 
    ```ruby
-   token = session.request_token(params)
+   token = shopify_session.request_token(params)
    ```
 
    This method will save the token to the session object and return it. All fields returned by Shopify, other than the access token itself, are stored in the session's `extra` attribute. For a list of all fields returned by Shopify, read [our OAuth documentation](https://help.shopify.com/api/guides/authentication/oauth#confirming-installation). If you requested an access token that is associated with a specific user, you can retreive information about this user from the `extra` hash:
 
    ```ruby
    # a list of all granted scopes
-   granted_scopes = session.extra['scope']
+   granted_scopes = shopify_session.extra['scope']
    # a hash containing the user information
-   user = session.extra['associated_user']
+   user = shopify_session.extra['associated_user']
    # the access scopes available to this user, which may be a subset of the access scopes granted to this app.
-   active_scopes = session.extra['associated_user_scope']
+   active_scopes = shopify_session.extra['associated_user_scope']
    # the time at which this token expires; this is automatically converted from 'expires_in' returned by Shopify
-   expires_at = session.extra['expires_at']
+   expires_at = shopify_session.extra['expires_at']
    ```
 
    For the security of your application, after retrieving an access token you must validate the following:
-   1) The list of scopes in `session.extra['scope']` is the same as you requested.
-   2) If you requested an online-mode access token, `session.extra['associated_user']` must be present.
+   1) The list of scopes in `shopify_session.extra['scope']` is the same as you requested.
+   2) If you requested an online-mode access token, `shopify_session.extra['associated_user']` must be present.
    Failing either of these tests means the end-user may have tampered with the url parameters during the OAuth authentication phase. You should avoid using this access token and revoke it immediately. If you use the [`omniauth-shopify-oauth2`](https://github.com/Shopify/omniauth-shopify-oauth2) gem these checks are done automatically for you.
 
    For future sessions simply pass in the `token` and `extra` hash (optional) when creating the session object:
 
    ```ruby
-   session = ShopifyAPI::Session.new("SHOP_NAME.myshopify.com", token, extra)
+   shopify_session = ShopifyAPI::Session.new("SHOP_NAME.myshopify.com", token, extra)
    ```
 
 5. The session must be activated before use:
 
    ```ruby
-   ShopifyAPI::Base.activate_session(session)
+   ShopifyAPI::Base.activate_session(shopify_session)
    ```
 
 6. Now you're ready to make authorized API requests to your shop! Data is returned as ActiveResource instances:
