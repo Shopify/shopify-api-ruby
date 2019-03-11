@@ -1,3 +1,7 @@
+== Version 6.0.0
+
+* Removed undocumented `protocol` and `port` options from `ShopifyAPI::Session`.
+
 == Version 5.2.4
 
 * Added `currency` parameter to `ShopifyAPI::Order#capture`. This parameter is required for apps that belong to the
