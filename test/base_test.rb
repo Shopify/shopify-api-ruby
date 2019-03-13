@@ -16,8 +16,8 @@ class BaseTest < Test::Unit::TestCase
     ShopifyAPI::Base.activate_session @session1
 
     assert_nil ActiveResource::Base.site
-    assert_equal 'https://shop1.myshopify.com/admin', ShopifyAPI::Base.site.to_s
-    assert_equal 'https://shop1.myshopify.com/admin', ShopifyAPI::Shop.site.to_s
+    assert_equal 'https://shop1.myshopify.com', ShopifyAPI::Base.site.to_s
+    assert_equal 'https://shop1.myshopify.com', ShopifyAPI::Shop.site.to_s
 
     assert_nil ActiveResource::Base.headers['X-Shopify-Access-Token']
     assert_equal 'token1', ShopifyAPI::Base.headers['X-Shopify-Access-Token']
@@ -56,8 +56,8 @@ class BaseTest < Test::Unit::TestCase
     ShopifyAPI::Base.activate_session @session2
 
     assert_nil ActiveResource::Base.site
-    assert_equal 'https://shop2.myshopify.com/admin', ShopifyAPI::Base.site.to_s
-    assert_equal 'https://shop2.myshopify.com/admin', ShopifyAPI::Shop.site.to_s
+    assert_equal 'https://shop2.myshopify.com', ShopifyAPI::Base.site.to_s
+    assert_equal 'https://shop2.myshopify.com', ShopifyAPI::Shop.site.to_s
 
     assert_nil ActiveResource::Base.headers['X-Shopify-Access-Token']
     assert_equal 'token2', ShopifyAPI::Base.headers['X-Shopify-Access-Token']

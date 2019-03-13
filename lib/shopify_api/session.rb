@@ -74,7 +74,7 @@ module ShopifyAPI
     def create_permission_url(scope, redirect_uri = nil)
       params = {:client_id => api_key, :scope => scope.join(',')}
       params[:redirect_uri] = redirect_uri if redirect_uri
-      "#{site}/oauth/authorize?#{parameterize(params)}"
+      "https://#{url}/admin/oauth/authorize?#{parameterize(params)}"
     end
 
     def request_token(params)
@@ -103,7 +103,7 @@ module ShopifyAPI
     end
 
     def site
-      "https://#{url}/admin"
+      "https://#{url}"
     end
 
     def valid?
