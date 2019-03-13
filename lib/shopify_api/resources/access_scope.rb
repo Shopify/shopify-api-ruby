@@ -1,5 +1,5 @@
 module ShopifyAPI
   class AccessScope < Base
-    self.prefix = '/admin/oauth/'
+    self.prefix = "#{api_prefix}oauth/"
   end
 end

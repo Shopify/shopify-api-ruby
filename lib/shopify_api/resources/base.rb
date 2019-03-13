@@ -10,6 +10,8 @@ module ShopifyAPI
                                   "ActiveResource/#{ActiveResource::VERSION::STRING}",
                                   "Ruby/#{RUBY_VERSION}"].join(' ')
 
+    API_PREFIX = '/admin/'.freeze
+
     def encode(options = {})
       same = dup
       same.attributes = {self.class.element_name => same.attributes} if self.class.format.extension == 'json'
@@ -63,12 +65,21 @@ module ShopifyAPI
         self.headers.delete('X-Shopify-Access-Token')
       end
 
+      def api_prefix
+        API_PREFIX
+      end
+
+      def prefix(options = {})
+        self.prefix = api_prefix
+        prefix(options)
+      end
+
       def init_prefix(resource)
         init_prefix_explicit(resource.to_s.pluralize, "#{resource}_id")
       end
 
       def init_prefix_explicit(resource_type, resource_id)
-        self.prefix = "/admin/#{resource_type}/:#{resource_id}/"
+        self.prefix = "#{api_prefix}#{resource_type}/:#{resource_id}/"
 
         define_method resource_id.to_sym do
           @prefix_options[resource_id]

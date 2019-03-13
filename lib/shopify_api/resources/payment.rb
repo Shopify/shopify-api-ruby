@@ -2,6 +2,6 @@
 
 module ShopifyAPI
   class Payment < Base
-    self.prefix = '/admin/checkouts/:checkout_id/'
+    self.prefix = "#{api_prefix}checkouts/:checkout_id/"
   end
 end

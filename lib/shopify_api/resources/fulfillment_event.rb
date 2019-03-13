@@ -1,6 +1,6 @@
 module ShopifyAPI
   class FulfillmentEvent < Base
-    self.prefix = '/admin/orders/:order_id/fulfillments/:fulfillment_id/'
+    self.prefix = "#{api_prefix}orders/:order_id/fulfillments/:fulfillment_id/"
     self.collection_name = 'events'
     self.element_name = 'event'
 

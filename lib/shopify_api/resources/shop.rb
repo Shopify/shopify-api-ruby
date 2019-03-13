@@ -5,12 +5,12 @@ module ShopifyAPI
     if ActiveResource::VERSION::MAJOR >= 4
       include ActiveResource::Singleton
 
-      def self.current(options={})
+      def self.current(options = {})
         find(options)
       end
     else
-      def self.current(options={})
-        find(:one, options.merge({from: "/admin/shop.#{format.extension}"}))
+      def self.current(options = {})
+        find(:one, options.merge(from: "#{api_prefix}shop.#{format.extension}"))
       end
     end
 

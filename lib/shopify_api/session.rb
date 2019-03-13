@@ -132,7 +132,7 @@ module ShopifyAPI
     end
 
     def access_token_request(code)
-      uri = URI.parse("https://#{url}/admin/oauth/access_token")
+      uri = URI.parse("https://#{url}#{Base.api_prefix}oauth/access_token")
       https = Net::HTTP.new(uri.host, uri.port)
       https.use_ssl = true
       request = Net::HTTP::Post.new(uri.request_uri)

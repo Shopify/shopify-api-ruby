@@ -17,7 +17,7 @@ module ShopifyAPI
         define_singleton_method :prefix do |options = {}|
           resource_type =  options[resource] if flexible
 
-          options[resource_id].nil? ? "/admin/" : "/admin/#{resource_type}/#{options[resource_id]}/"
+          options[resource_id].nil? ? api_prefix : "#{api_prefix}#{resource_type}/#{options[resource_id]}/"
         end
 
         define_singleton_method :instantiate_record do |record, prefix_options = {}|
