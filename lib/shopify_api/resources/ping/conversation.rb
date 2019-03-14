@@ -3,7 +3,7 @@
 module ShopifyAPI
   module Ping
     class Conversation < Base
-      self.prefix = "#{api_prefix}api/ping-api/v1/"
+      self.resource_prefix = "api/ping-api/v1/"
 
       def send_message(message_attrs)
         message = ShopifyAPI::Ping::Message.new(

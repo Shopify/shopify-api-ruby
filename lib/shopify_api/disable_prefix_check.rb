@@ -12,12 +12,12 @@ module ShopifyAPI
         resource_id = "#{resource}_id".to_sym
         resource_type = flexible ? ":#{resource}" : resource.to_s.pluralize
 
-        init_prefix_explicit resource_type, resource_id
+        init_prefix_explicit(resource_type, resource_id)
 
-        define_singleton_method :prefix do |options = {}|
-          resource_type =  options[resource] if flexible
+        define_singleton_method :resource_prefix do |options = {}|
+          resource_type = options[resource] if flexible
 
-          options[resource_id].nil? ? api_prefix : "#{api_prefix}#{resource_type}/#{options[resource_id]}/"
+          options[resource_id].nil? ? '' : "#{resource_type}/#{options[resource_id]}/"
         end
 
         define_singleton_method :instantiate_record do |record, prefix_options = {}|

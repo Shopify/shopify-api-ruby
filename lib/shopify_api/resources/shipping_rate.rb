@@ -2,6 +2,6 @@
 
 module ShopifyAPI
   class ShippingRate < Base
-    self.prefix = "#{api_prefix}checkouts/:checkout_id/"
+    self.resource_prefix = "checkouts/:checkout_id/"
   end
 end
