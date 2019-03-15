@@ -19,17 +19,9 @@ module DisablePrefixCheck
       end
 
       define_singleton_method :instantiate_record do |record, prefix_options = {}|
-        new_record(record).tap do |resource|
-          resource.prefix_options = prefix_options unless prefix_options.blank?
+        new(record, true).tap do |resource_instance|
+          resource_instance.prefix_options = prefix_options unless prefix_options.blank?
         end
-      end
-    end
-
-    def new_record(record)
-      if ActiveSupport::VERSION::MAJOR == 3 && ActiveSupport::VERSION::MINOR == 0
-        new(record)
-      else
-        new(record, true)
       end
     end
   end
