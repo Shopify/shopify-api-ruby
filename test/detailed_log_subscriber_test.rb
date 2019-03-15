@@ -39,11 +39,21 @@ class LogSubscriberTest < Test::Unit::TestCase
       ShopifyAPI::Page.find(2)
     end
 
-    assert_equal 4, @logger.logged(:info).size
-    assert_equal "GET https://this-is-my-test-shop.myshopify.com:443/admin/pages/2.json", @logger.logged(:info)[0]
-    assert_match /\-\-\> 404/, @logger.logged(:info)[1]
-    assert_equal "Headers: {\"Accept\"=>\"application/json\", #{@ua_header}}", @logger.logged(:info)[2]
-    assert_equal "Response:", @logger.logged(:info)[3]
+    if ar_version_before?('5.1.0')
+      assert_equal(4, @logger.logged(:info).size)
+      assert_equal("GET https://this-is-my-test-shop.myshopify.com:443/admin/pages/2.json", @logger.logged(:info)[0])
+      assert_match(/\-\-\> 404/, @logger.logged(:info)[1])
+      assert_equal("Headers: {\"Accept\"=>\"application/json\", #{@ua_header}}", @logger.logged(:info)[2])
+      assert_equal("Response:", @logger.logged(:info)[3])
+    else
+      assert_equal(2, @logger.logged(:error).size)
+      assert_equal("GET https://this-is-my-test-shop.myshopify.com:443/admin/pages/2.json", @logger.logged(:error)[0])
+      assert_match(/\-\-\> 404/, @logger.logged(:error)[1])
+
+      assert_equal(2, @logger.logged(:info).size)
+      assert_equal("Headers: {\"Accept\"=>\"application/json\", #{@ua_header}}", @logger.logged(:info)[0])
+      assert_equal("Response:", @logger.logged(:info)[1])
+    end
   end
 
   test "warns when the server responds with a x-shopify-api-deprecated-reason header" do
