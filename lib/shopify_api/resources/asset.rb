@@ -54,7 +54,7 @@ module ShopifyAPI
         path_prefix = params[:theme_id] ? "themes/#{params[:theme_id]}/" : ""
         resource = find(
           :one,
-          from: "#{api_prefix}#{path_prefix}assets.#{format.extension}",
+          from: api_version.construct_api_path("#{path_prefix}assets.#{format.extension}"),
           params: params
         )
         resource.prefix_options[:theme_id] = params[:theme_id] if resource && params[:theme_id]

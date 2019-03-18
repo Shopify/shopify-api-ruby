@@ -10,7 +10,9 @@ module ShopifyAPI
       end
     else
       def self.current(options = {})
-        find(:one, options.merge(from: "#{api_prefix}shop.#{format.extension}"))
+        find(:one, options.merge(
+          from: api_version.construct_api_path("shop.#{format.extension}")
+        ))
       end
     end
 
