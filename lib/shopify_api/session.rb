@@ -10,7 +10,7 @@ module ShopifyAPI
     cattr_accessor :api_key, :secret, :myshopify_domain
     self.myshopify_domain = 'myshopify.com'
 
-    attr_accessor :url, :token, :name, :extra
+    attr_accessor :url, :token, :api_version, :name, :extra
 
     class << self
 
@@ -18,11 +18,12 @@ module ShopifyAPI
         params.each { |k,value| public_send("#{k}=", value) }
       end
 
-      def temp(domain, token, &block)
-        session = new(domain, token)
+      def temp(domain, token, api_version = ApiVersion.no_version, &block)
+        session = new(domain, token, api_version)
         original_site = ShopifyAPI::Base.site.to_s
         original_token = ShopifyAPI::Base.headers['X-Shopify-Access-Token']
-        original_session = new(original_site, original_token)
+        original_version = ShopifyAPI::Base.api_version
+        original_session = new(original_site, original_token, original_version)
 
         begin
           ShopifyAPI::Base.activate_session(session)
@@ -65,8 +66,9 @@ module ShopifyAPI
       end
     end
 
-    def initialize(url, token = nil, extra = {})
+    def initialize(url, token = nil, api_verison = ApiVersion.no_version, extra = {})
       self.url = self.class.prepare_url(url)
+      self.api_version = api_verison
       self.token = token
       self.extra = extra
     end

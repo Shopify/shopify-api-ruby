@@ -86,6 +86,8 @@ class BaseTest < Test::Unit::TestCase
   end
 
   test "prefix= will forward to resource when the value does not start with admin" do
+    ShopifyAPI::Base.activate_session(@session1)
+
     TestResource.prefix = 'a/regular/path/'
 
     assert_equal('/admin/a/regular/path/', TestResource.prefix)

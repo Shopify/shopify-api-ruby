@@ -29,6 +29,13 @@ module ShopifyAPI
     end
 
     class << self
+      if ActiveResource::VERSION::MAJOR >= 5 ||
+          (ActiveResource::VERSION::MAJOR == 4 && ActiveResource::VERSION::MINOR >= 1 )
+        threadsafe_attribute :_api_version
+      else
+        cattr_accessor :_api_version
+      end
+
       if ActiveResource::Base.respond_to?(:_headers) && ActiveResource::Base.respond_to?(:_headers_defined?)
         def headers
           if _headers_defined?
@@ -61,11 +68,16 @@ module ShopifyAPI
         self.site = nil
         self.password = nil
         self.user = nil
+        self.api_version = nil
         self.headers.delete('X-Shopify-Access-Token')
       end
 
       def api_version
-        @api_version ||= ApiVersion.no_version
+        self._api_version ||= ApiVersion.no_version
+      end
+
+      def api_version=(api_version)
+        self._api_version = api_version
       end
 
       def prefix(options = {})
