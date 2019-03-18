@@ -95,4 +95,12 @@ class Test::Unit::TestCase < Minitest::Unit::TestCase
 
     FakeWeb.register_uri(method, url, {:body => body, :status => 200, :content_type => "text/#{format}", :content_length => 1}.merge(options))
   end
+
+  def ar_version_before?(version_string)
+    Gem::Version.new(ActiveResource::VERSION::STRING) < Gem::Version.new(version_string)
+  end
+
+  def ar_version_after?(version_string)
+    Gem::Version.new(version_string) < Gem::Version.new(ActiveResource::VERSION::STRING)
+  end
 end
