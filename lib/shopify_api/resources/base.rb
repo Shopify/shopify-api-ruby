@@ -29,11 +29,20 @@ module ShopifyAPI
     end
 
     class << self
-      if ActiveResource::VERSION::MAJOR >= 5 ||
-          (ActiveResource::VERSION::MAJOR == 4 && ActiveResource::VERSION::MINOR >= 1 )
-        threadsafe_attribute :_api_version
+      if respond_to?(:threadsafe_attribute)
+        threadsafe_attribute(:_api_version)
       else
-        cattr_accessor :_api_version
+        def _api_version
+          @api_version
+        end
+
+        def _api_version_defined?
+          defined?(@api_version)
+        end
+
+        def _api_version=(value)
+          @api_version = value
+        end
       end
 
       if ActiveResource::Base.respond_to?(:_headers) && ActiveResource::Base.respond_to?(:_headers_defined?)
@@ -62,6 +71,7 @@ module ShopifyAPI
         raise InvalidSessionError.new("Session cannot be nil") if session.nil?
         self.site = session.site
         self.headers.merge!('X-Shopify-Access-Token' => session.token)
+        self.api_version = session.api_version
       end
 
       def clear_session
@@ -73,11 +83,15 @@ module ShopifyAPI
       end
 
       def api_version
-        self._api_version ||= ApiVersion.no_version
+        if _api_version_defined?
+          _api_version
+        elsif superclass != Object && superclass.site
+          superclass.api_version.dup.freeze
+        end
       end
 
-      def api_version=(api_version)
-        self._api_version = api_version
+      def api_version=(value)
+        self._api_version = value
       end
 
       def prefix(options = {})

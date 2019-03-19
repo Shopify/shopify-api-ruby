@@ -130,6 +130,32 @@ class BaseTest < Test::Unit::TestCase
     end
   end
 
+  test "using a different version changes the url" do
+    no_version = ShopifyAPI::Session.new('shop1.myshopify.com', 'token1', ShopifyAPI::ApiVersion.no_version)
+    unstable_version = ShopifyAPI::Session.new('shop2.myshopify.com', 'token2', ShopifyAPI::ApiVersion.unstable)
+
+    fake(
+      "shop",
+      url: "https://shop1.myshopify.com/admin/shop.json",
+      method: :get,
+      status: 201,
+      body: '{ "shop": { "id": 1 } }'
+    )
+    fake(
+      "shop",
+      url: "https://shop2.myshopify.com/admin/api/unstable/shop.json",
+      method: :get,
+      status: 201,
+      body: '{ "shop": { "id": 2 } }'
+    )
+
+    ShopifyAPI::Base.activate_session(no_version)
+    assert_equal 1, ShopifyAPI::Shop.current.id
+
+    ShopifyAPI::Base.activate_session(unstable_version)
+    assert_equal 2, ShopifyAPI::Shop.current.id
+  end
+
   def clear_header(header)
     [ActiveResource::Base, ShopifyAPI::Base, ShopifyAPI::Product].each do |klass|
       klass.headers.delete(header)
