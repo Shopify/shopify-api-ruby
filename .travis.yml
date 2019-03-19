@@ -7,8 +7,6 @@ rvm:
 
 gemfile:
   - Gemfile
-  - Gemfile_ar30
-  - Gemfile_ar31
   - Gemfile_ar32
   - Gemfile_ar40
   - Gemfile_ar50
@@ -20,10 +18,6 @@ matrix:
   allow_failures:
     - rvm: 2.4.0-preview1
       gemfile: Gemfile
-    - rvm: 2.4.0-preview1
-      gemfile: Gemfile_ar30
-    - rvm: 2.4.0-preview1
-      gemfile: Gemfile_ar31
     - rvm: 2.4.0-preview1
       gemfile: Gemfile_ar32
     - rvm: 2.4.0-preview1
