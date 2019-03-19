@@ -3,8 +3,8 @@ require "active_support/log_subscriber/test_helper"
 
 class BaseTest < Test::Unit::TestCase
   def setup
-    @session1 = ShopifyAPI::Session.new('shop1.myshopify.com', 'token1')
-    @session2 = ShopifyAPI::Session.new('shop2.myshopify.com', 'token2')
+    @session1 = ShopifyAPI::Session.new('shop1.myshopify.com', 'token1', :no_version)
+    @session2 = ShopifyAPI::Session.new('shop2.myshopify.com', 'token2', :no_version)
   end
 
   def teardown
