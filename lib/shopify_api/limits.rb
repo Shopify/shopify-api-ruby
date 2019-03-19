@@ -7,12 +7,11 @@ module ShopifyAPI
     end
 
     module ClassMethods
-
       # Takes form <call count>/<bucket size>
       # See https://help.shopify.com/en/api/getting-started/api-call-limit
       # Eg: 2/40
       CREDIT_LIMIT_HEADER_PARAM = {
-        :shop => 'X-Shopify-Shop-Api-Call-Limit'
+        shop: 'X-Shopify-Shop-Api-Call-Limit',
       }
 
       ##
