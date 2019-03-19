@@ -75,6 +75,37 @@ class ApiVersionTest < Test::Unit::TestCase
     ])
   end
 
+  test 'allows a release version with the correct format format to be created' do
+    assert ShopifyAPI::ApiVersion::Release.new('2019-03')
+  end
+
+  test 'release versions must follow the format' do
+    assert_raises ShopifyAPI::ApiVersion::InvalidVersion do
+      assert ShopifyAPI::ApiVersion::Release.new('crazy-name')
+    end
+  end
+
+  test 'release versions create a url that is /admin/api/<version_name>/' do
+    assert_equal(
+      '/admin/api/2022-03/shop.json',
+      ShopifyAPI::ApiVersion::Release.new('2022-03').construct_api_path('shop.json')
+    )
+  end
+
+  test 'two versions with the same version number are equal' do
+    version_1 = ShopifyAPI::ApiVersion::Release.new('2018-09')
+    version_2 = ShopifyAPI::ApiVersion::Release.new('2018-09')
+
+    assert_equal version_2, version_1
+  end
+
+  test 'two versions with the different version numbers are not equal' do
+    version_1 = ShopifyAPI::ApiVersion::Release.new('2019-07')
+    version_2 = ShopifyAPI::ApiVersion::Release.new('2019-11')
+
+    refute_equal version_2, version_1
+  end
+
   class TestApiVersion < ShopifyAPI::ApiVersion
     def initialize(name)
       @version_name = name

@@ -25,10 +25,30 @@ module ShopifyAPI
 
       def initialize
         @version_name = "unstable"
+        @url = API_PREFIX
       end
 
       def construct_api_path(path)
-        "#{API_PREFIX}#{path}"
+        "#{@url}#{path}"
+      end
+
+      def construct_graphql_path
+        construct_api_path("graphql.json")
+      end
+    end
+
+    class Release < ApiVersion
+      FORMAT = /^\d{4}-\d{2}$/.freeze
+      API_PREFIX = '/admin/api/'.freeze
+
+      def initialize(version_number)
+        raise InvalidVersion, version_number unless version_number.match(FORMAT)
+        @version_name = version_number
+        @url = "#{API_PREFIX}#{version_number}/"
+      end
+
+      def construct_api_path(path)
+        "#{@url}#{path}"
       end
 
       def construct_graphql_path
@@ -84,5 +104,7 @@ module ShopifyAPI
     def construct_graphql_path
       raise NotImplementedError
     end
+
+    class InvalidVersion < StandardError; end
   end
 end

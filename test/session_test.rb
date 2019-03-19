@@ -290,6 +290,7 @@ class SessionTest < Test::Unit::TestCase
   end
 
   def any_api_version
-    [ShopifyAPI::ApiVersion::NoVersion.new, ShopifyAPI::ApiVersion::Unstable.new].sample(1).first
+    version_name = [:no_version, :unstable].sample(1).first
+    ShopifyAPI::ApiVersion.coerce_to_version(version_name)
   end
 end
