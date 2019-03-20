@@ -9,15 +9,15 @@ class LimitsTest < Test::Unit::TestCase
 
   context "Limits" do
     should "fetch limit total" do
-      assert_equal(299, ShopifyAPI.credit_limit(:shop))
+      assert_equal(299, ShopifyAPI.call_limit)
     end
 
     should "fetch used calls" do
-      assert_equal(100, ShopifyAPI.credit_used(:shop))
+      assert_equal(100, ShopifyAPI.call_count)
     end
 
     should "calculate remaining calls" do
-      assert_equal(199, ShopifyAPI.credit_left)
+      assert_equal(199, ShopifyAPI.available_calls)
     end
 
     should "flag maxed out credits" do
@@ -31,7 +31,7 @@ class LimitsTest < Test::Unit::TestCase
       @header_hash = {}
       ShopifyAPI::Base.connection.expects(:response).at_least(1).returns(@header_hash)
       assert_raises ShopifyAPI::Limits::LimitUnavailable do
-        ShopifyAPI.credit_left
+        ShopifyAPI.available_calls
       end
     end
   end

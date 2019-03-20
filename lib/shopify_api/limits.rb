@@ -10,48 +10,39 @@ module ShopifyAPI
       # Takes form <call count>/<bucket size>
       # See https://help.shopify.com/en/api/getting-started/api-call-limit
       # Eg: 2/40
-      CREDIT_LIMIT_HEADER_PARAM = {
-        shop: 'X-Shopify-Shop-Api-Call-Limit',
-      }
+      CALL_LIMIT_HEADER = 'X-Shopify-Shop-Api-Call-Limit'
 
       ##
       # How many more API calls can I make?
       # @return {Integer}
       #
-      def credit_left
-        credit_limit(:shop) - credit_used(:shop)
+      def available_calls
+        call_limit - call_count
       end
-      alias_method :available_calls, :credit_left
 
       ##
       # Have I reached my API call limit?
       # @return {Boolean}
       #
-      def credit_maxed?
-        credit_left <= 0
+      def maxed?
+        available_calls <= 0
       end
-      alias_method :maxed?, :credit_maxed?
 
       ##
       # How many total API calls can I make?
-      # NOTE: subtracting 1 from credit_limit because I think ShopifyAPI cuts off at 299 or shop limits.
-      # @param {Symbol} scope [:shop]
       # @return {Integer}
       #
-      def credit_limit(scope=:shop)
-        api_credit_limit_param(scope).pop.to_i - 1
+      def call_limit
+        call_limit_status[1].to_i - 1
       end
-      alias_method :call_limit, :credit_limit
 
       ##
       # How many API calls have I made?
-      # @param {Symbol} scope [:shop]
       # @return {Integer}
       #
-      def credit_used(scope=:shop)
-        api_credit_limit_param(scope).shift.to_i
+      def call_count
+        call_limit_status[0].to_i
       end
-      alias_method :call_count, :credit_used
 
       ##
       # @return {HTTPResonse}
@@ -66,8 +57,8 @@ module ShopifyAPI
       ##
       # @return {Array}
       #
-      def api_credit_limit_param(scope)
-        header = response[CREDIT_LIMIT_HEADER_PARAM[scope]]
+      def call_limit_status
+        header = response[CALL_LIMIT_HEADER]
         raise LimitUnavailable unless header
         header.split('/')
       end
