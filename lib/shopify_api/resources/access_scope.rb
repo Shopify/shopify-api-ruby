@@ -1,5 +1,5 @@
 module ShopifyAPI
   class AccessScope < Base
-    self.prefix = '/admin/oauth/'
+    self.resource_prefix = "oauth/"
   end
 end

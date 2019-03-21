@@ -8,7 +8,7 @@ require 'active_resource/detailed_log_subscriber'
 require 'shopify_api/limits'
 require 'shopify_api/json_format'
 require 'active_resource/json_errors'
-require 'active_resource/disable_prefix_check'
+require 'shopify_api/disable_prefix_check'
 require 'active_resource/base_ext'
 
 module ShopifyAPI

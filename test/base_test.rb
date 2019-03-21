@@ -1,8 +1,7 @@
 require 'test_helper'
-
+require "active_support/log_subscriber/test_helper"
 
 class BaseTest < Test::Unit::TestCase
-
   def setup
     @session1 = ShopifyAPI::Session.new('shop1.myshopify.com', 'token1')
     @session2 = ShopifyAPI::Session.new('shop2.myshopify.com', 'token2')
@@ -16,8 +15,8 @@ class BaseTest < Test::Unit::TestCase
     ShopifyAPI::Base.activate_session @session1
 
     assert_nil ActiveResource::Base.site
-    assert_equal 'https://shop1.myshopify.com/admin', ShopifyAPI::Base.site.to_s
-    assert_equal 'https://shop1.myshopify.com/admin', ShopifyAPI::Shop.site.to_s
+    assert_equal 'https://shop1.myshopify.com', ShopifyAPI::Base.site.to_s
+    assert_equal 'https://shop1.myshopify.com', ShopifyAPI::Shop.site.to_s
 
     assert_nil ActiveResource::Base.headers['X-Shopify-Access-Token']
     assert_equal 'token1', ShopifyAPI::Base.headers['X-Shopify-Access-Token']
@@ -56,8 +55,8 @@ class BaseTest < Test::Unit::TestCase
     ShopifyAPI::Base.activate_session @session2
 
     assert_nil ActiveResource::Base.site
-    assert_equal 'https://shop2.myshopify.com/admin', ShopifyAPI::Base.site.to_s
-    assert_equal 'https://shop2.myshopify.com/admin', ShopifyAPI::Shop.site.to_s
+    assert_equal 'https://shop2.myshopify.com', ShopifyAPI::Base.site.to_s
+    assert_equal 'https://shop2.myshopify.com', ShopifyAPI::Shop.site.to_s
 
     assert_nil ActiveResource::Base.headers['X-Shopify-Access-Token']
     assert_equal 'token2', ShopifyAPI::Base.headers['X-Shopify-Access-Token']
@@ -84,6 +83,18 @@ class BaseTest < Test::Unit::TestCase
       assert_includes ShopifyAPI::Base.headers.keys, 'User-Agent'
     end
     thread.join
+  end
+
+  test "prefix= will forward to resource when the value does not start with admin" do
+    TestResource.prefix = 'a/regular/path/'
+
+    assert_equal('/admin/a/regular/path/', TestResource.prefix)
+  end
+
+  test "prefix= will raise an error if value starts with with /admin" do
+    assert_raises ArgumentError do
+      TestResource.prefix = '/admin/old/prefix/structure/'
+    end
   end
 
   if ActiveResource::VERSION::MAJOR >= 4
@@ -121,5 +132,8 @@ class BaseTest < Test::Unit::TestCase
     [ActiveResource::Base, ShopifyAPI::Base, ShopifyAPI::Product].each do |klass|
       klass.headers.delete(header)
     end
+  end
+
+  class TestResource < ShopifyAPI::Base
   end
 end

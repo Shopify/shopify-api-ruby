@@ -10,24 +10,24 @@ module ShopifyAPI
   #
   # Initialize with a key:
   #   asset = ShopifyAPI::Asset.new(:key => 'assets/special.css', :theme_id => 12345)
-  # 
+  #
   # Find by key:
   #   asset = ShopifyAPI::Asset.find('assets/image.png', :params => {:theme_id => 12345})
-  # 
+  #
   # Get the text or binary value:
   #   asset.value # decodes from attachment attribute if necessary
-  # 
+  #
   # You can provide new data for assets in a few different ways:
-  # 
+  #
   #   * assign text data for the value directly:
   #       asset.value = "div.special {color:red;}"
-  #     
+  #
   #   * provide binary data for the value:
   #       asset.attach(File.read('image.png'))
-  #     
+  #
   #   * set a URL from which Shopify will fetch the value:
   #       asset.src = "http://mysite.com/image.png"
-  #     
+  #
   #   * set a source key of another of your assets from which
   #     the value will be copied:
   #       asset.source_key = "assets/another_image.png"
@@ -44,15 +44,19 @@ module ShopifyAPI
     end
 
     # find an asset by key:
-    #   ShopifyAPI::Asset.find('layout/theme.liquid', :params => {:theme_id => 99})
+    #   ShopifyAPI::Asset.find('layout/theme.liquid', :params => { theme_id: 99 })
     def self.find(*args)
       if args[0].is_a?(Symbol)
         super
       else
-        params = {:asset => {:key => args[0]}}
+        params = { asset: { key: args[0] } }
         params = params.merge(args[1][:params]) if args[1] && args[1][:params]
-        path_prefix = params[:theme_id] ? "/admin/themes/#{params[:theme_id]}" : "/admin"
-        resource = find(:one, :from => "#{path_prefix}/assets.#{format.extension}", :params => params)
+        path_prefix = params[:theme_id] ? "themes/#{params[:theme_id]}/" : ""
+        resource = find(
+          :one,
+          from: "#{api_prefix}#{path_prefix}assets.#{format.extension}",
+          params: params
+        )
         resource.prefix_options[:theme_id] = params[:theme_id] if resource && params[:theme_id]
         resource
       end

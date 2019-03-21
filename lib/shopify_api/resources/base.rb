@@ -4,11 +4,14 @@ module ShopifyAPI
   class Base < ActiveResource::Base
     class InvalidSessionError < StandardError; end
     extend Countable
+
     self.timeout = 90
     self.include_root_in_json = false
     self.headers['User-Agent'] = ["ShopifyAPI/#{ShopifyAPI::VERSION}",
                                   "ActiveResource/#{ActiveResource::VERSION::STRING}",
                                   "Ruby/#{RUBY_VERSION}"].join(' ')
+
+    API_PREFIX = '/admin/'.freeze
 
     def encode(options = {})
       same = dup
@@ -63,12 +66,61 @@ module ShopifyAPI
         self.headers.delete('X-Shopify-Access-Token')
       end
 
+      def api_prefix
+        API_PREFIX
+      end
+
+      def prefix(options = {})
+        "#{api_prefix}#{resource_prefix(options)}"
+      end
+
+      def prefix_source
+        ''
+      end
+
+      def resource_prefix(_options = {})
+        ''
+      end
+
+      # Sets the \prefix for a resource's nested URL (e.g., <tt>prefix/collectionname/1.json</tt>).
+      # Default value is <tt>site.path</tt>.
+      def resource_prefix=(value)
+        @prefix_parameters = nil
+
+        resource_prefix_call = value.gsub(/:\w+/) { |key| "\#{URI.parser.escape options[#{key}].to_s}" }
+
+        silence_warnings do
+          # Redefine the new methods.
+          instance_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
+            def prefix_source() "#{value}" end
+            def resource_prefix(options={}) "#{resource_prefix_call}" end
+          RUBY_EVAL
+        end
+      rescue => e
+        logger&.error("Couldn't set prefix: #{e}\n  #{code}")
+        raise
+      end
+
+      def prefix=(value)
+        if value.start_with?('/admin')
+          raise ArgumentError, "'#{value}' can no longer start /admin/. Change to using resource_prefix="
+        end
+
+        warn(
+          '[DEPRECATED] ShopifyAPI::Base#prefix= is deprecated and will be removed in a future version. ' \
+            'Use `self.resource_prefix=` instead.'
+        )
+        self.resource_prefix = value
+      end
+
+      alias_method :set_prefix, :prefix=
+
       def init_prefix(resource)
         init_prefix_explicit(resource.to_s.pluralize, "#{resource}_id")
       end
 
       def init_prefix_explicit(resource_type, resource_id)
-        self.prefix = "/admin/#{resource_type}/:#{resource_id}/"
+        self.prefix = "#{resource_type}/:#{resource_id}/"
 
         define_method resource_id.to_sym do
           @prefix_options[resource_id]

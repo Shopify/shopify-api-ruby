@@ -30,11 +30,14 @@ class SessionTest < Test::Unit::TestCase
   end
 
   test "ignore everything but the subdomain in the shop" do
-    assert_equal "https://testshop.myshopify.com/admin", ShopifyAPI::Session.new("http://user:pass@testshop.notshopify.net/path", "any-token").site
+    assert_equal(
+      "https://testshop.myshopify.com",
+      ShopifyAPI::Session.new("http://user:pass@testshop.notshopify.net/path", "any-token").site
+    )
   end
 
   test "append the myshopify domain if not given" do
-    assert_equal "https://testshop.myshopify.com/admin", ShopifyAPI::Session.new("testshop", "any-token").site
+    assert_equal "https://testshop.myshopify.com", ShopifyAPI::Session.new("testshop", "any-token").site
   end
 
   test "not raise error without params" do
@@ -65,8 +68,8 @@ class SessionTest < Test::Unit::TestCase
     ShopifyAPI::Session.temp("testshop.myshopify.com", "any-token") {
       @assigned_site = ShopifyAPI::Base.site
     }
-    assert_equal 'https://testshop.myshopify.com/admin', @assigned_site.to_s
-    assert_equal 'https://fakeshop.myshopify.com/admin', ShopifyAPI::Base.site.to_s
+    assert_equal 'https://testshop.myshopify.com', @assigned_site.to_s
+    assert_equal 'https://fakeshop.myshopify.com', ShopifyAPI::Base.site.to_s
   end
 
   test "create_permission_url returns correct url with single scope no redirect uri" do
@@ -113,7 +116,7 @@ class SessionTest < Test::Unit::TestCase
 
   test "return site for session" do
     session = ShopifyAPI::Session.new("testshop.myshopify.com", "any-token")
-    assert_equal "https://testshop.myshopify.com/admin", session.site
+    assert_equal "https://testshop.myshopify.com", session.site
   end
 
   test "return_token_if_signature_is_valid" do

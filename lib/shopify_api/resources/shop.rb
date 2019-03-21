@@ -2,8 +2,16 @@ module ShopifyAPI
   # Shop object. Use Shop.current to receive
   # the shop.
   class Shop < Base
-    def self.current(options={})
-      find(:one, options.merge({from: "/admin/shop.#{format.extension}"}))
+    if ActiveResource::VERSION::MAJOR >= 4
+      include ActiveResource::Singleton
+
+      def self.current(options = {})
+        find(options)
+      end
+    else
+      def self.current(options = {})
+        find(:one, options.merge(from: "#{api_prefix}shop.#{format.extension}"))
+      end
     end
 
     def metafields(**options)

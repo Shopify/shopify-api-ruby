@@ -74,7 +74,7 @@ module ShopifyAPI
     def create_permission_url(scope, redirect_uri = nil)
       params = {:client_id => api_key, :scope => scope.join(',')}
       params[:redirect_uri] = redirect_uri if redirect_uri
-      "#{site}/oauth/authorize?#{parameterize(params)}"
+      construct_oauth_url("authorize", params)
     end
 
     def request_token(params)
@@ -103,7 +103,7 @@ module ShopifyAPI
     end
 
     def site
-      "https://#{url}/admin"
+      "https://#{url}"
     end
 
     def valid?
@@ -132,12 +132,17 @@ module ShopifyAPI
     end
 
     def access_token_request(code)
-      uri = URI.parse("https://#{url}/admin/oauth/access_token")
+      uri = URI.parse(construct_oauth_url('access_token'))
       https = Net::HTTP.new(uri.host, uri.port)
       https.use_ssl = true
       request = Net::HTTP::Post.new(uri.request_uri)
       request.set_form_data('client_id' => api_key, 'client_secret' => secret, 'code' => code)
       https.request(request)
+    end
+
+    def construct_oauth_url(path, query_params = {})
+      query_string = "?#{parameterize(query_params)}" unless query_params.empty?
+      "https://#{url}/admin/oauth/#{path}#{query_string}"
     end
   end
 end
