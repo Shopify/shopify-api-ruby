@@ -42,7 +42,7 @@ class Test::Unit::TestCase < Minitest::Unit::TestCase
     end
 
     ShopifyAPI::Base.clear_session
-    session = ShopifyAPI::Session.new("https://this-is-my-test-shop.myshopify.com", "token_test_helper", ShopifyAPI::ApiVersion.no_version)
+    session = ShopifyAPI::Session.new("https://this-is-my-test-shop.myshopify.com", "token_test_helper", :no_version)
 
     ShopifyAPI::Base.activate_session(session)
   end
@@ -85,7 +85,7 @@ class Test::Unit::TestCase < Minitest::Unit::TestCase
     body   = options.has_key?(:body) ? options.delete(:body) : load_fixture(endpoint)
     format = options.delete(:format) || :json
     method = options.delete(:method) || :get
-    api_version = options.delete(:api_version) || ShopifyAPI::ApiVersion.no_version
+    api_version = options.delete(:api_version) || ShopifyAPI::ApiVersion.coerce_to_version(:no_version)
     extension = ".#{options.delete(:extension)||'json'}" unless options[:extension]==false
 
     url = if options.has_key?(:url)
