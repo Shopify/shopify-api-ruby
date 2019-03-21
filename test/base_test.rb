@@ -1,8 +1,7 @@
 require 'test_helper'
-
+require "active_support/log_subscriber/test_helper"
 
 class BaseTest < Test::Unit::TestCase
-
   def setup
     @session1 = ShopifyAPI::Session.new('shop1.myshopify.com', 'token1')
     @session2 = ShopifyAPI::Session.new('shop2.myshopify.com', 'token2')
@@ -86,6 +85,18 @@ class BaseTest < Test::Unit::TestCase
     thread.join
   end
 
+  test "prefix= will forward to resource when the value does not start with admin" do
+    TestResource.prefix = 'a/regular/path/'
+
+    assert_equal('/admin/a/regular/path/', TestResource.prefix)
+  end
+
+  test "prefix= will raise an error if value starts with with /admin" do
+    assert_raises ArgumentError do
+      TestResource.prefix = '/admin/old/prefix/structure/'
+    end
+  end
+
   if ActiveResource::VERSION::MAJOR >= 4
     test "#headers propagates changes to subclasses" do
       ShopifyAPI::Base.headers['X-Custom'] = "the value"
@@ -121,5 +132,8 @@ class BaseTest < Test::Unit::TestCase
     [ActiveResource::Base, ShopifyAPI::Base, ShopifyAPI::Product].each do |klass|
       klass.headers.delete(header)
     end
+  end
+
+  class TestResource < ShopifyAPI::Base
   end
 end

@@ -101,8 +101,19 @@ module ShopifyAPI
         raise
       end
 
-      alias_method :set_prefix, :resource_prefix=
-      alias_method :prefix=, :resource_prefix=
+      def prefix=(value)
+        if value.start_with?('/admin')
+          raise ArgumentError, "'#{value}' can no longer start /admin/. Change to using resource_prefix="
+        end
+
+        warn(
+          '[DEPRECATED] ShopifyAPI::Base#prefix= is deprecated and will be removed in a future version. ' \
+            'Use `self.resource_prefix=` instead.'
+        )
+        self.resource_prefix = value
+      end
+
+      alias_method :set_prefix, :prefix=
 
       def init_prefix(resource)
         init_prefix_explicit(resource.to_s.pluralize, "#{resource}_id")
