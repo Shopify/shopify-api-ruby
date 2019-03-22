@@ -106,6 +106,15 @@ class ApiVersionTest < Test::Unit::TestCase
     refute_equal version_2, version_1
   end
 
+  test 'release verions are stable' do
+    assert_predicate ShopifyAPI::ApiVersion::Release.new('2019-11'), :stable?
+  end
+
+  test 'no release version are not stable' do
+    refute_predicate ShopifyAPI::ApiVersion::NoVersion.new, :stable?
+    refute_predicate ShopifyAPI::ApiVersion::Unstable.new, :stable?
+  end
+
   test 'release versions are ordered by version number with unstable always being the newest and no version always being the oldest' do
     version_1 = ShopifyAPI::ApiVersion::Release.new('2017-11')
     version_2 = ShopifyAPI::ApiVersion::Release.new('2019-11')
@@ -129,6 +138,21 @@ class ApiVersionTest < Test::Unit::TestCase
       unstable,
       version_2,
     ].sort)
+  end
+
+  test 'latest_stable_version will return the version that is newest and stable' do
+    ShopifyAPI::ApiVersion.clear_defined_versions
+    ShopifyAPI::ApiVersion.define_version(ShopifyAPI::ApiVersion::Release.new('2017-11'))
+    ShopifyAPI::ApiVersion.define_version(ShopifyAPI::ApiVersion::Release.new('2019-11'))
+    ShopifyAPI::ApiVersion.define_version(ShopifyAPI::ApiVersion::Release.new('2039-01'))
+    ShopifyAPI::ApiVersion.define_version(ShopifyAPI::ApiVersion::Release.new('2039-02'))
+    ShopifyAPI::ApiVersion.define_version(ShopifyAPI::ApiVersion::Unstable.new)
+    ShopifyAPI::ApiVersion.define_version(ShopifyAPI::ApiVersion::NoVersion.new)
+
+    assert_equal(
+      ShopifyAPI::ApiVersion::Release.new('2039-02'),
+      ShopifyAPI::ApiVersion.latest_stable_version
+    )
   end
 
   class TestApiVersion < ShopifyAPI::ApiVersion

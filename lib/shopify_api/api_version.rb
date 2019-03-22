@@ -30,6 +30,10 @@ module ShopifyAPI
       define_version(Unstable.new)
     end
 
+    def self.latest_stable_version
+      @versions.values.select(&:stable?).sort.last
+    end
+
     def to_s
       @version_name
     end
@@ -49,6 +53,10 @@ module ShopifyAPI
 
     def <=>(other)
       numeric_version <=> other.numeric_version
+    end
+
+    def stable?
+      false
     end
 
     def construct_api_path(_path)
@@ -107,6 +115,10 @@ module ShopifyAPI
         @version_name = version_number
         @url = "#{API_PREFIX}#{version_number}/"
         @numeric_version = version_number.tr('-', '').to_i
+      end
+
+      def stable?
+        true
       end
 
       def construct_api_path(path)
