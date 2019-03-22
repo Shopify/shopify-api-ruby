@@ -106,6 +106,31 @@ class ApiVersionTest < Test::Unit::TestCase
     refute_equal version_2, version_1
   end
 
+  test 'release versions are ordered by version number with unstable always being the newest and no version always being the oldest' do
+    version_1 = ShopifyAPI::ApiVersion::Release.new('2017-11')
+    version_2 = ShopifyAPI::ApiVersion::Release.new('2019-11')
+    version_3 = ShopifyAPI::ApiVersion::Release.new('2039-01')
+    version_4 = ShopifyAPI::ApiVersion::Release.new('2039-02')
+    unstable = ShopifyAPI::ApiVersion::Unstable.new
+    no_version = ShopifyAPI::ApiVersion::NoVersion.new
+
+    assert_equal([
+      no_version,
+      version_1,
+      version_2,
+      version_3,
+      version_4,
+      unstable,
+    ], [
+      version_3,
+      version_1,
+      no_version,
+      version_4,
+      unstable,
+      version_2,
+    ].sort)
+  end
+
   class TestApiVersion < ShopifyAPI::ApiVersion
     def initialize(name)
       @version_name = name
