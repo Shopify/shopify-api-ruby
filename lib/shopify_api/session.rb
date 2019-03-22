@@ -20,12 +20,14 @@ module ShopifyAPI
         params.each { |k,value| public_send("#{k}=", value) }
       end
 
-      def temp(domain:, token:, api_version:, &_block)
+      def temp(domain:, token:, api_version:, &block)
         session = new(domain: domain, token: token, api_version: api_version)
-        original_site = ShopifyAPI::Base.site.to_s
-        original_token = ShopifyAPI::Base.headers['X-Shopify-Access-Token']
-        original_version = ShopifyAPI::Base.api_version
-        original_session = new(domain: original_site, token: original_token, api_version: original_version)
+
+        with_session(session, &block)
+      end
+
+      def with_session(session, &_block)
+        original_session = extract_current_session
 
         begin
           ShopifyAPI::Base.activate_session(session)
@@ -33,6 +35,13 @@ module ShopifyAPI
         ensure
           ShopifyAPI::Base.activate_session(original_session)
         end
+      end
+
+      def with_version(api_version, &block)
+        original_session = extract_current_session
+        session = new(domain: original_session.site, token: original_session.token, api_version: api_version)
+
+        with_session(session, &block)
       end
 
       def prepare_domain(domain)
@@ -65,6 +74,13 @@ module ShopifyAPI
       def encoded_params_for_signature(params)
         params = params.except(:signature, :hmac, :action, :controller)
         params.map{|k,v| "#{URI.escape(k.to_s, '&=%')}=#{URI.escape(v.to_s, '&%')}"}.sort.join('&')
+      end
+
+      def extract_current_session
+        site = ShopifyAPI::Base.site.to_s
+        token = ShopifyAPI::Base.headers['X-Shopify-Access-Token']
+        version = ShopifyAPI::Base.api_version
+        new(domain: site, token: token, api_version: version)
       end
     end
 
