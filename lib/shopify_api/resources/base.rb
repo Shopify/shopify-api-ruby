@@ -120,7 +120,7 @@ module ShopifyAPI
       end
 
       def init_prefix_explicit(resource_type, resource_id)
-        self.prefix = "#{resource_type}/:#{resource_id}/"
+        self.resource_prefix = "#{resource_type}/:#{resource_id}/"
 
         define_method resource_id.to_sym do
           @prefix_options[resource_id]
