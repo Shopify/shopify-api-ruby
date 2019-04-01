@@ -42,9 +42,9 @@ class Test::Unit::TestCase < Minitest::Unit::TestCase
     end
 
     ShopifyAPI::Base.clear_session
-    ShopifyAPI::Base.site = "https://this-is-my-test-shop.myshopify.com/admin"
-    ShopifyAPI::Base.password = nil
-    ShopifyAPI::Base.user = nil
+    session = ShopifyAPI::Session.new("https://this-is-my-test-shop.myshopify.com", "token_test_helper", :no_version)
+
+    ShopifyAPI::Base.activate_session(session)
   end
 
   def teardown
@@ -85,12 +85,13 @@ class Test::Unit::TestCase < Minitest::Unit::TestCase
     body   = options.has_key?(:body) ? options.delete(:body) : load_fixture(endpoint)
     format = options.delete(:format) || :json
     method = options.delete(:method) || :get
+    api_version = options.delete(:api_version) || ShopifyAPI::ApiVersion.coerce_to_version(:no_version)
     extension = ".#{options.delete(:extension)||'json'}" unless options[:extension]==false
 
     url = if options.has_key?(:url)
       options[:url]
     else
-      "https://this-is-my-test-shop.myshopify.com/admin/#{endpoint}#{extension}"
+      "https://this-is-my-test-shop.myshopify.com#{api_version.construct_api_path("#{endpoint}#{extension}")}"
     end
 
     FakeWeb.register_uri(method, url, {:body => body, :status => 200, :content_type => "text/#{format}", :content_length => 1}.merge(options))

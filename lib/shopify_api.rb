@@ -6,6 +6,7 @@ require 'digest/md5'
 require 'base64'
 require 'active_resource/detailed_log_subscriber'
 require 'shopify_api/limits'
+require 'shopify_api/api_version'
 require 'shopify_api/json_format'
 require 'active_resource/json_errors'
 require 'shopify_api/disable_prefix_check'
@@ -27,3 +28,5 @@ if ShopifyAPI::Base.respond_to?(:connection_class)
 else
   require 'active_resource/connection_ext'
 end
+
+ShopifyAPI::ApiVersion.define_known_versions

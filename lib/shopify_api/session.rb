@@ -11,6 +11,7 @@ module ShopifyAPI
     self.myshopify_domain = 'myshopify.com'
 
     attr_accessor :url, :token, :name, :extra
+    attr_reader :api_version
 
     class << self
 
@@ -18,11 +19,12 @@ module ShopifyAPI
         params.each { |k,value| public_send("#{k}=", value) }
       end
 
-      def temp(domain, token, &block)
-        session = new(domain, token)
+      def temp(domain, token, api_version = :no_version, &_block)
+        session = new(domain, token, api_version)
         original_site = ShopifyAPI::Base.site.to_s
         original_token = ShopifyAPI::Base.headers['X-Shopify-Access-Token']
-        original_session = new(original_site, original_token)
+        original_version = ShopifyAPI::Base.api_version
+        original_session = new(original_site, original_token, original_version)
 
         begin
           ShopifyAPI::Base.activate_session(session)
@@ -65,8 +67,9 @@ module ShopifyAPI
       end
     end
 
-    def initialize(url, token = nil, extra = {})
+    def initialize(url, token = nil, api_version = :no_version, extra = {})
       self.url = self.class.prepare_url(url)
+      self.api_version = api_version
       self.token = token
       self.extra = extra
     end
@@ -104,6 +107,10 @@ module ShopifyAPI
 
     def site
       "https://#{url}"
+    end
+
+    def api_version=(version)
+      @api_version = ApiVersion.coerce_to_version(version)
     end
 
     def valid?

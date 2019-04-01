@@ -11,8 +11,6 @@ module ShopifyAPI
                                   "ActiveResource/#{ActiveResource::VERSION::STRING}",
                                   "Ruby/#{RUBY_VERSION}"].join(' ')
 
-    API_PREFIX = '/admin/'.freeze
-
     def encode(options = {})
       same = dup
       same.attributes = {self.class.element_name => same.attributes} if self.class.format.extension == 'json'
@@ -31,6 +29,22 @@ module ShopifyAPI
     end
 
     class << self
+      if respond_to?(:threadsafe_attribute)
+        threadsafe_attribute(:_api_version)
+      else
+        def _api_version
+          @api_version
+        end
+
+        def _api_version_defined?
+          defined?(@api_version)
+        end
+
+        def _api_version=(value)
+          @api_version = value
+        end
+      end
+
       if ActiveResource::Base.respond_to?(:_headers) && ActiveResource::Base.respond_to?(:_headers_defined?)
         def headers
           if _headers_defined?
@@ -57,21 +71,31 @@ module ShopifyAPI
         raise InvalidSessionError.new("Session cannot be nil") if session.nil?
         self.site = session.site
         self.headers.merge!('X-Shopify-Access-Token' => session.token)
+        self.api_version = session.api_version
       end
 
       def clear_session
         self.site = nil
         self.password = nil
         self.user = nil
+        self.api_version = nil
         self.headers.delete('X-Shopify-Access-Token')
       end
 
-      def api_prefix
-        API_PREFIX
+      def api_version
+        if _api_version_defined?
+          _api_version
+        elsif superclass != Object && superclass.site
+          superclass.api_version.dup.freeze
+        end
+      end
+
+      def api_version=(value)
+        self._api_version = value
       end
 
       def prefix(options = {})
-        "#{api_prefix}#{resource_prefix(options)}"
+        api_version.construct_api_path(resource_prefix(options))
       end
 
       def prefix_source
