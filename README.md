@@ -10,6 +10,88 @@ The Shopify API gem allows Ruby developers to programmatically access the admin 
 
 The API is implemented as JSON over HTTP using all four verbs (GET/POST/PUT/DELETE). Each resource, like Order, Product, or Collection, has its own URL and is manipulated in isolation. In other words, we’ve tried to make the API follow the REST principles as much as possible.
 
+## !! Breaking change notice for version 7.0.0 !!
+
+### Changes to ShopifyAPI::Session
+Session creation requires api_version to be set and now uses keyword arguments
+
+To upgrade your use of ShopifyAPI you will need to make the following changes.
+
+```ruby
+ShopifyAPI::Session.new(domain, token, extras)
+```
+is now
+```ruby
+ShopifyAPI::Session.new(domain: domain, token: token, api_verison: api_verison, extras: extras)
+```
+Note `extras` is still optional the other arguments are required.
+
+```ruby
+ShopifyAPI::Session.temp(domain, token, extras) do
+  ...
+end
+```
+is now
+```ruby
+ShopifyAPI::Session.temp(domain: domain, token: token, api_verison: api_verison) do
+  ...
+end
+```
+
+The `api_version` attribute can take the string or symbol name of any known version and correctly coerce it to a `ShopifyAPI::ApiVersion`.  You can find the currently defined versions [here](https://github.com/Shopify/shopify_api/blob/master/lib/shopify_api/api_version.rb#L58), follow these [instructions](#adding-aditional-api-versions) to add additional version definitions if needed.
+
+For example if you want to use the `2019-04` version you would create a session like this:
+```ruby
+session = ShopifyAPI::Session.new(domain: domain, token: token, api_verison: '2019-04')
+```
+if you want to use the `unstable` version you would create a session like this:
+```ruby
+session = ShopifyAPI::Session.new(domain: domain, token: token, api_verison: :unstable)
+```
+
+### Changes to how to define resources
+
+If you have defined or customized Resources, classes that extend `ShopifyAPI::Base`:
+The use of `self.prefix =` has been deprecated you should now use `self.resource =` and not include `/admin`.
+For example if you specified a prefix like this before:
+```ruby
+class MyResource < ShopifyAPI::Base
+  self.prefix = '/admin/shop/'
+end
+```
+You will update this to:
+```ruby
+class MyResource < ShopifyAPI::Base
+  self.resource_prefix = 'shop/'
+end
+```
+
+### URL construction
+
+If you have specifed any full paths for api calls in find
+```ruby
+def self.current(options={})
+  find(:one, options.merge(from: "/admin/shop.#{format.extension}"))
+end
+```
+would be changed to
+
+```ruby
+def self.current(options = {})
+  find(:one, options.merge(
+    from: api_version.construct_api_path("shop.#{format.extension}")
+  ))
+end
+```
+
+### URLs that have not changed
+
+- Oauth urls for authorize, getting the access token from a code and using a refresh token.
+  - get: `/admin/oauth/authorize`
+  - post: `/admin/oauth/access_token`
+- Urls for merchant web admin.  For example: to send the merchant to the product page the url is still `/admin/product/<id>`
+
+
 ## ⚠️ Breaking change notice for version 5.0.0 ⚠️
 The [Abandoned Checkout API](https://help.shopify.com/en/api/reference/orders/abandoned_checkouts) is now accessed through the `ShopifyAPI::AbandonedCheckout` resource. If you were previously accessing the Abandoned Checkout API through the `ShopifyAPI::Checkout` resource, you will need to update your code after upgrading from version 4.x.x or earlier.
 
@@ -57,8 +139,9 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
 2. For a private App you just need to set the base site url as follows:
 
    ```ruby
-   shop_url = "https://#{API_KEY}:#{PASSWORD}@#{SHOP_NAME}.myshopify.com/admin"
+   shop_url = "https://#{API_KEY}:#{PASSWORD}@#{SHOP_NAME}.myshopify.com"
    ShopifyAPI::Base.site = shop_url
+   ShopifyAPI::Base.api_verison = '<version_name>' # find the latest stable api_version [here](https://help.shopify.com/api/versioning)
    ```
 
    That's it, you're done, skip to step 6 and start using the API!
@@ -88,7 +171,7 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
    We've added the create_permission_url method to make this easier, first instantiate your session object:
 
    ```ruby
-   shopify_session = ShopifyAPI::Session.new("SHOP_NAME.myshopify.com")
+   shopify_session = ShopifyAPI::Session.new(domain: "SHOP_NAME.myshopify.com", api_version: version, token: nil)
    ```
 
    Then call:
@@ -155,7 +238,7 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
    For future sessions simply pass in the `token` and `extra` hash (optional) when creating the session object:
 
    ```ruby
-   shopify_session = ShopifyAPI::Session.new("SHOP_NAME.myshopify.com", token, extra)
+   shopify_session = ShopifyAPI::Session.new(domain: "SHOP_NAME.myshopify.com", token: token, api_version: api_version, extra: extra)
    ```
 
 5. The session must be activated before use:
@@ -187,10 +270,26 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
    Alternatively, you can use #temp to initialize a Session and execute a command which also handles temporarily setting ActiveResource::Base.site:
 
    ```ruby
-   products = ShopifyAPI::Session.temp("SHOP_NAME.myshopify.com", token) { ShopifyAPI::Product.find(:all) }
+   products = ShopifyAPI::Session.temp(domain: "SHOP_NAME.myshopify.com", token: token, api_version: api_version) do
+     ShopifyAPI::Product.find(:all)
+   end
    ```
 
-7. If you want to work with another shop, you'll first need to clear the session:
+7. If you would like to run a small number of calls against a different api version you can use this block syntax:
+
+   ```ruby
+   ShopifyAPI::Session.temp(domain: "SHOP_NAME.myshopify.com", token: token, api_version: '2019-04') do
+     ShopifyAPI::Product.find(:all)  # find call against version `2019-04`
+
+     ShopifyAPI::Session.with_version(:unstable) do
+       ShopifyAPI::Product.find(:all)  # find call against version `unstable`
+     end
+
+     ShopifyAPI::Product.find(:all)  # find call against version `2019-04`
+   end
+   ```
+
+8. If you want to work with another shop, you'll first need to clear the session:
 
    ```ruby
    ShopifyAPI::Base.clear_session
@@ -251,6 +350,22 @@ GRAPHQL
 result = client.query(SHOP_NAME_QUERY)
 result.data.shop.name
 ```
+
+## Adding aditional api versions
+
+We will release a gem update when we release a new version of the api.  Most of the time upgrading the gem will be all you need to do.
+
+If you want access to a newer version without upgrading you can define an api version.
+For example if you wanted to add a version '2022-03', you would add the following to the initialization of your application:
+```ruby
+ShopifyAPI::ApiVersion.define_version(ShopifyAPI::ApiVersion::Release.new('2022-03')
+```
+Once you have done that you can now set this version in a Sesssion like this:
+
+```ruby
+ShopifyAPI::Session.new(domain: domain, token: token, api_version: '2022-03')
+```
+
 
 ## Threadsafety
 
