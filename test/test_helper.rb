@@ -42,7 +42,11 @@ class Test::Unit::TestCase < Minitest::Unit::TestCase
     end
 
     ShopifyAPI::Base.clear_session
-    session = ShopifyAPI::Session.new("https://this-is-my-test-shop.myshopify.com", "token_test_helper", :no_version)
+    session = ShopifyAPI::Session.new(
+      domain: "https://this-is-my-test-shop.myshopify.com",
+      token: "token_test_helper",
+      api_version: :no_version
+    )
 
     ShopifyAPI::Base.activate_session(session)
   end

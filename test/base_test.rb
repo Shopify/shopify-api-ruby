@@ -3,8 +3,8 @@ require "active_support/log_subscriber/test_helper"
 
 class BaseTest < Test::Unit::TestCase
   def setup
-    @session1 = ShopifyAPI::Session.new('shop1.myshopify.com', 'token1', :no_version)
-    @session2 = ShopifyAPI::Session.new('shop2.myshopify.com', 'token2', :no_version)
+    @session1 = ShopifyAPI::Session.new(domain: 'shop1.myshopify.com', token: 'token1', api_version: :no_version)
+    @session2 = ShopifyAPI::Session.new(domain: 'shop2.myshopify.com', token: 'token2', api_version: :no_version)
   end
 
   def teardown
@@ -131,8 +131,8 @@ class BaseTest < Test::Unit::TestCase
   end
 
   test "using a different version changes the url" do
-    no_version = ShopifyAPI::Session.new('shop1.myshopify.com', 'token1', :no_version)
-    unstable_version = ShopifyAPI::Session.new('shop2.myshopify.com', 'token2', :unstable)
+    no_version = ShopifyAPI::Session.new(domain: 'shop1.myshopify.com', token: 'token1', api_version: :no_version)
+    unstable_version = ShopifyAPI::Session.new(domain: 'shop2.myshopify.com', token: 'token2', api_version: :unstable)
 
     fake(
       "shop",
