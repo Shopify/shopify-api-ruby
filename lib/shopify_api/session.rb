@@ -10,8 +10,9 @@ module ShopifyAPI
     cattr_accessor :api_key, :secret, :myshopify_domain
     self.myshopify_domain = 'myshopify.com'
 
-    attr_accessor :url, :token, :name, :extra
+    attr_accessor :domain, :token, :name, :extra
     attr_reader :api_version
+    alias_method :url, :domain
 
     class << self
 
@@ -19,12 +20,12 @@ module ShopifyAPI
         params.each { |k,value| public_send("#{k}=", value) }
       end
 
-      def temp(domain, token, api_version = :no_version, &_block)
-        session = new(domain, token, api_version)
+      def temp(domain:, token:, api_version:, &_block)
+        session = new(domain: domain, token: token, api_version: api_version)
         original_site = ShopifyAPI::Base.site.to_s
         original_token = ShopifyAPI::Base.headers['X-Shopify-Access-Token']
         original_version = ShopifyAPI::Base.api_version
-        original_session = new(original_site, original_token, original_version)
+        original_session = new(domain: original_site, token: original_token, api_version: original_version)
 
         begin
           ShopifyAPI::Base.activate_session(session)
@@ -34,12 +35,12 @@ module ShopifyAPI
         end
       end
 
-      def prepare_url(url)
-        return nil if url.blank?
+      def prepare_domain(domain)
+        return nil if domain.blank?
         # remove http:// or https://
-        url = url.strip.gsub(/\Ahttps?:\/\//, '')
+        domain = domain.strip.gsub(%r{\Ahttps?://}, '')
         # extract host, removing any username, password or path
-        shop = URI.parse("https://#{url}").host
+        shop = URI.parse("https://#{domain}").host
         # extract subdomain of .myshopify.com
         if idx = shop.index(".")
           shop = shop.slice(0, idx)
@@ -67,8 +68,8 @@ module ShopifyAPI
       end
     end
 
-    def initialize(url, token = nil, api_version = :no_version, extra = {})
-      self.url = self.class.prepare_url(url)
+    def initialize(domain:, token:, api_version:, extra: {})
+      self.domain = self.class.prepare_domain(domain)
       self.api_version = api_version
       self.token = token
       self.extra = extra
@@ -106,15 +107,15 @@ module ShopifyAPI
     end
 
     def site
-      "https://#{url}"
+      "https://#{domain}"
     end
 
     def api_version=(version)
-      @api_version = ApiVersion.coerce_to_version(version)
+      @api_version = version.nil? ? nil : ApiVersion.coerce_to_version(version)
     end
 
     def valid?
-      url.present? && token.present?
+      domain.present? && token.present? && api_version.present?
     end
 
     def expires_in
@@ -149,7 +150,7 @@ module ShopifyAPI
 
     def construct_oauth_url(path, query_params = {})
       query_string = "?#{parameterize(query_params)}" unless query_params.empty?
-      "https://#{url}/admin/oauth/#{path}#{query_string}"
+      "https://#{domain}/admin/oauth/#{path}#{query_string}"
     end
   end
 end

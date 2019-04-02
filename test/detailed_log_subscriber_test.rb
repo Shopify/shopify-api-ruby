@@ -15,7 +15,11 @@ class LogSubscriberTest < Test::Unit::TestCase
       "#{@ua_header}, \"X-Shopify-Access-Token\"=>\"access_token\"}"
 
     ShopifyAPI::Base.clear_session
-    session = ShopifyAPI::Session.new("https://this-is-my-test-shop.myshopify.com", "access_token", :no_version)
+    session = ShopifyAPI::Session.new(
+      domain: "https://this-is-my-test-shop.myshopify.com",
+      token: "access_token",
+      api_version: :no_version
+    )
 
     ShopifyAPI::Base.activate_session(session)
 
