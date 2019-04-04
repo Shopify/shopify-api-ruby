@@ -8,20 +8,6 @@ class ApiVersionTest < Test::Unit::TestCase
     ShopifyAPI::ApiVersion.define_known_versions
   end
 
-  test "no version creates url that start with /admin/" do
-    assert_equal(
-      "/admin/resource_path/id.json",
-      ShopifyAPI::ApiVersion::NoVersion.new.construct_api_path("resource_path/id.json")
-    )
-  end
-
-  test "no version creates graphql url that start with /admin/api" do
-    assert_equal(
-      "/admin/api/graphql.json",
-      ShopifyAPI::ApiVersion::NoVersion.new.construct_graphql_path
-    )
-  end
-
   test "unstable version creates url that start with /admin/api/unstable/" do
     assert_equal(
       "/admin/api/unstable/resource_path/id.json",
@@ -44,12 +30,12 @@ class ApiVersionTest < Test::Unit::TestCase
   test "coerce_to_version converts a known version into a version object" do
     versions = [
       ShopifyAPI::ApiVersion::Unstable.new,
-      ShopifyAPI::ApiVersion::NoVersion.new,
+      ShopifyAPI::ApiVersion::Release.new('2019-01'),
     ]
 
     assert_equal(versions, [
       ShopifyAPI::ApiVersion.coerce_to_version('unstable'),
-      ShopifyAPI::ApiVersion.coerce_to_version(:no_version),
+      ShopifyAPI::ApiVersion.coerce_to_version('2019-01'),
     ])
   end
 
@@ -111,20 +97,17 @@ class ApiVersionTest < Test::Unit::TestCase
   end
 
   test 'no release version are not stable' do
-    refute_predicate ShopifyAPI::ApiVersion::NoVersion.new, :stable?
     refute_predicate ShopifyAPI::ApiVersion::Unstable.new, :stable?
   end
 
-  test 'release versions are ordered by version number with unstable always being the newest and no version always being the oldest' do
+  test 'release versions are ordered by version number with unstable always being the newest' do
     version_1 = ShopifyAPI::ApiVersion::Release.new('2017-11')
     version_2 = ShopifyAPI::ApiVersion::Release.new('2019-11')
     version_3 = ShopifyAPI::ApiVersion::Release.new('2039-01')
     version_4 = ShopifyAPI::ApiVersion::Release.new('2039-02')
     unstable = ShopifyAPI::ApiVersion::Unstable.new
-    no_version = ShopifyAPI::ApiVersion::NoVersion.new
 
     assert_equal([
-      no_version,
       version_1,
       version_2,
       version_3,
@@ -133,7 +116,6 @@ class ApiVersionTest < Test::Unit::TestCase
     ], [
       version_3,
       version_1,
-      no_version,
       version_4,
       unstable,
       version_2,
@@ -147,7 +129,6 @@ class ApiVersionTest < Test::Unit::TestCase
     ShopifyAPI::ApiVersion.define_version(ShopifyAPI::ApiVersion::Release.new('2039-01'))
     ShopifyAPI::ApiVersion.define_version(ShopifyAPI::ApiVersion::Release.new('2039-02'))
     ShopifyAPI::ApiVersion.define_version(ShopifyAPI::ApiVersion::Unstable.new)
-    ShopifyAPI::ApiVersion.define_version(ShopifyAPI::ApiVersion::NoVersion.new)
 
     assert_equal(
       ShopifyAPI::ApiVersion::Release.new('2039-02'),

@@ -26,7 +26,6 @@ module ShopifyAPI
     end
 
     def self.define_known_versions
-      define_version(NoVersion.new)
       define_version(Unstable.new)
     end
 
@@ -70,23 +69,6 @@ module ShopifyAPI
     protected
 
     attr_reader :numeric_version
-
-    class NoVersion < ApiVersion
-      API_PREFIX = '/admin/'
-
-      def initialize
-        @version_name = "no_version"
-        @numeric_version = 0
-      end
-
-      def construct_api_path(path)
-        "#{API_PREFIX}#{path}"
-      end
-
-      def construct_graphql_path
-        '/admin/api/graphql.json'
-      end
-    end
 
     class Unstable < ApiVersion
       API_PREFIX = '/admin/api/unstable/'

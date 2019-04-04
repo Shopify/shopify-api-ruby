@@ -14,11 +14,13 @@ class LogSubscriberTest < Test::Unit::TestCase
     @request_headers = "Headers: {\"Accept\"=>\"application/json\", " \
       "#{@ua_header}, \"X-Shopify-Access-Token\"=>\"access_token\"}"
 
+    ShopifyAPI::ApiVersion.define_version(ShopifyAPI::ApiVersion::Release.new('2019-01'))
+
     ShopifyAPI::Base.clear_session
     session = ShopifyAPI::Session.new(
       domain: "https://this-is-my-test-shop.myshopify.com",
       token: "access_token",
-      api_version: :no_version
+      api_version: '2019-01'
     )
 
     ShopifyAPI::Base.activate_session(session)
@@ -37,7 +39,10 @@ class LogSubscriberTest < Test::Unit::TestCase
     ShopifyAPI::Page.find(1)
 
     assert_equal(4, @logger.logged(:info).size)
-    assert_equal("GET https://this-is-my-test-shop.myshopify.com:443/admin/pages/1.json", @logger.logged(:info)[0])
+    assert_equal(
+      "GET https://this-is-my-test-shop.myshopify.com:443/admin/api/2019-01/pages/1.json",
+      @logger.logged(:info)[0]
+    )
     assert_match(/\-\-\> 200/, @logger.logged(:info)[1])
     assert_equal(request_headers, @logger.logged(:info)[2])
     assert_match(
@@ -56,13 +61,19 @@ class LogSubscriberTest < Test::Unit::TestCase
 
     if ar_version_before?('5.1.0')
       assert_equal(4, @logger.logged(:info).size)
-      assert_equal("GET https://this-is-my-test-shop.myshopify.com:443/admin/pages/2.json", @logger.logged(:info)[0])
+      assert_equal(
+        "GET https://this-is-my-test-shop.myshopify.com:443/admin/api/2019-01/pages/2.json",
+        @logger.logged(:info)[0]
+      )
       assert_match(/\-\-\> 404/, @logger.logged(:info)[1])
       assert_equal(request_headers, @logger.logged(:info)[2])
       assert_equal("Response:", @logger.logged(:info)[3])
     else
       assert_equal(2, @logger.logged(:error).size)
-      assert_equal("GET https://this-is-my-test-shop.myshopify.com:443/admin/pages/2.json", @logger.logged(:error)[0])
+      assert_equal(
+        "GET https://this-is-my-test-shop.myshopify.com:443/admin/api/2019-01/pages/2.json",
+        @logger.logged(:error)[0]
+      )
       assert_match(/\-\-\> 404/, @logger.logged(:error)[1])
 
       assert_equal(2, @logger.logged(:info).size)
@@ -83,7 +94,10 @@ class LogSubscriberTest < Test::Unit::TestCase
 
     assert_equal 1, @logger.logged(:warn).size
 
-    assert_match(%r{\[DEPRECATED\] ShopifyAPI made a call to GET \/admin\/pages\/1.json}, @logger.logged(:warn).first)
+    assert_match(
+      %r{\[DEPRECATED\] ShopifyAPI made a call to GET /admin/api/2019-01/pages/1.json},
+      @logger.logged(:warn).first
+    )
     assert_match(
       %r{See https:\/\/help.shopify.com\/en\/api\/getting-started\/api-deprecations for more details.},
       @logger.logged(:warn).first

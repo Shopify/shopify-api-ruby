@@ -41,11 +41,13 @@ class Test::Unit::TestCase < Minitest::Unit::TestCase
       end
     end
 
+    ShopifyAPI::ApiVersion.define_version(ShopifyAPI::ApiVersion::Release.new('2019-01'))
+
     ShopifyAPI::Base.clear_session
     session = ShopifyAPI::Session.new(
       domain: "https://this-is-my-test-shop.myshopify.com",
       token: "token_test_helper",
-      api_version: :no_version
+      api_version: '2019-01',
     )
 
     ShopifyAPI::Base.activate_session(session)
@@ -58,6 +60,9 @@ class Test::Unit::TestCase < Minitest::Unit::TestCase
     ShopifyAPI::Base.site = nil
     ShopifyAPI::Base.password = nil
     ShopifyAPI::Base.user = nil
+
+    ShopifyAPI::ApiVersion.clear_defined_versions
+    ShopifyAPI::ApiVersion.define_known_versions
   end
 
   # Custom Assertions
@@ -89,7 +94,7 @@ class Test::Unit::TestCase < Minitest::Unit::TestCase
     body   = options.has_key?(:body) ? options.delete(:body) : load_fixture(endpoint)
     format = options.delete(:format) || :json
     method = options.delete(:method) || :get
-    api_version = options.delete(:api_version) || ShopifyAPI::ApiVersion.coerce_to_version(:no_version)
+    api_version = options.delete(:api_version) || ShopifyAPI::ApiVersion.coerce_to_version('2019-01')
     extension = ".#{options.delete(:extension)||'json'}" unless options[:extension]==false
 
     url = if options.has_key?(:url)
