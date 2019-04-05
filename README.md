@@ -13,7 +13,7 @@ The API is implemented as JSON over HTTP using all four verbs (GET/POST/PUT/DELE
 ## !! Breaking change notice for version 7.0.0 !!
 
 ### Changes to ShopifyAPI::Session
-Session creation requires api_version to be set and now uses keyword arguments
+Session creation requires `api_version` to be set and now uses keyword arguments
 
 To upgrade your use of ShopifyAPI you will need to make the following changes.
 
@@ -68,7 +68,7 @@ end
 
 ### URL construction
 
-If you have specifed any full paths for api calls in find
+If you have specifed any full paths for API calls in find
 ```ruby
 def self.current(options={})
   find(:one, options.merge(from: "/admin/shop.#{format.extension}"))
@@ -90,14 +90,6 @@ end
   - get: `/admin/oauth/authorize`
   - post: `/admin/oauth/access_token`
 - Urls for merchant web admin.  For example: to send the merchant to the product page the url is still `/admin/product/<id>`
-
-
-## ⚠️ Breaking change notice for version 5.0.0 ⚠️
-The [Abandoned Checkout API](https://help.shopify.com/en/api/reference/orders/abandoned_checkouts) is now accessed through the `ShopifyAPI::AbandonedCheckout` resource. If you were previously accessing the Abandoned Checkout API through the `ShopifyAPI::Checkout` resource, you will need to update your code after upgrading from version 4.x.x or earlier.
-
-Going forward, the `ShopifyAPI::Checkout` resource is used to access the [Checkout API](https://help.shopify.com/en/api/reference/sales_channels/checkout), which can be used to create new checkouts.
-
-For more details, [please see this issue](https://github.com/Shopify/shopify_api/issues/471).
 
 ## Usage
 
