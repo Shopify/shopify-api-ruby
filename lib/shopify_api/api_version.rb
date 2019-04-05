@@ -2,39 +2,9 @@
 module ShopifyAPI
   class ApiVersion
     class UnknownVersion < StandardError; end
+    class InvalidVersion < StandardError; end
 
-    class NoVersion < ApiVersion
-      API_PREFIX = '/admin/'
-      GRAPHQL_PATH = '/admin/api/graphql.json'
-
-      def initialize
-        @version_name = "no_version"
-      end
-
-      def construct_api_path(path)
-        "#{API_PREFIX}#{path}"
-      end
-
-      def construct_graphql_path
-        GRAPHQL_PATH
-      end
-    end
-
-    class Unstable < ApiVersion
-      API_PREFIX = '/admin/api/unstable/'
-
-      def initialize
-        @version_name = "unstable"
-      end
-
-      def construct_api_path(path)
-        "#{API_PREFIX}#{path}"
-      end
-
-      def construct_graphql_path
-        construct_api_path('graphql.json')
-      end
-    end
+    include Comparable
 
     def self.coerce_to_version(version_or_name)
       return version_or_name if version_or_name.is_a?(ApiVersion)
@@ -60,6 +30,10 @@ module ShopifyAPI
       define_version(Unstable.new)
     end
 
+    def self.latest_stable_version
+      @versions.values.select(&:stable?).sort.last
+    end
+
     def to_s
       @version_name
     end
@@ -74,7 +48,15 @@ module ShopifyAPI
     end
 
     def hash
-      version_name.hash
+      @version_name.hash
+    end
+
+    def <=>(other)
+      numeric_version <=> other.numeric_version
+    end
+
+    def stable?
+      false
     end
 
     def construct_api_path(_path)
@@ -83,6 +65,69 @@ module ShopifyAPI
 
     def construct_graphql_path
       raise NotImplementedError
+    end
+
+    protected
+
+    attr_reader :numeric_version
+
+    class NoVersion < ApiVersion
+      API_PREFIX = '/admin/'
+
+      def initialize
+        @version_name = "no_version"
+        @numeric_version = 0
+      end
+
+      def construct_api_path(path)
+        "#{API_PREFIX}#{path}"
+      end
+
+      def construct_graphql_path
+        '/admin/api/graphql.json'
+      end
+    end
+
+    class Unstable < ApiVersion
+      API_PREFIX = '/admin/api/unstable/'
+
+      def initialize
+        @version_name = "unstable"
+        @url = API_PREFIX
+        @numeric_version = 9_000_00
+      end
+
+      def construct_api_path(path)
+        "#{@url}#{path}"
+      end
+
+      def construct_graphql_path
+        construct_api_path("graphql.json")
+      end
+    end
+
+    class Release < ApiVersion
+      FORMAT = /^\d{4}-\d{2}$/.freeze
+      API_PREFIX = '/admin/api/'
+
+      def initialize(version_number)
+        raise InvalidVersion, version_number unless version_number.match(FORMAT)
+        @version_name = version_number
+        @url = "#{API_PREFIX}#{version_number}/"
+        @numeric_version = version_number.tr('-', '').to_i
+      end
+
+      def stable?
+        true
+      end
+
+      def construct_api_path(path)
+        "#{@url}#{path}"
+      end
+
+      def construct_graphql_path
+        construct_api_path('graphql.json')
+      end
     end
   end
 end
