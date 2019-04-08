@@ -1,3 +1,5 @@
+== Version 7.0.0
+
 == Version 6.0.0
 
 * Removed undocumented `protocol` and `port` options from `ShopifyAPI::Session`.
