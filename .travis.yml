@@ -2,9 +2,9 @@ language: ruby
 sudo: false
 
 rvm:
-  - 2.4.0
-  - 2.5.0
-  - 2.6.1
+  - 2.4.6
+  - 2.5.5
+  - 2.6.2
 
 gemfile:
   - Gemfile_ar41
@@ -15,9 +15,9 @@ gemfile:
 matrix:
   fast_finish: true
   allow_failures:
-    - rvm: 2.4.0
+    - rvm: 2.4.6
       gemfile: Gemfile_ar_master
-    - rvm: 2.5.0
+    - rvm: 2.5.5
       gemfile: Gemfile_ar_master
-    - rvm: 2.6.1
+    - rvm: 2.6.2
       gemfile: Gemfile_ar_master
