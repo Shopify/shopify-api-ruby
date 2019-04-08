@@ -104,35 +104,31 @@ class BaseTest < Test::Unit::TestCase
     end
   end
 
-  if ActiveResource::VERSION::MAJOR >= 4
-    test "#headers propagates changes to subclasses" do
-      ShopifyAPI::Base.headers['X-Custom'] = "the value"
-      assert_equal "the value", ShopifyAPI::Base.headers['X-Custom']
-      assert_equal "the value", ShopifyAPI::Product.headers['X-Custom']
-    end
-
-    test "#headers clears changes to subclasses" do
-      ShopifyAPI::Base.headers['X-Custom'] = "the value"
-      assert_equal "the value", ShopifyAPI::Product.headers['X-Custom']
-      ShopifyAPI::Base.headers['X-Custom'] = nil
-      assert_nil ShopifyAPI::Product.headers['X-Custom']
-    end
+  test "#headers propagates changes to subclasses" do
+    ShopifyAPI::Base.headers['X-Custom'] = "the value"
+    assert_equal "the value", ShopifyAPI::Base.headers['X-Custom']
+    assert_equal "the value", ShopifyAPI::Product.headers['X-Custom']
   end
 
-  if ActiveResource::VERSION::MAJOR >= 5 || (ActiveResource::VERSION::MAJOR >= 4 && ActiveResource::VERSION::PRE == "threadsafe")
-    test "#headers set in the main thread affect spawned threads" do
-      ShopifyAPI::Base.headers['X-Custom'] = "the value"
-      Thread.new do
-        assert_equal "the value", ShopifyAPI::Base.headers['X-Custom']
-      end.join
-    end
+  test "#headers clears changes to subclasses" do
+    ShopifyAPI::Base.headers['X-Custom'] = "the value"
+    assert_equal "the value", ShopifyAPI::Product.headers['X-Custom']
+    ShopifyAPI::Base.headers['X-Custom'] = nil
+    assert_nil ShopifyAPI::Product.headers['X-Custom']
+  end
 
-    test "#headers set in spawned threads do not affect the main thread" do
-      Thread.new do
-        ShopifyAPI::Base.headers['X-Custom'] = "the value"
-      end.join
-      assert_nil ShopifyAPI::Base.headers['X-Custom']
-    end
+  test "#headers set in the main thread affect spawned threads" do
+    ShopifyAPI::Base.headers['X-Custom'] = "the value"
+    Thread.new do
+      assert_equal "the value", ShopifyAPI::Base.headers['X-Custom']
+    end.join
+  end
+
+  test "#headers set in spawned threads do not affect the main thread" do
+    Thread.new do
+      ShopifyAPI::Base.headers['X-Custom'] = "the value"
+    end.join
+    assert_nil ShopifyAPI::Base.headers['X-Custom']
   end
 
   test "using a different version changes the url" do
