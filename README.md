@@ -86,10 +86,10 @@ end
 
 ### URLs that have not changed
 
-- Oauth urls for authorize, getting the access token from a code and using a refresh token.
+- OAuth URLs for `authorize`, getting the `access_token` from a code, and using a `refresh_token` have _not_ changed.
   - get: `/admin/oauth/authorize`
   - post: `/admin/oauth/access_token`
-- Urls for merchant web admin.  For example: to send the merchant to the product page the url is still `/admin/product/<id>`
+- URLs for the merchant’s web admin have _not_ changed. For example: to send the merchant to the product page the url is still `/admin/product/<id>`
 
 ## Usage
 
@@ -163,7 +163,7 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
    We've added the create_permission_url method to make this easier, first instantiate your session object:
 
    ```ruby
-   shopify_session = ShopifyAPI::Session.new(domain: "SHOP_NAME.myshopify.com", api_version: version, token: nil)
+   shopify_session = ShopifyAPI::Session.new(domain: "SHOP_NAME.myshopify.com", api_version: api_version, token: nil)
    ```
 
    Then call:
@@ -267,7 +267,7 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
    end
    ```
 
-7. If you would like to run a small number of calls against a different api version you can use this block syntax:
+7. If you would like to run a small number of calls against a different API version you can use this block syntax:
 
    ```ruby
    ShopifyAPI::Session.temp(domain: "SHOP_NAME.myshopify.com", token: token, api_version: '2019-04') do
@@ -343,12 +343,11 @@ result = client.query(SHOP_NAME_QUERY)
 result.data.shop.name
 ```
 
-## Adding aditional api versions
-
-We will release a gem update when we release a new version of the api.  Most of the time upgrading the gem will be all you need to do.
+## Adding aditional API versions
+We will release a gem update every time we release a new version of the API. Most of the time upgrading the gem will be all you need to do.
 
 If you want access to a newer version without upgrading you can define an api version.
-For example if you wanted to add a version '2022-03', you would add the following to the initialization of your application:
+For example if you wanted to add an `ApiVersion` '2022-03', you would add the following to the initialization of your application:
 ```ruby
 ShopifyAPI::ApiVersion.define_version(ShopifyAPI::ApiVersion::Release.new('2022-03')
 ```
