@@ -136,14 +136,8 @@ class RecurringApplicationChargeTest < Test::Unit::TestCase
   def test_recurring_application_charge_not_found_error
     fake "recurring_application_charges", body: '{"errors":"Not Found"}', status: 404
 
-    all_application_charges = ShopifyAPI::RecurringApplicationCharge.all
-    if ActiveResource::VERSION::MAJOR == 4 && ActiveResource::VERSION::MINOR >= 2
-      assert_equal [], all_application_charges
-    else
-      assert_equal nil, all_application_charges
-    end
-
-    assert_equal nil, ShopifyAPI::RecurringApplicationCharge.current
-    assert_equal [],  ShopifyAPI::RecurringApplicationCharge.pending
+    assert_equal(nil, ShopifyAPI::RecurringApplicationCharge.all)
+    assert_equal(nil, ShopifyAPI::RecurringApplicationCharge.current)
+    assert_equal([], ShopifyAPI::RecurringApplicationCharge.pending)
   end
 end

@@ -29,21 +29,7 @@ module ShopifyAPI
     end
 
     class << self
-      if respond_to?(:threadsafe_attribute)
-        threadsafe_attribute(:_api_version)
-      else
-        def _api_version
-          @api_version
-        end
-
-        def _api_version_defined?
-          defined?(@api_version)
-        end
-
-        def _api_version=(value)
-          @api_version = value
-        end
-      end
+      threadsafe_attribute(:_api_version)
 
       if ActiveResource::Base.respond_to?(:_headers) && ActiveResource::Base.respond_to?(:_headers_defined?)
         def headers
