@@ -3,11 +3,13 @@ require "active_support/log_subscriber/test_helper"
 
 class BaseTest < Test::Unit::TestCase
   def setup
-    @session1 = ShopifyAPI::Session.new(domain: 'shop1.myshopify.com', token: 'token1', api_version: :no_version)
-    @session2 = ShopifyAPI::Session.new(domain: 'shop2.myshopify.com', token: 'token2', api_version: :no_version)
+    super
+    @session1 = ShopifyAPI::Session.new(domain: 'shop1.myshopify.com', token: 'token1', api_version: '2019-01')
+    @session2 = ShopifyAPI::Session.new(domain: 'shop2.myshopify.com', token: 'token2', api_version: '2019-01')
   end
 
   def teardown
+    super
     clear_header('X-Custom')
   end
 
@@ -72,7 +74,9 @@ class BaseTest < Test::Unit::TestCase
   test "#delete should send custom headers with request" do
     ShopifyAPI::Base.activate_session @session1
     ShopifyAPI::Base.headers['X-Custom'] = 'abc'
-    ShopifyAPI::Base.connection.expects(:delete).with('/admin/bases/1.json', has_entry('X-Custom', 'abc'))
+    ShopifyAPI::Base.connection
+      .expects(:delete)
+      .with('/admin/api/2019-01/bases/1.json', has_entry('X-Custom', 'abc'))
     ShopifyAPI::Base.delete "1"
   end
 
@@ -86,11 +90,12 @@ class BaseTest < Test::Unit::TestCase
   end
 
   test "prefix= will forward to resource when the value does not start with admin" do
-    ShopifyAPI::Base.activate_session(@session1)
+    session = ShopifyAPI::Session.new(domain: 'shop1.myshopify.com', token: 'token1', api_version: '2019-01')
+    ShopifyAPI::Base.activate_session(session)
 
     TestResource.prefix = 'a/regular/path/'
 
-    assert_equal('/admin/a/regular/path/', TestResource.prefix)
+    assert_equal('/admin/api/2019-01/a/regular/path/', TestResource.prefix)
   end
 
   test "prefix= will raise an error if value starts with with /admin" do
@@ -131,12 +136,12 @@ class BaseTest < Test::Unit::TestCase
   end
 
   test "using a different version changes the url" do
-    no_version = ShopifyAPI::Session.new(domain: 'shop1.myshopify.com', token: 'token1', api_version: :no_version)
+    release_2019_01 = ShopifyAPI::Session.new(domain: 'shop1.myshopify.com', token: 'token1', api_version: '2019-01')
     unstable_version = ShopifyAPI::Session.new(domain: 'shop2.myshopify.com', token: 'token2', api_version: :unstable)
 
     fake(
       "shop",
-      url: "https://shop1.myshopify.com/admin/shop.json",
+      url: "https://shop1.myshopify.com/admin/api/2019-01/shop.json",
       method: :get,
       status: 201,
       body: '{ "shop": { "id": 1 } }'
@@ -149,7 +154,7 @@ class BaseTest < Test::Unit::TestCase
       body: '{ "shop": { "id": 2 } }'
     )
 
-    ShopifyAPI::Base.activate_session(no_version)
+    ShopifyAPI::Base.activate_session(release_2019_01)
     assert_equal 1, ShopifyAPI::Shop.current.id
 
     ShopifyAPI::Base.activate_session(unstable_version)
