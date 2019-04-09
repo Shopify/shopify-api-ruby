@@ -27,6 +27,7 @@ module ShopifyAPI
 
     def self.define_known_versions
       define_version(Unstable.new)
+      define_version(Release.new('2019-04'))
     end
 
     def self.latest_stable_version
