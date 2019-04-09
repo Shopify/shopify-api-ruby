@@ -87,9 +87,9 @@ end
 ### URLs that have not changed
 
 - OAuth URLs for `authorize`, getting the `access_token` from a code, `access_scopes`, and using a `refresh_token` have _not_ changed.
-  - get: `/admin/oauth/authorize.json`
-  - post: `/admin/oauth/access_token.json`
-  - get: `/admin/oauth/access_scopes.json`
+  - get: `/admin/oauth/authorize`
+  - post: `/admin/oauth/access_token`
+  - get: `/admin/oauth/access_scopes`
 - URLs for the merchant’s web admin have _not_ changed. For example: to send the merchant to the product page the url is still `/admin/product/<id>`
 
 ## Usage
