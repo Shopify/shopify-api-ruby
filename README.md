@@ -22,7 +22,7 @@ ShopifyAPI::Session.new(domain, token, extras)
 ```
 is now
 ```ruby
-ShopifyAPI::Session.new(domain: domain, token: token, api_verison: api_verison, extras: extras)
+ShopifyAPI::Session.new(domain: domain, token: token, api_version: api_version, extras: extras)
 ```
 Note `extras` is still optional the other arguments are required.
 
@@ -33,7 +33,7 @@ end
 ```
 is now
 ```ruby
-ShopifyAPI::Session.temp(domain: domain, token: token, api_verison: api_verison) do
+ShopifyAPI::Session.temp(domain: domain, token: token, api_version: api_version) do
   ...
 end
 ```
@@ -42,11 +42,11 @@ The `api_version` attribute can take the string or symbol name of any known vers
 
 For example if you want to use the `2019-04` version you would create a session like this:
 ```ruby
-session = ShopifyAPI::Session.new(domain: domain, token: token, api_verison: '2019-04')
+session = ShopifyAPI::Session.new(domain: domain, token: token, api_version: '2019-04')
 ```
 if you want to use the `unstable` version you would create a session like this:
 ```ruby
-session = ShopifyAPI::Session.new(domain: domain, token: token, api_verison: :unstable)
+session = ShopifyAPI::Session.new(domain: domain, token: token, api_version: :unstable)
 ```
 
 ### Changes to how to define resources
@@ -134,7 +134,7 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
    ```ruby
    shop_url = "https://#{API_KEY}:#{PASSWORD}@#{SHOP_NAME}.myshopify.com"
    ShopifyAPI::Base.site = shop_url
-   ShopifyAPI::Base.api_verison = '<version_name>' # find the latest stable api_version [here](https://help.shopify.com/api/versioning)
+   ShopifyAPI::Base.api_version = '<version_name>' # find the latest stable api_version [here](https://help.shopify.com/api/versioning)
    ```
 
    That's it, you're done, skip to step 6 and start using the API!
