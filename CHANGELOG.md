@@ -1,3 +1,7 @@
+== Version 7.0.1
+
+* Support passing version string to `ShopifyAPI::Base.api_version` [#563](https://github.com/Shopify/shopify_api/pull/563)
+
 == Version 7.0.0
 
 * Removed support for `ActiveResouce` < `4.1`.
