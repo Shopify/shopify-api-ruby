@@ -76,8 +76,8 @@ module ShopifyAPI
         end
       end
 
-      def api_version=(value)
-        self._api_version = value
+      def api_version=(version)
+        self._api_version = version.nil? ? nil : ApiVersion.coerce_to_version(version)
       end
 
       def prefix(options = {})
