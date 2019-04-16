@@ -374,6 +374,17 @@ bundle install
 bundle exec rake test
 ```
 
+or if you'd rather use docker just run:
+```bash
+docker run -it --name shopify_api -v $PWD:/shopify_api -w="/shopify_api" ruby:2.4.6 bundle install
+docker exec -it shopify_api bash
+```
+
+or you can even use our automated rake task for docker:
+```bash
+bundle exec rake docker
+```
+
 ## Additional Resources
 
 * [API Reference](https://help.shopify.com/api/reference)

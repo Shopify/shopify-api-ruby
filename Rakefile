@@ -39,8 +39,8 @@ Rake::RDocTask.new do |rdoc|
 end
 
 task :docker do
-  cmd = "docker-compose up -d && docker exec -i -t shopify_api bash" 
+  cmd = "docker-compose up -d && docker exec -i -t shopify_api bash"
   unless system(cmd, err: File::NULL)
-    abort "Something went wrong, do you have Docker and Docker-Compose installed?"
+    abort("Something went wrong, do you have Docker and Docker-Compose installed?")
   end
 end
