@@ -3,6 +3,10 @@ module ShopifyAPI
   module Ping
     class Message < Base
       self.prefix = "/admin/api/ping-api/v1/conversations/:conversation_id/"
+
+      def fetch
+
+      end
     end
   end
 end

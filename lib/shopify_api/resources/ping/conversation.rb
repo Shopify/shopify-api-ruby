@@ -14,6 +14,13 @@ module ShopifyAPI
         message
       end
 
+      def messages(filter_params = {})
+        ShopifyAPI::Ping::Message.find(
+          :all,
+          params: default_filter_params.merge(filter_params)
+        )
+      end
+
       def successful_delivery(message_id:, delivery_timestamp:)
         delivery_details = ShopifyAPI::Ping::DeliveryConfirmationDetails.new(
           delivery_attrs(message_id, delivery_timestamp).merge(delivered: true)
@@ -35,6 +42,15 @@ module ShopifyAPI
           conversation_id: id,
           message_id: message_id,
           confirmation_timestamp: delivery_timestamp,
+        }
+      end
+
+      def default_filter_params
+        {
+          after: nil,
+          before: nil,
+          limit: 20,
+          filter_by: nil,
         }
       end
     end
