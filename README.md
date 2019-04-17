@@ -344,7 +344,7 @@ result = client.query(SHOP_NAME_QUERY)
 result.data.shop.name
 ```
 
-## Adding aditional API versions
+## Adding additional API versions
 We will release a gem update every time we release a new version of the API. Most of the time upgrading the gem will be all you need to do.
 
 If you want access to a newer version without upgrading you can define an api version.
