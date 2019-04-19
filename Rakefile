@@ -38,21 +38,7 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
-require 'open-uri'
-def internet_connection?
-  begin
-    true if open("8.8.8.8")
-  rescue
-    false
-  end
-end
-
 task :docker do
   cmd = "docker-compose up -d && docker exec -i -t shopify_api bash"
-  begin
-    system(cmd, err: File::NULL)
-    raise RuntimeError.new("There is no internet connection") unless internet_connection?
-  rescue => e
-    puts e.inspect
-  end
+  exec(cmd, err: File::NULL)
 end
