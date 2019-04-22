@@ -38,7 +38,7 @@ ShopifyAPI::Session.temp(domain: domain, token: token, api_version: api_version)
 end
 ```
 
-The `api_version` attribute can take the string or symbol name of any known version and correctly coerce it to a `ShopifyAPI::ApiVersion`.  You can find the currently defined versions [here](https://github.com/Shopify/shopify_api/blob/master/lib/shopify_api/api_version.rb#L58), follow these [instructions](#adding-aditional-api-versions) to add additional version definitions if needed.
+The `api_version` attribute can take the string or symbol name of any known version and correctly coerce it to a `ShopifyAPI::ApiVersion`.  You can find the currently defined versions [here](https://github.com/Shopify/shopify_api/blob/master/lib/shopify_api/defined_versions.rb), follow these [instructions](#adding-aditional-api-versions) to add additional version definitions if needed.
 
 For example if you want to use the `2019-04` version you would create a session like this:
 ```ruby
@@ -344,7 +344,7 @@ result = client.query(SHOP_NAME_QUERY)
 result.data.shop.name
 ```
 
-## Adding aditional API versions
+## Adding additional API versions
 We will release a gem update every time we release a new version of the API. Most of the time upgrading the gem will be all you need to do.
 
 If you want access to a newer version without upgrading you can define an api version.
