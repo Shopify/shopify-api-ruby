@@ -47,4 +47,14 @@ class ProductTest < Test::Unit::TestCase
     variant.price = "0.50"
     variant.save
   end
+
+  def test_price_range
+    assert_equal('199.00', @product.price_range)
+  end
+
+  def test_price_range_when_has_different_price
+    @product.variants[0].price = '100.00'
+
+    assert_equal('100.00 - 199.00', @product.price_range)
+  end
 end

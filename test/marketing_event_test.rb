@@ -43,7 +43,7 @@ class MarketingEventTest < Test::Unit::TestCase
 
   def test_count_marketing_events
     fake "marketing_events/count", :method => :get, :body => '{"count": 2}'
-    marketing_events_count = ShopifyAPI::MarketingEvent.get(:count)
+    marketing_events_count = ShopifyAPI::MarketingEvent.count
     assert_equal 2, marketing_events_count
   end
 
