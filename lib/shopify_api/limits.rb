@@ -7,14 +7,14 @@ module ShopifyAPI
     end
 
     module ClassMethods
-
-      # Takes form num_requests_executed/max_requests
-      # Eg: 101/3000
+      # Takes form <call count>/<bucket size>
+      # See https://help.shopify.com/en/api/getting-started/api-call-limit
+      # Eg: 2/40
       CREDIT_LIMIT_HEADER_PARAM = {
-        :shop => 'http_x_shopify_shop_api_call_limit'
+        shop: 'X-Shopify-Shop-Api-Call-Limit',
       }
 
-        ##
+      ##
       # How many more API calls can I make?
       # @return {Integer}
       #
@@ -39,8 +39,7 @@ module ShopifyAPI
       # @return {Integer}
       #
       def credit_limit(scope=:shop)
-        @api_credit_limit ||= {}
-        @api_credit_limit[scope] ||= api_credit_limit_param(scope).pop.to_i - 1
+        api_credit_limit_param(scope).pop.to_i - 1
       end
       alias_method :call_limit, :credit_limit
 

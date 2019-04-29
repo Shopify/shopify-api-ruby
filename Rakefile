@@ -37,3 +37,8 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
+
+task :docker do
+  cmd = "docker-compose up -d && docker exec -i -t shopify_api bash"
+  exec(cmd, err: File::NULL)
+end

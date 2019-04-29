@@ -19,13 +19,25 @@ class ProductTest < Test::Unit::TestCase
     assert_equal "123@example.com", field.value
   end
 
-  def test_get_metafields_for_product
+  def test_get_all_metafields_for_product
     fake "products/632910392/metafields", :body => load_fixture('metafields')
 
     metafields = @product.metafields
 
+    assert_equal 3, metafields.length
+    assert metafields.all?{ |m| m.is_a? ShopifyAPI::Metafield }
+  end
+
+  def test_get_2_metafields_for_product
+    body = ActiveSupport::JSON.decode load_fixture 'metafields'
+    body['metafields'].slice! 2, 1
+
+    fake 'products/632910392/metafields.json?limit=2', body: body.to_json, extension: false
+
+    metafields = @product.metafields limit: 2
+
     assert_equal 2, metafields.length
-    assert metafields.all?{|m| m.is_a?(ShopifyAPI::Metafield)}
+    assert metafields.all?{ |m| m.is_a? ShopifyAPI::Metafield }
   end
 
   def test_update_loaded_variant
@@ -34,5 +46,15 @@ class ProductTest < Test::Unit::TestCase
     variant = @product.variants.first
     variant.price = "0.50"
     variant.save
+  end
+
+  def test_price_range
+    assert_equal('199.00', @product.price_range)
+  end
+
+  def test_price_range_when_has_different_price
+    @product.variants[0].price = '100.00'
+
+    assert_equal('100.00 - 199.00', @product.price_range)
   end
 end

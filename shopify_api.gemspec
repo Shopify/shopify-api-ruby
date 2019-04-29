@@ -23,14 +23,18 @@ Gem::Specification.new do |s|
   s.summary = %q{ShopifyAPI is a lightweight gem for accessing the Shopify admin REST web services}
   s.license = "MIT"
 
-  s.required_ruby_version = ">= 2.0"
+  s.required_ruby_version = ">= 2.4"
 
-  s.add_runtime_dependency("activeresource", ">= 3.0.0")
+  s.add_runtime_dependency("activeresource", ">= 4.1.0", "< 6.0.0")
   s.add_runtime_dependency("rack")
+  s.add_runtime_dependency("graphql-client")
 
   s.add_development_dependency("mocha", ">= 0.9.8")
   s.add_development_dependency("fakeweb")
   s.add_development_dependency("minitest", ">= 4.0")
   s.add_development_dependency("rake")
   s.add_development_dependency("timecop")
+  s.add_development_dependency("rubocop")
+  s.add_development_dependency("pry")
+  s.add_development_dependency("pry-byebug")
 end
