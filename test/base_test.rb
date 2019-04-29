@@ -1,14 +1,15 @@
 require 'test_helper'
-
+require "active_support/log_subscriber/test_helper"
 
 class BaseTest < Test::Unit::TestCase
-
   def setup
-    @session1 = ShopifyAPI::Session.new('shop1.myshopify.com', 'token1')
-    @session2 = ShopifyAPI::Session.new('shop2.myshopify.com', 'token2')
+    super
+    @session1 = ShopifyAPI::Session.new(domain: 'shop1.myshopify.com', token: 'token1', api_version: '2019-01')
+    @session2 = ShopifyAPI::Session.new(domain: 'shop2.myshopify.com', token: 'token2', api_version: '2019-01')
   end
 
   def teardown
+    super
     clear_header('X-Custom')
   end
 
@@ -16,8 +17,8 @@ class BaseTest < Test::Unit::TestCase
     ShopifyAPI::Base.activate_session @session1
 
     assert_nil ActiveResource::Base.site
-    assert_equal 'https://shop1.myshopify.com/admin', ShopifyAPI::Base.site.to_s
-    assert_equal 'https://shop1.myshopify.com/admin', ShopifyAPI::Shop.site.to_s
+    assert_equal 'https://shop1.myshopify.com', ShopifyAPI::Base.site.to_s
+    assert_equal 'https://shop1.myshopify.com', ShopifyAPI::Shop.site.to_s
 
     assert_nil ActiveResource::Base.headers['X-Shopify-Access-Token']
     assert_equal 'token1', ShopifyAPI::Base.headers['X-Shopify-Access-Token']
@@ -56,8 +57,8 @@ class BaseTest < Test::Unit::TestCase
     ShopifyAPI::Base.activate_session @session2
 
     assert_nil ActiveResource::Base.site
-    assert_equal 'https://shop2.myshopify.com/admin', ShopifyAPI::Base.site.to_s
-    assert_equal 'https://shop2.myshopify.com/admin', ShopifyAPI::Shop.site.to_s
+    assert_equal 'https://shop2.myshopify.com', ShopifyAPI::Base.site.to_s
+    assert_equal 'https://shop2.myshopify.com', ShopifyAPI::Shop.site.to_s
 
     assert_nil ActiveResource::Base.headers['X-Shopify-Access-Token']
     assert_equal 'token2', ShopifyAPI::Base.headers['X-Shopify-Access-Token']
@@ -73,7 +74,9 @@ class BaseTest < Test::Unit::TestCase
   test "#delete should send custom headers with request" do
     ShopifyAPI::Base.activate_session @session1
     ShopifyAPI::Base.headers['X-Custom'] = 'abc'
-    ShopifyAPI::Base.connection.expects(:delete).with('/admin/bases/1.json', has_entry('X-Custom', 'abc'))
+    ShopifyAPI::Base.connection
+      .expects(:delete)
+      .with('/admin/api/2019-01/bases/1.json', has_entry('X-Custom', 'abc'))
     ShopifyAPI::Base.delete "1"
   end
 
@@ -86,40 +89,85 @@ class BaseTest < Test::Unit::TestCase
     thread.join
   end
 
-  if ActiveResource::VERSION::MAJOR >= 4
-    test "#headers propagates changes to subclasses" do
-      ShopifyAPI::Base.headers['X-Custom'] = "the value"
-      assert_equal "the value", ShopifyAPI::Base.headers['X-Custom']
-      assert_equal "the value", ShopifyAPI::Product.headers['X-Custom']
-    end
+  test "prefix= will forward to resource when the value does not start with admin" do
+    session = ShopifyAPI::Session.new(domain: 'shop1.myshopify.com', token: 'token1', api_version: '2019-01')
+    ShopifyAPI::Base.activate_session(session)
 
-    test "#headers clears changes to subclasses" do
-      ShopifyAPI::Base.headers['X-Custom'] = "the value"
-      assert_equal "the value", ShopifyAPI::Product.headers['X-Custom']
-      ShopifyAPI::Base.headers['X-Custom'] = nil
-      assert_nil ShopifyAPI::Product.headers['X-Custom']
+    TestResource.prefix = 'a/regular/path/'
+
+    assert_equal('/admin/api/2019-01/a/regular/path/', TestResource.prefix)
+  end
+
+  test "prefix= will raise an error if value starts with with /admin" do
+    assert_raises ArgumentError do
+      TestResource.prefix = '/admin/old/prefix/structure/'
     end
   end
 
-  if ActiveResource::VERSION::MAJOR >= 5 || (ActiveResource::VERSION::MAJOR >= 4 && ActiveResource::VERSION::PRE == "threadsafe")
-    test "#headers set in the main thread affect spawned threads" do
-      ShopifyAPI::Base.headers['X-Custom'] = "the value"
-      Thread.new do
-        assert_equal "the value", ShopifyAPI::Base.headers['X-Custom']
-      end.join
-    end
+  test "#headers propagates changes to subclasses" do
+    ShopifyAPI::Base.headers['X-Custom'] = "the value"
+    assert_equal "the value", ShopifyAPI::Base.headers['X-Custom']
+    assert_equal "the value", ShopifyAPI::Product.headers['X-Custom']
+  end
 
-    test "#headers set in spawned threads do not affect the main thread" do
-      Thread.new do
-        ShopifyAPI::Base.headers['X-Custom'] = "the value"
-      end.join
-      assert_nil ShopifyAPI::Base.headers['X-Custom']
-    end
+  test "#headers clears changes to subclasses" do
+    ShopifyAPI::Base.headers['X-Custom'] = "the value"
+    assert_equal "the value", ShopifyAPI::Product.headers['X-Custom']
+    ShopifyAPI::Base.headers['X-Custom'] = nil
+    assert_nil ShopifyAPI::Product.headers['X-Custom']
+  end
+
+  test "#headers set in the main thread affect spawned threads" do
+    ShopifyAPI::Base.headers['X-Custom'] = "the value"
+    Thread.new do
+      assert_equal "the value", ShopifyAPI::Base.headers['X-Custom']
+    end.join
+  end
+
+  test "#headers set in spawned threads do not affect the main thread" do
+    Thread.new do
+      ShopifyAPI::Base.headers['X-Custom'] = "the value"
+    end.join
+    assert_nil ShopifyAPI::Base.headers['X-Custom']
+  end
+
+  test "using a different version changes the url" do
+    release_2019_01 = ShopifyAPI::Session.new(domain: 'shop1.myshopify.com', token: 'token1', api_version: '2019-01')
+    unstable_version = ShopifyAPI::Session.new(domain: 'shop2.myshopify.com', token: 'token2', api_version: :unstable)
+
+    fake(
+      "shop",
+      url: "https://shop1.myshopify.com/admin/api/2019-01/shop.json",
+      method: :get,
+      status: 201,
+      body: '{ "shop": { "id": 1 } }'
+    )
+    fake(
+      "shop",
+      url: "https://shop2.myshopify.com/admin/api/unstable/shop.json",
+      method: :get,
+      status: 201,
+      body: '{ "shop": { "id": 2 } }'
+    )
+
+    ShopifyAPI::Base.activate_session(release_2019_01)
+    assert_equal 1, ShopifyAPI::Shop.current.id
+
+    ShopifyAPI::Base.activate_session(unstable_version)
+    assert_equal 2, ShopifyAPI::Shop.current.id
+  end
+
+  test "#api_version should set ApiVersion" do
+    ShopifyAPI::Base.api_version = '2019-04'
+    assert_equal '2019-04', ShopifyAPI::Base.api_version.to_s
   end
 
   def clear_header(header)
     [ActiveResource::Base, ShopifyAPI::Base, ShopifyAPI::Product].each do |klass|
       klass.headers.delete(header)
     end
+  end
+
+  class TestResource < ShopifyAPI::Base
   end
 end
