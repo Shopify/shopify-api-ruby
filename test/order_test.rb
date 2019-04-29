@@ -56,4 +56,20 @@ class OrderTest < Test::Unit::TestCase
     order.cancel(email: false, restock: true)
     assert_request_body({'email' => false, 'restock' => true}.to_json)
   end
+
+  test "capture an order with currency param" do
+    fake 'orders/450789469', body: load_fixture('order')
+    order = ShopifyAPI::Order.find(450789469)
+
+    fake 'orders/450789469/transactions', method: :post, status: 201, body: load_fixture('transaction')
+    order.capture(100.00, currency: 'CAD')
+
+    assert_request_body({
+      transaction: {
+        amount: 100.00,
+        kind: 'capture',
+        currency: 'CAD',
+      },
+    }.to_json)
+  end
 end

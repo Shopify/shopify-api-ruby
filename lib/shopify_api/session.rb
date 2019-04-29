@@ -7,11 +7,12 @@ module ShopifyAPI
   end
 
   class Session
-    cattr_accessor :api_key, :secret, :protocol, :myshopify_domain, :port
-    self.protocol = 'https'
+    cattr_accessor :api_key, :secret, :myshopify_domain
     self.myshopify_domain = 'myshopify.com'
 
-    attr_accessor :url, :token, :name, :extra
+    attr_accessor :domain, :token, :name, :extra
+    attr_reader :api_version
+    alias_method :url, :domain
 
     class << self
 
@@ -19,11 +20,14 @@ module ShopifyAPI
         params.each { |k,value| public_send("#{k}=", value) }
       end
 
-      def temp(domain, token, &block)
-        session = new(domain, token)
-        original_site = ShopifyAPI::Base.site.to_s
-        original_token = ShopifyAPI::Base.headers['X-Shopify-Access-Token']
-        original_session = new(original_site, original_token)
+      def temp(domain:, token:, api_version:, &block)
+        session = new(domain: domain, token: token, api_version: api_version)
+
+        with_session(session, &block)
+      end
+
+      def with_session(session, &_block)
+        original_session = extract_current_session
 
         begin
           ShopifyAPI::Base.activate_session(session)
@@ -33,24 +37,31 @@ module ShopifyAPI
         end
       end
 
-      def prepare_url(url)
-        return nil if url.blank?
+      def with_version(api_version, &block)
+        original_session = extract_current_session
+        session = new(domain: original_session.site, token: original_session.token, api_version: api_version)
+
+        with_session(session, &block)
+      end
+
+      def prepare_domain(domain)
+        return nil if domain.blank?
         # remove http:// or https://
-        url = url.strip.gsub(/\Ahttps?:\/\//, '')
+        domain = domain.strip.gsub(%r{\Ahttps?://}, '')
         # extract host, removing any username, password or path
-        shop = URI.parse("https://#{url}").host
+        shop = URI.parse("https://#{domain}").host
         # extract subdomain of .myshopify.com
         if idx = shop.index(".")
           shop = shop.slice(0, idx)
         end
         return nil if shop.empty?
-        shop = "#{shop}.#{myshopify_domain}"
-        port ? "#{shop}:#{port}" : shop
+        "#{shop}.#{myshopify_domain}"
       rescue URI::InvalidURIError
         nil
       end
 
       def validate_signature(params)
+        params = (params.respond_to?(:to_unsafe_hash) ? params.to_unsafe_hash : params).with_indifferent_access
         return false unless signature = params[:hmac]
 
         calculated_signature = OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new(), secret, encoded_params_for_signature(params))
@@ -64,10 +75,18 @@ module ShopifyAPI
         params = params.except(:signature, :hmac, :action, :controller)
         params.map{|k,v| "#{URI.escape(k.to_s, '&=%')}=#{URI.escape(v.to_s, '&%')}"}.sort.join('&')
       end
+
+      def extract_current_session
+        site = ShopifyAPI::Base.site.to_s
+        token = ShopifyAPI::Base.headers['X-Shopify-Access-Token']
+        version = ShopifyAPI::Base.api_version
+        new(domain: site, token: token, api_version: version)
+      end
     end
 
-    def initialize(url, token = nil, extra = {})
-      self.url = self.class.prepare_url(url)
+    def initialize(domain:, token:, api_version:, extra: {})
+      self.domain = self.class.prepare_domain(domain)
+      self.api_version = api_version
       self.token = token
       self.extra = extra
     end
@@ -75,7 +94,7 @@ module ShopifyAPI
     def create_permission_url(scope, redirect_uri = nil)
       params = {:client_id => api_key, :scope => scope.join(',')}
       params[:redirect_uri] = redirect_uri if redirect_uri
-      "#{site}/oauth/authorize?#{parameterize(params)}"
+      construct_oauth_url("authorize", params)
     end
 
     def request_token(params)
@@ -104,11 +123,15 @@ module ShopifyAPI
     end
 
     def site
-      "#{protocol}://#{url}/admin"
+      "https://#{domain}"
+    end
+
+    def api_version=(version)
+      @api_version = version.nil? ? nil : ApiVersion.coerce_to_version(version)
     end
 
     def valid?
-      url.present? && token.present?
+      domain.present? && token.present? && api_version.present?
     end
 
     def expires_in
@@ -127,17 +150,23 @@ module ShopifyAPI
     end
 
     private
-      def parameterize(params)
-        URI.escape(params.collect{|k,v| "#{k}=#{v}"}.join('&'))
-      end
 
-      def access_token_request(code)
-        uri = URI.parse("#{protocol}://#{url}/admin/oauth/access_token")
-        https = Net::HTTP.new(uri.host, uri.port)
-        https.use_ssl = true
-        request = Net::HTTP::Post.new(uri.request_uri)
-        request.set_form_data({"client_id" => api_key, "client_secret" => secret, "code" => code})
-        https.request(request)
-      end
+    def parameterize(params)
+      URI.escape(params.collect { |k, v| "#{k}=#{v}" }.join('&'))
+    end
+
+    def access_token_request(code)
+      uri = URI.parse(construct_oauth_url('access_token'))
+      https = Net::HTTP.new(uri.host, uri.port)
+      https.use_ssl = true
+      request = Net::HTTP::Post.new(uri.request_uri)
+      request.set_form_data('client_id' => api_key, 'client_secret' => secret, 'code' => code)
+      https.request(request)
+    end
+
+    def construct_oauth_url(path, query_params = {})
+      query_string = "?#{parameterize(query_params)}" unless query_params.empty?
+      "https://#{domain}/admin/oauth/#{path}#{query_string}"
+    end
   end
 end

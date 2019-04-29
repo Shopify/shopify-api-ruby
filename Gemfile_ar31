@@ -1,6 +1,0 @@
-source "https://rubygems.org"
-
-gemspec
-
-gem "activeresource", "~> 3.1.0"
-gem "rack", "< 2" if RUBY_VERSION < "2.2"
