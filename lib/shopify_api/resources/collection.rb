@@ -6,7 +6,11 @@ module ShopifyAPI
     include Metafields
 
     def products(options = {})
-      Product.find(:all, from: "#{self.class.prefix}collections/#{id}/products.json", params: options)
+      binding.pry
+      binding.pry
+      url = "#{self.class.prefix}collections/#{id}/products.json"
+      puts url
+      Product.find(:all, from: url, params: options)
     end
   end
 end

@@ -4,6 +4,7 @@ module ShopifyAPI
     include Metafields
 
     def products(options = {})
+      binding.pry
       if options.present?
         Product.find(:all, from: "#{self.class.prefix}smart_collections/#{id}/products.json", params: options)
       else
