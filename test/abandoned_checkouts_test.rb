@@ -10,7 +10,7 @@ class AbandonedCheckoutsTest < Test::Unit::TestCase
   end
 
   test ":create creates a checkout" do
-    fake 'checkouts', method: :post, status: 201, body: load_fixture('abandoned_checkout')
+    fake 'abandoned_checkouts', method: :post, status: 201, body: load_fixture('abandoned_checkout')
 
     checkout = ShopifyAPI::AbandonedCheckout.create
 
@@ -19,7 +19,7 @@ class AbandonedCheckoutsTest < Test::Unit::TestCase
   end
 
   test "get all checkouts indexed by token" do
-    fake 'checkouts', method: :get, status: 200, body: load_fixture('abandoned_checkouts')
+    fake 'abandoned_checkouts', method: :get, status: 200, body: load_fixture('abandoned_checkouts')
 
     checkouts = ShopifyAPI::AbandonedCheckout.all
 
