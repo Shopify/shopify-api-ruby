@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-self.api_version = ShopifyAPI::ApiVersion::Unstable.new 
-
 module ShopifyAPI
   class Collection < Base
     include Events
