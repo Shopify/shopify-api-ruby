@@ -23,7 +23,7 @@ module ShopifyAPI
         self.class.graphql_client = ::GraphQL::Client.new(schema: schema, execute: @http_client)
       end
 
-      client.instance_variable_set(:@execute, @http_client)
+      graphql_client.instance_variable_set(:@execute, @http_client)
     end
 
     delegate :parse, :query, to: :graphql_client
