@@ -38,7 +38,7 @@ ShopifyAPI::Session.temp(domain: domain, token: token, api_version: api_version)
 end
 ```
 
-The `api_version` attribute can take the string or symbol name of any known version and correctly coerce it to a `ShopifyAPI::ApiVersion`.  You can find the currently defined versions [here](https://github.com/Shopify/shopify_api/blob/master/lib/shopify_api/defined_versions.rb), follow these [instructions](#adding-aditional-api-versions) to add additional version definitions if needed.
+The `api_version` attribute can take the string or symbol name of any known version and correctly coerce it to a `ShopifyAPI::ApiVersion`.  You can find the currently defined versions [here](https://github.com/Shopify/shopify_api/blob/master/lib/shopify_api/defined_versions.rb), follow these [instructions](#adding-additional-api-versions) to add additional version definitions if needed.
 
 For example if you want to use the `2019-04` version you would create a session like this:
 ```ruby
@@ -290,20 +290,20 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
 
 ### Console
 
-This package also supports the ``shopify-cli`` executable to make it easy to open up an interactive console to use the API with a shop.
+This package also supports the ``shopify-api`` executable to make it easy to open up an interactive console to use the API with a shop.
 
-1. Install the ``shopify_cli`` gem.
+1. Install the ``shopify_api_console`` gem.
 
 ```bash
-gem install shopify_cli
+gem install shopify_api_console
 ```
 
 2. Obtain a private API key and password to use with your shop (step 2 in "Getting Started")
 
-3. Use the ``shopify-cli`` script to save the credentials for the shop to quickly log in.
+3. Use the ``shopify-api`` script to save the credentials for the shop to quickly log in.
 
    ```bash
-   shopify-cli add yourshopname
+   shopify-api add yourshopname
    ```
 
    Follow the prompts for the shop domain, API key and password.
@@ -311,13 +311,13 @@ gem install shopify_cli
 4. Start the console for the connection.
 
    ```bash
-   shopify-cli console
+   shopify-api console
    ```
 
 5. To see the full list of commands, type:
 
    ```bash
-   shopify-cli help
+   shopify-api help
    ```
 
 ## GraphQL
@@ -350,7 +350,7 @@ We will release a gem update every time we release a new version of the API. Mos
 If you want access to a newer version without upgrading you can define an api version.
 For example if you wanted to add an `ApiVersion` '2022-03', you would add the following to the initialization of your application:
 ```ruby
-ShopifyAPI::ApiVersion.define_version(ShopifyAPI::ApiVersion::Release.new('2022-03')
+ShopifyAPI::ApiVersion.define_version(ShopifyAPI::ApiVersion::Release.new('2022-03'))
 ```
 Once you have done that you can now set this version in a Sesssion like this:
 
