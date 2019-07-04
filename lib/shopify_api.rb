@@ -9,6 +9,7 @@ require 'shopify_api/limits'
 require 'shopify_api/defined_versions'
 require 'shopify_api/api_version'
 require 'active_resource/json_errors'
+require 'active_resource/collection_ext'
 require 'shopify_api/disable_prefix_check'
 
 module ShopifyAPI
@@ -21,6 +22,7 @@ require 'shopify_api/countable'
 require 'shopify_api/resources'
 require 'shopify_api/session'
 require 'shopify_api/connection'
+require 'shopify_api/pagination_link_headers'
 
 if ShopifyAPI::Base.respond_to?(:connection_class)
   ShopifyAPI::Base.connection_class = ShopifyAPI::Connection
