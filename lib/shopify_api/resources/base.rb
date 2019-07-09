@@ -30,26 +30,13 @@ module ShopifyAPI
 
     class << self
       threadsafe_attribute(:_api_version)
-
-      if ActiveResource::Base.respond_to?(:_headers) && ActiveResource::Base.respond_to?(:_headers_defined?)
-        def headers
-          if _headers_defined?
-            _headers
-          elsif superclass != Object && superclass.headers
-            superclass.headers
-          else
-            _headers ||= {}
-          end
-        end
-      else
-        def headers
-          if defined?(@headers)
-            @headers
-          elsif superclass != Object && superclass.headers
-            superclass.headers
-          else
-            @headers ||= {}
-          end
+      def headers
+        if _headers_defined?
+          _headers
+        elsif superclass != Object && superclass.headers
+          superclass.headers
+        else
+          _headers ||= {}
         end
       end
 
