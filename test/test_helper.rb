@@ -90,7 +90,7 @@ module Test
         method = options.delete(:method) || :get
         api_version = options.delete(:api_version) || ShopifyAPI::ApiVersion.coerce_to_version('2019-01')
         extension = ".#{options.delete(:extension)||'json'}" unless options[:extension]==false
-
+        status = options.delete(:status) || 200
         url = if options.has_key?(:url)
           options[:url]
         else
@@ -98,7 +98,7 @@ module Test
         end
 
         WebMock.stub_request(method, url).to_return(
-          body: body, status: 200, headers: { content_type: "text/#{format}", content_length: 1 }.merge(options)
+          body: body, status: status, headers: { content_type: "text/#{format}", content_length: 1 }.merge(options)
         )
       end
 

@@ -33,9 +33,9 @@ class BaseTest < Test::Unit::TestCase
 
     ShopifyAPI::Base.clear_session
 
-    assert_equal nil, ShopifyAPI::Base.user
-    assert_equal nil, ShopifyAPI::Base.password
-    assert_equal nil, ShopifyAPI::Base.site
+    assert_nil ShopifyAPI::Base.user
+    assert_nil ShopifyAPI::Base.password
+    assert_nil ShopifyAPI::Base.site
   end
 
   test '#clear_session should clear site and headers from Base' do
@@ -92,8 +92,9 @@ class BaseTest < Test::Unit::TestCase
   test "prefix= will forward to resource when the value does not start with admin" do
     session = ShopifyAPI::Session.new(domain: 'shop1.myshopify.com', token: 'token1', api_version: '2019-01')
     ShopifyAPI::Base.activate_session(session)
-
-    TestResource.prefix = 'a/regular/path/'
+    silence_warnings do
+      TestResource.prefix = 'a/regular/path/'
+    end
 
     assert_equal('/admin/api/2019-01/a/regular/path/', TestResource.prefix)
   end
