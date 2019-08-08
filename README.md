@@ -393,7 +393,7 @@ while products.next_page?
 end
 ```
 
-Relative cursor pagination is currently available for all endpoints using the `unstable` API version.
+Relative cursor pagination is currently available for all endpoints using the `2019-10` and later API versions.
 
 ## Using Development Version
 
