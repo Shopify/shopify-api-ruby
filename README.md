@@ -365,6 +365,36 @@ ActiveResource is threadsafe as of version 4.1 (which works with Rails 4.x and a
 
 If you were previously using Shopify's [activeresource fork](https://github.com/shopify/activeresource) then you should remove it and use ActiveResource 4.1.
 
+## Pagination
+
+Pagination can occur in one of two ways.
+
+Page based pagination
+```ruby
+page = 1
+products = ShopifyAPI::Product.find(:all, params: { limit: 50, page: page })
+process_products(products)
+while(products.count == 50)
+  page += 1
+  products = ShopifyAPI::Product.find(:all, params: { limit: 50, page: page })
+  process_products(products)
+end
+```
+
+Page based pagination will be deprecated in the `2019-10` API version, in favor of the second method of pagination:
+
+[Relative cursor based pagination](https://help.shopify.com/en/api/guides/paginated-rest-results)
+```ruby
+products = ShopifyAPI::Product.find(:all, params: { limit: 50 })
+process_products(products)
+while products.next_page?
+  products = products.fetch_next_page
+  process_products(products)
+end
+```
+
+Relative cursor pagination is currently available for all endpoints using the `unstable` API version.
+
 ## Using Development Version
 
 Download the source code and run:
