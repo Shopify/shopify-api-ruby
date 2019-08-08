@@ -87,8 +87,8 @@ class SessionTest < Test::Unit::TestCase
     assert_equal('https://testshop.myshopify.com', @assigned_site.to_s)
     assert_equal('https://fakeshop.myshopify.com', ShopifyAPI::Base.site.to_s)
 
-    assert_equal(ShopifyAPI::ApiVersion::Unstable.new, @assigned_version)
-    assert_equal(ShopifyAPI::ApiVersion::Release.new('2019-01'), ShopifyAPI::Base.api_version)
+    assert_equal(ShopifyAPI::ApiVersion.new(handle: :unstable), @assigned_version)
+    assert_equal(ShopifyAPI::ApiVersion.new(handle: '2019-01'), ShopifyAPI::Base.api_version)
   end
 
   test "#with_session activates the session for the duration of the block" do
@@ -109,8 +109,8 @@ class SessionTest < Test::Unit::TestCase
     assert_equal('https://testshop.myshopify.com', @assigned_site.to_s)
     assert_equal('https://fakeshop.myshopify.com', ShopifyAPI::Base.site.to_s)
 
-    assert_equal(ShopifyAPI::ApiVersion::Unstable.new, @assigned_version)
-    assert_equal(ShopifyAPI::ApiVersion::Release.new('2019-01'), ShopifyAPI::Base.api_version)
+    assert_equal(ShopifyAPI::ApiVersion.new(handle: :unstable), @assigned_version)
+    assert_equal(ShopifyAPI::ApiVersion.new(handle: '2019-01'), ShopifyAPI::Base.api_version)
   end
 
   test "#with_session resets the activated session even if there an exception during the block" do
@@ -128,7 +128,7 @@ class SessionTest < Test::Unit::TestCase
     end
 
     assert_equal('https://fakeshop.myshopify.com', ShopifyAPI::Base.site.to_s)
-    assert_equal(ShopifyAPI::ApiVersion::Release.new('2019-01'), ShopifyAPI::Base.api_version)
+    assert_equal(ShopifyAPI::ApiVersion.new(handle: '2019-01'), ShopifyAPI::Base.api_version)
   end
 
   test "#with_version will adjust the actvated api version for the duration of the block" do
@@ -143,8 +143,8 @@ class SessionTest < Test::Unit::TestCase
     assert_equal('https://fakeshop.myshopify.com', @assigned_site.to_s)
     assert_equal('https://fakeshop.myshopify.com', ShopifyAPI::Base.site.to_s)
 
-    assert_equal(ShopifyAPI::ApiVersion::Unstable.new, @assigned_version)
-    assert_equal(ShopifyAPI::ApiVersion::Release.new('2019-01'), ShopifyAPI::Base.api_version)
+    assert_equal(ShopifyAPI::ApiVersion.new(handle: :unstable), @assigned_version)
+    assert_equal(ShopifyAPI::ApiVersion.new(handle: '2019-01'), ShopifyAPI::Base.api_version)
   end
 
   test "create_permission_url returns correct url with single scope no redirect uri" do
@@ -240,7 +240,7 @@ class SessionTest < Test::Unit::TestCase
   end
 
   test "extra parameters are stored in session" do
-    api_version = ShopifyAPI::ApiVersion::Unstable.new
+    api_version = ShopifyAPI::ApiVersion.new(handle: :unstable)
     fake nil,
       url: "https://testshop.myshopify.com/admin/oauth/access_token",
       method: :post,

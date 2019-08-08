@@ -7,9 +7,9 @@ require 'pry'
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
-require 'shopify_api'
 
 WebMock.disable_net_connect!
+require 'shopify_api'
 
 # setup ShopifyAPI with fake api_key and secret
 module Test
@@ -37,9 +37,8 @@ module Test
           end
         end
 
-        ShopifyAPI::ApiVersion.define_version(ShopifyAPI::ApiVersion::Release.new('2019-01'))
-
         ShopifyAPI::Base.clear_session
+        ShopifyAPI::ApiVersion.define_known_versions
         session = ShopifyAPI::Session.new(
           domain: "https://this-is-my-test-shop.myshopify.com",
           token: "token_test_helper",

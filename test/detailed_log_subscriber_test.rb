@@ -14,7 +14,11 @@ class LogSubscriberTest < Test::Unit::TestCase
     @request_headers = "Headers: {\"Accept\"=>\"application/json\", " \
       "#{@ua_header}, \"X-Shopify-Access-Token\"=>\"access_token\"}"
 
-    ShopifyAPI::ApiVersion.define_version(ShopifyAPI::ApiVersion::Release.new('2019-01'))
+    fake("api_versions",
+      method: :get,
+      status: 200,
+      api_version: ShopifyAPI::ApiVersion.new(handle: :unstable),
+      body: load_fixture('api_versions'))
 
     ShopifyAPI::Base.clear_session
     session = ShopifyAPI::Session.new(
