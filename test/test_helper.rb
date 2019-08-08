@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'minitest/autorun'
-require 'fakeweb'
+require 'webmock/minitest'
+require_relative 'lib/webmock_extensions/last_request'
 require 'mocha/setup'
 require 'pry'
 
@@ -8,7 +9,7 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'shopify_api'
 
-FakeWeb.allow_net_connect = false
+WebMock.disable_net_connect!
 
 # setup ShopifyAPI with fake api_key and secret
 module Test
@@ -52,8 +53,6 @@ class Test::Unit::TestCase < Minitest::Unit::TestCase
   end
 
   def teardown
-    FakeWeb.clean_registry
-
     ShopifyAPI::Base.clear_session
     ShopifyAPI::Base.site = nil
     ShopifyAPI::Base.password = nil
@@ -85,7 +84,7 @@ class Test::Unit::TestCase < Minitest::Unit::TestCase
   end
 
   def assert_request_body(expected)
-    assert_equal expected, FakeWeb.last_request.body
+    assert_equal expected, WebMock.last_request.body
   end
 
   def fake(endpoint, options={})
@@ -101,7 +100,9 @@ class Test::Unit::TestCase < Minitest::Unit::TestCase
       "https://this-is-my-test-shop.myshopify.com#{api_version.construct_api_path("#{endpoint}#{extension}")}"
     end
 
-    FakeWeb.register_uri(method, url, {:body => body, :status => 200, :content_type => "text/#{format}", :content_length => 1}.merge(options))
+    WebMock.stub_request(method, url).to_return(
+      body: body, status: 200, headers: { content_type: "text/#{format}", content_length: 1 }.merge(options)
+    )
   end
 
   def ar_version_before?(version_string)
