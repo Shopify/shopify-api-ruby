@@ -5,6 +5,7 @@ module ShopifyAPI
       define_version(ShopifyAPI::ApiVersion::Unstable.new)
       define_version(ShopifyAPI::ApiVersion::Release.new('2019-04'))
       define_version(ShopifyAPI::ApiVersion::Release.new('2019-07'))
+      define_version(ShopifyAPI::ApiVersion::Release.new('2019-10'))
     end
   end
 end
