@@ -1,34 +1,38 @@
 # frozen_string_literal: true
 module ShopifyAPI
   class ApiVersion
-    class UnknownVersion < StandardError; end
     class InvalidVersion < StandardError; end
 
     extend DefinedVersions
 
     include Comparable
 
-    def self.coerce_to_version(version_or_name)
-      return version_or_name if version_or_name.is_a?(ApiVersion)
+    def self.versions
+      @versions ||= VersionCoercers::GenerateRelease.new
+    end
 
-      @versions ||= {}
-      @versions.fetch(version_or_name.to_s) do
-        raise UnknownVersion, "#{version_or_name} is not in the defined version set: #{@versions.keys.join(', ')}"
+    def self.coercion_mode=(mode)
+      if :defined_only == mode
+        @versions = VersionCoercers::DefinedOnly.new
+      else
+        @versions = VersionCoercers::GenerateRelease.new
       end
     end
 
-    def self.define_version(version)
-      @versions ||= {}
+    def self.coerce_to_version(version_or_name)
+      versions.coerce_to_version(version_or_name)
+    end
 
-      @versions[version.name] = version
+    def self.define_version(version)
+      versions.define_version(version)
     end
 
     def self.clear_defined_versions
-      @versions = {}
+      versions.clear_defined_versions
     end
 
     def self.latest_stable_version
-      @versions.values.select(&:stable?).sort.last
+      versions.known_versions.select(&:stable?).sort.last
     end
 
     def to_s

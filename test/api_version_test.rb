@@ -5,6 +5,7 @@ class ApiVersionTest < Test::Unit::TestCase
   def teardown
     super
     ShopifyAPI::ApiVersion.clear_defined_versions
+    ShopifyAPI::ApiVersion.coercion_mode = :define_on_unknown
     ShopifyAPI::ApiVersion.define_known_versions
   end
 
@@ -27,11 +28,19 @@ class ApiVersionTest < Test::Unit::TestCase
     assert_same(version, ShopifyAPI::ApiVersion.coerce_to_version(version))
   end
 
-  test "coerce_to_version converts a known version into a version object" do
+  test "defined_only coerce_to_version converts a known version into a version object" do
+    with_defined_only_coercion
+    ShopifyAPI::ApiVersion.clear_defined_versions
+
+
     versions = [
       ShopifyAPI::ApiVersion::Unstable.new,
       ShopifyAPI::ApiVersion::Release.new('2019-01'),
     ]
+
+    versions.each do |version|
+      ShopifyAPI::ApiVersion.define_version(version)
+    end
 
     assert_equal(versions, [
       ShopifyAPI::ApiVersion.coerce_to_version('unstable'),
@@ -39,13 +48,16 @@ class ApiVersionTest < Test::Unit::TestCase
     ])
   end
 
-  test "coerce_to_version raises when coercing a string that doesn't match a known version" do
-    assert_raises ShopifyAPI::ApiVersion::UnknownVersion do
+  test "defined_only coerce_to_version raises when coercing a string that doesn't match a known version" do
+    with_defined_only_coercion
+    ShopifyAPI::ApiVersion.clear_defined_versions
+
+    assert_raises ShopifyAPI::VersionCoercers::UnknownVersion do
       ShopifyAPI::ApiVersion.coerce_to_version('made up version')
     end
   end
 
-  test "additional defined versions will also be coerced" do
+  test "defined_only additional defined versions will also be coerced" do
     versions = [
       TestApiVersion.new('my_name'),
       TestApiVersion.new('other_name'),
@@ -59,6 +71,55 @@ class ApiVersionTest < Test::Unit::TestCase
       ShopifyAPI::ApiVersion.coerce_to_version('my_name'),
       ShopifyAPI::ApiVersion.coerce_to_version('other_name'),
     ])
+  end
+
+  test "define_on_unknown coerce_to_version converts any valid version string into a version object" do
+    with_define_on_unknown_coercion
+    ShopifyAPI::ApiVersion.clear_defined_versions
+
+    versions = [
+      ShopifyAPI::ApiVersion::Release.new('2030-02'),
+      ShopifyAPI::ApiVersion::Release.new('2033-02'),
+    ]
+
+    assert_equal(versions, [
+      ShopifyAPI::ApiVersion.coerce_to_version('2030-02'),
+      ShopifyAPI::ApiVersion.coerce_to_version('2033-02'),
+    ])
+  end
+
+  test "define_on_unknown coerce_to_version finds any defined version" do
+    with_define_on_unknown_coercion
+    ShopifyAPI::ApiVersion.clear_defined_versions
+
+    defined_version = TestApiVersion.new('other_name')
+    ShopifyAPI::ApiVersion.define_version(defined_version)
+
+    coerced_version = ShopifyAPI::ApiVersion.coerce_to_version('other_name')
+
+    assert_equal(defined_version, coerced_version)
+  end
+
+  test "define_on_unknown coerce_to_version defines a new version when coercing a string that doesn't match a known version" do
+    with_define_on_unknown_coercion
+    ShopifyAPI::ApiVersion.clear_defined_versions
+
+    undefined_version = ShopifyAPI::ApiVersion::Release.new('2030-01')
+
+    coerced_version = ShopifyAPI::ApiVersion.coerce_to_version('2030-01')
+    second_coerced_version = ShopifyAPI::ApiVersion.coerce_to_version('2030-01')
+
+    assert_equal(undefined_version, coerced_version)
+    assert_same(second_coerced_version, coerced_version)
+  end
+
+  test "define_on_unknown coerce_to_version fails for unknown version that is not valid release version name" do
+    with_define_on_unknown_coercion
+    ShopifyAPI::ApiVersion.clear_defined_versions
+
+    assert_raises ShopifyAPI::ApiVersion::InvalidVersion do
+      ShopifyAPI::ApiVersion.coerce_to_version('this is not right')
+    end
   end
 
   test 'allows a release version with the correct format format to be created' do
@@ -134,6 +195,14 @@ class ApiVersionTest < Test::Unit::TestCase
       ShopifyAPI::ApiVersion::Release.new('2039-02'),
       ShopifyAPI::ApiVersion.latest_stable_version
     )
+  end
+
+  def with_defined_only_coercion
+    ShopifyAPI::ApiVersion.coercion_mode = :defined_only
+  end
+
+  def with_define_on_unknown_coercion
+    ShopifyAPI::ApiVersion.coercion_mode = :define_on_unknown
   end
 
   class TestApiVersion < ShopifyAPI::ApiVersion
