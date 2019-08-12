@@ -13,41 +13,63 @@ module ShopifyAPI
     UNSTABLE_HANDLE = 'unstable'
     UNSTABLE_AS_DATE = Time.utc(3000, 1, 1)
     API_PREFIX = '/admin/api/'
+    COERSION_MODES = [:predefined_only, :define_on_unknown].freeze
 
     class << self
       attr_reader :versions
 
+      def coercion_mode
+        @coercion_mode ||= :define_on_unknown
+      end
+
+      def coercion_mode=(mode)
+        raise ArgumentError, "Mode must be one of #{COERSION_MODES}" unless COERSION_MODES.include?(mode)
+        sanitize_known_versions if mode == :predefined_only
+        @coercion_mode = mode
+      end
+
       def coerce_to_version(version_or_handle)
         return version_or_handle if version_or_handle.is_a?(ApiVersion)
-        if @versions.nil?
-          warn "[API VERSION WARNING] Known API Version set is empty. Initializing unvalidated version from handle."
-          return ApiVersion.new(handle: version_or_handle)
-        end
+        handle = version_or_handle.to_s
 
-        @versions[version_or_handle.to_s].tap do |api_version|
-          unless api_version
-            raise ApiVersion::UnknownVersion, "UnknownVersion API version specified, `#{version_or_handle}`. \n Versions available: #{@versions.keys}"
+        @versions ||= {}
+        @versions.fetch(handle) do
+          if @coercion_mode == :predefined_only
+            error_msg = if @versions.empty?
+              "No versions defined. You must call `ApiVersion.define_known_versions` first."
+            else
+              "`#{handle}` is not in the defined version set. Available versions: #{@versions.keys}"
+            end
+            raise UnknownVersion, "ApiVersion.coercion_mode is set to `:predefined_only`. #{error_msg}"
+          else
+            @versions[handle] = ApiVersion.new(handle: version_or_handle)
           end
         end
       end
 
       def define_known_versions
         @versions = Meta.admin_versions.map { |version| [version.handle, version] }.to_h
-      rescue ActiveResource::ConnectionError => e
-        warn "[API VERSION WARNING] Could not fetch Admin API versions."
-        warn "[API VERSION WARNING] #{e.message}"
-        @versions = nil
       end
 
       def clear_defined_versions
-        @versions = nil
+        @versions = {}
       end
 
       def latest_stable_version
         warn(
           '[DEPRECATED] ShopifyAPI::ApiVersion.latest_stable_version is deprecated and will be removed in a future version.'
         )
-        @versions.values.find(&:latest_supported?)
+        versions.values.find(&:latest_supported?)
+      end
+
+      private
+
+      def sanitize_known_versions
+        return if @versions.nil?
+        @versions = @versions.keys.map do |handle|
+          next unless @versions[handle].persisted?
+          [handle, @versions[handle]]
+        end.compact.to_h
       end
     end
 

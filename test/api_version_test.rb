@@ -19,17 +19,33 @@ class ApiVersionTest < Test::Unit::TestCase
     ])
   end
 
-  test "coerce_to_version raises when coercing a string that doesn't match a known version" do
-    refute ShopifyAPI::ApiVersion.versions.nil?
-    assert_raises ShopifyAPI::ApiVersion::UnknownVersion do
+  test "coerce_to_version removes unpersisted versions from version set if mode is set to :predefined_only" do
+    ShopifyAPI::ApiVersion.coercion_mode = :define_on_unknown
+    assert ShopifyAPI::ApiVersion.versions.values.all?(&:persisted?)
+    assert_equal 5, ShopifyAPI::ApiVersion.versions.size
+
+    ShopifyAPI::ApiVersion.coerce_to_version('2019-30')
+    refute ShopifyAPI::ApiVersion.versions.values.all?(&:persisted?)
+    assert_equal 6, ShopifyAPI::ApiVersion.versions.size
+    ShopifyAPI::ApiVersion.coercion_mode = :predefined_only
+
+    assert ShopifyAPI::ApiVersion.versions.values.all?(&:persisted?)
+    assert_equal 5, ShopifyAPI::ApiVersion.versions.size
+  end
+
+  test "coerce_to_version does not raise when coercing a string if no versions are defined when coercion_mode is :define_on_unknown" do
+    ShopifyAPI::ApiVersion.clear_defined_versions
+    ShopifyAPI::ApiVersion.coercion_mode = :define_on_unknown
+    assert_equal :define_on_unknown, ShopifyAPI::ApiVersion.coercion_mode
+    assert_nothing_raised do
       ShopifyAPI::ApiVersion.coerce_to_version('made up version')
     end
   end
 
-  test "coerce_to_version does not raise when coercing a string if no versions are defined" do
-    ShopifyAPI::ApiVersion.clear_defined_versions
-    assert_nil ShopifyAPI::ApiVersion.versions
-    assert_nothing_raised  do
+  test "coerce_to_version does raise when coercing a string if no versions are defined when coercion_mode is :predefined_only" do
+    refute ShopifyAPI::ApiVersion.versions['made up version']
+    ShopifyAPI::ApiVersion.coercion_mode = :predefined_only
+    assert_raises ShopifyAPI::ApiVersion::UnknownVersion do
       ShopifyAPI::ApiVersion.coerce_to_version('made up version')
     end
   end
@@ -77,20 +93,22 @@ class ApiVersionTest < Test::Unit::TestCase
         "2019-01" => ShopifyAPI::ApiVersion.new(handle: '2019-01', supported: true, latest_supported: false),
         "2019-04" => ShopifyAPI::ApiVersion.new(handle: '2019-04', supported: true, latest_supported: false),
         "2019-07" => ShopifyAPI::ApiVersion.new(handle: '2019-07', supported: true, latest_supported: true),
-        "2019-10" => ShopifyAPI::ApiVersion.new(handle: '2019-10', supported: true, latest_supported: false),
-        "unstable" => ShopifyAPI::ApiVersion.new(handle: 'unstable', supported: true, latest_supported: false),
+        "2019-10" => ShopifyAPI::ApiVersion.new(handle: '2019-10', supported: false, latest_supported: false),
+        "unstable" => ShopifyAPI::ApiVersion.new(handle: 'unstable', supported: false, latest_supported: false),
       }
     )
+    silence_warnings do
 
-    refute_equal(
-      ShopifyAPI::ApiVersion.new(handle: '2019-01'),
-      ShopifyAPI::ApiVersion.latest_stable_version
-    )
+      refute_equal(
+        ShopifyAPI::ApiVersion.new(handle: '2019-01'),
+        ShopifyAPI::ApiVersion.latest_stable_version
+      )
 
-    assert_equal(
-      ShopifyAPI::ApiVersion.new(handle: '2019-07'),
-      ShopifyAPI::ApiVersion.latest_stable_version
-    )
+      assert_equal(
+        ShopifyAPI::ApiVersion.new(handle: '2019-07'),
+        ShopifyAPI::ApiVersion.latest_stable_version
+      )
+    end
   end
 
   test "NullVersion raises ApiVersionNotSetError" do

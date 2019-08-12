@@ -14,13 +14,14 @@ class LogSubscriberTest < Test::Unit::TestCase
     @request_headers = "Headers: {\"Accept\"=>\"application/json\", " \
       "#{@ua_header}, \"X-Shopify-Access-Token\"=>\"access_token\"}"
 
-    fake("api_versions",
+    ShopifyAPI::Base.clear_session
+    fake("apis",
+      url: "https://app.shopify.com/services/apis.json",
       method: :get,
       status: 200,
-      api_version: ShopifyAPI::ApiVersion.new(handle: :unstable),
-      body: load_fixture('api_versions'))
-
-    ShopifyAPI::Base.clear_session
+      api_version: :stub,
+      body: load_fixture('apis'))
+    ShopifyAPI::ApiVersion.define_known_versions
     session = ShopifyAPI::Session.new(
       domain: "https://this-is-my-test-shop.myshopify.com",
       token: "access_token",
@@ -31,6 +32,12 @@ class LogSubscriberTest < Test::Unit::TestCase
 
     ActiveResource::LogSubscriber.attach_to :active_resource
     ActiveResource::DetailedLogSubscriber.attach_to :active_resource_detailed
+  end
+
+  def teardown
+    super
+    ShopifyAPI::ApiVersion.clear_defined_versions
+    ShopifyAPI::ApiVersion.coercion_mode = :predefined_only
   end
 
   def set_logger(logger)
