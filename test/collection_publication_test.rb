@@ -35,6 +35,6 @@ class CollectionPublicationTest < Test::Unit::TestCase
       },
     }.to_json
 
-    assert_equal expected_body, FakeWeb.last_request.body
+    assert_equal expected_body, WebMock.last_request.body
   end
 end

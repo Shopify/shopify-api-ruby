@@ -30,7 +30,7 @@ class CustomerTest < Test::Unit::TestCase
 
     customer_invite_response = @customer.send_invite
 
-    assert_equal '{"customer_invite":{}}', FakeWeb.last_request.body
+    assert_equal '{"customer_invite":{}}', WebMock.last_request.body
     assert_kind_of ShopifyAPI::CustomerInvite, customer_invite_response
     assert_equal customer_invite['customer_invite']['to'], customer_invite_response.to
   end
@@ -43,7 +43,7 @@ class CustomerTest < Test::Unit::TestCase
 
     customer_invite_response = @customer.send_invite(ShopifyAPI::CustomerInvite.new(customer_invite['customer_invite']))
 
-    assert_equal customer_invite, ActiveSupport::JSON.decode(FakeWeb.last_request.body)
+    assert_equal customer_invite, ActiveSupport::JSON.decode(WebMock.last_request.body)
     assert_kind_of ShopifyAPI::CustomerInvite, customer_invite_response
     assert_equal customer_invite['customer_invite']['to'], customer_invite_response.to
   end

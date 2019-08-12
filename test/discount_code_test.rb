@@ -30,7 +30,7 @@ class DiscountCodeTest < Test::Unit::TestCase
     discount_code.code = "SUMMERSALE10"
     discount_code.save
 
-    assert_equal '{"discount_code":{"code":"SUMMERSALE10"}}', FakeWeb.last_request.body
+    assert_equal '{"discount_code":{"code":"SUMMERSALE10"}}', WebMock.last_request.body
   end
 
   def test_update_discount_code
@@ -41,7 +41,7 @@ class DiscountCodeTest < Test::Unit::TestCase
     fake 'price_rules/102586120/discount_codes/1002091923', method: :put, status: 200, body: ActiveSupport::JSON.encode(discount_code_response)
 
     @discount_code.save
-    
+
     assert_equal discount_code_response['discount_code']['code'], @discount_code.code
   end
 

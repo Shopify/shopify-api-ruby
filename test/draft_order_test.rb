@@ -39,7 +39,7 @@ class DraftOrderTest < Test::Unit::TestCase
 
     draft_order = ShopifyAPI::DraftOrder.create(line_items: [{ quantity: 1, variant_id: 39072856 }])
 
-    assert_equal '{"draft_order":{"line_items":[{"quantity":1,"variant_id":39072856}]}}', FakeWeb.last_request.body
+    assert_equal '{"draft_order":{"line_items":[{"quantity":1,"variant_id":39072856}]}}', WebMock.last_request.body
     assert_equal 39072856, draft_order.line_items.first.variant_id
   end
 
@@ -69,7 +69,7 @@ class DraftOrderTest < Test::Unit::TestCase
 
     draft_order_invoice_response = @draft_order.send_invoice
 
-    assert_equal '{"draft_order_invoice":{}}', FakeWeb.last_request.body
+    assert_equal '{"draft_order_invoice":{}}', WebMock.last_request.body
     assert_kind_of ShopifyAPI::DraftOrderInvoice, draft_order_invoice_response
     assert_equal draft_order_invoice['draft_order_invoice']['to'], draft_order_invoice_response.to
   end
@@ -81,7 +81,7 @@ class DraftOrderTest < Test::Unit::TestCase
 
     draft_order_invoice_response = @draft_order.send_invoice(ShopifyAPI::DraftOrderInvoice.new(draft_order_invoice['draft_order_invoice']))
 
-    assert_equal draft_order_invoice, ActiveSupport::JSON.decode(FakeWeb.last_request.body)
+    assert_equal draft_order_invoice, ActiveSupport::JSON.decode(WebMock.last_request.body)
     assert_kind_of ShopifyAPI::DraftOrderInvoice, draft_order_invoice_response
     assert_equal draft_order_invoice['draft_order_invoice']['to'], draft_order_invoice_response.to
   end
@@ -96,7 +96,7 @@ class DraftOrderTest < Test::Unit::TestCase
 
     field = @draft_order.add_metafield(ShopifyAPI::Metafield.new(namespace: 'contact', key: 'email', value: '123@example.com', value_type: 'string'))
 
-    assert_equal ActiveSupport::JSON.decode('{"metafield":{"namespace":"contact","key":"email","value":"123@example.com","value_type":"string"}}'), ActiveSupport::JSON.decode(FakeWeb.last_request.body)
+    assert_equal ActiveSupport::JSON.decode('{"metafield":{"namespace":"contact","key":"email","value":"123@example.com","value_type":"string"}}'), ActiveSupport::JSON.decode(WebMock.last_request.body)
     assert !field.new_record?
     assert_equal 'contact', field.namespace
     assert_equal 'email', field.key
