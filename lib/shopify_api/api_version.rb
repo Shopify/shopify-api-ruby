@@ -2,37 +2,34 @@
 module ShopifyAPI
   class ApiVersion
     class InvalidVersion < StandardError; end
-
-    extend DefinedVersions
-
     include Comparable
 
-    def self.versions
-      @versions ||= VersionCoercers::GenerateRelease.new
+    def self.__coercer
+      @coercer ||= VersionCoercers::GenerateRelease.new
     end
 
-    def self.coercion_mode=(mode)
-      if :defined_only == mode
-        @versions = VersionCoercers::DefinedOnly.new
-      else
-        @versions = VersionCoercers::GenerateRelease.new
-      end
+    def self.coercer=(version_coercer)
+      @coercer = version_coercer
     end
 
     def self.coerce_to_version(version_or_name)
-      versions.coerce_to_version(version_or_name)
+      __coercer.coerce_to_version(version_or_name)
     end
 
     def self.define_version(version)
-      versions.define_version(version)
+      warn(
+        '[DEPRECATED] ShopifyAPI::ApiVersion.define_version is deprecated ' \
+        'call define_version on the Coercer you assigned'
+      )
+      __coercer.define_version(version)
     end
 
     def self.clear_defined_versions
-      versions.clear_defined_versions
-    end
-
-    def self.latest_stable_version
-      versions.known_versions.select(&:stable?).sort.last
+      warn(
+        '[DEPRECATED] ShopifyAPI::ApiVersion.clear_defined_versions is deprecated ' \
+        'use ShopifyAPI::ApiVersion.versions.clear_defined_versions instead.'
+      )
+      __coercer.clear_defined_versions
     end
 
     def to_s

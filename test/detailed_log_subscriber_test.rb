@@ -14,8 +14,6 @@ class LogSubscriberTest < Test::Unit::TestCase
     @request_headers = "Headers: {\"Accept\"=>\"application/json\", " \
       "#{@ua_header}, \"X-Shopify-Access-Token\"=>\"access_token\"}"
 
-    ShopifyAPI::ApiVersion.define_version(ShopifyAPI::ApiVersion::Release.new('2019-01'))
-
     ShopifyAPI::Base.clear_session
     session = ShopifyAPI::Session.new(
       domain: "https://this-is-my-test-shop.myshopify.com",

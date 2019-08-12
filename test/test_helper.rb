@@ -37,8 +37,6 @@ module Test
           end
         end
 
-        ShopifyAPI::ApiVersion.define_version(ShopifyAPI::ApiVersion::Release.new('2019-01'))
-
         ShopifyAPI::Base.clear_session
         session = ShopifyAPI::Session.new(
           domain: "https://this-is-my-test-shop.myshopify.com",
@@ -55,8 +53,7 @@ module Test
         ShopifyAPI::Base.password = nil
         ShopifyAPI::Base.user = nil
 
-        ShopifyAPI::ApiVersion.clear_defined_versions
-        ShopifyAPI::ApiVersion.define_known_versions
+        ShopifyAPI::ApiVersion.coercer = ShopifyAPI::VersionCoercers::GenerateRelease.new
       end
 
       # Custom Assertions

@@ -5,7 +5,6 @@ require 'digest/md5'
 require 'base64'
 require 'active_resource/detailed_log_subscriber'
 require 'shopify_api/limits'
-require 'shopify_api/defined_versions'
 require 'shopify_api/version_coercers'
 require 'shopify_api/version_coercers/base'
 require 'shopify_api/version_coercers/defined_only'
@@ -32,5 +31,3 @@ if ShopifyAPI::Base.respond_to?(:connection_class)
 else
   require 'active_resource/connection_ext'
 end
-
-ShopifyAPI::ApiVersion.define_known_versions
