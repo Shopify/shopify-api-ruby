@@ -11,6 +11,8 @@ module ShopifyAPI
                                   "ActiveResource/#{ActiveResource::VERSION::STRING}",
                                   "Ruby/#{RUBY_VERSION}"].join(' ')
 
+    self.collection_parser = ShopifyAPI::Collection
+
     def encode(options = {})
       same = dup
       same.attributes = {self.class.element_name => same.attributes} if self.class.format.extension == 'json'
