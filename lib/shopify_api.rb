@@ -28,5 +28,3 @@ if ShopifyAPI::Base.respond_to?(:connection_class)
 else
   require 'active_resource/connection_ext'
 end
-
-ShopifyAPI::ApiVersion.define_known_versions

@@ -55,7 +55,7 @@ module Test
         ShopifyAPI::Base.user = nil
 
         ShopifyAPI::ApiVersion.clear_defined_versions
-        ShopifyAPI::ApiVersion.define_known_versions
+        ShopifyAPI::ApiVersion.coercion_mode = :predefined_only
       end
 
       # Custom Assertions
