@@ -1,5 +1,4 @@
 $:.unshift File.dirname(__FILE__)
-
 require 'active_resource'
 require 'active_support/core_ext/class/attribute_accessors'
 require 'digest/md5'
@@ -9,7 +8,7 @@ require 'shopify_api/limits'
 require 'shopify_api/defined_versions'
 require 'shopify_api/api_version'
 require 'active_resource/json_errors'
-require 'active_resource/collection_ext'
+require 'shopify_api/collection'
 require 'shopify_api/disable_prefix_check'
 
 module ShopifyAPI
