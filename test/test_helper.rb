@@ -38,6 +38,14 @@ module Test
         end
 
         ShopifyAPI::Base.clear_session
+
+        fake("apis",
+              url: "https://app.shopify.com/services/apis.json",
+              method: :get,
+              status: 200,
+              api_version: :stub,
+              body: load_fixture('apis'))
+
         ShopifyAPI::ApiVersion.define_known_versions
         session = ShopifyAPI::Session.new(
           domain: "https://this-is-my-test-shop.myshopify.com",

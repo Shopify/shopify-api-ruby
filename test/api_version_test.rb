@@ -97,16 +97,18 @@ class ApiVersionTest < Test::Unit::TestCase
         "unstable" => ShopifyAPI::ApiVersion.new(handle: 'unstable', supported: false, latest_supported: false),
       }
     )
+    silence_warnings do
 
-    refute_equal(
-      ShopifyAPI::ApiVersion.new(handle: '2019-01'),
-      ShopifyAPI::ApiVersion.latest_stable_version
-    )
+      refute_equal(
+        ShopifyAPI::ApiVersion.new(handle: '2019-01'),
+        ShopifyAPI::ApiVersion.latest_stable_version
+      )
 
-    assert_equal(
-      ShopifyAPI::ApiVersion.new(handle: '2019-07'),
-      ShopifyAPI::ApiVersion.latest_stable_version
-    )
+      assert_equal(
+        ShopifyAPI::ApiVersion.new(handle: '2019-07'),
+        ShopifyAPI::ApiVersion.latest_stable_version
+      )
+    end
   end
 
   test "handle_to_date converts a version handle to a date" do
