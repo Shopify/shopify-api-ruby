@@ -344,20 +344,36 @@ result = client.query(SHOP_NAME_QUERY)
 result.data.shop.name
 ```
 
-## Adding additional API versions
-We will release a gem update every time we release a new version of the API. Most of the time upgrading the gem will be all you need to do.
+## API versions
+Default setup for ShopifyApi will be support any string as an api version that is 'unstable' or matches the format 'YYYY-MM'
 
-If you want access to a newer version without upgrading you can define an api version.
-For example if you wanted to add an `ApiVersion` '2022-03', you would add the following to the initialization of your application:
+
+### Stricter API version usage
+You have an option of only using api versions that you define.  This can be helpful to ensure you have stopped using older versions that you app no longer wants to rely on.
+
+To make use of this coercion option, add the following to initializing ShopifyApi
+
 ```ruby
-ShopifyAPI::ApiVersion.define_version(ShopifyAPI::ApiVersion::Release.new('2022-03'))
+coercer = ShopifyAPI::VersionCoercers::DefinedOnly.new
+coercer.define_version(ShopifyAPI::ApiVersion::Release.new('2019-07')
+coercer.define_version(ShopifyAPI::ApiVersion::Unstable.new
+
+ShopifyAPI::ApiVersion.coercer = coercer
 ```
-Once you have done that you can now set this version in a Sesssion like this:
+
+Once you have done that, any use of an undefined version will raise a `ShopifyAPI::VersionCoercers::UnknownVersion` error.
 
 ```ruby
-ShopifyAPI::Session.new(domain: domain, token: token, api_version: '2022-03')
+ShopifyAPI::Session.new(domain: domain, token: token, api_version: '2019-04')
+# ShopifyAPI::VersionCoercers::UnknownVersion
 ```
 
+Defined version will work the same as the default setup.
+
+```ruby
+ShopifyAPI::Session.new(domain: domain, token: token, api_version: '2019-07')
+ShopifyAPI::Session.new(domain: domain, token: token, api_version: 'stable')
+```
 
 ## Threadsafety
 
