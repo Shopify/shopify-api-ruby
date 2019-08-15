@@ -158,9 +158,16 @@ class BaseTest < Test::Unit::TestCase
     assert_equal 2, ShopifyAPI::Shop.current.id
   end
 
-  test "#api_version should set ApiVersion" do
+  test "#api_version= should set ApiVersion" do
     ShopifyAPI::Base.api_version = '2019-04'
     assert_equal '2019-04', ShopifyAPI::Base.api_version.to_s
+  end
+
+  test "#api_version raises ApiVersionNotSetError if no version is set." do
+    ShopifyAPI::Base.api_version = nil
+    assert_raises(ShopifyAPI::Base::ApiVersionNotSetError) do
+      ShopifyAPI::Base.api_version
+    end
   end
 
   def clear_header(header)

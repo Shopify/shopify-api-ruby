@@ -3,6 +3,7 @@ require 'shopify_api/version'
 module ShopifyAPI
   class Base < ActiveResource::Base
     class InvalidSessionError < StandardError; end
+    class ApiVersionNotSetError < StandardError; end
     extend Countable
 
     self.timeout = 90
@@ -58,11 +59,13 @@ module ShopifyAPI
       end
 
       def api_version
-        if _api_version_defined?
+        api_version = if _api_version_defined?
           _api_version
         elsif superclass != Object && superclass.site
           superclass.api_version.dup.freeze
         end
+        raise ApiVersionNotSetError, "You must set ShopifyAPI::Base.api_version before making a request." unless api_version
+        api_version
       end
 
       def api_version=(version)
