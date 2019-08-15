@@ -1,12 +1,9 @@
 # frozen_string_literal: true
 module ShopifyAPI
-  class ApiVersion < ActiveResource::Base
+  class ApiVersion
     class UnknownVersion < StandardError; end
     class InvalidVersion < StandardError; end
     include Comparable
-
-    self.site = "https://app.shopify.com/services/"
-    self.primary_key = :handle
 
     HANDLE_FORMAT = /^\d{4}-\d{2}$/.freeze
     UNSTABLE_HANDLE = 'unstable'
@@ -41,13 +38,13 @@ module ShopifyAPI
             end
             raise UnknownVersion, "ApiVersion.coercion_mode is set to `:predefined_only`. #{error_msg}"
           else
-            @versions[handle] = ApiVersion.new(handle: version_or_handle)
+            @versions[handle] = ApiVersion.new(handle: handle)
           end
         end
       end
 
       def define_known_versions
-        @versions = Meta.admin_versions.map { |version| [version.handle, version] }.to_h
+        @versions = Meta.admin_versions.map { |version| [version.handle, ApiVersion.new(version.attributes, true)] }.to_h
       end
 
       def clear_defined_versions
@@ -66,22 +63,37 @@ module ShopifyAPI
       def sanitize_known_versions
         return if @versions.nil?
         @versions = @versions.keys.map do |handle|
-          next unless @versions[handle].persisted?
+          next unless @versions[handle].verified?
           [handle, @versions[handle]]
         end.compact.to_h
       end
     end
 
-    def initialize(attributes = {}, persisted = false)
-      super
-      @attributes['handle'] = @attributes['handle'].to_s
-      @attributes['display_name'] = @attributes['handle'].to_s unless @attributes.key?('display_name')
-      @attributes['supported'] = false unless @attributes.key?('supported')
-      @attributes['latest_supported'] = false unless @attributes.key?('latest_supported')
+    attr_reader :handle, :display_name, :supported, :latest_supported, :verified
+
+    def initialize(attributes = {}, verified = false)
+      attributes = ActiveSupport::HashWithIndifferentAccess.new(attributes)
+      @handle = attributes[:handle].to_s
+      @display_name = attributes.fetch(:display_name, attributes[:handle].to_s)
+      @supported = attributes.fetch(:supported, false)
+      @latest_supported = attributes.fetch(:latest_supported, false)
+      @verified = verified
     end
 
     def to_s
       handle
+    end
+
+    def latest_supported?
+      latest_supported
+    end
+
+    def supported?
+      supported
+    end
+
+    def verified?
+      verified
     end
 
     def <=>(other)

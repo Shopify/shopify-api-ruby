@@ -19,17 +19,17 @@ class ApiVersionTest < Test::Unit::TestCase
     ])
   end
 
-  test "coerce_to_version removes unpersisted versions from version set if mode is set to :predefined_only" do
+  test "coerce_to_version removes unverified versions from version set if mode is set to :predefined_only" do
     ShopifyAPI::ApiVersion.coercion_mode = :define_on_unknown
-    assert ShopifyAPI::ApiVersion.versions.values.all?(&:persisted?)
+    assert ShopifyAPI::ApiVersion.versions.values.all?(&:verified?)
     assert_equal 5, ShopifyAPI::ApiVersion.versions.size
 
     ShopifyAPI::ApiVersion.coerce_to_version('2019-30')
-    refute ShopifyAPI::ApiVersion.versions.values.all?(&:persisted?)
+    refute ShopifyAPI::ApiVersion.versions.values.all?(&:verified?)
     assert_equal 6, ShopifyAPI::ApiVersion.versions.size
     ShopifyAPI::ApiVersion.coercion_mode = :predefined_only
 
-    assert ShopifyAPI::ApiVersion.versions.values.all?(&:persisted?)
+    assert ShopifyAPI::ApiVersion.versions.values.all?(&:verified?)
     assert_equal 5, ShopifyAPI::ApiVersion.versions.size
   end
 

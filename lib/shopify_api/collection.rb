@@ -29,7 +29,7 @@ module ShopifyAPI
 
       private
 
-      AVAILABLE_IN_VERSION = ShopifyAPI::ApiVersion.coerce_to_version('2019-10')
+      AVAILABLE_IN_VERSION = ShopifyAPI::ApiVersion.new(handle:'2019-10')
 
       def fetch_page(url_params)
         ensure_available
