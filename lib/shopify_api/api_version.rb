@@ -12,41 +12,32 @@ module ShopifyAPI
     COERSION_MODES = [:predefined_only, :define_on_unknown].freeze
 
     class << self
-      attr_reader :versions
+      attr_reader :coercion_mode
 
-      def coercion_mode
-        @coercion_mode ||= :define_on_unknown
+      def versions
+        @versions ||= @coercer.known_versions
+      end
+
+      def coercer
+        @coercer ||= VersionCoercers::GenerateVersion.new
       end
 
       def coercion_mode=(mode)
         raise ArgumentError, "Mode must be one of #{COERSION_MODES}" unless COERSION_MODES.include?(mode)
-        sanitize_known_versions if mode == :predefined_only
         @coercion_mode = mode
-      end
-
-      def coerce_to_version(version_or_handle)
-        return version_or_handle if version_or_handle.is_a?(ApiVersion)
-        handle = version_or_handle.to_s
-
-        @versions ||= {}
-        @versions.fetch(handle) do
-          if @coercion_mode == :predefined_only
-            error_msg = if @versions.empty?
-              "No versions defined. You must call `ApiVersion.fetch_known_versions` first."
-            else
-              "`#{handle}` is not in the defined version set. Available versions: #{@versions.keys}"
-            end
-            raise UnknownVersion, "ApiVersion.coercion_mode is set to `:predefined_only`. #{error_msg}"
-          else
-            @versions[handle] = ApiVersion.new(handle: handle)
-          end
+        if :predefined_only == mode
+          coercer = VersionCoercers::DefinedOnly.new
+        else
+          coercer = VersionCoercers::GenerateVersion.new
         end
       end
 
+      def coerce_to_version(version_or_handle)
+        coercer.coerce_to_version(version_or_handle)
+      end
+
       def fetch_known_versions
-        @versions = Meta.admin_versions.map do |version|
-          [version.handle, ApiVersion.new(version.attributes.merge(verified: version.persisted?))]
-        end.to_h
+        coercer.fetch_known_versions
       end
 
       def define_known_versions
@@ -58,7 +49,7 @@ module ShopifyAPI
       end
 
       def clear_known_versions
-        @versions = {}
+        coercer.clear_known_versions
       end
 
       def clear_defined_versions
@@ -75,16 +66,6 @@ module ShopifyAPI
           '[DEPRECATED] ShopifyAPI::ApiVersion.latest_stable_version is deprecated and will be removed in a future version.'
         )
         versions.values.find(&:latest_supported?)
-      end
-
-      private
-
-      def sanitize_known_versions
-        return if @versions.nil?
-        @versions = @versions.keys.map do |handle|
-          next unless @versions[handle].verified?
-          [handle, @versions[handle]]
-        end.compact.to_h
       end
     end
 
