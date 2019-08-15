@@ -136,6 +136,12 @@ class ApiVersionTest < Test::Unit::TestCase
     )
   end
 
+  test "NullVersion raises ApiVersionNotSetError for any method call" do
+    assert_raises(ShopifyAPI::ApiVersion::ApiVersionNotSetError) do
+      ShopifyAPI::ApiVersion::NullVersion.anything
+    end
+  end
+
   class TestApiVersion < ShopifyAPI::ApiVersion
     def initialize(name)
       @version_name = name
