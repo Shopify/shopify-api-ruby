@@ -4,7 +4,7 @@ class PaginationTest < Test::Unit::TestCase
   def setup
     super
 
-    @version = ShopifyAPI::ApiVersion.coerce_to_version('2019-10')
+    @version = ShopifyAPI::ApiVersion.find_version('2019-10')
     ShopifyAPI::Base.api_version = @version.to_s
     @next_page_info = "eyJkaXJlY3Rpb24iOiJuZXh0IiwibGFzdF9pZCI6NDQwMDg5NDIzLCJsYXN0X3ZhbHVlIjoiNDQwMDg5NDIzIn0%3D"
     @previous_page_info = "eyJsYXN0X2lkIjoxMDg4MjgzMDksImxhc3RfdmFsdWUiOiIxMDg4MjgzMDkiLCJkaXJlY3Rpb24iOiJuZXh0In0%3D"
@@ -131,7 +131,7 @@ class PaginationTest < Test::Unit::TestCase
   end
 
   test "raises on an older API version" do
-    version = ShopifyAPI::ApiVersion.coerce_to_version('2019-04')
+    version = ShopifyAPI::ApiVersion.find_version('2019-04')
     ShopifyAPI::Base.api_version = version.to_s
 
     fake 'orders', :method => :get, :status => 200, api_version: version, :body => load_fixture('orders')
@@ -143,7 +143,7 @@ class PaginationTest < Test::Unit::TestCase
   end
 
   test "raises on 2019-07 API version for models that don't support new pagination yet" do
-    version = ShopifyAPI::ApiVersion::Release.new('2019-07')
+    version = ShopifyAPI::ApiVersion.find_version('2019-07')
     ShopifyAPI::Base.api_version = version.to_s
 
     fake 'orders', :method => :get, :status => 200, api_version: version, :body => load_fixture('orders')
@@ -155,7 +155,7 @@ class PaginationTest < Test::Unit::TestCase
   end
 
   test "new pagination works on 2019-07 API version for select models" do
-    version = ShopifyAPI::ApiVersion::Release.new('2019-07')
+    version = ShopifyAPI::ApiVersion.find_version('2019-07')
     ShopifyAPI::Base.api_version = version.to_s
 
     fake 'events', :method => :get, :status => 200, api_version: version, :body => load_fixture('events')
@@ -166,7 +166,7 @@ class PaginationTest < Test::Unit::TestCase
   end
 
   test "does not raise on the unstable version" do
-    version = ShopifyAPI::ApiVersion.coerce_to_version('unstable')
+    version = ShopifyAPI::ApiVersion.find_version('unstable')
     ShopifyAPI::Base.api_version = version.to_s
     @next_link_header = "<https://this-is-my-test-shop.myshopify.com/admin/api/unstable/orders.json?page_info=#{@next_page_info}>; rel=\"next\""
 

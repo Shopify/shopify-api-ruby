@@ -63,7 +63,7 @@ module Test
         ShopifyAPI::Base.user = nil
 
         ShopifyAPI::ApiVersion.clear_known_versions
-        ShopifyAPI::ApiVersion.coercion_mode = :predefined_only
+        ShopifyAPI::ApiVersion.version_lookup_mode = :raise_on_unknown
       end
 
       # Custom Assertions
@@ -95,7 +95,7 @@ module Test
         body   = options.has_key?(:body) ? options.delete(:body) : load_fixture(endpoint)
         format = options.delete(:format) || :json
         method = options.delete(:method) || :get
-        api_version = options.delete(:api_version) || ShopifyAPI::ApiVersion.coerce_to_version('2019-01')
+        api_version = options.delete(:api_version) || ShopifyAPI::ApiVersion.find_version('2019-01')
         extension = ".#{options.delete(:extension)||'json'}" unless options[:extension]==false
         status = options.delete(:status) || 200
         url = if options.has_key?(:url)

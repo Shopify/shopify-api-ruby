@@ -2,51 +2,51 @@
 require 'test_helper'
 
 class ApiVersionTest < Test::Unit::TestCase
-  test "coerce_to_version returns any version object given" do
+  test "find_version returns any version object given" do
     version = ShopifyAPI::ApiVersion.new(handle: :unstable)
-    assert_same(version, ShopifyAPI::ApiVersion.coerce_to_version(version))
+    assert_same(version, ShopifyAPI::ApiVersion.find_version(version))
   end
 
-  test "coerce_to_version converts a known version into a version object" do
+  test "find_version converts a known version into a version object" do
     versions = [
       ShopifyAPI::ApiVersion.new(handle: :unstable),
       ShopifyAPI::ApiVersion.new(handle: '2019-01'),
     ]
 
     assert_equal(versions, [
-      ShopifyAPI::ApiVersion.coerce_to_version('unstable'),
-      ShopifyAPI::ApiVersion.coerce_to_version('2019-01'),
+      ShopifyAPI::ApiVersion.find_version('unstable'),
+      ShopifyAPI::ApiVersion.find_version('2019-01'),
     ])
   end
 
-  test "coerce_to_version removes unverified versions from version set if mode is set to :predefined_only" do
-    ShopifyAPI::ApiVersion.coercion_mode = :define_on_unknown
+  test "find_version removes unverified versions from version set if mode is set to :raise_on_unknown" do
+    ShopifyAPI::ApiVersion.version_lookup_mode = :define_on_unknown
     assert ShopifyAPI::ApiVersion.versions.values.all?(&:verified?)
     assert_equal 5, ShopifyAPI::ApiVersion.versions.size
 
-    ShopifyAPI::ApiVersion.coerce_to_version('2019-30')
+    ShopifyAPI::ApiVersion.find_version('2019-30')
     refute ShopifyAPI::ApiVersion.versions.values.all?(&:verified?)
     assert_equal 6, ShopifyAPI::ApiVersion.versions.size
-    ShopifyAPI::ApiVersion.coercion_mode = :predefined_only
+    ShopifyAPI::ApiVersion.version_lookup_mode = :raise_on_unknown
 
     assert ShopifyAPI::ApiVersion.versions.values.all?(&:verified?)
     assert_equal 5, ShopifyAPI::ApiVersion.versions.size
   end
 
-  test "coerce_to_version does not raise when coercing a string if no versions are defined when coercion_mode is :define_on_unknown" do
+  test "find_version does not raise when coercing a string if no versions are defined when version_lookup_mode is :define_on_unknown" do
     ShopifyAPI::ApiVersion.clear_known_versions
-    ShopifyAPI::ApiVersion.coercion_mode = :define_on_unknown
-    assert_equal :define_on_unknown, ShopifyAPI::ApiVersion.coercion_mode
+    ShopifyAPI::ApiVersion.version_lookup_mode = :define_on_unknown
+    assert_equal :define_on_unknown, ShopifyAPI::ApiVersion.version_lookup_mode
     assert_nothing_raised do
-      ShopifyAPI::ApiVersion.coerce_to_version('made up version')
+      ShopifyAPI::ApiVersion.find_version('made up version')
     end
   end
 
-  test "coerce_to_version does raise when coercing a string if no versions are defined when coercion_mode is :predefined_only" do
+  test "find_version does raise when coercing a string if no versions are defined when version_lookup_mode is :raise_on_unknown" do
     refute ShopifyAPI::ApiVersion.versions['made up version']
-    ShopifyAPI::ApiVersion.coercion_mode = :predefined_only
+    ShopifyAPI::ApiVersion.version_lookup_mode = :raise_on_unknown
     assert_raises ShopifyAPI::ApiVersion::UnknownVersion do
-      ShopifyAPI::ApiVersion.coerce_to_version('made up version')
+      ShopifyAPI::ApiVersion.find_version('made up version')
     end
   end
 

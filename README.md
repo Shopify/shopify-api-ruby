@@ -38,14 +38,15 @@ ShopifyAPI::Session.temp(domain: domain, token: token, api_version: api_version)
 end
 ```
 
-The `api_version` attribute can take the string or symbol name of any known version and correctly coerce it to a `ShopifyAPI::ApiVersion`.
-By default any string or symbol will naïvely coerce into an ApiVersion. To ensure only known and active versions can be set, call
+The `api_version` attribute takes a version handle (ie `'2019-07'` or `:unstable`) and sets an instance of `ShopifyAPI::ApiVersion` matching the handle.
+By default, any handle will naïvely create a new `ApiVersion` if the version is not in the known versions returned by `ShopifyAPI::ApiVersion.versions`. To ensure only known and active versions can be set, call
 
 ```ruby
-ShopifyAPI::ApiVersion.coercion_mode = :predefined_only
+ShopifyAPI::ApiVersion.version_lookup_mode = :raise_on_unknown
 ShopifyAPI::ApiVersion.fetch_known_versions
 ```
-Known versions are fetched and cached from https://app.shopify.com/services/apis.json. Trying to use a version outside this set will raise an error. To switch back to naïve coercion, call `ShopifyAPI::ApiVersion.coercion_mode = :define_on_unknown` (the default mode).
+
+Known and active versions are fetched from https://app.shopify.com/services/apis.json and cached. Trying to use a version outside this cached set will raise an error. To switch back to naïve lookup and create a version if its not found, call `ShopifyAPI::ApiVersion.version_lookup_mode = :define_on_unknown` (this is the default mode).
 
 For example if you want to use the `2019-04` version you would create a session like this:
 ```ruby

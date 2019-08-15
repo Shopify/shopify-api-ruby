@@ -127,7 +127,7 @@ module ShopifyAPI
     end
 
     def api_version=(version)
-      @api_version = version.nil? ? nil : ApiVersion.coerce_to_version(version)
+      @api_version = version.nil? ? nil : ApiVersion.find_version(version)
     end
 
     def valid?

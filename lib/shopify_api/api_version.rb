@@ -2,7 +2,6 @@
 module ShopifyAPI
   class ApiVersion
     class UnknownVersion < StandardError; end
-    class InvalidVersion < StandardError; end
     class ApiVersionNotSetError < StandardError; end
     include Comparable
 
@@ -10,38 +9,40 @@ module ShopifyAPI
     UNSTABLE_HANDLE = 'unstable'
     UNSTABLE_AS_DATE = Time.utc(3000, 1, 1)
     API_PREFIX = '/admin/api/'
-    COERSION_MODES = [:predefined_only, :define_on_unknown].freeze
+    LOOKUP_MODES = [:raise_on_unknown, :define_on_unknown].freeze
 
     class << self
       attr_reader :versions
 
-      def coercion_mode
-        @coercion_mode ||= :define_on_unknown
+      def version_lookup_mode
+        @version_lookup_mode ||= :define_on_unknown
       end
 
-      def coercion_mode=(mode)
-        raise ArgumentError, "Mode must be one of #{COERSION_MODES}" unless COERSION_MODES.include?(mode)
-        sanitize_known_versions if mode == :predefined_only
-        @coercion_mode = mode
+      def version_lookup_mode=(mode)
+        raise ArgumentError, "Mode must be one of #{LOOKUP_MODES}" unless LOOKUP_MODES.include?(mode)
+        sanitize_known_versions if mode == :raise_on_unknown
+        @version_lookup_mode = mode
+      end
+
+      def find_version(version_or_handle)
+        return version_or_handle if version_or_handle.is_a?(ApiVersion)
+        handle = version_or_handle.to_s
+        @versions ||= {}
+        @versions.fetch(handle) do
+          if @version_lookup_mode == :raise_on_unknown
+            raise UnknownVersion, unknown_version_error_message(handle)
+          else
+            add_to_known_versions(ApiVersion.new(handle: handle))
+          end
+        end
       end
 
       def coerce_to_version(version_or_handle)
-        return version_or_handle if version_or_handle.is_a?(ApiVersion)
-        handle = version_or_handle.to_s
-
-        @versions ||= {}
-        @versions.fetch(handle) do
-          if @coercion_mode == :predefined_only
-            error_msg = if @versions.empty?
-              "No versions defined. You must call `ApiVersion.fetch_known_versions` first."
-            else
-              "`#{handle}` is not in the defined version set. Available versions: #{@versions.keys}"
-            end
-            raise UnknownVersion, "ApiVersion.coercion_mode is set to `:predefined_only`. #{error_msg}"
-          else
-            @versions[handle] = ApiVersion.new(handle: handle)
-          end
-        end
+        warn(
+          '[DEPRECATED] ShopifyAPI::ApiVersion.coerce_to_version be removed in a future version. ' \
+            'Use `find_version` instead.'
+        )
+        find_version(version_or_handle)
       end
 
       def fetch_known_versions
@@ -58,6 +59,10 @@ module ShopifyAPI
         fetch_known_versions
       end
 
+      def add_to_known_versions(version)
+        @versions[version.handle] = version
+      end
+
       def clear_known_versions
         @versions = {}
       end
@@ -69,7 +74,6 @@ module ShopifyAPI
         )
         clear_known_versions
       end
-
 
       def latest_stable_version
         warn(
@@ -86,6 +90,12 @@ module ShopifyAPI
           next unless @versions[handle].verified?
           [handle, @versions[handle]]
         end.compact.to_h
+      end
+
+      def unknown_version_error_message(handle)
+        msg = "ApiVersion.version_lookup_mode is set to `:raise_on_unknown`. \n"
+        return msg + "No versions defined. You must call `ApiVersion.fetch_known_versions` first." if @versions.empty?
+        msg + "`#{handle}` is not in the defined version set. Available versions: #{@versions.keys}"
       end
     end
 

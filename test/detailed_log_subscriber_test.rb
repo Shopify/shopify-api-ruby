@@ -37,7 +37,7 @@ class LogSubscriberTest < Test::Unit::TestCase
   def teardown
     super
     ShopifyAPI::ApiVersion.clear_known_versions
-    ShopifyAPI::ApiVersion.coercion_mode = :predefined_only
+    ShopifyAPI::ApiVersion.version_lookup_mode = :raise_on_unknown
   end
 
   def set_logger(logger)

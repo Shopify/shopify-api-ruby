@@ -40,7 +40,7 @@ class CollectionListingTest < Test::Unit::TestCase
   end
 
   def test_get_collection_listing_product_ids_multi_page_with_cursor
-    version = ShopifyAPI::ApiVersion::Release.new('2019-07')
+    version = ShopifyAPI::ApiVersion.find_version('2019-07')
     ShopifyAPI::Base.api_version = version.to_s
 
     collection_listing = ShopifyAPI::CollectionListing.new(collection_id: 1)

@@ -345,6 +345,6 @@ class SessionTest < Test::Unit::TestCase
 
   def any_api_version
     version_name = ['2019-01', :unstable].sample(1).first
-    ShopifyAPI::ApiVersion.coerce_to_version(version_name)
+    ShopifyAPI::ApiVersion.find_version(version_name)
   end
 end
