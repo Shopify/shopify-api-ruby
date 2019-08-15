@@ -34,7 +34,7 @@ class ApiVersionTest < Test::Unit::TestCase
   end
 
   test "coerce_to_version does not raise when coercing a string if no versions are defined when coercion_mode is :define_on_unknown" do
-    ShopifyAPI::ApiVersion.clear_defined_versions
+    ShopifyAPI::ApiVersion.clear_known_versions
     ShopifyAPI::ApiVersion.coercion_mode = :define_on_unknown
     assert_equal :define_on_unknown, ShopifyAPI::ApiVersion.coercion_mode
     assert_nothing_raised do

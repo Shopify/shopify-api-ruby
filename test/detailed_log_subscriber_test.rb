@@ -21,7 +21,7 @@ class LogSubscriberTest < Test::Unit::TestCase
       status: 200,
       api_version: :stub,
       body: load_fixture('apis'))
-    ShopifyAPI::ApiVersion.define_known_versions
+    ShopifyAPI::ApiVersion.fetch_known_versions
     session = ShopifyAPI::Session.new(
       domain: "https://this-is-my-test-shop.myshopify.com",
       token: "access_token",
@@ -36,7 +36,7 @@ class LogSubscriberTest < Test::Unit::TestCase
 
   def teardown
     super
-    ShopifyAPI::ApiVersion.clear_defined_versions
+    ShopifyAPI::ApiVersion.clear_known_versions
     ShopifyAPI::ApiVersion.coercion_mode = :predefined_only
   end
 
