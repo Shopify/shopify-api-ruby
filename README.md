@@ -38,7 +38,14 @@ ShopifyAPI::Session.temp(domain: domain, token: token, api_version: api_version)
 end
 ```
 
-The `api_version` attribute can take the string or symbol name of any known version and correctly coerce it to a `ShopifyAPI::ApiVersion`. Known versions are fetched and cached from https://app.shopify.com/services/apis.json when requiring the gem.
+The `api_version` attribute can take the string or symbol name of any known version and correctly coerce it to a `ShopifyAPI::ApiVersion`.
+By default any string or symbol will naïvely coerce into an ApiVersion. To ensure only known and active versions can be set, call
+
+```ruby
+ShopifyAPI::ApiVersion.coercion_mode = :predefined_only
+ShopifyAPI::ApiVersion.fetch_known_versions
+```
+Known versions are fetched and cached from https://app.shopify.com/services/apis.json. Trying to use a version outside this set will raise an error. To switch back to naïve coercion, call `ShopifyAPI::ApiVersion.coercion_mode = :define_on_unknown` (the default mode).
 
 For example if you want to use the `2019-04` version you would create a session like this:
 ```ruby
@@ -343,13 +350,6 @@ GRAPHQL
 result = client.query(SHOP_NAME_QUERY)
 result.data.shop.name
 ```
-
-## Trouble initializing known API versions
-
-When shopify_api.rb is loaded, it calls `ShopifyAPI::ApiVersion.define_known_versions` which fetches all known public api versions from https://app.shopify.com/services/apis.json. If for some reason this endpoint is unreachable, you will receive a warning, `[API VERSION WARNING] Could not fetch Admin API versions.`. Whenever you try to set the api version for a request when the know api version set is empty, you will receive another warning, `[API VERSION WARNING] Known API Version set is empty. Initializing unvalidated version from handle.` This means the gem is unable to verify before hand if the version your are attempting to use is valid. A version object will still be instantiated, but it will default its attributes to `{ handle: 'whatever you set', supported: false, latest_supported: false, display_name: 'whatever you set' }`. If the version handle was invalid, the server will return an error, whereas had the known api version set been defined, the gem would prevent you making the call in the first place.
-
-If you have code that depends on version data being validated, you can check whether or not the `api_version.persisted? == true` and if not, call `ShopifyAPI::ApiVersion.define_known_versions` to retry the call to fetch valid versions from Shopify and then set the version again.
-
 
 ## Threadsafety
 
