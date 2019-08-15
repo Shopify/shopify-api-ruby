@@ -34,10 +34,10 @@ class ApiVersionTest < Test::Unit::TestCase
         "display_name": "unstable",
         "supported": false,
       },
-    ].map { |hash| ShopifyAPI::ApiVersion.new(hash) }
+    ].to_json
 
 
-    assert_equal versions, ShopifyAPI::Meta.admin_versions
+    assert_equal versions, ShopifyAPI::Meta.admin_versions.to_json
 
   end
 end

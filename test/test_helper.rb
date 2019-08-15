@@ -46,7 +46,7 @@ module Test
               api_version: :stub,
               body: load_fixture('apis'))
 
-        ShopifyAPI::ApiVersion.define_known_versions
+        ShopifyAPI::ApiVersion.fetch_known_versions
         session = ShopifyAPI::Session.new(
           domain: "https://this-is-my-test-shop.myshopify.com",
           token: "token_test_helper",
@@ -62,7 +62,7 @@ module Test
         ShopifyAPI::Base.password = nil
         ShopifyAPI::Base.user = nil
 
-        ShopifyAPI::ApiVersion.clear_defined_versions
+        ShopifyAPI::ApiVersion.clear_known_versions
         ShopifyAPI::ApiVersion.coercion_mode = :predefined_only
       end
 
