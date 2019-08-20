@@ -136,9 +136,17 @@ class ApiVersionTest < Test::Unit::TestCase
     )
   end
 
-  test "NullVersion raises ApiVersionNotSetError for any method call" do
+  test "NullVersion raises ApiVersionNotSetError" do
     assert_raises(ShopifyAPI::ApiVersion::ApiVersionNotSetError) do
-      ShopifyAPI::ApiVersion::NullVersion.anything
+      ShopifyAPI::ApiVersion::NullVersion.construct_api_path(:string)
+    end
+
+    assert_raises(ShopifyAPI::ApiVersion::ApiVersionNotSetError) do
+      ShopifyAPI::ApiVersion::NullVersion.construct_graphql_path
+    end
+
+    assert_raises(ShopifyAPI::ApiVersion::ApiVersionNotSetError) do
+      ShopifyAPI::ApiVersion::NullVersion.stable?
     end
   end
 

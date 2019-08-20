@@ -112,20 +112,18 @@ module ShopifyAPI
     end
 
     class NullVersion
-      def self.nil?
-        true
-      end
+      class << self
+        def stable?
+          raise ApiVersionNotSetError, "You must set ShopifyAPI::Base.api_version before making a request."
+        end
 
-      def self.present?
-        false
-      end
+        def construct_api_path(*_path)
+          raise ApiVersionNotSetError, "You must set ShopifyAPI::Base.api_version before making a request."
+        end
 
-      def self.empty?
-        true
-      end
-
-      def self.method_missing(method_name, *args, &block)
-        raise ApiVersionNotSetError, "You must set ShopifyAPI::Base.api_version before making a request."
+        def construct_graphql_path
+          raise ApiVersionNotSetError, "You must set ShopifyAPI::Base.api_version before making a request."
+        end
       end
     end
   end
