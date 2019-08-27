@@ -8,7 +8,7 @@ require 'shopify_api/limits'
 require 'shopify_api/defined_versions'
 require 'shopify_api/api_version'
 require 'active_resource/json_errors'
-require 'shopify_api/collection'
+require 'shopify_api/collection_parser'
 require 'shopify_api/disable_prefix_check'
 
 module ShopifyAPI
