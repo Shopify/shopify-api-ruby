@@ -3,6 +3,8 @@
 module ShopifyAPI
   class PaginatedCollection < ActiveResource::Collection
     module CollectionPagination
+      attr_accessor :prefix_options
+
       def initialize(args)
         @previous_url_params = extract_url_params(pagination_link_headers.previous_link)
         @next_url_params = extract_url_params(pagination_link_headers.next_link)
@@ -36,7 +38,9 @@ module ShopifyAPI
         ensure_available
         return [] unless url_params.present?
 
-        resource_class.where(url_params)
+        params = url_params
+        params = params.reverse_merge(prefix_options) if prefix_options.present?
+        resource_class.where(params)
       end
 
       def extract_url_params(link_header)
