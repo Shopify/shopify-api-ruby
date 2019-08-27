@@ -3,30 +3,28 @@
 module ShopifyAPI
   class PaginatedCollection < ActiveResource::Collection
     module CollectionPagination
-      attr_accessor :prefix_options
-
       def initialize(args)
-        @previous_url_params = extract_url_params(pagination_link_headers.previous_link)
-        @next_url_params = extract_url_params(pagination_link_headers.next_link)
+        @next_url = pagination_link_headers.next_link&.url&.to_s
+        @previous_url = pagination_link_headers.previous_link&.url&.to_s
         super(args)
       end
 
       def next_page?
         ensure_available
-        @next_url_params.present?
+        @next_url.present?
       end
 
       def previous_page?
         ensure_available
-        @previous_url_params.present?
+        @previous_url.present?
       end
 
       def fetch_next_page
-        fetch_page(@next_url_params)
+        fetch_page(@next_url)
       end
 
       def fetch_previous_page
-        fetch_page(@previous_url_params)
+        fetch_page(@previous_url)
       end
 
       private
@@ -34,18 +32,11 @@ module ShopifyAPI
       AVAILABLE_IN_VERSION = ShopifyAPI::ApiVersion::Release.new('2019-10')
       AVAILABLE_IN_VERSION_EARLY = ShopifyAPI::ApiVersion::Release.new('2019-07')
 
-      def fetch_page(url_params)
+      def fetch_page(url)
         ensure_available
-        return [] unless url_params.present?
+        return [] unless url.present?
 
-        params = url_params
-        params = params.reverse_merge(prefix_options) if prefix_options.present?
-        resource_class.where(params)
-      end
-
-      def extract_url_params(link_header)
-        return nil unless link_header.present?
-        Rack::Utils.parse_nested_query(link_header.url.query)
+        resource_class.all(from: url)
       end
 
       def pagination_link_headers

@@ -137,10 +137,6 @@ module ShopifyAPI
       def early_july_pagination_release!
         self.early_july_pagination = true
       end
-
-      def instantiate_collection(_collection, _original_params = {}, prefix_options = {})
-        super.tap { |collection| collection.prefix_options = prefix_options }
-      end
     end
 
     def persisted?
