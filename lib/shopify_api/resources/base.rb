@@ -125,6 +125,18 @@ module ShopifyAPI
           @prefix_options[resource_id]
         end
       end
+
+      def early_july_pagination?
+        !!early_july_pagination
+      end
+
+      private
+
+      attr_accessor :early_july_pagination
+
+      def early_july_pagination_release!
+        self.early_july_pagination = true
+      end
     end
 
     def persisted?

@@ -3,6 +3,7 @@ module ShopifyAPI
     include DisablePrefixCheck
 
     conditional_prefix :resource, true
+    early_july_pagination_release!
 
     def value
       return if attributes["value"].nil?

@@ -30,6 +30,7 @@ module ShopifyAPI
       private
 
       AVAILABLE_IN_VERSION = ShopifyAPI::ApiVersion::Release.new('2019-10')
+      AVAILABLE_IN_VERSION_EARLY = ShopifyAPI::ApiVersion::Release.new('2019-07')
 
       def fetch_page(url_params)
         ensure_available
@@ -50,7 +51,9 @@ module ShopifyAPI
       end
 
       def ensure_available
-        raise NotImplementedError unless ShopifyAPI::Base.api_version >= AVAILABLE_IN_VERSION
+        return if ShopifyAPI::Base.api_version >= AVAILABLE_IN_VERSION
+        return if ShopifyAPI::Base.api_version >= AVAILABLE_IN_VERSION_EARLY && resource_class.early_july_pagination?
+        raise NotImplementedError
       end
     end
 
