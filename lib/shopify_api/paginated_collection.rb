@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ShopifyAPI
-  class Collection < ActiveResource::Collection
+  class PaginatedCollection < ActiveResource::Collection
     module CollectionPagination
       def initialize(args)
         @previous_url_params = extract_url_params(pagination_link_headers.previous_link)

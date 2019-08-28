@@ -11,7 +11,7 @@ module ShopifyAPI
                                   "ActiveResource/#{ActiveResource::VERSION::STRING}",
                                   "Ruby/#{RUBY_VERSION}"].join(' ')
 
-    self.collection_parser = ShopifyAPI::Collection
+    self.collection_parser = ShopifyAPI::PaginatedCollection
 
     def encode(options = {})
       same = dup
