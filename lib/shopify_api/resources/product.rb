@@ -3,6 +3,8 @@ module ShopifyAPI
     include Events
     include Metafields
 
+    early_july_pagination_release!
+
     # compute the price range
     def price_range
       prices = variants.collect(&:price).collect(&:to_f)

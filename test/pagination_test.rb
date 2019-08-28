@@ -130,7 +130,7 @@ class PaginationTest < Test::Unit::TestCase
     end
   end
 
-  test "raises on an invalid API version" do
+  test "raises on an older API version" do
     version = ShopifyAPI::ApiVersion::Release.new('2019-04')
     ShopifyAPI::Base.api_version = version.to_s
 
@@ -140,6 +140,29 @@ class PaginationTest < Test::Unit::TestCase
     assert_raises NotImplementedError do
       orders.fetch_next_page
     end
+  end
+
+  test "raises on 2019-07 API version for models that don't support new pagination yet" do
+    version = ShopifyAPI::ApiVersion::Release.new('2019-07')
+    ShopifyAPI::Base.api_version = version.to_s
+
+    fake 'orders', :method => :get, :status => 200, api_version: version, :body => load_fixture('orders')
+    orders = ShopifyAPI::Order.all
+
+    assert_raises NotImplementedError do
+      orders.fetch_next_page
+    end
+  end
+
+  test "new pagination works on 2019-07 API version for select models" do
+    version = ShopifyAPI::ApiVersion::Release.new('2019-07')
+    ShopifyAPI::Base.api_version = version.to_s
+
+    fake 'events', :method => :get, :status => 200, api_version: version, :body => load_fixture('events')
+    events = ShopifyAPI::Event.all
+
+    assert_empty events.fetch_next_page
+    assert_empty events.fetch_previous_page
   end
 
   test "does not raise on the unstable version" do
