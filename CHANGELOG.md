@@ -3,7 +3,7 @@
 * Add 2019-10 to known API versions
 * Add support for cursor pagination [#594](https://github.com/Shopify/shopify_api/pull/594) and
 [#611](https://github.com/Shopify/shopify_api/pull/611)
-
+* `ShopifyAPI::Base.api_version` now defaults to `ShopifyAPI::ApiVersion::NullVersion` instead of `nil`. Making requests without first setting an ApiVersion raises `ApiVersionNotSetError` instead of `NoMethodError: undefined method 'construct_api_path' for nil:NilClass'` [#605](https://github.com/Shopify/shopify_api/pull/605)
 
 == Version 7.0.2
 
