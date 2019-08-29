@@ -174,17 +174,22 @@ module ShopifyAPI
 
     class NullVersion
       class << self
-        def stable?
+        def raise_not_set_error(*_args)
           raise ApiVersionNotSetError, "You must set ShopifyAPI::Base.api_version before making a request."
         end
-
-        def construct_api_path(*_path)
-          raise ApiVersionNotSetError, "You must set ShopifyAPI::Base.api_version before making a request."
-        end
-
-        def construct_graphql_path
-          raise ApiVersionNotSetError, "You must set ShopifyAPI::Base.api_version before making a request."
-        end
+        alias_method :stable?, :raise_not_set_error
+        alias_method :construct_api_path, :raise_not_set_error
+        alias_method :construct_graphql_path, :raise_not_set_error
+        alias_method :latest_supported?, :raise_not_set_error
+        alias_method :supported?, :raise_not_set_error
+        alias_method :verified?, :raise_not_set_error
+        alias_method :unstable?, :raise_not_set_error
+        alias_method :handle, :raise_not_set_error
+        alias_method :display_name, :raise_not_set_error
+        alias_method :supported, :raise_not_set_error
+        alias_method :verified, :raise_not_set_error
+        alias_method :latest_supported, :raise_not_set_error
+        alias_method :name, :raise_not_set_error
       end
     end
   end
