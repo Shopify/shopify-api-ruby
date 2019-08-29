@@ -62,11 +62,13 @@ module ShopifyAPI
           _api_version
         elsif superclass != Object && superclass.site
           superclass.api_version.dup.freeze
+        else
+          ApiVersion::NullVersion
         end
       end
 
       def api_version=(version)
-        self._api_version = version.nil? ? nil : ApiVersion.coerce_to_version(version)
+        self._api_version = version.nil? ? ApiVersion::NullVersion : ApiVersion.coerce_to_version(version)
       end
 
       def prefix(options = {})

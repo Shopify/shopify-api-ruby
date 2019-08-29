@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 module ShopifyAPI
   class ApiVersion
+    class ApiVersionNotSetError < StandardError; end
     class UnknownVersion < StandardError; end
     class InvalidVersion < StandardError; end
 
@@ -107,6 +108,22 @@ module ShopifyAPI
 
       def construct_graphql_path
         construct_api_path('graphql.json')
+      end
+    end
+
+    class NullVersion
+      class << self
+        def stable?
+          raise ApiVersionNotSetError, "You must set ShopifyAPI::Base.api_version before making a request."
+        end
+
+        def construct_api_path(*_path)
+          raise ApiVersionNotSetError, "You must set ShopifyAPI::Base.api_version before making a request."
+        end
+
+        def construct_graphql_path
+          raise ApiVersionNotSetError, "You must set ShopifyAPI::Base.api_version before making a request."
+        end
       end
     end
   end
