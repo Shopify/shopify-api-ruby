@@ -42,15 +42,6 @@ class CollectionTest < Test::Unit::TestCase
 
     collection = ShopifyAPI::Collection.find(1)
 
-    fake(
-        'products',
-        url: 'https://shop2.myshopify.com/admin/api/2019-07/collections/1/products.json',
-        method: :get,
-        status: 200,
-        body: load_fixture('collection_products'),
-        extension: false
-    )
-
     assert_raises NotImplementedError do
       collection.products
     end
