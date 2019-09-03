@@ -39,7 +39,7 @@ class ProductListingTest < Test::Unit::TestCase
   end
 
   def test_get_product_listing_product_ids_multi_page_with_cursor
-    version = ShopifyAPI::ApiVersion::Release.new('2019-10')
+    version = ShopifyAPI::ApiVersion.find_version('2019-10')
     ShopifyAPI::Base.api_version = version.to_s
 
     url = "https://this-is-my-test-shop.myshopify.com/admin/api/2019-10/product_listings/product_ids.json"
@@ -75,7 +75,7 @@ class ProductListingTest < Test::Unit::TestCase
   end
 
   def test_get_product_listing_product_ids_multi_page_with_cursor_fails_on_older_api_version
-    version = ShopifyAPI::ApiVersion::Release.new('2019-07')
+    version = ShopifyAPI::ApiVersion.find_version('2019-07')
     ShopifyAPI::Base.api_version = version.to_s
 
     url = "https://this-is-my-test-shop.myshopify.com/admin/api/2019-07/product_listings/product_ids.json"

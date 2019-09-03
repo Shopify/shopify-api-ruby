@@ -2,110 +2,74 @@
 require 'test_helper'
 
 class ApiVersionTest < Test::Unit::TestCase
-  def teardown
-    super
-    ShopifyAPI::ApiVersion.clear_defined_versions
-    ShopifyAPI::ApiVersion.define_known_versions
+  test "find_version returns any version object given" do
+    version = ShopifyAPI::ApiVersion.new(handle: :unstable)
+    assert_same(version, ShopifyAPI::ApiVersion.find_version(version))
   end
 
-  test "unstable version creates url that start with /admin/api/unstable/" do
-    assert_equal(
-      "/admin/api/unstable/resource_path/id.json",
-      ShopifyAPI::ApiVersion::Unstable.new.construct_api_path("resource_path/id.json")
-    )
-  end
-
-  test "unstable version creates graphql url that start with /admin/api/unstable/" do
-    assert_equal(
-      "/admin/api/unstable/graphql.json",
-      ShopifyAPI::ApiVersion::Unstable.new.construct_graphql_path
-    )
-  end
-
-  test "coerce_to_version returns any version object given" do
-    version = ShopifyAPI::ApiVersion::Unstable.new
-    assert_same(version, ShopifyAPI::ApiVersion.coerce_to_version(version))
-  end
-
-  test "coerce_to_version converts a known version into a version object" do
+  test "find_version converts a known version into a version object" do
     versions = [
-      ShopifyAPI::ApiVersion::Unstable.new,
-      ShopifyAPI::ApiVersion::Release.new('2019-01'),
+      ShopifyAPI::ApiVersion.new(handle: :unstable),
+      ShopifyAPI::ApiVersion.new(handle: '2019-01'),
     ]
 
     assert_equal(versions, [
-      ShopifyAPI::ApiVersion.coerce_to_version('unstable'),
-      ShopifyAPI::ApiVersion.coerce_to_version('2019-01'),
+      ShopifyAPI::ApiVersion.find_version('unstable'),
+      ShopifyAPI::ApiVersion.find_version('2019-01'),
     ])
   end
 
-  test "coerce_to_version raises when coercing a string that doesn't match a known version" do
+  test "find_version removes unverified versions from version set if mode is set to :raise_on_unknown" do
+    ShopifyAPI::ApiVersion.version_lookup_mode = :define_on_unknown
+    assert ShopifyAPI::ApiVersion.versions.values.all?(&:verified?)
+    assert_equal 5, ShopifyAPI::ApiVersion.versions.size
+
+    ShopifyAPI::ApiVersion.find_version('2019-30')
+    refute ShopifyAPI::ApiVersion.versions.values.all?(&:verified?)
+    assert_equal 6, ShopifyAPI::ApiVersion.versions.size
+    ShopifyAPI::ApiVersion.version_lookup_mode = :raise_on_unknown
+
+    assert ShopifyAPI::ApiVersion.versions.values.all?(&:verified?)
+    assert_equal 5, ShopifyAPI::ApiVersion.versions.size
+  end
+
+  test "find_version does not raise when coercing a string if no versions are defined when version_lookup_mode is :define_on_unknown" do
+    ShopifyAPI::ApiVersion.clear_known_versions
+    ShopifyAPI::ApiVersion.version_lookup_mode = :define_on_unknown
+    assert_equal :define_on_unknown, ShopifyAPI::ApiVersion.version_lookup_mode
+    assert_nothing_raised do
+      ShopifyAPI::ApiVersion.find_version('made up version')
+    end
+  end
+
+  test "find_version does raise when coercing a string if no versions are defined when version_lookup_mode is :raise_on_unknown" do
+    refute ShopifyAPI::ApiVersion.versions['made up version']
+    ShopifyAPI::ApiVersion.version_lookup_mode = :raise_on_unknown
     assert_raises ShopifyAPI::ApiVersion::UnknownVersion do
-      ShopifyAPI::ApiVersion.coerce_to_version('made up version')
+      ShopifyAPI::ApiVersion.find_version('made up version')
     end
-  end
-
-  test "additional defined versions will also be coerced" do
-    versions = [
-      TestApiVersion.new('my_name'),
-      TestApiVersion.new('other_name'),
-    ]
-
-    versions.each do |version|
-      ShopifyAPI::ApiVersion.define_version(version)
-    end
-
-    assert_equal(versions, [
-      ShopifyAPI::ApiVersion.coerce_to_version('my_name'),
-      ShopifyAPI::ApiVersion.coerce_to_version('other_name'),
-    ])
-  end
-
-  test 'allows a release version with the correct format format to be created' do
-    assert ShopifyAPI::ApiVersion::Release.new('2019-03')
-  end
-
-  test 'release versions must follow the format' do
-    assert_raises ShopifyAPI::ApiVersion::InvalidVersion do
-      assert ShopifyAPI::ApiVersion::Release.new('crazy-name')
-    end
-  end
-
-  test 'release versions create a url that is /admin/api/<version_name>/' do
-    assert_equal(
-      '/admin/api/2022-03/shop.json',
-      ShopifyAPI::ApiVersion::Release.new('2022-03').construct_api_path('shop.json')
-    )
   end
 
   test 'two versions with the same version number are equal' do
-    version_1 = ShopifyAPI::ApiVersion::Release.new('2018-09')
-    version_2 = ShopifyAPI::ApiVersion::Release.new('2018-09')
+    version_1 = ShopifyAPI::ApiVersion.new(handle: '2018-09')
+    version_2 = ShopifyAPI::ApiVersion.new(handle: '2018-09')
 
     assert_equal version_2, version_1
   end
 
   test 'two versions with the different version numbers are not equal' do
-    version_1 = ShopifyAPI::ApiVersion::Release.new('2019-07')
-    version_2 = ShopifyAPI::ApiVersion::Release.new('2019-11')
+    version_1 = ShopifyAPI::ApiVersion.new(handle: '2019-07')
+    version_2 = ShopifyAPI::ApiVersion.new(handle: '2019-11')
 
     refute_equal version_2, version_1
   end
 
-  test 'release verions are stable' do
-    assert_predicate ShopifyAPI::ApiVersion::Release.new('2019-11'), :stable?
-  end
-
-  test 'no release version are not stable' do
-    refute_predicate ShopifyAPI::ApiVersion::Unstable.new, :stable?
-  end
-
-  test 'release versions are ordered by version number with unstable always being the newest' do
-    version_1 = ShopifyAPI::ApiVersion::Release.new('2017-11')
-    version_2 = ShopifyAPI::ApiVersion::Release.new('2019-11')
-    version_3 = ShopifyAPI::ApiVersion::Release.new('2039-01')
-    version_4 = ShopifyAPI::ApiVersion::Release.new('2039-02')
-    unstable = ShopifyAPI::ApiVersion::Unstable.new
+  test 'versions are ordered by version number with unstable always being the newest' do
+    version_1 = ShopifyAPI::ApiVersion.new(handle: '2017-11')
+    version_2 = ShopifyAPI::ApiVersion.new(handle: '2019-11')
+    version_3 = ShopifyAPI::ApiVersion.new(handle: '2039-01')
+    version_4 = ShopifyAPI::ApiVersion.new(handle: '2039-02')
+    unstable = ShopifyAPI::ApiVersion.new(handle: :unstable)
 
     assert_equal([
       version_1,
@@ -123,17 +87,28 @@ class ApiVersionTest < Test::Unit::TestCase
   end
 
   test 'latest_stable_version will return the version that is newest and stable' do
-    ShopifyAPI::ApiVersion.clear_defined_versions
-    ShopifyAPI::ApiVersion.define_version(ShopifyAPI::ApiVersion::Release.new('2017-11'))
-    ShopifyAPI::ApiVersion.define_version(ShopifyAPI::ApiVersion::Release.new('2019-11'))
-    ShopifyAPI::ApiVersion.define_version(ShopifyAPI::ApiVersion::Release.new('2039-01'))
-    ShopifyAPI::ApiVersion.define_version(ShopifyAPI::ApiVersion::Release.new('2039-02'))
-    ShopifyAPI::ApiVersion.define_version(ShopifyAPI::ApiVersion::Unstable.new)
-
     assert_equal(
-      ShopifyAPI::ApiVersion::Release.new('2039-02'),
-      ShopifyAPI::ApiVersion.latest_stable_version
+      ShopifyAPI::ApiVersion.versions,
+      {
+        "2019-01" => ShopifyAPI::ApiVersion.new(handle: '2019-01', supported: true, latest_supported: false),
+        "2019-04" => ShopifyAPI::ApiVersion.new(handle: '2019-04', supported: true, latest_supported: false),
+        "2019-07" => ShopifyAPI::ApiVersion.new(handle: '2019-07', supported: true, latest_supported: true),
+        "2019-10" => ShopifyAPI::ApiVersion.new(handle: '2019-10', supported: false, latest_supported: false),
+        "unstable" => ShopifyAPI::ApiVersion.new(handle: 'unstable', supported: false, latest_supported: false),
+      }
     )
+    silence_warnings do
+
+      refute_equal(
+        ShopifyAPI::ApiVersion.new(handle: '2019-01'),
+        ShopifyAPI::ApiVersion.latest_stable_version
+      )
+
+      assert_equal(
+        ShopifyAPI::ApiVersion.new(handle: '2019-07'),
+        ShopifyAPI::ApiVersion.latest_stable_version
+      )
+    end
   end
 
   test "NullVersion raises ApiVersionNotSetError" do
@@ -148,6 +123,14 @@ class ApiVersionTest < Test::Unit::TestCase
     assert_raises(ShopifyAPI::ApiVersion::ApiVersionNotSetError) do
       ShopifyAPI::ApiVersion::NullVersion.stable?
     end
+  end
+
+  test "handle_to_date converts a version handle to a date" do
+    version_1 = ShopifyAPI::ApiVersion.new(handle: '2019-01')
+    version_2 = ShopifyAPI::ApiVersion.new(handle: 'unstable')
+
+    assert_equal(version_1.handle_as_date, Time.utc(2019, 01, 01))
+    assert_equal(version_2.handle_as_date, ShopifyAPI::ApiVersion::UNSTABLE_AS_DATE)
   end
 
   class TestApiVersion < ShopifyAPI::ApiVersion

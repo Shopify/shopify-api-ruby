@@ -7,9 +7,9 @@ require 'pry'
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
-require 'shopify_api'
 
 WebMock.disable_net_connect!
+require 'shopify_api'
 
 # setup ShopifyAPI with fake api_key and secret
 module Test
@@ -37,9 +37,16 @@ module Test
           end
         end
 
-        ShopifyAPI::ApiVersion.define_version(ShopifyAPI::ApiVersion::Release.new('2019-01'))
-
         ShopifyAPI::Base.clear_session
+
+        fake("apis",
+              url: "https://app.shopify.com/services/apis.json",
+              method: :get,
+              status: 200,
+              api_version: :stub,
+              body: load_fixture('apis'))
+
+        ShopifyAPI::ApiVersion.fetch_known_versions
         session = ShopifyAPI::Session.new(
           domain: "https://this-is-my-test-shop.myshopify.com",
           token: "token_test_helper",
@@ -55,8 +62,8 @@ module Test
         ShopifyAPI::Base.password = nil
         ShopifyAPI::Base.user = nil
 
-        ShopifyAPI::ApiVersion.clear_defined_versions
-        ShopifyAPI::ApiVersion.define_known_versions
+        ShopifyAPI::ApiVersion.clear_known_versions
+        ShopifyAPI::ApiVersion.version_lookup_mode = :raise_on_unknown
       end
 
       # Custom Assertions
@@ -88,7 +95,7 @@ module Test
         body   = options.has_key?(:body) ? options.delete(:body) : load_fixture(endpoint)
         format = options.delete(:format) || :json
         method = options.delete(:method) || :get
-        api_version = options.delete(:api_version) || ShopifyAPI::ApiVersion.coerce_to_version('2019-01')
+        api_version = options.delete(:api_version) || ShopifyAPI::ApiVersion.find_version('2019-01')
         extension = ".#{options.delete(:extension)||'json'}" unless options[:extension]==false
         status = options.delete(:status) || 200
         url = if options.has_key?(:url)

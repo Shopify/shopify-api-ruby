@@ -38,7 +38,15 @@ ShopifyAPI::Session.temp(domain: domain, token: token, api_version: api_version)
 end
 ```
 
-The `api_version` attribute can take the string or symbol name of any known version and correctly coerce it to a `ShopifyAPI::ApiVersion`.  You can find the currently defined versions [here](https://github.com/Shopify/shopify_api/blob/master/lib/shopify_api/defined_versions.rb), follow these [instructions](#adding-additional-api-versions) to add additional version definitions if needed.
+The `api_version` attribute takes a version handle (ie `'2019-07'` or `:unstable`) and sets an instance of `ShopifyAPI::ApiVersion` matching the handle.
+By default, any handle will naïvely create a new `ApiVersion` if the version is not in the known versions returned by `ShopifyAPI::ApiVersion.versions`. To ensure only known and active versions can be set, call
+
+```ruby
+ShopifyAPI::ApiVersion.version_lookup_mode = :raise_on_unknown
+ShopifyAPI::ApiVersion.fetch_known_versions
+```
+
+Known and active versions are fetched from https://app.shopify.com/services/apis.json and cached. Trying to use a version outside this cached set will raise an error. To switch back to naïve lookup and create a version if its not found, call `ShopifyAPI::ApiVersion.version_lookup_mode = :define_on_unknown` (this is the default mode).
 
 For example if you want to use the `2019-04` version you would create a session like this:
 ```ruby
@@ -343,21 +351,6 @@ GRAPHQL
 result = client.query(SHOP_NAME_QUERY)
 result.data.shop.name
 ```
-
-## Adding additional API versions
-We will release a gem update every time we release a new version of the API. Most of the time upgrading the gem will be all you need to do.
-
-If you want access to a newer version without upgrading you can define an api version.
-For example if you wanted to add an `ApiVersion` '2022-03', you would add the following to the initialization of your application:
-```ruby
-ShopifyAPI::ApiVersion.define_version(ShopifyAPI::ApiVersion::Release.new('2022-03'))
-```
-Once you have done that you can now set this version in a Sesssion like this:
-
-```ruby
-ShopifyAPI::Session.new(domain: domain, token: token, api_version: '2022-03')
-```
-
 
 ## Threadsafety
 
