@@ -50,6 +50,15 @@ class ApiVersionTest < Test::Unit::TestCase
     end
   end
 
+  test "find_version raises ArgumentError when given an ShopifyAPI::ApiVersion::NullVersion object" do
+    ShopifyAPI::ApiVersion.clear_known_versions
+    ShopifyAPI::ApiVersion.version_lookup_mode = :define_on_unknown
+    assert_equal :define_on_unknown, ShopifyAPI::ApiVersion.version_lookup_mode
+    assert_raises ArgumentError do
+      ShopifyAPI::ApiVersion.find_version(ShopifyAPI::ApiVersion::NullVersion)
+    end
+  end
+
   test 'two versions with the same version number are equal' do
     version_1 = ShopifyAPI::ApiVersion.new(handle: '2018-09')
     version_2 = ShopifyAPI::ApiVersion.new(handle: '2018-09')
@@ -122,6 +131,12 @@ class ApiVersionTest < Test::Unit::TestCase
 
     assert_raises(ShopifyAPI::ApiVersion::ApiVersionNotSetError) do
       ShopifyAPI::ApiVersion::NullVersion.stable?
+    end
+  end
+
+  test "NullVersion cannot be instantiated and raises NoMethodError if attempted" do
+    assert_raises(NoMethodError) do
+      ShopifyAPI::ApiVersion::NullVersion.new
     end
   end
 

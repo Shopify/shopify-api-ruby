@@ -25,6 +25,7 @@ module ShopifyAPI
       end
 
       def find_version(version_or_handle)
+        raise ArgumentError, "NullVersion is not a valid version or version handle." if version_or_handle == NullVersion
         return version_or_handle if version_or_handle.is_a?(ApiVersion)
         handle = version_or_handle.to_s
         @versions ||= {}
@@ -174,6 +175,10 @@ module ShopifyAPI
 
     class NullVersion
       class << self
+        def new(*_args)
+          raise NoMethodError, "NullVersion is an abstract class and cannot be instantiated."
+        end
+
         def raise_not_set_error(*_args)
           raise ApiVersionNotSetError, "You must set ShopifyAPI::Base.api_version before making a request."
         end
