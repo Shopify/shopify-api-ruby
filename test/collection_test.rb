@@ -26,5 +26,4 @@ class CollectionTest < Test::Unit::TestCase
     )
     assert_equal [632910392, 921728736], collection.products.map(&:id)
   end
-
 end
