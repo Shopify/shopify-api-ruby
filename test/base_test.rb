@@ -168,6 +168,11 @@ class BaseTest < Test::Unit::TestCase
     assert_equal ShopifyAPI::ApiVersion::NullVersion, ShopifyAPI::Base.api_version
   end
 
+  test "#api_version= ShopifyAPI::ApiVersion::NullVersion should set ApiVersion to ShopifyAPI::ApiVersion::NullVersion" do
+    ShopifyAPI::Base.api_version = ShopifyAPI::ApiVersion::NullVersion
+    assert_equal ShopifyAPI::ApiVersion::NullVersion, ShopifyAPI::Base.api_version
+  end
+
   def clear_header(header)
     [ActiveResource::Base, ShopifyAPI::Base, ShopifyAPI::Product].each do |klass|
       klass.headers.delete(header)
