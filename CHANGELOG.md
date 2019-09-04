@@ -1,3 +1,13 @@
+== Version 8.0.0
+
+* Api Version changes [#600](https://github.com/Shopify/shopify_api/pull/600)
+  * Remove static Api Version definitions.
+  * Introduces Api Version lookup modes: `:define_on_unknown` and `:raise_on_unknown`
+  * See [migration notes](README.md#-breaking-change-notice-for-version-800-)
+* `Session.valid?` checks that api_version `is_a?(ApiVersion)` instead of `present?`
+* `ApiVersion::NullVersion` cannot be instantiated and now has a `match?` method [#615](https://github.com/Shopify/shopify_api/pull/615/files)
+* Introduces new Collection endpoint for looking up products without knowing collection type. Only available if ApiVersion is `:unstable` [#609](https://github.com/Shopify/shopify_api/pull/609)
+
 == Version 7.1.0
 
 * Add 2019-10 to known API versions
