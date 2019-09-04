@@ -68,7 +68,7 @@ module ShopifyAPI
       end
 
       def api_version=(version)
-        self._api_version = version.nil? ? ApiVersion::NullVersion : ApiVersion.find_version(version)
+        self._api_version = ApiVersion::NullVersion.matches?(version) ? ApiVersion::NullVersion : ApiVersion.find_version(version)
       end
 
       def prefix(options = {})

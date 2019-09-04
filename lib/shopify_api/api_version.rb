@@ -179,6 +179,10 @@ module ShopifyAPI
           raise NoMethodError, "NullVersion is an abstract class and cannot be instantiated."
         end
 
+        def matches?(version)
+          version.nil? || version == self
+        end
+
         def raise_not_set_error(*_args)
           raise ApiVersionNotSetError, "You must set ShopifyAPI::Base.api_version before making a request."
         end

@@ -127,11 +127,11 @@ module ShopifyAPI
     end
 
     def api_version=(version)
-      @api_version = version.nil? ? nil : ApiVersion.find_version(version)
+      @api_version = ApiVersion::NullVersion.matches?(version) ? ApiVersion::NullVersion : ApiVersion.find_version(version)
     end
 
     def valid?
-      domain.present? && token.present? && api_version.present?
+      domain.present? && token.present? && api_version.is_a?(ApiVersion)
     end
 
     def expires_in

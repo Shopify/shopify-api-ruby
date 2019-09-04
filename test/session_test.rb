@@ -21,6 +21,9 @@ class SessionTest < Test::Unit::TestCase
   test "not be valid without an api version" do
     session = ShopifyAPI::Session.new(domain: "testshop.myshopify.com", token: "any-token", api_version: nil)
     assert_not session.valid?
+
+    session = ShopifyAPI::Session.new(domain: "testshop.myshopify.com", token: "any-token", api_version: ShopifyAPI::ApiVersion::NullVersion)
+    assert_not session.valid?
   end
 
   test "be valid with any token, any url and version" do
