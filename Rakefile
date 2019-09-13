@@ -5,7 +5,7 @@ require 'rake/testtask'
 Rake::TestTask.new(:test) do |test|
   test.libs << 'lib' << 'test'
   test.pattern = 'test/**/*_test.rb'
-  test.verbose = true
+  test.warning = false
 end
 
 begin
@@ -36,4 +36,9 @@ Rake::RDocTask.new do |rdoc|
   rdoc.title = "shopify_api #{version}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
+end
+
+task :docker do
+  cmd = "docker-compose up -d && docker exec -i -t shopify_api bash"
+  exec(cmd, err: File::NULL)
 end

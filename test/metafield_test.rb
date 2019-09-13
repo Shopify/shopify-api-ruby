@@ -24,7 +24,7 @@ class MetafieldTest < Test::Unit::TestCase
     blog = ShopifyAPI::Blog.find(1008414260)
     metafield = blog.add_metafield(ShopifyAPI::Metafield.new(:namespace => "summaries", :key => "First Summary", :value => "Make commerce better", :value_type => "string"))
 
-    assert_equal ActiveSupport::JSON.decode('{"metafield":{"namespace":"summaries","key":"First Summary","value":"Make commerce better","value_type":"string"}}'), ActiveSupport::JSON.decode(FakeWeb.last_request.body)
+    assert_equal ActiveSupport::JSON.decode('{"metafield":{"namespace":"summaries","key":"First Summary","value":"Make commerce better","value_type":"string"}}'), ActiveSupport::JSON.decode(WebMock.last_request.body)
     assert !metafield.new_record?
   end
 

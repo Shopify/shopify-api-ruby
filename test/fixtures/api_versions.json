@@ -1,0 +1,32 @@
+[
+  {
+    "handle": "2019-01",
+    "display_name": "2019-01",
+    "supported": true,
+    "latest_supported": false
+  },
+  {
+    "handle": "2019-04",
+    "display_name": "2019-04",
+    "supported": true,
+    "latest_supported": false
+  },
+  {
+    "handle": "2019-07",
+    "display_name": "2019-07 (Latest)",
+    "supported": true,
+    "latest_supported": true
+  },
+  {
+    "handle": "2019-10",
+    "display_name": "2019-10 (Release candidate)",
+    "supported": false,
+    "latest_supported": false
+  },
+  {
+    "handle": "unstable",
+    "display_name": "unstable",
+    "supported": false,
+    "latest_supported": false
+  }
+]

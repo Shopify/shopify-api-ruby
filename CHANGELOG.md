@@ -1,3 +1,92 @@
+== Version 8.0.0
+
+* Api Version changes [#600](https://github.com/Shopify/shopify_api/pull/600)
+  * Remove static Api Version definitions.
+  * Introduces Api Version lookup modes: `:define_on_unknown` and `:raise_on_unknown`
+  * See [migration notes](README.md#-breaking-change-notice-for-version-800-)
+* `Session.valid?` checks that api_version `is_a?(ApiVersion)` instead of `present?`
+* `ApiVersion::NullVersion` cannot be instantiated and now has a `match?` method [#615](https://github.com/Shopify/shopify_api/pull/615/files)
+* Introduces new Collection endpoint for looking up products without knowing collection type. Only available if ApiVersion is `:unstable` [#609](https://github.com/Shopify/shopify_api/pull/609)
+
+== Version 7.1.0
+
+* Add 2019-10 to known API versions
+* Add support for cursor pagination [#594](https://github.com/Shopify/shopify_api/pull/594) and
+[#611](https://github.com/Shopify/shopify_api/pull/611)
+* `ShopifyAPI::Base.api_version` now defaults to `ShopifyAPI::ApiVersion::NullVersion` instead of `nil`. Making requests without first setting an ApiVersion raises `ApiVersionNotSetError` instead of `NoMethodError: undefined method 'construct_api_path' for nil:NilClass'` [#605](https://github.com/Shopify/shopify_api/pull/605)
+
+== Version 7.0.2
+
+* Add 2019-07 to known API versions.
+
+== Version 7.0.1
+
+* Support passing version string to `ShopifyAPI::Base.api_version` [#563](https://github.com/Shopify/shopify_api/pull/563)
+
+== Version 7.0.0
+
+* Removed support for `ActiveResouce` < `4.1`.
+* Removed `ShopifyAPI::Oauth`.
+* Added api version support, See [migration
+notes](README.md#-breaking-change-notice-for-version-700-)
+* Changed `ShopifyAPI::Session` method signatures from positional to keyword
+arguments, See [migration notes](README.md#-breaking-change-notice-for-version-700-)
+* Add support for newer call limit header `X-Shopify-Shop-Api-Call-Limit`.
+* Removed all Ping resources.
+
+== Version 6.0.0
+
+* Removed undocumented `protocol` and `port` options from `ShopifyAPI::Session`.
+
+== Version 5.2.4
+
+* Added `currency` parameter to `ShopifyAPI::Order#capture`. This parameter is required for apps that belong to the
+multi-currency beta program.
+
+== Version 5.2.3
+
+* Update delivery confirmation resource to delivery confirmation details resource.
+
+== Version 5.2.2
+
+* Add delivery confirmation endpoint to Ping resources.
+
+== Version 5.2.1
+
+* Log warning when Shopify indicates deprecated API call was performed
+
+== Version 5.2.0
+
+* Added `ShopifyAPI::Currency` to fetch list of supported currencies on a shop
+* Added `ShopifyAPI::TenderTransaction` to fetch list of transactions on a shop
+* Fixed bug with X-Shopify-Checkout-Version on ShopifyAPI::Checkout header being applied to all requests
+
+== Version 5.1.0
+
+* Added `ShopifyAPI::Publications`
+* Added `ShopifyAPI::ProductPublications`
+* Added `ShopifyAPI::CollectionPublications`
+* Added support for new collection products endpoint from `ShopifyAPI::Collection#products`
+
+== Version 5.0.0
+
+* Breaking change: `ShopifyAPI::Checkout` now maps to the Checkout API, rather than the Abandoned Checkouts API
+  * See the README for more details
+* Added `ShopifyAPI::AbandonedCheckout`
+* Added support for X-Shopify-Checkout-Version header on `ShopifyAPI::Checkout`
+* Added `ShopifyAPI::ShippingRate`
+* Added `ShopifyAPI::Payment`
+* Added support for `Checkout::complete` endpoint
+* Fixed session handling support for Rails 5.2.1
+
+== Version 4.13.0
+* Added `ShopifyAPI::ApiPermission` resource for uninstalling an application
+* Added a deprecation warning to `ShopifyAPI::OAuth`
+
+== Version 4.12.0
+
+* Added support for the GraphQL API
+
 == Version 4.11.0
 
 * Added `ShopifyAPI::InventoryItem`

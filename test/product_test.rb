@@ -12,7 +12,7 @@ class ProductTest < Test::Unit::TestCase
     fake "products/632910392/metafields", :method => :post, :status => 201, :body => load_fixture('metafield')
 
     field = @product.add_metafield(ShopifyAPI::Metafield.new(:namespace => "contact", :key => "email", :value => "123@example.com", :value_type => "string"))
-    assert_equal ActiveSupport::JSON.decode('{"metafield":{"namespace":"contact","key":"email","value":"123@example.com","value_type":"string"}}'), ActiveSupport::JSON.decode(FakeWeb.last_request.body)
+    assert_equal ActiveSupport::JSON.decode('{"metafield":{"namespace":"contact","key":"email","value":"123@example.com","value_type":"string"}}'), ActiveSupport::JSON.decode(WebMock.last_request.body)
     assert !field.new_record?
     assert_equal "contact", field.namespace
     assert_equal "email", field.key
@@ -46,5 +46,15 @@ class ProductTest < Test::Unit::TestCase
     variant = @product.variants.first
     variant.price = "0.50"
     variant.save
+  end
+
+  def test_price_range
+    assert_equal('199.00', @product.price_range)
+  end
+
+  def test_price_range_when_has_different_price
+    @product.variants[0].price = '100.00'
+
+    assert_equal('100.00 - 199.00', @product.price_range)
   end
 end

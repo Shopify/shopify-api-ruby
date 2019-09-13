@@ -6,5 +6,8 @@ doc
 pkg
 .ruby-version
 *.lock
+*.gem
 .idea
 .dev/
+.bundle/
+vendor/
