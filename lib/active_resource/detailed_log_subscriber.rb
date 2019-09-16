@@ -27,9 +27,9 @@ module ActiveResource
       payload[:response].each do |header_name, header_value|
         case header_name.downcase
         when 'x-shopify-api-deprecated-reason'
-          warning_message = <<~MSG
-            [DEPRECATED] ShopifyAPI made a call to #{payload[:method].upcase} #{payload[:path]}, and this call made
-            use of a deprecated endpoint, behaviour, or parameter. See #{header_value} for more details.
+          warning_message = <<-MSG
+          [DEPRECATED] ShopifyAPI made a call to #{payload[:method].upcase} #{payload[:path]}, and this call made
+          use of a deprecated endpoint, behaviour, or parameter. See #{header_value} for more details.
           MSG
 
           warn warning_message
