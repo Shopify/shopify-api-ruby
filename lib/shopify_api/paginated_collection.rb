@@ -27,6 +27,14 @@ module ShopifyAPI
         fetch_page(@previous_url)
       end
 
+      def next_page_info
+        extract_page_info(@next_url)
+      end
+
+      def previous_page_info
+        extract_page_info(@previous_url)
+      end
+
       private
 
       AVAILABLE_IN_VERSION = ShopifyAPI::ApiVersion.find_version('2019-10')
@@ -49,6 +57,10 @@ module ShopifyAPI
         return if ShopifyAPI::Base.api_version >= AVAILABLE_IN_VERSION
         return if ShopifyAPI::Base.api_version >= AVAILABLE_IN_VERSION_EARLY && resource_class.early_july_pagination?
         raise NotImplementedError
+      end
+
+      def extract_page_info(url)
+        CGI.escape(Rack::Utils.parse_query(URI(url).query)['page_info']) if url.present?
       end
     end
 
