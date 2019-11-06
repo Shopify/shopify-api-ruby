@@ -30,6 +30,11 @@ module ShopifyAPI
       Transaction.create(capture_transaction)
     end
 
+    def fulfillment_orders(options = {})
+      fulfillment_order_hashes = get(:fulfillment_orders, options)
+      fulfillment_order_hashes.map { |fulfillment_order_hash| FulfillmentOrder.new(fulfillment_order_hash) }
+    end
+
     class ClientDetails < Base
     end
   end

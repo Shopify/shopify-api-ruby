@@ -72,4 +72,18 @@ class OrderTest < Test::Unit::TestCase
       },
     }.to_json)
   end
+
+  test "fulfillment_orders should get fulfillment orders for an order" do
+    fake 'orders/450789469', body: load_fixture('order')
+    order = ShopifyAPI::Order.find(450789469)
+
+    fake 'orders/450789469/fulfillment_orders', method: :get, body: load_fixture('fulfillment_orders')
+    fulfillment_orders = order.fulfillment_orders
+
+    assert_equal [519788021, 519788022], fulfillment_orders.map(&:id).sort
+    fulfillment_orders.each do |fulfillment_order|
+      assert fulfillment_order.is_a?(ShopifyAPI::FulfillmentOrder)
+      assert_equal 450789469, fulfillment_order.order_id
+    end
+  end
 end
