@@ -43,6 +43,63 @@ module ShopifyAPI
       load_attributes_from_response(post(:close, {}, body.to_json))
     end
 
+    def request_fulfillment(fulfillment_order_line_items: nil, message: nil)
+      body = {
+        fulfillment_request: {
+          fulfillment_order_line_items: fulfillment_order_line_items,
+          message: message
+        }
+      }
+      keyed_fulfillment_orders = keyed_fulfillment_orders_from_response(post(:fulfillment_request, {}, body.to_json))
+      load_keyed_fulfillment_order(keyed_fulfillment_orders, 'original_fulfillment_order')
+      keyed_fulfillment_orders
+    end
+
+    def accept_fulfillment_request(message: nil)
+      body = {
+        fulfillment_request: {
+          message: message
+        }
+      }
+      load_attributes_from_response(post('fulfillment_request/accept', {}, body.to_json))
+    end
+
+    def reject_fulfillment_request(message: nil)
+      body = {
+        fulfillment_request: {
+          message: message
+        }
+      }
+      load_attributes_from_response(post('fulfillment_request/reject', {}, body.to_json))
+    end
+
+    def request_cancellation(message: nil)
+      body = {
+        cancellation_request: {
+          message: message
+        }
+      }
+      load_attributes_from_response(post(:cancellation_request, {}, body.to_json))
+    end
+
+    def accept_cancellation_request(message: nil)
+      body = {
+        cancellation_request: {
+          message: message
+        }
+      }
+      load_attributes_from_response(post('cancellation_request/accept', {}, body.to_json))
+    end
+
+    def reject_cancellation_request(message: nil)
+      body = {
+        cancellation_request: {
+          message: message
+        }
+      }
+      load_attributes_from_response(post('cancellation_request/reject', {}, body.to_json))
+    end
+
     private
 
     def load_keyed_fulfillment_order(keyed_fulfillment_orders, key)
