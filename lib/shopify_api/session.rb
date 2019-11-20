@@ -99,12 +99,16 @@ module ShopifyAPI
 
     def request_token(params)
       return token if token
+      params = (params.respond_to?(:to_unsafe_hash) ? params.to_unsafe_hash : params).with_indifferent_access
+      unless params[:timestamp].to_i > 24.hours.ago.utc.to_i
+        raise ShopifyAPI::ValidationException, "Invalid timestamp: Possible malicious login"
+      end
 
-      unless self.class.validate_signature(params) && params[:timestamp].to_i > 24.hours.ago.utc.to_i
+      unless self.class.validate_signature(params)
         raise ShopifyAPI::ValidationException, "Invalid Signature: Possible malicious login"
       end
 
-      response = access_token_request(params[:code])
+      response = access_token_request(params['code'])
       if response.code == "200"
         self.extra = JSON.parse(response.body)
         self.token = extra.delete('access_token')

@@ -72,6 +72,18 @@ class SessionTest < Test::Unit::TestCase
     end
   end
 
+  test "Indifferent params access" do
+    api_version = ShopifyAPI::ApiVersion.new(handle: :unstable)
+    fake nil,
+      url: "https://testshop.myshopify.com/admin/oauth/access_token",
+      method: :post,
+      body: '{"access_token":"any-token" }'
+    session = ShopifyAPI::Session.new(domain: "testshop.myshopify.com", token: nil, api_version: api_version)
+
+    params = { "code" => 'any-code', 'timestamp' => Time.new }
+    assert session.request_token(params.merge(hmac: generate_signature(params)))
+  end
+
   test "setup api_key and secret for all sessions" do
     ShopifyAPI::Session.setup(:api_key => "My test key", :secret => "My test secret")
     assert_equal "My test key", ShopifyAPI::Session.api_key
