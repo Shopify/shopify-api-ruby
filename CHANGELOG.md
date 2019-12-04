@@ -1,3 +1,5 @@
+* Enrich 4xx errors with error message from response body [#647](https://github.com/Shopify/shopify_api/pull/647)
+
 == Version 8.0.0
 
 * Api Version changes [#600](https://github.com/Shopify/shopify_api/pull/600)
