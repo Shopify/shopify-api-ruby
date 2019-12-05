@@ -4,7 +4,7 @@ module ShopifyAPI
 
     module ResponseCapture
       def handle_response(response)
-        @response = super
+        @response = super(ShopifyAPI::MessageEnricher.new(response))
       end
     end
 
