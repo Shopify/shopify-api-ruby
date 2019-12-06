@@ -42,7 +42,7 @@ module ShopifyAPI
     end
 
     def self.session(shop, token, &block)
-      session = ShopifyAPI::Session.new(domain: shop, token: nil, api_version: '2019-10')
+      session = ShopifyAPI::Session.new(domain: shop, token: token, api_version: '2019-10')
       ShopifyAPI::Base.activate_session(session)
       uri = Base.site.dup
       uri.path = Base.api_version.construct_graphql_path

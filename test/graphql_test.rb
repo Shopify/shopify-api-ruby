@@ -1,6 +1,7 @@
 require 'test_helper'
 require 'mocha/minitest'
 class GraphQLTest < Test::Unit::TestCase
+  ## TODO: Need a test that confirms the token is set in the header.
   test "ShopifyAPI::GraphQL.schema_file should get/set" do
     file = "tbd"
     ShopifyAPI::GraphQL.schema_file = file
