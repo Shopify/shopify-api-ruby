@@ -95,6 +95,7 @@ module Test
         body   = options.has_key?(:body) ? options.delete(:body) : load_fixture(endpoint)
         format = options.delete(:format) || :json
         method = options.delete(:method) || :get
+        headers = options.delete(:headers)
         api_version = options.delete(:api_version) || ShopifyAPI::ApiVersion.find_version('2019-01')
         extension = ".#{options.delete(:extension)||'json'}" unless options[:extension]==false
         status = options.delete(:status) || 200
@@ -104,9 +105,13 @@ module Test
           "https://this-is-my-test-shop.myshopify.com#{api_version.construct_api_path("#{endpoint}#{extension}")}"
         end
 
-        WebMock.stub_request(method, url).to_return(
-          body: body, status: status, headers: { content_type: "text/#{format}", content_length: 1 }.merge(options)
-        )
+        if headers
+          WebMock.stub_request(method, url).with(:headers => headers).to_return(
+            body: body, status: status, headers: { content_type: "text/#{format}", content_length: 1 }.merge(options)
+          )
+        else
+          WebMock.stub_request(method, url).to_return(body: body, status: status, headers: { content_type: "text/#{format}", content_length: 1 }.merge(options))
+        end
       end
 
       def ar_version_before?(version_string)
