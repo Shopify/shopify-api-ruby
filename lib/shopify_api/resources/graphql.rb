@@ -18,7 +18,7 @@ module ShopifyAPI
     end
 
     def self.schema
-      @@schema
+      @@schema ||= nil
     end
 
     def self.reset
