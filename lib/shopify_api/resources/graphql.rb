@@ -25,6 +25,7 @@ module ShopifyAPI
       @@schema = @@schema_file = nil
     end
 
+    # TODO: Support a temp file by default
     def self.dump_schema(filename, schema)
       return false unless filename and !File.exists?(filename)
       if filename.end_with?('.graphql')
@@ -48,21 +49,31 @@ module ShopifyAPI
     end
 
     def self.session(shop, token, &block)
+      # start Thread danger?
       session = ShopifyAPI::Session.new(domain: shop, token: token, api_version: '2019-10')
       ShopifyAPI::Base.activate_session(session)
+      shop_headers = Base.headers.dup
       uri = Base.site.dup
       uri.path = Base.api_version.construct_graphql_path
+      # end Thread danger?
+
       http = ::GraphQL::Client::HTTP.new(uri.to_s) do
         define_method(:headers) do |_context|
-          Base.headers
+          shop_headers
         end
       end
+
+      # start Thread danger?
       @@schema ||= nil
       if @@schema.nil?
-          @@schema = ::GraphQL::Client.load_schema(http)
-          dump_schema(schema_file, @@schema)
+        @@schema = ::GraphQL::Client.load_schema(http)
+        dump_schema(schema_file, @@schema)
       end
+      # end Thread danger?
       client = ::GraphQL::Client.new(schema: @@schema, execute: http)
+      client.define_singleton_method(:http) { http }
+
+      # TODO: Hit { shop { name } } to confirm
       if block_given?
         yield client
       else

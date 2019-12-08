@@ -2,39 +2,40 @@ require 'test_helper'
 require 'mocha/minitest'
 require 'minitest/focus'
 class GraphQLTest < Test::Unit::TestCase
+  def reset_thingy_thing
+    ShopifyAPI::GraphQL.class_variable_set(:@@schema, nil)
+    ShopifyAPI::GraphQL.class_variable_set(:@@schema_file, nil)
+  end
+  
   test "ShopifyAPI::GraphQL.schema_file should get/set" do
-    file = "tbd"
-    assert (ShopifyAPI::GraphQL.schema_file).nil?, "No default schema_file"
-    ShopifyAPI::GraphQL.schema_file = file
-    assert_equal file, ShopifyAPI::GraphQL.schema_file
-    assert nil == ShopifyAPI::GraphQL.schema
+    reset_thingy_thing
+
+    ShopifyAPI::GraphQL.schema_file = 'tbd'
+    assert_equal 'tbd', ShopifyAPI::GraphQL.schema_file
+    assert nil == ShopifyAPI::GraphQL.schema, "No schema created when setting non-existing file"
   end
 
-  test "ShopifyAPI::GraphQL.session should return client" do
-    tmp_file = "test-schema.json"
-    File.unlink(tmp_file) if File.exists?(tmp_file)
+  test "ShopifyAPI::GraphQL.session create missing schema file" do
+    require 'tempfile'
+    tmp_file = Tempfile.new
 
     shop = "this-is-my-test-shop.myshopify.com"
     token = "fake-shop-token"
     url = "https://#{shop}/admin/api/2019-10/graphql.json"
     expect_headers = { 'X-Shopify-Access-Token' => token }
-    # Switching from fake to Mock requires that we code the MockObject to retun stuff.
+
     fake 'graphql', :method => :post, :status => 200, :body => load_fixture('graphql'), :url => url, :headers => expect_headers
-  
+    
+    # Switching from WebFake to WebMock requires that we code the MockObject to retun stuff.
     # schema = GraphQL::Client.load_schema("test/fixtures/graphql.json")
     # GraphQL::Client.expects(:dump_schema).times(1)
     # GraphQL::Client.expects(:load_schema).times(2).returns(schema)
   
-    ShopifyAPI::GraphQL.schema_file = tmp_file
+    ShopifyAPI::GraphQL.schema_file = tmp_file.path
     client = ShopifyAPI::GraphQL.session(shop, token)
     assert_equal ::GraphQL::Client, client.class, "Client is something"
     assert_requested :post, url, :headers => expect_headers, :times => 1
-    assert File.exists?(tmp_file), "Made a schema file"
-
-    # Use the class attr schema. Neither file nor network request.
-    client2 = ShopifyAPI::GraphQL.session("junk-shop", "junk-token")
-    assert_equal GraphQL::Client, client2.class, "Client is something"
-    # TODO: Confirm no net request
+    assert File.exists?(tmp_file.path), "Made a schema file"
   end
 
   test "Support json and graphql files" do
@@ -47,6 +48,13 @@ class GraphQLTest < Test::Unit::TestCase
     assert_instance_of ::GraphQL::Schema, ShopifyAPI::GraphQL.schema, "Loaded json file"
   end
   
-  test "Multi-sessions are supported" do
+  test "Support multiple sessions in same thread" do
+    ShopifyAPI::GraphQL.schema_file = "test/fixtures/graphql.graphql"
+    s1 = ShopifyAPI::GraphQL.session('shop1-name', 'shop1-token')
+    s2 = ShopifyAPI::GraphQL.session('shop2-name', 'shop2-token')
+    assert_equal 'shop1-name.myshopify.com', s1.http.uri.host
+    assert_equal 'shop2-name.myshopify.com', s2.http.uri.host
+    assert_equal 'shop1-token', s1.http.headers({})['X-Shopify-Access-Token']
+    assert_equal 'shop2-token', s2.http.headers({})['X-Shopify-Access-Token']
   end
 end
