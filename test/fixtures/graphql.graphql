@@ -1,6 +1,7 @@
 type Query {
+  shop: Shop
   shops: [Shop!]!
 }
 type Shop {
-  email: String id: ID!  name: String!  twitterHandle: String
+  email: String id: ID!  name: String!
 }

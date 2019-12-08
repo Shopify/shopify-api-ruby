@@ -2,13 +2,10 @@ require 'test_helper'
 require 'mocha/minitest'
 require 'minitest/focus'
 class GraphQLTest < Test::Unit::TestCase
-  def reset_thingy_thing
+
+  test "ShopifyAPI::GraphQL.schema_file should get/set" do
     ShopifyAPI::GraphQL.class_variable_set(:@@schema, nil)
     ShopifyAPI::GraphQL.class_variable_set(:@@schema_file, nil)
-  end
-  
-  test "ShopifyAPI::GraphQL.schema_file should get/set" do
-    reset_thingy_thing
 
     ShopifyAPI::GraphQL.schema_file = 'tbd'
     assert_equal 'tbd', ShopifyAPI::GraphQL.schema_file

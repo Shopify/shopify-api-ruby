@@ -21,10 +21,6 @@ module ShopifyAPI
       @@schema ||= nil
     end
 
-    def self.reset
-      @@schema = @@schema_file = nil
-    end
-
     # TODO: Support a temp file by default
     def self.dump_schema(filename, schema)
       return false unless filename and !File.exists?(filename)
