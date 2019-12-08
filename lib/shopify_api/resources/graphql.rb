@@ -17,28 +17,34 @@ module ShopifyAPI
       @client = ::GraphQL::Client.new(schema: @schema, execute: @http)
     end
 
+    def self.schema
+      @@schema
+    end
+
     def self.reset
       @@schema = @@schema_file = nil
     end
 
     def self.dump_schema(filename, schema)
       return false unless filename and !File.exists?(filename)
-      ::GraphQL::Client.dump_schema(schema, filename)
+      if filename.end_with?('.graphql')
+        File.open(filename, 'w+'){ |io| io.puts(schema.to_definition) }
+      else
+        ::GraphQL::Client.dump_schema(schema, filename)
+      end
     end
 
-    # Hopefully a local json file of the Shopify Schema
+    # A local json/grahql file of the Shopify Schema
     def self.schema_file
       @@schema_file ||= nil
     end
 
     # Loads schema from +filename+ or fail silent. See tests for more.
-    def self.schema_file=(filename)
+    def self.schema_file=(filename)      
       @@schema_file = filename
-      @@schema = if File.exists?(filename)
-        ::GraphQL::Client.load_schema(filename) rescue nil
-      else 
-        nil
-      end
+      return nil unless File.exists?(filename)
+      method = filename.end_with?('.graphql') ? ::GraphQL::Schema.method(:from_definition) : ::GraphQL::Client.method(:load_schema)
+      @@schema = method.call(File.read(filename))
     end
 
     def self.session(shop, token, &block)

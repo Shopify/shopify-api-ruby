@@ -5,6 +5,7 @@ class GraphQLTest < Test::Unit::TestCase
   ## TODO: Need a test that confirms the token is set in the header.
   test "ShopifyAPI::GraphQL.schema_file should get/set" do
     file = "tbd"
+    assert (ShopifyAPI::GraphQL.schema_file).nil?, "No default schema_file"
     ShopifyAPI::GraphQL.schema_file = file
     assert_equal file, ShopifyAPI::GraphQL.schema_file
   end
@@ -34,5 +35,19 @@ class GraphQLTest < Test::Unit::TestCase
     client2 = ShopifyAPI::GraphQL.session("junk-shop", "junk-token")
     assert_equal GraphQL::Client, client2.class, "Client is something"
     # TODO: Confirm no net request
+  end
+
+  focus
+  test "Support json and graphql files" do
+    ShopifyAPI::GraphQL.schema_file = "test/fixtures/graphql.graphql"
+    assert_instance_of ::GraphQL::Schema, ShopifyAPI::GraphQL.class_variable_get(:@@schema), "Loaded graphql file"
+
+    ShopifyAPI::GraphQL.class_variable_set(:@@schema, nil)
+
+    ShopifyAPI::GraphQL.schema_file = "test/fixtures/graphql.json"
+    assert_instance_of ::GraphQL::Schema, ShopifyAPI::GraphQL.schema, "Loaded json file"
+  end
+
+  test "Multi-sessions are supported" do
   end
 end
