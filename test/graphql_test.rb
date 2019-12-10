@@ -3,6 +3,23 @@ require 'mocha/minitest'
 require 'minitest/focus'
 class GraphQLTest < Test::Unit::TestCase
 
+  def test_schema_save
+    assert ShopifyAPI::GraphQL.schema_save, 'Default to save'
+    assert_raises Exception do
+      ShopifyAPI::GraphQL.schema_save = 'false'
+    end
+    
+    ShopifyAPI::GraphQL.schema_save = false
+    assert_equal false, ShopifyAPI::GraphQL.schema_save, 'Support being false'
+
+    ShopifyAPI::GraphQL.schema_save = true
+    assert ShopifyAPI::GraphQL.schema_save, 'Support being true'
+
+    tmp = 'never-written'
+    ShopifyAPI::GraphQL.class_variable_set(:@@schema_file, tmp)
+    File.exists?(tmp)
+  end
+
   test "ShopifyAPI::GraphQL.schema_file should get/set" do
     ShopifyAPI::GraphQL.class_variable_set(:@@schema, nil)
     ShopifyAPI::GraphQL.class_variable_set(:@@schema_file, nil)
