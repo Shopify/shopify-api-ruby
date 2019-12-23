@@ -3,6 +3,9 @@
 * Release 2020-01 REST ADMIN API VERSION [#656](https://github.com/Shopify/shopify_api/pull/656)
 * Release new Endpoint `collection.products` and `collection.find()` in 2020-01 REST API version [#657](https://github.com/Shopify/shopify_api/pull/657)
 * Enrich 4xx errors with error message from response body [#647](https://github.com/Shopify/shopify_api/pull/647)
+* Make relative cursor based pagination work across page loads [#625](https://github.com/Shopify/shopify_api/pull/625)
+* Small ruby compat fix [#623](https://github.com/Shopify/shopify_api/pull/623)
+* Small consistency change [#621](https://github.com/Shopify/shopify_api/pull/621)
 
 == Version 8.0.0
 
