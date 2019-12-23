@@ -22,15 +22,15 @@ class ApiVersionTest < Test::Unit::TestCase
   test "find_version removes unverified versions from version set if mode is set to :raise_on_unknown" do
     ShopifyAPI::ApiVersion.version_lookup_mode = :define_on_unknown
     assert ShopifyAPI::ApiVersion.versions.values.all?(&:verified?)
-    assert_equal 5, ShopifyAPI::ApiVersion.versions.size
+    assert_equal 6, ShopifyAPI::ApiVersion.versions.size
 
     ShopifyAPI::ApiVersion.find_version('2019-30')
     refute ShopifyAPI::ApiVersion.versions.values.all?(&:verified?)
-    assert_equal 6, ShopifyAPI::ApiVersion.versions.size
+    assert_equal 7, ShopifyAPI::ApiVersion.versions.size
     ShopifyAPI::ApiVersion.version_lookup_mode = :raise_on_unknown
 
     assert ShopifyAPI::ApiVersion.versions.values.all?(&:verified?)
-    assert_equal 5, ShopifyAPI::ApiVersion.versions.size
+    assert_equal 6, ShopifyAPI::ApiVersion.versions.size
   end
 
   test "find_version does not raise when coercing a string if no versions are defined when version_lookup_mode is :define_on_unknown" do
@@ -101,8 +101,9 @@ class ApiVersionTest < Test::Unit::TestCase
       {
         "2019-01" => ShopifyAPI::ApiVersion.new(handle: '2019-01', supported: true, latest_supported: false),
         "2019-04" => ShopifyAPI::ApiVersion.new(handle: '2019-04', supported: true, latest_supported: false),
-        "2019-07" => ShopifyAPI::ApiVersion.new(handle: '2019-07', supported: true, latest_supported: true),
+        "2019-07" => ShopifyAPI::ApiVersion.new(handle: '2019-07', supported: true, latest_supported: false),
         "2019-10" => ShopifyAPI::ApiVersion.new(handle: '2019-10', supported: false, latest_supported: false),
+        "2020-01" => ShopifyAPI::ApiVersion.new(handle: '2020-01', supported: false, latest_supported: true),
         "unstable" => ShopifyAPI::ApiVersion.new(handle: 'unstable', supported: false, latest_supported: false),
       }
     )
@@ -114,7 +115,7 @@ class ApiVersionTest < Test::Unit::TestCase
       )
 
       assert_equal(
-        ShopifyAPI::ApiVersion.new(handle: '2019-07'),
+        ShopifyAPI::ApiVersion.new(handle: '2020-01'),
         ShopifyAPI::ApiVersion.latest_stable_version
       )
     end
