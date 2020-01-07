@@ -5,6 +5,9 @@ class FulFillmentOrderTest < Test::Unit::TestCase
     super
     fake "fulfillment_orders/519788021", method: :get,
       body: load_fixture('fulfillment_order')
+
+    fake "orders/450789469/fulfillment_orders", method: :get,
+      body: load_fixture('fulfillment_orders')
   end
 
   context "FulfillmentOrder" do
