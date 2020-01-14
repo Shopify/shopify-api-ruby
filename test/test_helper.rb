@@ -92,6 +92,7 @@ module Test
       end
 
       def fake(endpoint, options={})
+        request_body = options.has_key?(:request_body) ? options.delete(:request_body) : nil
         body   = options.has_key?(:body) ? options.delete(:body) : load_fixture(endpoint)
         format = options.delete(:format) || :json
         method = options.delete(:method) || :get
@@ -104,7 +105,9 @@ module Test
           "https://this-is-my-test-shop.myshopify.com#{api_version.construct_api_path("#{endpoint}#{extension}")}"
         end
 
-        WebMock.stub_request(method, url).to_return(
+        stubbing = WebMock.stub_request(method, url)
+        stubbing = stubbing.with(body: request_body) if request_body
+        stubbing.to_return(
           body: body, status: status, headers: { content_type: "text/#{format}", content_length: 1 }.merge(options)
         )
       end
