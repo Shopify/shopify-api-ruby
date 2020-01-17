@@ -17,6 +17,14 @@ module ShopifyAPI
       fulfillment_hashes.map { |fulfillment_hash| Fulfillment.new(fulfillment_hash) }
     end
 
+    def locations_for_move
+      locations_for_move_hashes = get(:locations_for_move, {})
+
+      locations_for_move_hashes.map do |locations_for_move_hash|
+        FulfillmentOrderLocationsForMove.new(locations_for_move_hash)
+      end
+    end
+
     def move(new_location_id:)
       body = {
         fulfillment_order: {
