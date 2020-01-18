@@ -150,20 +150,21 @@ class SessionTest < Test::Unit::TestCase
     assert_equal(ShopifyAPI::ApiVersion.new(handle: '2019-01'), ShopifyAPI::Base.api_version)
   end
 
-  test "create_permission_url returns correct url with single scope no redirect uri" do
-    ShopifyAPI::Session.setup(:api_key => "My_test_key", :secret => "My test secret")
+  test "create_permission_url requires redirect_uri" do
+    ShopifyAPI::Session.setup(api_key: "My_test_key", secret: "My test secret")
     session = ShopifyAPI::Session.new(
       domain: 'http://localhost.myshopify.com',
       token: 'any-token',
       api_version: any_api_version
     )
     scope = ["write_products"]
-    permission_url = session.create_permission_url(scope)
-    assert_equal "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&scope=write_products", permission_url
+    assert_raises(ArgumentError) do
+      session.create_permission_url(scope)
+    end
   end
 
   test "create_permission_url returns correct url with single scope and redirect uri" do
-    ShopifyAPI::Session.setup(:api_key => "My_test_key", :secret => "My test secret")
+    ShopifyAPI::Session.setup(api_key: "My_test_key", secret: "My test secret")
     session = ShopifyAPI::Session.new(
       domain: 'http://localhost.myshopify.com',
       token: 'any-token',
@@ -174,28 +175,40 @@ class SessionTest < Test::Unit::TestCase
     assert_equal "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&scope=write_products&redirect_uri=http://my_redirect_uri.com", permission_url
   end
 
-  test "create_permission_url returns correct url with dual scope no redirect uri" do
-    ShopifyAPI::Session.setup(:api_key => "My_test_key", :secret => "My test secret")
+  test "create_permission_url returns correct url with dual scope" do
+    ShopifyAPI::Session.setup(api_key: "My_test_key", secret: "My test secret")
     session = ShopifyAPI::Session.new(
       domain: 'http://localhost.myshopify.com',
       token: 'any-token',
       api_version: any_api_version
     )
     scope = ["write_products","write_customers"]
-    permission_url = session.create_permission_url(scope)
-    assert_equal "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&scope=write_products,write_customers", permission_url
+    permission_url = session.create_permission_url(scope, "http://my_redirect_uri.com")
+    assert_equal "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&scope=write_products,write_customers&redirect_uri=http://my_redirect_uri.com", permission_url
   end
 
-  test "create_permission_url returns correct url with no scope no redirect uri" do
-    ShopifyAPI::Session.setup(:api_key => "My_test_key", :secret => "My test secret")
+  test "create_permission_url returns correct url with no scope" do
+    ShopifyAPI::Session.setup(api_key: "My_test_key", secret: "My test secret")
     session = ShopifyAPI::Session.new(
       domain: 'http://localhost.myshopify.com',
       token: 'any-token',
       api_version: any_api_version
     )
     scope = []
-    permission_url = session.create_permission_url(scope)
-    assert_equal "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&scope=", permission_url
+    permission_url = session.create_permission_url(scope, "http://my_redirect_uri.com")
+    assert_equal "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&scope=&redirect_uri=http://my_redirect_uri.com", permission_url
+  end
+
+  test "create_permission_url returns correct url with state" do
+    ShopifyAPI::Session.setup(api_key: "My_test_key", secret: "My test secret")
+    session = ShopifyAPI::Session.new(
+      domain: 'http://localhost.myshopify.com',
+      token: 'any-token',
+      api_version: any_api_version
+    )
+    scope = []
+    permission_url = session.create_permission_url(scope, "http://my_redirect_uri.com", state: "My nonce")
+    assert_equal "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&scope=&redirect_uri=http://my_redirect_uri.com&state=My%20nonce", permission_url
   end
 
   test "raise exception if code invalid in request token" do

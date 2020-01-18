@@ -192,17 +192,16 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
    shopify_session = ShopifyAPI::Session.new(domain: "SHOP_NAME.myshopify.com", api_version: api_version, token: nil)
    ```
 
-   Then call:
-
-   ```ruby
-   scope = ["write_products"]
-   permission_url = shopify_session.create_permission_url(scope)
-   ```
-
-   or if you want a custom redirect_uri:
+   Then call `create_permission_url` with the redirect_uri you've registered for your application:
 
    ```ruby
    permission_url = shopify_session.create_permission_url(scope, "https://my_redirect_uri.com")
+   ```
+
+   You can also pass a state parameter in the options hash as a last argument:
+
+   ```ruby
+   permission_url = shopify_session.create_permission_url(scope, "https://my_redirect_uri.com", { state: "My Nonce" })
    ```
 
 4. Once authorized, the shop redirects the owner to the return URL of your application with a parameter named 'code'. This is a temporary token that the app can exchange for a permanent access token.
