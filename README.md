@@ -403,6 +403,14 @@ while products.next_page?
 end
 ```
 
+If you want cursor based pagination to work across page loads, or want to distribute workload across multiple background jobs, you can use #next_page_info or #previous_page_info methods that return strings:
+
+```
+  first_batch_products = ShopifyAPI::Product.find(:all, params: { limit: 50 })
+  second_batch_products = ShopifyAPI::Product.find(:all, params: { limit: 50, page_info: first_batch_products.next_page_info })
+  ...
+```
+
 Relative cursor pagination is currently available for all endpoints using the `2019-10` and later API versions.
 
 ## Using Development Version
