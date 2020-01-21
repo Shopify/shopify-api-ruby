@@ -7,30 +7,62 @@ namespace :shopify_api do
     # add the Rails environment task as a prerequisite if loaded from a Rails app
     prereqs << :environment if Rake::Task.task_defined?('environment')
 
-    desc 'Writes the Shopify Admin API GraphQL schema to a local file'
+    desc 'Dumps a local JSON schema file of the Shopify Admin API'
     task dump: prereqs do
-      site_url = ENV['SITE_URL'] || ENV['site_url']
-      shop_domain = ENV['SHOP_DOMAIN'] || ENV['shop_domain']
-      api_version = ENV['API_VERSION'] || ENV['api_version']
-      access_token = ENV['ACCESS_TOKEN'] || ENV['access_token']
+      usage = <<~USAGE
 
-      unless site_url || shop_domain
-        puts 'Either SHOP_DOMAIN or SITE_URL is required for authentication'
+        Usage: rake shopify_api:graphql:dump [<args>]
+
+        Dumps a local JSON schema file of the Shopify Admin API. The schema is specific to an
+        API version and authentication is required (either OAuth or private app).
+
+        Dump the schema file for the 2020-01 API version using private app authentication:
+          $ rake shopify_api:graphql:dump SHOP_URL="https://API_KEY:PASSWORD@SHOP_NAME.myshopify.com" API_VERSION=2020-01
+
+        Dump the schema file for the unstable API version using an OAuth access token:
+          $ rake shopify_api:graphql:dump SHOP_DOMAIN=SHOP_NAME.myshopify.com ACCESS_TOKEN=abc API_VERSION=unstable
+
+        See https://github.com/Shopify/shopify_api#getting-started for more
+        details on getting started with authenticated API calls.
+
+        Arguments:
+          ACCESS_TOKEN  OAuth access token (shop specific)
+          API_VERSION   API version handle [example: 2020-01]
+          SHOP_DOMAIN   Shop domain (without path) [example: SHOP_NAME.myshopify.com]
+          SHOP_URL      Shop URL for private apps [example: https://API_KEY:PASSWORD@SHOP_NAME.myshopify.com]
+      USAGE
+
+      access_token = ENV['ACCESS_TOKEN'] || ENV['access_token']
+      api_version = ENV['API_VERSION'] || ENV['api_version']
+      shop_url = ENV['SHOP_URL'] || ENV['shop_url']
+      shop_domain = ENV['SHOP_DOMAIN'] || ENV['shop_domain']
+
+      unless access_token || api_version || shop_url || shop_domain
+        puts usage
         exit(1)
       end
 
-      if site_url && shop_domain
-        puts 'SHOP_DOMAIN and SITE_URL cannot be used together. Use one or the other for authentication.'
+      unless shop_url || shop_domain
+        puts 'Error: either SHOP_DOMAIN or SHOP_URL is required for authentication'
+        puts usage
+        exit(1)
+      end
+
+      if shop_url && shop_domain
+        puts 'Error: SHOP_DOMAIN and SHOP_URL cannot be used together. Use one or the other for authentication.'
+        puts usage
         exit(1)
       end
 
       if shop_domain && !access_token
-        puts 'ACCESS_TOKEN required when SHOP_DOMAIN is used'
+        puts 'Error: ACCESS_TOKEN required when SHOP_DOMAIN is used'
+        puts usage
         exit(1)
       end
 
       unless api_version
-        puts "API_VERSION required. Example `2020-01`"
+        puts 'Error: API_VERSION required. Example: 2020-01'
+        puts usage
         exit(1)
       end
 
@@ -40,8 +72,8 @@ namespace :shopify_api do
       shopify_session = ShopifyAPI::Session.new(domain: shop_domain, token: access_token, api_version: api_version)
       ShopifyAPI::Base.activate_session(shopify_session)
 
-      if site_url
-        ShopifyAPI::Base.site = site_url
+      if shop_url
+        ShopifyAPI::Base.site = shop_url
       end
 
       schema_location = ShopifyAPI::GraphQL.schema_location
