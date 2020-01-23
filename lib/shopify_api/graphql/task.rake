@@ -3,12 +3,8 @@ require 'fileutils'
 
 namespace :shopify_api do
   namespace :graphql do
-    prereqs = []
-    # add the Rails environment task as a prerequisite if loaded from a Rails app
-    prereqs << :environment if Rake::Task.task_defined?('environment')
-
     desc 'Dumps a local JSON schema file of the Shopify Admin API'
-    task dump: prereqs do
+    task :dump do
       usage = <<~USAGE
 
         Usage: rake shopify_api:graphql:dump [<args>]
@@ -66,6 +62,8 @@ namespace :shopify_api do
         exit(1)
       end
 
+      Rake::Task['environment'].invoke if Rake::Task.task_defined?('environment')
+
       ShopifyAPI::ApiVersion.fetch_known_versions
       ShopifyAPI::ApiVersion.version_lookup_mode = :raise_on_unknown
 
@@ -76,11 +74,27 @@ namespace :shopify_api do
         ShopifyAPI::Base.site = shop_url
       end
 
+      puts "Fetching schema for #{ShopifyAPI::Base.api_version.handle} API version..."
+
+      client = ShopifyAPI::GraphQL::HTTPClient.new(ShopifyAPI::Base.api_version)
+      document = GraphQL.parse('{ __schema { queryType { name } } }')
+      response = client.execute(document: document).to_h
+
+      unless response['data'].present?
+        puts "Error: failed to query the API."
+        puts "Response: #{response}"
+        puts 'Ensure your SHOP_DOMAIN or SHOP_URL are valid and you have valid authentication credentials.'
+        puts usage
+        exit(1)
+      end
+
       schema_location = ShopifyAPI::GraphQL.schema_location
       FileUtils.mkdir_p(schema_location) unless Dir.exist?(schema_location)
 
-      client = ShopifyAPI::GraphQL::HTTPClient.new(ShopifyAPI::Base.api_version)
-      GraphQL::Client.dump_schema(client, schema_location.join("#{api_version}.json").to_s)
+      schema_file = schema_location.join("#{api_version}.json")
+      GraphQL::Client.dump_schema(client, schema_file.to_s)
+
+      puts "Wrote file #{schema_file}"
     end
   end
 end
