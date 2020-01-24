@@ -132,6 +132,14 @@ module ShopifyAPI
         !!early_july_pagination
       end
 
+      def version_validation!(minimum_version)
+        available_in_version = ShopifyAPI::ApiVersion.find_version(minimum_version)
+
+        unless ShopifyAPI::Base.api_version >= available_in_version
+          raise NotImplementedError, "The minimum supported version is #{minimum_version}."
+        end
+      end
+
       private
 
       attr_accessor :early_july_pagination

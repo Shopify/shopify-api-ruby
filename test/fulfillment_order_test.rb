@@ -1,16 +1,58 @@
 require 'test_helper'
+require 'fulfillment_order_test_helper'
 
 class FulFillmentOrderTest < Test::Unit::TestCase
+  include FulfillmentOrderTestHelper
+
   def setup
     super
-    fake "fulfillment_orders/519788021", method: :get,
-      body: load_fixture('fulfillment_order')
+    @url_prefix = url_prefix_for_activated_session_for('2020-01')
 
-    fake "orders/450789469/fulfillment_orders", method: :get,
-      body: load_fixture('fulfillment_orders')
+    fake 'fulfillment_orders',
+      url: "#{@url_prefix}/fulfillment_orders/519788021.json",
+      method: :get,
+      body: load_fixture('fulfillment_order')
   end
 
   context "FulfillmentOrder" do
+    context ".new" do
+      should "raise NotImplementedError when api_version is older than 2020-01" do
+        url_prefix_for_activated_session_for('2019-10')
+        fulfillment_order = load_fixture('fulfillment_order')
+
+        exception = assert_raises NotImplementedError do
+          ShopifyAPI::FulfillmentOrder.new(ActiveSupport::JSON.decode(fulfillment_order))
+        end
+        assert_equal(
+          "The minimum supported version is 2020-01.",
+          exception.message
+        )
+      end
+    end
+
+    context ".find and .all" do
+      should "raise NotImplementedError when api_version is older than 2020-01" do
+        @url_prefix = url_prefix_for_activated_session_for('2019-10')
+
+        fake 'fulfillment_orders',
+          url: "#{@url_prefix}/fulfillment_orders/519788021.json",
+          method: :get,
+          body: load_fixture('fulfillment_order')
+
+        exception = assert_raises NotImplementedError do
+          ShopifyAPI::FulfillmentOrder.find(519788021)
+        end
+        assert_equal(
+          "The minimum supported version is 2020-01.",
+          exception.message
+        )
+
+        assert_raises NotImplementedError do
+          ShopifyAPI::FulfillmentOrder.all(params: { order_id: 450789469 })
+        end
+      end
+    end
+
     context "#find" do
       should "be able to find fulfillment order" do
         fulfillment_order = ShopifyAPI::FulfillmentOrder.find(519788021)
@@ -22,7 +64,10 @@ class FulFillmentOrderTest < Test::Unit::TestCase
 
     context "#all" do
       should "be able to list fulfillment orders for an order" do
-        fake 'orders/450789469/fulfillment_orders', method: :get, body: load_fixture('fulfillment_orders')
+        fake 'orders',
+          url: "#{@url_prefix}/orders/450789469/fulfillment_orders.json",
+          method: :get,
+          body: load_fixture('fulfillment_orders')
 
         fulfillment_orders = ShopifyAPI::FulfillmentOrder.all(
           params: { order_id: 450789469 }
@@ -45,8 +90,10 @@ class FulFillmentOrderTest < Test::Unit::TestCase
     context "#fulfillments" do
       should "be able to list fulfillments for a fulfillment order" do
         fulfillment_order = ShopifyAPI::FulfillmentOrder.find(519788021)
-        fake "fulfillment_orders/#{fulfillment_order.id}/fulfillments", method: :get,
-             body: load_fixture('fulfillments')
+        fake 'fulfillment_orders',
+          url: "#{@url_prefix}/fulfillment_orders/#{fulfillment_order.id}/fulfillments.json",
+          method: :get,
+          body: load_fixture('fulfillments')
 
         fulfillments = fulfillment_order.fulfillments
 
@@ -60,7 +107,9 @@ class FulFillmentOrderTest < Test::Unit::TestCase
     context "#locations_for_move" do
       should "be able to list locations for a fulfillment order" do
         fulfillment_order = ShopifyAPI::FulfillmentOrder.find(519788021)
-        fake "fulfillment_orders/#{fulfillment_order.id}/locations_for_move", method: :get,
+        fake 'fulfillment_orders',
+          url: "#{@url_prefix}/fulfillment_orders/#{fulfillment_order.id}/locations_for_move.json",
+          method: :get,
           body: load_fixture('fulfillment_order_locations_for_move')
 
         locations_for_move = fulfillment_order.locations_for_move
@@ -91,7 +140,9 @@ class FulFillmentOrderTest < Test::Unit::TestCase
           moved_fulfillment_order: fake_moved_fulfillment_order,
           remaining_fulfillment_order: nil,
         }
-        fake "fulfillment_orders/519788021/move", :method => :post,
+        fake 'fulfillment_orders',
+          url: "#{@url_prefix}/fulfillment_orders/519788021/move.json",
+          :method => :post,
           :request_body => ActiveSupport::JSON.encode(request_body),
           :body => ActiveSupport::JSON.encode(body)
 
@@ -127,7 +178,10 @@ class FulFillmentOrderTest < Test::Unit::TestCase
           fulfillment_order: cancelled,
           replacement_fulfillment_order: fulfillment_order,
         }
-        fake "fulfillment_orders/519788021/cancel", :method => :post, :body => ActiveSupport::JSON.encode(body)
+        fake 'fulfillment_orders',
+          url: "#{@url_prefix}/fulfillment_orders/519788021/cancel.json",
+          :method => :post,
+          :body => ActiveSupport::JSON.encode(body)
 
         response_fulfillment_orders = fulfillment_order.cancel
 
@@ -152,7 +206,9 @@ class FulFillmentOrderTest < Test::Unit::TestCase
             message: "Test close message."
           }
         }
-        fake "fulfillment_orders/519788021/close", :method => :post,
+        fake 'fulfillment_orders',
+          url: "#{@url_prefix}/fulfillment_orders/519788021/close.json",
+          :method => :post,
           :request_body => ActiveSupport::JSON.encode(request_body),
           :body => ActiveSupport::JSON.encode(closed)
 
@@ -186,7 +242,9 @@ class FulFillmentOrderTest < Test::Unit::TestCase
             message: 'Fulfill this FO, please.'
           }
         }
-        fake "fulfillment_orders/519788021/fulfillment_request", :method => :post,
+        fake 'fulfillment_orders',
+          url: "#{@url_prefix}/fulfillment_orders/519788021/fulfillment_request.json",
+          :method => :post,
           :request_body => ActiveSupport::JSON.encode(request_body),
           :body => ActiveSupport::JSON.encode(body)
 
@@ -235,7 +293,9 @@ class FulFillmentOrderTest < Test::Unit::TestCase
             message: 'Fulfill this FO, please.'
           }
         }
-        fake "fulfillment_orders/519788021/fulfillment_request", :method => :post,
+        fake 'fulfillment_orders',
+          url: "#{@url_prefix}/fulfillment_orders/519788021/fulfillment_request.json",
+          :method => :post,
           :request_body => ActiveSupport::JSON.encode(request_body),
           :body => ActiveSupport::JSON.encode(body)
 
@@ -275,7 +335,9 @@ class FulFillmentOrderTest < Test::Unit::TestCase
         fake_response = {
           fulfillment_order: fulfillment_order.attributes.merge(status: 'in_progress', request_status: 'accepted')
         }
-        fake "fulfillment_orders/519788021/fulfillment_request/accept", :method => :post,
+        fake 'fulfillment_orders',
+          url: "#{@url_prefix}/fulfillment_orders/519788021/fulfillment_request/accept.json",
+          :method => :post,
           :request_body => ActiveSupport::JSON.encode(request_body),
           :body => ActiveSupport::JSON.encode(fake_response)
 
@@ -300,7 +362,9 @@ class FulFillmentOrderTest < Test::Unit::TestCase
         fake_response = {
           fulfillment_order: fulfillment_order.attributes.merge(status: 'open', request_status: 'rejected')
         }
-        fake "fulfillment_orders/519788021/fulfillment_request/reject", :method => :post,
+        fake 'fulfillment_orders',
+          url: "#{@url_prefix}/fulfillment_orders/519788021/fulfillment_request/reject.json",
+          :method => :post,
           :request_body => ActiveSupport::JSON.encode(request_body),
           :body => ActiveSupport::JSON.encode(fake_response)
 
@@ -325,7 +389,9 @@ class FulFillmentOrderTest < Test::Unit::TestCase
         cancelling = ActiveSupport::JSON.decode(load_fixture('fulfillment_order'))
         cancelling['status'] = 'in_progress'
         cancelling['request_status'] = 'cancellation_requested'
-        fake "fulfillment_orders/519788021/cancellation_request", :method => :post,
+        fake 'fulfillment_orders',
+          url: "#{@url_prefix}/fulfillment_orders/519788021/cancellation_request.json",
+          :method => :post,
           :request_body => ActiveSupport::JSON.encode(request_body),
           :body => ActiveSupport::JSON.encode({ fulfillment_order: cancelling })
 
@@ -351,7 +417,9 @@ class FulFillmentOrderTest < Test::Unit::TestCase
           fulfillment_order: fulfillment_order.attributes.merge(status: 'cancelled',
                                                                 request_status: 'cancellation_accepted')
         }
-        fake "fulfillment_orders/519788021/cancellation_request/accept", :method => :post,
+        fake 'fulfillment_orders',
+          url: "#{@url_prefix}/fulfillment_orders/519788021/cancellation_request/accept.json",
+          :method => :post,
           :request_body => ActiveSupport::JSON.encode(request_body),
           :body => ActiveSupport::JSON.encode(fake_response)
 
@@ -377,7 +445,9 @@ class FulFillmentOrderTest < Test::Unit::TestCase
           fulfillment_order: fulfillment_order.attributes.merge(status: 'in_progress',
                                                                 request_status: 'cancellation_rejected')
         }
-        fake "fulfillment_orders/519788021/cancellation_request/reject", :method => :post,
+        fake 'fulfillment_orders',
+          url: "#{@url_prefix}/fulfillment_orders/519788021/cancellation_request/reject.json",
+          :method => :post,
           :request_body => request_body,
           :body => ActiveSupport::JSON.encode(fake_response)
 
@@ -388,6 +458,5 @@ class FulFillmentOrderTest < Test::Unit::TestCase
         assert_equal 'cancellation_rejected', fulfillment_order.request_status
       end
     end
-
   end
 end

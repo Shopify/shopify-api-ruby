@@ -1,6 +1,15 @@
 module ShopifyAPI
   class FulfillmentOrder < Base
+    MINIMUM_VERSION = '2020-01'
+
+    def initialize(attributes = {}, persisted = false)
+      ShopifyAPI::Base.version_validation!(MINIMUM_VERSION)
+      super(attributes, persisted)
+    end
+
     def self.find(scope, *args)
+      ShopifyAPI::Base.version_validation!(MINIMUM_VERSION)
+
       if scope == :all
         order_id = args.first&.dig(:params, :order_id)
         raise ShopifyAPI::ValidationException, "'order_id' is required" if order_id.blank?
