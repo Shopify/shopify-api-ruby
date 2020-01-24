@@ -346,15 +346,18 @@ gem install shopify_api_console
 
 ## GraphQL
 
-This library also supports Shopify's new [GraphQL API](https://help.shopify.com/api/graphql-admin-api)
-via a dependency on the [graphql-client](https://github.com/github/graphql-client) gem.
+Note: the GraphQL client has improved and changed in version 9.0. See the [client documentation](docs/graphql.md)
+for full usage details and a [migration guide](docs/graphql.md#migration-guide).
+
+This library also supports Shopify's [GraphQL Admin API](https://help.shopify.com/api/graphql-admin-api)
+via integration with the [graphql-client](https://github.com/github/graphql-client) gem.
 The authentication process (steps 1-5 under [Getting Started](#getting-started))
-is identical. Once your session is activated, simply construct a new graphql
-client and use `parse` and `query` as defined by
+is identical. Once your session is activated, simply access the GraphQL client
+and use `parse` and `query` as defined by
 [graphql-client](https://github.com/github/graphql-client#defining-queries).
 
 ```ruby
-client = ShopifyAPI::GraphQL.new
+client = ShopifyAPI::GraphQL.client
 
 SHOP_NAME_QUERY = client.parse <<-'GRAPHQL'
   {
@@ -367,6 +370,8 @@ GRAPHQL
 result = client.query(SHOP_NAME_QUERY)
 result.data.shop.name
 ```
+
+[GraphQL client documentation](docs/graphql.md)
 
 ## Threadsafety
 
