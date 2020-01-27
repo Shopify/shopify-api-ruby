@@ -1,6 +1,8 @@
 require 'test_helper'
+require 'fulfillment_order_test_helper'
 
 class OrderTest < Test::Unit::TestCase
+  include FulfillmentOrderTestHelper
 
   test "create should create order" do
     fake 'orders', :method => :post, :status => 201, :body => load_fixture('order')
@@ -73,17 +75,51 @@ class OrderTest < Test::Unit::TestCase
     }.to_json)
   end
 
-  test "fulfillment_orders should get fulfillment orders for an order" do
-    fake 'orders/450789469', body: load_fixture('order')
+  test "fulfillment_orders should get fulfillment orders for an order with 2020-01 version" do
+    url_prefix = url_prefix_for_activated_session_for('2020-01')
+
+    fake(
+      'orders',
+      url: "#{url_prefix}/orders/450789469.json",
+      method: :get,
+      status: 200,
+      body: load_fixture('order'),
+      extension: false
+    )
     order = ShopifyAPI::Order.find(450789469)
 
-    fake 'orders/450789469/fulfillment_orders', method: :get, body: load_fixture('fulfillment_orders')
+    fake(
+      'orders',
+      url: "#{url_prefix}/orders/450789469/fulfillment_orders.json",
+      method: :get,
+      status: 200,
+      body: load_fixture('fulfillment_orders'),
+      extension: false
+    )
     fulfillment_orders = order.fulfillment_orders
 
     assert_equal [519788021, 519788022], fulfillment_orders.map(&:id).sort
     fulfillment_orders.each do |fulfillment_order|
       assert fulfillment_order.is_a?(ShopifyAPI::FulfillmentOrder)
       assert_equal 450789469, fulfillment_order.order_id
+    end
+  end
+
+  test "fulfillment_orders raises NotImplementedError when api_version is older than 2020-01" do
+    url_prefix = url_prefix_for_activated_session_for('2019-10')
+
+    fake(
+      'orders',
+      url: "#{url_prefix}/orders/450789469.json",
+      method: :get,
+      status: 200,
+      body: load_fixture('order'),
+      extension: false
+    )
+    order = ShopifyAPI::Order.find(450789469)
+
+    assert_raises NotImplementedError do
+      order.fulfillment_orders
     end
   end
 end

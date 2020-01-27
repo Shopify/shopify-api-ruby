@@ -1,6 +1,9 @@
 require 'test_helper'
+require 'fulfillment_order_test_helper'
 
 class FulFillmentTest < Test::Unit::TestCase
+  include FulfillmentOrderTestHelper
+
   def setup
     super
     fake "orders/450789469/fulfillments/255858046", :method => :get, :body => load_fixture('fulfillment')
@@ -76,7 +79,10 @@ class FulFillmentTest < Test::Unit::TestCase
         }
         request_body = { fulfillment: create_fulfillment_attributes }
         response_body = { fulfillment: create_fulfillment_attributes.merge(id: 346743624) }
-        fake "fulfillments", :method => :post,
+        url_prefix = url_prefix_for_activated_session_for('2020-01')
+        fake 'fulfillments',
+          url: "#{url_prefix}/fulfillments.json",
+          :method => :post,
           request_body: ActiveSupport::JSON.encode(request_body),
           body: ActiveSupport::JSON.encode(response_body)
 
@@ -84,6 +90,36 @@ class FulFillmentTest < Test::Unit::TestCase
         assert fulfillment.is_a?(ShopifyAPI::Fulfillment)
         assert fulfillment.persisted?
         assert_equal 346743624, fulfillment.id
+      end
+
+      should "raise NotImplementedError when api_version is older than 2020-01" do
+        create_fulfillment_attributes = {
+          message: "The message for this FO fulfillment",
+          notify_customer: true,
+          tracking_info: {
+            number: "XSDFHYR23475",
+            url: "https://tracking.example.com/XSDFHYR23475",
+            company: "TFTC - the fulfillment/tracking company"
+          },
+          line_items_by_fulfillment_order: [
+            {
+              fulfillment_order_id: 3,
+              fulfillment_order_line_items: [{ id: 2, quantity: 1 }]
+            }
+          ]
+        }
+        request_body = { fulfillment: create_fulfillment_attributes }
+        response_body = { fulfillment: create_fulfillment_attributes.merge(id: 346743624) }
+        url_prefix = url_prefix_for_activated_session_for('2019-10')
+        fake 'fulfillments',
+          url: "#{url_prefix}/fulfillments.json",
+          :method => :post,
+          request_body: ActiveSupport::JSON.encode(request_body),
+          body: ActiveSupport::JSON.encode(response_body)
+
+        assert_raises NotImplementedError do
+          ShopifyAPI::Fulfillment.create(create_fulfillment_attributes)
+        end
       end
     end
 
@@ -106,7 +142,10 @@ class FulFillmentTest < Test::Unit::TestCase
         }
         request_body = { fulfillment: create_fulfillment_attributes }
         response_body = { fulfillment: create_fulfillment_attributes.merge(id: 346743624) }
-        fake "fulfillments", :method => :post,
+        url_prefix = url_prefix_for_activated_session_for('2020-01')
+        fake 'fulfillments',
+          url: "#{url_prefix}/fulfillments.json",
+          :method => :post,
           request_body: ActiveSupport::JSON.encode(request_body),
           body: ActiveSupport::JSON.encode(response_body)
 
@@ -164,7 +203,10 @@ class FulFillmentTest < Test::Unit::TestCase
             notify_customer: true
           }
         }
-        fake "fulfillments/#{fake_fulfillment['id']}/update_tracking", method: :post,
+        url_prefix = url_prefix_for_activated_session_for('2020-01')
+        fake 'fulfillments',
+          url: "#{url_prefix}/fulfillments/#{fake_fulfillment['id']}/update_tracking.json",
+          method: :post,
           request_body: ActiveSupport::JSON.encode(request_body),
           body: ActiveSupport::JSON.encode(fulfillment: fake_fulfillment)
 
