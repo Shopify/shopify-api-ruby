@@ -1,3 +1,28 @@
+== Version 9.0.0
+
+* Breaking change: Improved GraphQL client [#672](https://github.com/Shopify/shopify_api/pull/672). See the [client docs](docs/graphql.md) for usage and a migration guide.
+
+* Added options hash to create_permission_url and makes redirect_uri required [#670](https://github.com/Shopify/shopify_api/pull/670)
+
+* Release new Endpoint `fulfillment_order.locations_for_move` in 2020-01 REST API version [#669](https://github.com/Shopify/shopify_api/pull/669)
+
+* Release new Endpoints for `fulfillment` in 2020-01 REST API version [#639](https://github.com/Shopify/shopify_api/pull/639):
+  * `fulfillment.create` with `line_items_by_fulfillment_order`
+  * `fulfillment.update_tracking`
+  * `fulfillment.cancel`
+
+* Release new Endpoints for `fulfillment_order` in 2020-01 REST API version [#637](https://github.com/Shopify/shopify_api/pull/637):
+  * `fulfillment_order.fulfillment_request`
+  * `fulfillment_order.fulfillment_request.accept`
+  * `fulfillment_order.fulfillment_request.reject`
+  * `fulfillment_order.cancellation_request`
+  * `fulfillment_order.cancellation_request.accept`
+  * `fulfillment_order.cancellation_request.reject`
+
+* Release new Endpoints `fulfillment_order.move`, `fulfillment_order.cancel` and `fulfillment_order.close` in 2020-01 REST API version [#635](https://github.com/Shopify/shopify_api/pull/635)
+
+* Release new Endpoint `order.fulfillment_orders`, and active resources `AssignedFulfillmentOrder` and `FulfillmentOrder` in 2020-01 REST API version [#633](https://github.com/Shopify/shopify_api/pull/633)
+
 == Version 8.1.0
 
 * Release 2020-01 REST ADMIN API VERSION [#656](https://github.com/Shopify/shopify_api/pull/656)
