@@ -42,11 +42,19 @@ which enables tools like graphql-client to ensure your queries are valid in deve
 So the first step in making GraphQL queries is having a local JSON file of Shopify's Admin schema.
 This gem provides a `shopify_api:graphql:dump` Rake task to make it as easy as possible:
 
+#### Dump the schema file for a given API version using private app authentication:
 ```bash
 $ rake shopify_api:graphql:dump SHOP_URL="https://API_KEY:PASSWORD@SHOP_NAME.myshopify.com" API_VERSION=2020-01
 ```
 
 If successful `db/shopify_graphql_schemas/2020-01.json` will be created.
+
+#### Dump the schema file for the unstable API version using an OAuth access token:
+```bash
+$ rake shopify_api:graphql:dump SHOP_DOMAIN=SHOP_NAME.myshopify.com ACCESS_TOKEN=abc API_VERSION=unstable
+```
+
+If successful `db/shopify_graphql_schemas/unstable.json` will be created.
 
 You can either use private app authentication or an OAuth access token. Run `rake shopify_api:graphql:dump`
 to see full usage details.
