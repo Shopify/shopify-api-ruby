@@ -1,3 +1,5 @@
+* Take into account "errors" messages from response body [#677](https://github.com/Shopify/shopify_api/pull/677)
+
 == Version 9.0.0
 
 * Breaking change: Improved GraphQL client [#672](https://github.com/Shopify/shopify_api/pull/672). See the [client docs](docs/graphql.md) for usage and a migration guide.
