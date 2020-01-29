@@ -5,7 +5,13 @@ module ShopifyAPI
 
       @_cached_message ||= begin
         detailed_error = begin
-          JSON.parse(body)['error'].to_s
+          parsed_body = JSON.parse(body)
+
+          if parsed_body['error']
+            parsed_body['error'].to_s
+          elsif parsed_body['errors']
+            Array(parsed_body['errors']).join('; ')
+          end
         rescue JSON::ParserError
           nil
         end
