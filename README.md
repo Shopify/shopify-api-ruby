@@ -6,9 +6,9 @@ Shopify API
 [gem_url]: https://rubygems.org/gems/shopify_api
 
 
-The Shopify API gem allows Ruby developers to programmatically access the admin section of Shopify stores.
+The Shopify API gem allows Ruby developers to access the admin section of Shopify stores programmatically.
 
-The API is implemented as JSON over HTTP using all four verbs (GET/POST/PUT/DELETE). Each resource, like Order, Product, or Collection, has its own URL and is manipulated in isolation. In other words, we’ve tried to make the API follow the REST principles as much as possible.
+The REST API is implemented as JSON over HTTP using all four verbs (GET/POST/PUT/DELETE). Each resource, like Order, Product, or Collection, has a distinct URL and is manipulated in isolation. In other words, we’ve tried to make the API follow the REST principles as much as possible.
 
 ## Table of contents
   * [Usage](#usage)
@@ -32,9 +32,9 @@ The API is implemented as JSON over HTTP using all four verbs (GET/POST/PUT/DELE
 
 ### Requirements
 
-All API usage happens through Shopify applications, created by either shop owners for their own shops, or by Shopify Partners for use by other shop owners:
+All API usage happens through Shopify applications, created by either shop owners for their shops, or by Shopify Partners for use by other shop owners:
 
-* Shop owners can create applications for themselves through their own admin: https://docs.shopify.com/api/authentication/creating-a-private-app
+* Shop owners can create applications for themselves through their admin: https://docs.shopify.com/api/authentication/creating-a-private-app
 * Shopify Partners create applications through their admin: http://app.shopify.com/services/partners
 
 For more information and detailed documentation about the API visit https://developers.shopify.com/
@@ -59,11 +59,11 @@ gem install shopify_api
 
 ### Getting Started
 
-ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveResource has to be configured with a fully authorized URL of a particular store first. To obtain that URL you can follow these steps:
+ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveResource has to be configured with a fully authorized URL of a particular store first. To obtain that URL, you can follow these steps:
 
-1. First create a new application in either the partners admin or your store admin. For a private App you'll need the API_KEY and the PASSWORD otherwise you'll need the API_KEY and SHARED_SECRET.
+1. First, create a new application in either the partners admin or your store admin. For a private app, you'll need the API_KEY and the PASSWORD; otherwise, you'll need the API_KEY and SHARED_SECRET.
 
-   If you're not sure how to create a new application in the partner/store admin and/or if you're not sure how to generate the required credentials, you can [read the related shopify docs](https://docs.shopify.com/api/guides/api-credentials) on the same.
+   If you're not sure how to create a new application in the partner/store admin or if you're not sure how to generate the required credentials, you can [read the related Shopify docs](https://docs.shopify.com/api/guides/api-credentials) on the same.
 
 2. For a private App you just need to set the base site url as follows:
 
@@ -73,17 +73,17 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
    ShopifyAPI::Base.api_version = '<version_name>' # find the latest stable api_version [here](https://help.shopify.com/api/versioning)
    ```
 
-   That's it, you're done, skip to step 6 and start using the API!
+   That's it, you're done! Next, skip to step 6 and start using the API!
 
-   For a partner app you will need to supply two parameters to the Session class before you instantiate it:
+   For a partner app, you will need to supply two parameters to the Session class before you instantiate it:
 
    ```ruby
    ShopifyAPI::Session.setup(api_key: API_KEY, secret: SHARED_SECRET)
    ```
 
-   Shopify maintains [`omniauth-shopify-oauth2`](https://github.com/Shopify/omniauth-shopify-oauth2) which securely wraps the OAuth flow and interactions with Shopify (steps 3 and 4 above). Using this gem is the recommended way to use OAuth authentication in your application.
+   Shopify maintains [`omniauth-shopify-oauth2`](https://github.com/Shopify/omniauth-shopify-oauth2), which securely wraps the OAuth flow and interactions with Shopify (steps 3 and 4 above). Using this gem is the recommended way to use OAuth authentication in your application.
 
-3. In order to access a shop's data, apps need an access token from that specific shop. This is a two-stage process. Before interacting with a shop for the first time an app should redirect the user to the following URL:
+3. Apps need an access token from each shop to access that shop's data. This is a two-stage process. Before interacting with a shop for the first time, an app should redirect the user to the following URL:
 
    ```
    GET https://SHOP_NAME.myshopify.com/admin/oauth/authorize
@@ -93,9 +93,9 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
 
    * ``client_id`` – Required – The API key for your app
    * ``scope`` – Required – The list of required scopes (explained here: https://help.shopify.com/api/guides/authentication/oauth#scopes)
-   * ``redirect_uri`` – Required – The URL where you want to redirect the users after they authorize the client. The complete URL specified here must be identical to one of the Application Redirect URLs set in the App's section of the Partners dashboard. Note: in older applications, this parameter was optional, and redirected to the Application Callback URL when no other value was specified.
+   * ``redirect_uri`` – Required – The URL where you want to redirect the users after they authorize the client. The complete URL specified here must be identical to one of the Application Redirect URLs set in the app's section of the Partners dashboard.
    * ``state`` – Optional – A randomly selected value provided by your application, which is unique for each authorization request. During the OAuth callback phase, your application must check that this value matches the one you provided during authorization. [This mechanism is important for the security of your application](https://tools.ietf.org/html/rfc6819#section-3.6).
-   * ``grant_options[]`` - Optional - Set this parameter to `per-user` to receive an access token that respects the user's permission level when making API requests (called online access). This is strongly recommended for embedded apps.
+   * ``grant_options[]`` - Optional - Set this parameter to `per-user` to receive an access token that respects the user's permission level when making API requests (called online access). We strongly recommend using this parameter for embedded apps.
 
    We've added the create_permission_url method to make this easier, first instantiate your session object:
 
@@ -115,21 +115,27 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
    permission_url = shopify_session.create_permission_url(scope, "https://my_redirect_uri.com", { state: "My Nonce" })
    ```
 
-4. Once authorized, the shop redirects the owner to the return URL of your application with a parameter named 'code'. This is a temporary token that the app can exchange for a permanent access token.
+4. Once authorized, the shop redirects the owner to the return URL of your application with a parameter named 'code'. The value of this parameter is a temporary token that the app can exchange for a permanent access token.
 
    Before you proceed, make sure your application performs the following security checks. If any of the checks fails, your application must reject the request with an error, and must not proceed further.
 
    * Ensure the provided ``state`` is the same one that your application provided to Shopify during Step 3.
-   * Ensure the provided hmac is valid. The hmac is signed by Shopify as explained below, in the Verification section.
+   * Ensure the provided hmac is valid. The hmac is signed by Shopify, as explained below in the Verification section.
    * Ensure the provided hostname parameter is a valid hostname, ends with myshopify.com, and does not contain characters other than letters (a-z), numbers (0-9), dots, and hyphens.
 
-   If all security checks pass, the authorization code can be exchanged once for a permanent access token. The exchange is made with a request to the shop.
+   If all security checks pass, the authorization code can be exchanged once for a permanent access token. There is a method to make the request and get the token for you. Pass all the params received from the previous call and the method will verify the params, extract the temp code and then request your token:
+
+   ```ruby
+   token = shopify_session.request_token(params)
+   ```
+
+   This method will save the token to the session object and return it. All fields returned by Shopify, other than the access token itself, are stored in the session's `extra` attribute. For a list of all fields returned by Shopify, read [our OAuth documentation](https://help.shopify.com/api/guides/authentication/oauth#confirming-installation). 
+   
+   If you prefer to exchange the token manually, you can make a POST request to the shop with the following parameters :
 
    ```
    POST https://SHOP_NAME.myshopify.com/admin/oauth/access_token
    ```
-
-   with the following parameters:
 
    * ``client_id`` – Required – The API key for your app
    * ``client_secret`` – Required – The shared secret for your app
@@ -137,15 +143,7 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
 
    and you'll get your permanent access token back in the response.
 
-   There is a method to make the request and get the token for you. Pass
-   all the params received from the previous call and the method will verify
-   the params, extract the temp code and then request your token:
-
-   ```ruby
-   token = shopify_session.request_token(params)
-   ```
-
-   This method will save the token to the session object and return it. All fields returned by Shopify, other than the access token itself, are stored in the session's `extra` attribute. For a list of all fields returned by Shopify, read [our OAuth documentation](https://help.shopify.com/api/guides/authentication/oauth#confirming-installation). If you requested an access token that is associated with a specific user, you can retreive information about this user from the `extra` hash:
+  If you requested an access token that is associated with a specific user, you can retrieve information about this user from the `extra` hash:
 
    ```ruby
    # a list of all granted scopes
@@ -158,10 +156,10 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
    expires_at = shopify_session.extra['expires_at']
    ```
 
-   For the security of your application, after retrieving an access token you must validate the following:
+   For the security of your application, after retrieving an access token, you must validate the following:
    1) The list of scopes in `shopify_session.extra['scope']` is the same as you requested.
    2) If you requested an online-mode access token, `shopify_session.extra['associated_user']` must be present.
-   Failing either of these tests means the end-user may have tampered with the url parameters during the OAuth authentication phase. You should avoid using this access token and revoke it immediately. If you use the [`omniauth-shopify-oauth2`](https://github.com/Shopify/omniauth-shopify-oauth2) gem these checks are done automatically for you.
+   Failing either of these tests means the end-user may have tampered with the URL parameters during the OAuth authentication phase. You should avoid using this access token and revoke it immediately. If you use the [`omniauth-shopify-oauth2`](https://github.com/Shopify/omniauth-shopify-oauth2) gem, these checks are done automatically for you.
 
    For future sessions simply pass in the `token` and `extra` hash (optional) when creating the session object:
 
@@ -318,7 +316,7 @@ while products.next_page?
 end
 ```
 
-If you want cursor based pagination to work across page loads, or want to distribute workload across multiple background jobs, you can use #next_page_info or #previous_page_info methods that return strings:
+If you want cursor-based pagination to work across page loads, or wish to distribute workload across multiple background jobs, you can use #next_page_info or #previous_page_info methods that return strings:
 
 ```
   first_batch_products = ShopifyAPI::Product.find(:all, params: { limit: 50 })
@@ -352,7 +350,7 @@ bundle exec rake docker
 
 ### Breaking change notice for version 8.0.0
 
-ApiVersion was introduced in Version 7.0.0 and known versions were hard coded into the gem. Manually defining api versions is no longer required for versions not listed in the gem. Version 8.0.0 removes the following:
+ApiVersion was introduced in Version 7.0.0, and known versions were hardcoded into the gem. Manually defining API versions is no longer required for versions not listed in the gem. Version 8.0.0 removes the following:
 * `ShopifyAPI::ApiVersion::Unstable`
 * `ShopifyAPI::ApiVersion::Release`
 * `ShopifyAPI::ApiVersion.define_version`
@@ -405,7 +403,7 @@ ShopifyAPI::Session.temp(domain: domain, token: token, api_version: api_version)
 end
 ```
 
-For example if you want to use the `2019-04` version you would create a session like this:
+For example, if you want to use the `2019-04` version, you would create a session like this:
 ```ruby
 session = ShopifyAPI::Session.new(domain: domain, token: token, api_version: '2019-04')
 ```
@@ -417,8 +415,8 @@ session = ShopifyAPI::Session.new(domain: domain, token: token, api_version: :un
 #### Changes to how to define resources
 
 If you have defined or customized Resources, classes that extend `ShopifyAPI::Base`:
-The use of `self.prefix =` has been deprecated you should now use `self.resource =` and not include `/admin`.
-For example if you specified a prefix like this before:
+The use of `self.prefix =` has been deprecated; you should now use `self.resource =` and not include `/admin`.
+For example, if you specified a prefix like this before:
 ```ruby
 class MyResource < ShopifyAPI::Base
   self.prefix = '/admin/shop/'
@@ -433,7 +431,7 @@ end
 
 #### URL construction
 
-If you have specifed any full paths for API calls in find
+If you have specified any full paths for API calls in find
 ```ruby
 def self.current(options={})
   find(:one, options.merge(from: "/admin/shop.#{format.extension}"))
