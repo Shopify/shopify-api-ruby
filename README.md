@@ -8,25 +8,37 @@ Shopify API
 
 The Shopify API gem allows Ruby developers to access the admin section of Shopify stores programmatically.
 
+Blurb about GQL
+
 The REST API is implemented as JSON over HTTP using all four verbs (GET/POST/PUT/DELETE). Each resource, like Order, Product, or Collection, has a distinct URL and is manipulated in isolation. In other words, we’ve tried to make the API follow the REST principles as much as possible.
 
-## Table of contents
+- [Shopify API](#shopify-api)
   * [Usage](#usage)
     + [Requirements](#requirements)
       - [Ruby version](#ruby-version)
     + [Installation](#installation)
     + [Getting Started](#getting-started)
+      - [1) Create an app](#1--create-an-app)
+      - [2A) Private Apps](#2a--private-apps)
+      - [2B) Public and Custom Apps](#2b--public-and-custom-apps)
+      - [3) Requesting access from a shop](#3--requesting-access-from-a-shop)
+      - [4) Trading your `code` for an access token.](#4--trading-your--code--for-an-access-token)
+      - [5) Activating the session](#5--activating-the-session)
+      - [6A) Making requests to the GraphQL API](#6a--making-requests-to-the-graphql-api)
+      - [6B) Making requests to the REST API](#6b--making-requests-to-the-rest-api)
     + [Console](#console)
-  * [GraphQL](#graphql)
   * [Threadsafety](#threadsafety)
   * [Pagination](#pagination)
   * [Using Development Version](#using-development-version)
   * [Breaking Change Notices](#breaking-change-notices)
     + [Breaking change notice for version 8.0.0](#breaking-change-notice-for-version-800)
     + [Breaking change notice for version 7.0.0](#breaking-change-notice-for-version-700)
+      - [Changes to ShopifyAPI::Session](#changes-to-shopifyapi--session)
+      - [Changes to how to define resources](#changes-to-how-to-define-resources)
+      - [URL construction](#url-construction)
+      - [URLs that have not changed](#urls-that-have-not-changed)
   * [Additional Resources](#additional-resources)
   * [Copyright](#copyright)
-
 
 ## Usage
 
@@ -59,13 +71,25 @@ gem install shopify_api
 
 ### Getting Started
 
-ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveResource has to be configured with a fully authorized URL of a particular store first. To obtain that URL, you can follow these steps:
+ShopifyAPI sessions need to be configured with a fully authorized URL of a particular store before they can start making API calls. To obtain that URL, you can follow these steps:
 
-1. First, create a new application in either the partners admin or your store admin. For a private app, you'll need the API_KEY and the PASSWORD; otherwise, you'll need the API_KEY and SHARED_SECRET.
+#### 1) Create an app
+
+First, create a new application in either the partners admin or your store admin. 
+
+**Private apps** are used for merchant-owned scripts and apps that run silently in the background on a single shop. Private apps aren't able to render any content in the admin. Private apps are created through the store admin.
+
+**Custom apps** are also used for a single shop, but they have access to [app extensions](https://shopify.dev/docs/app-extensions) that allow the app to render content in the admin and are managed and created through the partners dashboard.
+
+**Public apps** can be installed on many stores, and can be added to the Shopify App Store to generate revenue for the developer. 
+
+For a private app, you'll need the API_KEY and the PASSWORD; otherwise, you'll need the API_KEY and SHARED_SECRET.
 
    If you're not sure how to create a new application in the partner/store admin or if you're not sure how to generate the required credentials, you can [read the related Shopify docs](https://docs.shopify.com/api/guides/api-credentials) on the same.
 
-2. For a private App you just need to set the base site url as follows:
+#### 2A) Private Apps
+
+For a private App you just need to set the base site url as follows:
 
    ```ruby
    shop_url = "https://#{API_KEY}:#{PASSWORD}@#{SHOP_NAME}.myshopify.com"
@@ -73,17 +97,35 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
    ShopifyAPI::Base.api_version = '<version_name>' # find the latest stable api_version [here](https://help.shopify.com/api/versioning)
    ```
 
-   That's it, you're done! Next, skip to step 6 and start using the API!
+   That's it; you're done! Next, skip to step 6 and start using the API!
 
-   For a partner app, you will need to supply two parameters to the Session class before you instantiate it:
+#### 2B) Public and Custom Apps
+   
+   For public and custom apps, you will need to supply two parameters to the Session class before you instantiate it:
 
    ```ruby
    ShopifyAPI::Session.setup(api_key: API_KEY, secret: SHARED_SECRET)
    ```
 
-   Shopify maintains [`omniauth-shopify-oauth2`](https://github.com/Shopify/omniauth-shopify-oauth2), which securely wraps the OAuth flow and interactions with Shopify (steps 3 and 4 above). Using this gem is the recommended way to use OAuth authentication in your application.
+   Shopify maintains [`omniauth-shopify-oauth2`](https://github.com/Shopify/omniauth-shopify-oauth2), which simplifies and securely wraps the OAuth flow and interactions with Shopify. Using this gem is the recommended way to use OAuth authentication in your application.
 
-3. Apps need an access token from each shop to access that shop's data. This is a two-stage process. Before interacting with a shop for the first time, an app should redirect the user to the following URL:
+#### 3) Requesting access from a shop
+
+Public and Custom apps need an access token from each shop to access that shop's data. Getting an access token is a two-stage process. The first stage is to redirect the merchant to a **permission URL** to grant access to the app.
+
+   We've added the `create_permission_url` method to make this easier :
+
+   ```ruby
+   # We need to instantiate the session object before using it
+   shopify_session = ShopifyAPI::Session.new(domain: "SHOP_NAME.myshopify.com", api_version: api_version, token: nil)
+   
+# Then, create a permission URL with the session
+   permission_url = shopify_session.create_permission_url(scope, "https://my_redirect_uri.com", { state: "My Nonce" })
+   ```
+   
+After creating the permission URL, the user should be directed to this URL to approve the app.
+
+Under the hood, the the `create_permission_url` method is preparing the app to make the following request :
 
    ```
    GET https://SHOP_NAME.myshopify.com/admin/oauth/authorize
@@ -94,34 +136,18 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
    * ``client_id`` – Required – The API key for your app
    * ``scope`` – Required – The list of required scopes (explained here: https://help.shopify.com/api/guides/authentication/oauth#scopes)
    * ``redirect_uri`` – Required – The URL where you want to redirect the users after they authorize the client. The complete URL specified here must be identical to one of the Application Redirect URLs set in the app's section of the Partners dashboard.
-   * ``state`` – Optional – A randomly selected value provided by your application, which is unique for each authorization request. During the OAuth callback phase, your application must check that this value matches the one you provided during authorization. [This mechanism is important for the security of your application](https://tools.ietf.org/html/rfc6819#section-3.6).
+   * ``state`` – Optional – A randomly selected value provided by your application, which is unique for each authorization request. During the OAuth callback phase, your application must check that this value matches the one you provided during authorization. [This mechanism is essential for the security of your application](https://tools.ietf.org/html/rfc6819#section-3.6).
    * ``grant_options[]`` - Optional - Set this parameter to `per-user` to receive an access token that respects the user's permission level when making API requests (called online access). We strongly recommend using this parameter for embedded apps.
 
-   We've added the create_permission_url method to make this easier, first instantiate your session object:
+#### 4) Trading your `code` for an access token.
 
-   ```ruby
-   shopify_session = ShopifyAPI::Session.new(domain: "SHOP_NAME.myshopify.com", api_version: api_version, token: nil)
-   ```
+Once authorized, the shop redirects the owner to the return URL of your application with a parameter named `code`. The value of this parameter is a temporary token that the app can exchange for a permanent access token.
 
-   Then call `create_permission_url` with the redirect_uri you've registered for your application:
+   Before you proceed, make sure your application performs the following security checks. If any of the checks fail, your application must reject the request with an error, and must not proceed further.
 
-   ```ruby
-   permission_url = shopify_session.create_permission_url(scope, "https://my_redirect_uri.com")
-   ```
-
-   You can also pass a state parameter in the options hash as a last argument:
-
-   ```ruby
-   permission_url = shopify_session.create_permission_url(scope, "https://my_redirect_uri.com", { state: "My Nonce" })
-   ```
-
-4. Once authorized, the shop redirects the owner to the return URL of your application with a parameter named 'code'. The value of this parameter is a temporary token that the app can exchange for a permanent access token.
-
-   Before you proceed, make sure your application performs the following security checks. If any of the checks fails, your application must reject the request with an error, and must not proceed further.
-
-   * Ensure the provided ``state`` is the same one that your application provided to Shopify during Step 3.
-   * Ensure the provided hmac is valid. The hmac is signed by Shopify, as explained below in the Verification section.
-   * Ensure the provided hostname parameter is a valid hostname, ends with myshopify.com, and does not contain characters other than letters (a-z), numbers (0-9), dots, and hyphens.
+   1) Ensure the provided ``state`` is the same one that your application provided to Shopify in the previous step.
+   2) Ensure the provided hmac is valid. The hmac is signed by Shopify, as explained below in the Verification section.
+   3) Ensure the provided hostname parameter is a valid hostname, ends with myshopify.com, and does not contain characters other than letters (a-z), numbers (0-9), dots, and hyphens.
 
    If all security checks pass, the authorization code can be exchanged once for a permanent access token. There is a method to make the request and get the token for you. Pass all the params received from the previous call and the method will verify the params, extract the temp code and then request your token:
 
@@ -141,7 +167,7 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
    * ``client_secret`` – Required – The shared secret for your app
    * ``code`` – Required – The token you received in step 3
 
-   and you'll get your permanent access token back in the response.
+   You'll get your permanent access token back in the response.
 
   If you requested an access token that is associated with a specific user, you can retrieve information about this user from the `extra` hash:
 
@@ -160,20 +186,54 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
    1) The list of scopes in `shopify_session.extra['scope']` is the same as you requested.
    2) If you requested an online-mode access token, `shopify_session.extra['associated_user']` must be present.
    Failing either of these tests means the end-user may have tampered with the URL parameters during the OAuth authentication phase. You should avoid using this access token and revoke it immediately. If you use the [`omniauth-shopify-oauth2`](https://github.com/Shopify/omniauth-shopify-oauth2) gem, these checks are done automatically for you.
+   
+#### 5) Activating the session
 
-   For future sessions simply pass in the `token` and `extra` hash (optional) when creating the session object:
+Once you have a token, simply pass in the `token` and `extra` hash (optional) when creating the session object:
 
    ```ruby
    shopify_session = ShopifyAPI::Session.new(domain: "SHOP_NAME.myshopify.com", token: token, api_version: api_version, extra: extra)
    ```
 
-5. The session must be activated before use:
+The session must be activated before use:
 
    ```ruby
    ShopifyAPI::Base.activate_session(shopify_session)
    ```
 
-6. Now you're ready to make authorized API requests to your shop! Data is returned as ActiveResource instances:
+#### 6A) Making requests to the GraphQL API
+
+The GraphQL API is the recommended way to consume the Shopify API. It is more fully-featured than REST, more performant, and future-proof. Whenever possible, GraphQL should be used to consume the Shopify API.
+
+###### Note: the GraphQL client has improved and changed in version 9.0. See the [client documentation](docs/graphql.md) for full usage details and a [migration guide](docs/graphql.md#migration-guide).
+
+This library also supports Shopify's [GraphQL Admin API](https://help.shopify.com/api/graphql-admin-api)
+via integration with the [graphql-client](https://github.com/github/graphql-client) gem.
+The authentication process (steps 1-5 under [Getting Started](#getting-started))
+is identical. Once your session is activated, simply access the GraphQL client
+and use `parse` and `query` as defined by
+[graphql-client](https://github.com/github/graphql-client#defining-queries).
+
+```ruby
+client = ShopifyAPI::GraphQL.client
+
+SHOP_NAME_QUERY = client.parse <<-'GRAPHQL'
+  {
+    shop {
+      name
+    }
+  }
+GRAPHQL
+
+result = client.query(SHOP_NAME_QUERY)
+result.data.shop.name
+```
+
+[GraphQL client documentation](docs/graphql.md)
+
+#### 6B) Making requests to the REST API
+
+Responses to REST requests are returned as ActiveResource instances:
 
    ```ruby
    shop = ShopifyAPI::Shop.current
@@ -201,7 +261,7 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
    end
    ```
 
-7. If you would like to run a small number of calls against a different API version you can use this block syntax:
+If you would like to run a small number of calls against a different API version you can use this block syntax:
 
    ```ruby
    ShopifyAPI::Session.temp(domain: "SHOP_NAME.myshopify.com", token: token, api_version: '2019-04') do
@@ -215,7 +275,7 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
    end
    ```
 
-8. If you want to work with another shop, you'll first need to clear the session:
+If you want to work with another shop, you'll first need to clear the session:
 
    ```ruby
    ShopifyAPI::Base.clear_session
@@ -231,9 +291,9 @@ This package also supports the ``shopify-api`` executable to make it easy to ope
 gem install shopify_api_console
 ```
 
-2. Obtain a private API key and password to use with your shop (step 2 in "Getting Started")
+2. Obtain a private API key and password to use with your shop (step 2A in "Getting Started")
 
-3. Use the ``shopify-api`` script to save the credentials for the shop to quickly log in.
+3. Use the ``shopify-api`` script to save the credentials for the shop to quickly login.
 
    ```bash
    shopify-api add yourshopname
@@ -253,60 +313,16 @@ gem install shopify_api_console
    shopify-api help
    ```
 
-## GraphQL
-
-Note: the GraphQL client has improved and changed in version 9.0. See the [client documentation](docs/graphql.md)
-for full usage details and a [migration guide](docs/graphql.md#migration-guide).
-
-This library also supports Shopify's [GraphQL Admin API](https://help.shopify.com/api/graphql-admin-api)
-via integration with the [graphql-client](https://github.com/github/graphql-client) gem.
-The authentication process (steps 1-5 under [Getting Started](#getting-started))
-is identical. Once your session is activated, simply access the GraphQL client
-and use `parse` and `query` as defined by
-[graphql-client](https://github.com/github/graphql-client#defining-queries).
-
-```ruby
-client = ShopifyAPI::GraphQL.client
-
-SHOP_NAME_QUERY = client.parse <<-'GRAPHQL'
-  {
-    shop {
-      name
-    }
-  }
-GRAPHQL
-
-result = client.query(SHOP_NAME_QUERY)
-result.data.shop.name
-```
-
-[GraphQL client documentation](docs/graphql.md)
-
-## Threadsafety
+## Thread safety
 
 ActiveResource is threadsafe as of version 4.1 (which works with Rails 4.x and above).
 
-If you were previously using Shopify's [activeresource fork](https://github.com/shopify/activeresource) then you should remove it and use ActiveResource 4.1.
+If you were previously using Shopify's [activeresource fork](https://github.com/shopify/activeresource), then you should remove it and use ActiveResource 4.1.
 
 ## Pagination
 
-Pagination can occur in one of two ways.
+Shopify uses [Relative cursor-based pagination](https://help.shopify.com/en/api/guides/paginated-rest-results) to provide more than a single page of results.
 
-Page based pagination
-```ruby
-page = 1
-products = ShopifyAPI::Product.find(:all, params: { limit: 50, page: page })
-process_products(products)
-while(products.count == 50)
-  page += 1
-  products = ShopifyAPI::Product.find(:all, params: { limit: 50, page: page })
-  process_products(products)
-end
-```
-
-Page based pagination will be deprecated in the `2019-10` API version, in favor of the second method of pagination:
-
-[Relative cursor based pagination](https://help.shopify.com/en/api/guides/paginated-rest-results)
 ```ruby
 products = ShopifyAPI::Product.find(:all, params: { limit: 50 })
 process_products(products)
@@ -325,6 +341,19 @@ If you want cursor-based pagination to work across page loads, or wish to distri
 ```
 
 Relative cursor pagination is currently available for all endpoints using the `2019-10` and later API versions.
+
+Apps using older versions of the API may have used page-based pagination (deprecated starting in 2019-10) :
+
+```ruby
+page = 1
+products = ShopifyAPI::Product.find(:all, params: { limit: 50, page: page })
+process_products(products)
+while(products.count == 50)
+  page += 1
+  products = ShopifyAPI::Product.find(:all, params: { limit: 50, page: page })
+  process_products(products)
+end
+```
 
 ## Using Development Version
 
@@ -350,7 +379,7 @@ bundle exec rake docker
 
 ### Breaking change notice for version 8.0.0
 
-ApiVersion was introduced in Version 7.0.0, and known versions were hardcoded into the gem. Manually defining API versions is no longer required for versions not listed in the gem. Version 8.0.0 removes the following:
+Version 7.0.0 introduced ApiVersion, and known versions were hardcoded into the gem. Manually defining API versions is no longer required for versions not listed in the gem. Version 8.0.0 removes the following:
 * `ShopifyAPI::ApiVersion::Unstable`
 * `ShopifyAPI::ApiVersion::Release`
 * `ShopifyAPI::ApiVersion.define_version`
@@ -363,22 +392,22 @@ The following methods on `ApiVersion` have been deprecated:
 - `#name` deprecated. Use `#handle`
 - `#stable?` deprecated. Use `#supported?`
 
-Version 8.0.0 introduces a _version lookup mode_. By default, `ShopifyAPI::ApiVersion.version_lookup_mode` is `:define_on_unknown`. When setting the api_version on `Session` or `Base`, the `api_version` attribute takes a version handle (ie `'2019-07'` or `:unstable`) and sets an instance of `ShopifyAPI::ApiVersion` matching the handle. When the version_lookup_mode is set to `:define_on_unknown`, any handle will naïvely create a new `ApiVersion` if the version is not in the known versions returned by `ShopifyAPI::ApiVersion.versions`.
+Version 8.0.0 introduces a _version lookup mode_. By default, `ShopifyAPI::ApiVersion.version_lookup_mode` is `:define_on_unknown`. When setting the api_version on `Session` or `Base`, the `api_version` attribute takes a version handle (i.e. `'2019-07'` or `:unstable`) and sets an instance of `ShopifyAPI::ApiVersion` matching the handle. When the version_lookup_mode is set to `:define_on_unknown`, any handle will naïvely create a new `ApiVersion` if the version is not in the known versions returned by `ShopifyAPI::ApiVersion.versions`.
 
-To ensure only known and active versions can be set, call
+To ensure you're setting only known and active versions, call :
 
 ```ruby
 ShopifyAPI::ApiVersion.version_lookup_mode = :raise_on_unknown
 ShopifyAPI::ApiVersion.fetch_known_versions
 ```
 
-Known and active versions are fetched from https://app.shopify.com/services/apis.json and cached. Trying to use a version outside this cached set will raise an error. To switch back to naïve lookup and create a version if its not found, call `ShopifyAPI::ApiVersion.version_lookup_mode = :define_on_unknown`.
+Known and active versions are fetched from https://app.shopify.com/services/apis.json and cached. Trying to use a version outside this cached set will raise an error. To switch back to naïve lookup and create a version if one is not found, call `ShopifyAPI::ApiVersion.version_lookup_mode = :define_on_unknown`.
 
 
 ### Breaking change notice for version 7.0.0
 
 #### Changes to ShopifyAPI::Session
-Session creation requires `api_version` to be set and now uses keyword arguments
+When creating sessions, `api_version`is now required and uses keyword arguments.
 
 To upgrade your use of ShopifyAPI you will need to make the following changes.
 
@@ -389,7 +418,7 @@ is now
 ```ruby
 ShopifyAPI::Session.new(domain: domain, token: token, api_version: api_version, extras: extras)
 ```
-Note `extras` is still optional the other arguments are required.
+Note `extras` is still optional. The other arguments are required.
 
 ```ruby
 ShopifyAPI::Session.temp(domain, token, extras) do
@@ -403,11 +432,11 @@ ShopifyAPI::Session.temp(domain: domain, token: token, api_version: api_version)
 end
 ```
 
-For example, if you want to use the `2019-04` version, you would create a session like this:
+For example, if you want to use the `2019-04` version, you will create a session like this:
 ```ruby
 session = ShopifyAPI::Session.new(domain: domain, token: token, api_version: '2019-04')
 ```
-if you want to use the `unstable` version you would create a session like this:
+if you want to use the `unstable` version, you will create a session like this:
 ```ruby
 session = ShopifyAPI::Session.new(domain: domain, token: token, api_version: :unstable)
 ```
