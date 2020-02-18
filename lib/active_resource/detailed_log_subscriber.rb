@@ -3,6 +3,7 @@ module ActiveResource
     def request(event)
       log_request_response_details(event)
       warn_on_deprecated_header(event)
+      warn_on_version_eol_warning_header(event)
     end
 
     def logger
@@ -30,6 +31,22 @@ module ActiveResource
           warning_message = <<-MSG
           [DEPRECATED] ShopifyAPI made a call to #{payload[:method].upcase} #{payload[:path]}, and this call made
           use of a deprecated endpoint, behaviour, or parameter. See #{header_value} for more details.
+          MSG
+
+          warn warning_message
+        end
+      end
+    end
+
+    def warn_on_version_eol_warning_header(event)
+      payload = event.payload
+
+      payload[:response].each do |header_name, header_value|
+        case header_name.downcase
+        when 'x-shopify-api-version-warning'
+          warning_message = <<-MSG
+          [Version EOL Warning] ShopifyAPI made a call to #{payload[:method].upcase} #{payload[:path]}, and this call made
+          use of an API version that is expired or will expire within 30 days. See #{header_value} for more details.
           MSG
 
           warn warning_message
