@@ -5,7 +5,6 @@ Shopify API
 [gem]: https://img.shields.io/gem/v/shopify_api.svg
 [gem_url]: https://rubygems.org/gems/shopify_api
 
-
 The Shopify API gem allows Ruby developers to access the admin section of Shopify stores programmatically.
 
 The best way to consume the Shopify API is through GraphQL, which enables high volume mutations, bulk operations, and access to all new features.
