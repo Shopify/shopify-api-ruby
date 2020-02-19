@@ -17,21 +17,21 @@ The REST API is implemented as JSON over HTTP using all four verbs (GET/POST/PUT
     + [Ruby version](#ruby-version)
   * [Installation](#installation)
   * [Getting Started](#getting-started)
-    + [1) Create an app](#1--create-an-app)
-    + [2A) Private Apps](#2a--private-apps)
-    + [2B) Public and Custom Apps](#2b--public-and-custom-apps)
-    + [3) Requesting access from a shop](#3--requesting-access-from-a-shop)
-    + [4) Trading your `code` for an access token.](#4--trading-your--code--for-an-access-token)
-    + [5) Activating the session](#5--activating-the-session)
-    + [6A) Making requests to the GraphQL API](#6a--making-requests-to-the-graphql-api)
-    + [6B) Making requests to the REST API](#6b--making-requests-to-the-rest-api)
+    + [1) Create an app](#1-create-an-app)
+    + [2A) Private Apps](#2a-private-apps)
+    + [2B) Public and Custom Apps](#2b-public-and-custom-apps)
+    + [3) Requesting access from a shop](#3-requesting-access-from-a-shop)
+    + [4) Trading your `code` for an access token.](#4-trading-your--code--for-an-access-token)
+    + [5) Activating the session](#5-activating-the-session)
+    + [6A) Making requests to the GraphQL API](#6a-making-requests-to-the-graphql-api)
+    + [6B) Making requests to the REST API](#6b-making-requests-to-the-rest-api)
   * [Console](#console)
   * [Thread safety](#thread-safety)
   * [Bulk Operations](#bulk-operations)
     + [Example](#example)
-      - [1) Start the bulk operation](#1--start-the-bulk-operation)
-      - [2) Poll the status of the bulk operation](#2--poll-the-status-of-the-bulk-operation)
-      - [3) Retrieve your data](#3--retrieve-your-data)
+      - [1) Start the bulk operation](#1-start-the-bulk-operation)
+      - [2) Poll the status of the bulk operation](#2-poll-the-status-of-the-bulk-operation)
+      - [3) Retrieve your data](#3-retrieve-your-data)
   * [Pagination](#pagination)
 - [Breaking Change Notices](#breaking-change-notices)
   * [Breaking change notice for version 8.0.0](#breaking-change-notice-for-version-800)
@@ -50,7 +50,7 @@ The REST API is implemented as JSON over HTTP using all four verbs (GET/POST/PUT
 
 All API usage happens through Shopify applications, created by either shop owners for their shops, or by Shopify Partners for use by other shop owners:
 
-* Shop owners can create applications for themselves through their admin: https://docs.shopify.com/api/authentication/creating-a-private-app
+* Shop owners can create applications for themselves through their admin: https://shopify.dev/tutorials/authenticate-a-private-app-with-shopify-admin#generate-private-app-credentials
 * Shopify Partners create applications through their admin: http://app.shopify.com/services/partners
 
 For more information and detailed documentation about the API visit https://developers.shopify.com/
@@ -89,7 +89,7 @@ First, create a new application in either the partners admin or your store admin
 
 For a private app, you'll need the API_KEY and the PASSWORD; otherwise, you'll need the API_KEY and SHARED_SECRET.
 
-   If you're not sure how to create a new application in the partner/store admin or if you're not sure how to generate the required credentials, you can [read the related Shopify docs](https://docs.shopify.com/api/guides/api-credentials) on the same.
+   If you're not sure how to create a new application in the partner admin, visit the [tutorial in our documentation](https://shopify.dev/tutorials/authenticate-a-public-app-with-oauth#generate-credentials-from-your-partner-dashboard). For the instructions on generating a private app, visit the [tutorial on generating private credentials](https://shopify.dev/tutorials/authenticate-a-private-app-with-shopify-admin#generate-credentials-from-the-shopify-admin)
 
 ### 2A) Private Apps
 
@@ -98,7 +98,7 @@ For a private App you just need to set the base site url as follows:
    ```ruby
    shop_url = "https://#{API_KEY}:#{PASSWORD}@#{SHOP_NAME}.myshopify.com"
    ShopifyAPI::Base.site = shop_url
-   ShopifyAPI::Base.api_version = '<version_name>' # find the latest stable api_version [here](https://help.shopify.com/api/versioning)
+   ShopifyAPI::Base.api_version = '<version_name>' # find the latest stable api_version [here](https://shopify.dev/concepts/about-apis/versioning)
    ```
 
    That's it; you're done! Next, skip to step 6 and start using the API!
@@ -138,7 +138,7 @@ Under the hood, the the `create_permission_url` method is preparing the app to m
    with the following parameters:
 
    * ``client_id`` – Required – The API key for your app
-   * ``scope`` – Required – The list of required scopes (explained here: https://help.shopify.com/api/guides/authentication/oauth#scopes)
+   * ``scope`` – Required – The list of required scopes (explained here: https://shopify.dev/tutorials/authenticate-with-oauth#scopes)
    * ``redirect_uri`` – Required – The URL where you want to redirect the users after they authorize the client. The complete URL specified here must be identical to one of the Application Redirect URLs set in the app's section of the Partners dashboard.
    * ``state`` – Optional – A randomly selected value provided by your application, which is unique for each authorization request. During the OAuth callback phase, your application must check that this value matches the one you provided during authorization. [This mechanism is essential for the security of your application](https://tools.ietf.org/html/rfc6819#section-3.6).
    * ``grant_options[]`` - Optional - Set this parameter to `per-user` to receive an access token that respects the user's permission level when making API requests (called online access). We strongly recommend using this parameter for embedded apps.
@@ -159,7 +159,7 @@ Once authorized, the shop redirects the owner to the return URL of your applicat
    token = shopify_session.request_token(params)
    ```
 
-   This method will save the token to the session object and return it. All fields returned by Shopify, other than the access token itself, are stored in the session's `extra` attribute. For a list of all fields returned by Shopify, read [our OAuth documentation](https://help.shopify.com/api/guides/authentication/oauth#confirming-installation). 
+   This method will save the token to the session object and return it. All fields returned by Shopify, other than the access token itself, are stored in the session's `extra` attribute. For a list of all fields returned by Shopify, read [our OAuth documentation](https://shopify.dev/tutorials/authenticate-with-oauth#confirming-installation). 
    
    If you prefer to exchange the token manually, you can make a POST request to the shop with the following parameters :
 
@@ -211,7 +211,7 @@ The GraphQL API is the recommended way to consume the Shopify API. It is more fu
 
 ###### Note: the GraphQL client has improved and changed in version 9.0. See the [client documentation](docs/graphql.md) for full usage details and a [migration guide](docs/graphql.md#migration-guide).
 
-This library also supports Shopify's [GraphQL Admin API](https://help.shopify.com/api/graphql-admin-api)
+This library also supports Shopify's [GraphQL Admin API](https://shopify.dev/docs/admin-api/graphql/reference)
 via integration with the [graphql-client](https://github.com/github/graphql-client) gem.
 The authentication process (steps 1-5 under [Getting Started](#getting-started))
 is identical. Once your session is activated, simply access the GraphQL client
@@ -457,7 +457,7 @@ end
 
 ## Pagination
 
-Shopify uses [Relative cursor-based pagination](https://help.shopify.com/en/api/guides/paginated-rest-results) to provide more than a single page of results. 
+Shopify uses [Relative cursor-based pagination](https://shopify.dev/tutorials/make-paginated-requests-to-rest-admin-api) to provide more than a single page of results. 
 
 ```ruby
 products = ShopifyAPI::Product.find(:all, params: { limit: 50 })
@@ -622,8 +622,9 @@ bundle exec rake docker
 
 # Additional Resources
 
-* [API Reference](https://help.shopify.com/api/reference)
-* [Ask questions on the forums](http://ecommerce.shopify.com/c/shopify-apis-and-technology)
+* [GraphQL API Reference](https://shopify.dev/docs/admin-api/graphql/reference)
+* [REST API Reference](https://shopify.dev/docs/admin-api/rest/reference)
+* [Ask questions on the forums](https://community.shopify.com/c/Shopify-Community/ct-p/en?profile.language=en)
 
 # Copyright
 
