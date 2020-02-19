@@ -8,41 +8,46 @@ Shopify API
 
 The Shopify API gem allows Ruby developers to access the admin section of Shopify stores programmatically.
 
-Blurb about GQL
+The best way to consume the Shopify API is through GraphQL, which enables high volume mutations, bulk operations, and access to all new features.
 
 The REST API is implemented as JSON over HTTP using all four verbs (GET/POST/PUT/DELETE). Each resource, like Order, Product, or Collection, has a distinct URL and is manipulated in isolation. In other words, we’ve tried to make the API follow the REST principles as much as possible.
 
 - [Shopify API](#shopify-api)
-  * [Usage](#usage)
-    + [Requirements](#requirements)
-      - [Ruby version](#ruby-version)
-    + [Installation](#installation)
-    + [Getting Started](#getting-started)
-      - [1) Create an app](#1--create-an-app)
-      - [2A) Private Apps](#2a--private-apps)
-      - [2B) Public and Custom Apps](#2b--public-and-custom-apps)
-      - [3) Requesting access from a shop](#3--requesting-access-from-a-shop)
-      - [4) Trading your `code` for an access token.](#4--trading-your--code--for-an-access-token)
-      - [5) Activating the session](#5--activating-the-session)
-      - [6A) Making requests to the GraphQL API](#6a--making-requests-to-the-graphql-api)
-      - [6B) Making requests to the REST API](#6b--making-requests-to-the-rest-api)
-    + [Console](#console)
-  * [Threadsafety](#threadsafety)
+- [Usage](#usage)
+  * [Requirements](#requirements)
+    + [Ruby version](#ruby-version)
+  * [Installation](#installation)
+  * [Getting Started](#getting-started)
+    + [1) Create an app](#1--create-an-app)
+    + [2A) Private Apps](#2a--private-apps)
+    + [2B) Public and Custom Apps](#2b--public-and-custom-apps)
+    + [3) Requesting access from a shop](#3--requesting-access-from-a-shop)
+    + [4) Trading your `code` for an access token.](#4--trading-your--code--for-an-access-token)
+    + [5) Activating the session](#5--activating-the-session)
+    + [6A) Making requests to the GraphQL API](#6a--making-requests-to-the-graphql-api)
+    + [6B) Making requests to the REST API](#6b--making-requests-to-the-rest-api)
+  * [Console](#console)
+  * [Thread safety](#thread-safety)
+  * [Bulk Operations](#bulk-operations)
+    + [Example](#example)
+      - [1) Start the bulk operation](#1--start-the-bulk-operation)
+      - [2) Poll the status of the bulk operation](#2--poll-the-status-of-the-bulk-operation)
+      - [3) Retrieve your data](#3--retrieve-your-data)
   * [Pagination](#pagination)
-  * [Using Development Version](#using-development-version)
-  * [Breaking Change Notices](#breaking-change-notices)
-    + [Breaking change notice for version 8.0.0](#breaking-change-notice-for-version-800)
-    + [Breaking change notice for version 7.0.0](#breaking-change-notice-for-version-700)
-      - [Changes to ShopifyAPI::Session](#changes-to-shopifyapi--session)
-      - [Changes to how to define resources](#changes-to-how-to-define-resources)
-      - [URL construction](#url-construction)
-      - [URLs that have not changed](#urls-that-have-not-changed)
-  * [Additional Resources](#additional-resources)
-  * [Copyright](#copyright)
+- [Breaking Change Notices](#breaking-change-notices)
+  * [Breaking change notice for version 8.0.0](#breaking-change-notice-for-version-800)
+  * [Breaking change notice for version 7.0.0](#breaking-change-notice-for-version-700)
+    + [Changes to ShopifyAPI::Session](#changes-to-shopifyapi--session)
+    + [Changes to how to define resources](#changes-to-how-to-define-resources)
+    + [URL construction](#url-construction)
+    + [URLs that have not changed](#urls-that-have-not-changed)
+- [Using Development Version](#using-development-version)
+- [Additional Resources](#additional-resources)
+- [Copyright](#copyright)
 
-## Usage
+# Usage
 
-### Requirements
+## Requirements
 
 All API usage happens through Shopify applications, created by either shop owners for their shops, or by Shopify Partners for use by other shop owners:
 
@@ -51,11 +56,11 @@ All API usage happens through Shopify applications, created by either shop owner
 
 For more information and detailed documentation about the API visit https://developers.shopify.com/
 
-#### Ruby version
+### Ruby version
 
 This gem requires Ruby 2.4 as of version 7.0.
 
-### Installation
+## Installation
 
 Add `shopify_api` to your `Gemfile`:
 
@@ -69,11 +74,11 @@ Or install via [gem](http://rubygems.org/)
 gem install shopify_api
 ```
 
-### Getting Started
+## Getting Started
 
 ShopifyAPI sessions need to be configured with a fully authorized URL of a particular store before they can start making API calls. To obtain that URL, you can follow these steps:
 
-#### 1) Create an app
+### 1) Create an app
 
 First, create a new application in either the partners admin or your store admin. 
 
@@ -87,7 +92,7 @@ For a private app, you'll need the API_KEY and the PASSWORD; otherwise, you'll n
 
    If you're not sure how to create a new application in the partner/store admin or if you're not sure how to generate the required credentials, you can [read the related Shopify docs](https://docs.shopify.com/api/guides/api-credentials) on the same.
 
-#### 2A) Private Apps
+### 2A) Private Apps
 
 For a private App you just need to set the base site url as follows:
 
@@ -99,7 +104,7 @@ For a private App you just need to set the base site url as follows:
 
    That's it; you're done! Next, skip to step 6 and start using the API!
 
-#### 2B) Public and Custom Apps
+### 2B) Public and Custom Apps
    
    For public and custom apps, you will need to supply two parameters to the Session class before you instantiate it:
 
@@ -109,7 +114,7 @@ For a private App you just need to set the base site url as follows:
 
    Shopify maintains [`omniauth-shopify-oauth2`](https://github.com/Shopify/omniauth-shopify-oauth2), which simplifies and securely wraps the OAuth flow and interactions with Shopify. Using this gem is the recommended way to use OAuth authentication in your application.
 
-#### 3) Requesting access from a shop
+### 3) Requesting access from a shop
 
 Public and Custom apps need an access token from each shop to access that shop's data. Getting an access token is a two-stage process. The first stage is to redirect the merchant to a **permission URL** to grant access to the app.
 
@@ -139,7 +144,7 @@ Under the hood, the the `create_permission_url` method is preparing the app to m
    * ``state`` – Optional – A randomly selected value provided by your application, which is unique for each authorization request. During the OAuth callback phase, your application must check that this value matches the one you provided during authorization. [This mechanism is essential for the security of your application](https://tools.ietf.org/html/rfc6819#section-3.6).
    * ``grant_options[]`` - Optional - Set this parameter to `per-user` to receive an access token that respects the user's permission level when making API requests (called online access). We strongly recommend using this parameter for embedded apps.
 
-#### 4) Trading your `code` for an access token.
+### 4) Trading your `code` for an access token.
 
 Once authorized, the shop redirects the owner to the return URL of your application with a parameter named `code`. The value of this parameter is a temporary token that the app can exchange for a permanent access token.
 
@@ -187,7 +192,7 @@ Once authorized, the shop redirects the owner to the return URL of your applicat
    2) If you requested an online-mode access token, `shopify_session.extra['associated_user']` must be present.
    Failing either of these tests means the end-user may have tampered with the URL parameters during the OAuth authentication phase. You should avoid using this access token and revoke it immediately. If you use the [`omniauth-shopify-oauth2`](https://github.com/Shopify/omniauth-shopify-oauth2) gem, these checks are done automatically for you.
    
-#### 5) Activating the session
+### 5) Activating the session
 
 Once you have a token, simply pass in the `token` and `extra` hash (optional) when creating the session object:
 
@@ -201,7 +206,7 @@ The session must be activated before use:
    ShopifyAPI::Base.activate_session(shopify_session)
    ```
 
-#### 6A) Making requests to the GraphQL API
+### 6A) Making requests to the GraphQL API
 
 The GraphQL API is the recommended way to consume the Shopify API. It is more fully-featured than REST, more performant, and future-proof. Whenever possible, GraphQL should be used to consume the Shopify API.
 
@@ -231,7 +236,7 @@ result.data.shop.name
 
 [GraphQL client documentation](docs/graphql.md)
 
-#### 6B) Making requests to the REST API
+### 6B) Making requests to the REST API
 
 Responses to REST requests are returned as ActiveResource instances:
 
@@ -281,7 +286,7 @@ If you want to work with another shop, you'll first need to clear the session:
    ShopifyAPI::Base.clear_session
    ```
 
-### Console
+## Console
 
 This package also supports the ``shopify-api`` executable to make it easy to open up an interactive console to use the API with a shop.
 
@@ -319,9 +324,141 @@ ActiveResource is threadsafe as of version 4.1 (which works with Rails 4.x and a
 
 If you were previously using Shopify's [activeresource fork](https://github.com/shopify/activeresource), then you should remove it and use ActiveResource 4.1.
 
+## Bulk Operations
+
+With the GraphQL Admin API, you can use bulk operations to asynchronously fetch data in bulk. The API is designed to reduce complexity and improve performance when dealing with large volumes of data. 
+
+Instead of manually paginating results and managing a client-side throttle, you can instead run a bulk query operation. Shopify’s infrastructure does the hard work of executing your query, and then provides you with a URL where you can download all of the data.
+
+Apps are limited to running a single bulk operation at a time per shop. When the operation is complete, the results are delivered in the form of a JSONL file that Shopify makes available at a URL.
+
+### Example
+
+The following mutation queries the products connection and returns each product's ID and title.
+
+#### 1) Start the bulk operation
+
+```ruby
+client = ShopifyAPI::GraphQL.client
+
+PRODUCTS_BULK_QUERY = client.parse <<-'GRAPHQL'
+    mutation {
+      bulkOperationRunQuery(
+       query: """
+        {
+          products {
+            edges {
+              node {
+                id
+                title
+              }
+            }
+          }
+        }
+        """
+      ) {
+        bulkOperation {
+          id
+          status
+        }
+        userErrors {
+          field
+          message
+        }
+      }
+    }
+GRAPHQL
+
+result = client.query(PRODUCTS_BULK_QUERY)
+```
+#### Step 2) Poll the status of the bulk operation
+
+While the operation is running, you need to poll to see its progress using the `currentBulkOperation` field. The `objectCount` field increments to indicate the operation's progress, and the `status` field returns whether the operation is completed.
+
+```ruby
+BULK_POLL_QUERY = client.parse <<-'GRAPHQL'
+    query {
+      currentBulkOperation {
+        id
+        status
+        errorCode
+        createdAt
+        completedAt
+        objectCount
+        fileSize
+        url
+        partialDataUrl
+      }
+    }
+GRAPHQL
+
+result = client.query(BULK_POLL_QUERY)
+```
+
+The JSON response of a completed query will look like this :
+
+```json
+{
+  "data": {
+    "currentBulkOperation": {
+      "id": "gid:\/\/shopify\/BulkOperation\/720918",
+      "status": "COMPLETED",
+      "errorCode": null,
+      "createdAt": "2019-08-29T17:16:35Z",
+      "completedAt": "2019-08-29T17:23:25Z",
+      "objectCount": "57",
+      "fileSize": "358",
+      "url": "https:\/\/storage.googleapis.com\/shopify\/dyfkl3g72empyyoenvmtidlm9o4g?<params>",
+      "partialDataUrl": null
+    }
+  },
+  ...
+}
+```
+
+#### Step 3) Retrieve your data
+
+Since bulk operations are specifically designed to fetch large datasets, we’ve chosen the [JSON Lines](http://jsonlines.org/) (JSONL) format for the response data so that clients have more flexibility in how they consume the data. JSONL is similar to JSON, but each line is a valid JSON object. The file can be parsed one line at a time by using file streaming functionality to avoid issues with memory consumption.
+
+A JSONL output file is available for download at the URL specified in the `url` field when the operation completes.
+
+Each line in the file is a node object returned in a connection. If a node has a nested connection, then each child node is extracted into a new object on the next line. Below is an example of a JSONL file.
+
+```json
+{"id":"gid://shopify/Product/1921569226808"}
+{"id":"gid://shopify/ProductVariant/19435458986040","title":"70","__parentId":"gid://shopify/Product/1921569226808"}
+{"id":"gid://shopify/Product/1921569259576"}
+{"id":"gid://shopify/ProductVariant/19435459018808","title":"34","__parentId":"gid://shopify/Product/1921569259576"}
+{"id":"gid://shopify/Product/1921569292344"}
+{"id":"gid://shopify/ProductVariant/19435459051576","title":"Default Title","__parentId":"gid://shopify/Product/1921569292344"}
+{"id":"gid://shopify/Product/1921569325112"}
+{"id":"gid://shopify/ProductVariant/19435459084344","title":"36","__parentId":"gid://shopify/Product/1921569325112"}
+{"id":"gid://shopify/Product/1921569357880"}
+{"id":"gid://shopify/ProductVariant/19435459117112","title":"47","__parentId":"gid://shopify/Product/1921569357880"}
+{"id":"gid://shopify/ProductVariant/19435458986123","title":"52","__parentId":"gid://shopify/Product/1921569226808"}
+```
+
+Here's a simple example in Ruby to demonstrate the proper way of loading and parsing a JSONL file:
+
+```ruby
+# Efficient: reads the file a single line at a time
+File.open(file) do |f|
+  f.each do |line|
+    JSON.parse(line)
+  end
+end
+
+# Inefficient: reads the entire file into memory
+jsonl = File.read(file)
+
+jsonl.each_line do |line|
+  JSON.parse(line)
+end
+```
+
 ## Pagination
 
-Shopify uses [Relative cursor-based pagination](https://help.shopify.com/en/api/guides/paginated-rest-results) to provide more than a single page of results.
+Shopify uses [Relative cursor-based pagination](https://help.shopify.com/en/api/guides/paginated-rest-results) to provide more than a single page of results. 
 
 ```ruby
 products = ShopifyAPI::Product.find(:all, params: { limit: 50 })
@@ -355,29 +492,9 @@ while(products.count == 50)
 end
 ```
 
-## Using Development Version
+# Breaking Change Notices
 
-Download the source code and run:
-
-```bash
-bundle install
-bundle exec rake test
-```
-
-or if you'd rather use docker just run:
-```bash
-docker run -it --name shopify_api -v "$PWD:/shopify_api" -w="/shopify_api" ruby:2.6 bundle install
-docker exec -it shopify_api bash
-```
-
-or you can even use our automated rake task for docker:
-```bash
-bundle exec rake docker
-```
-
-## Breaking Change Notices
-
-### Breaking change notice for version 8.0.0
+## Breaking change notice for version 8.0.0
 
 Version 7.0.0 introduced ApiVersion, and known versions were hardcoded into the gem. Manually defining API versions is no longer required for versions not listed in the gem. Version 8.0.0 removes the following:
 * `ShopifyAPI::ApiVersion::Unstable`
@@ -404,9 +521,9 @@ ShopifyAPI::ApiVersion.fetch_known_versions
 Known and active versions are fetched from https://app.shopify.com/services/apis.json and cached. Trying to use a version outside this cached set will raise an error. To switch back to naïve lookup and create a version if one is not found, call `ShopifyAPI::ApiVersion.version_lookup_mode = :define_on_unknown`.
 
 
-### Breaking change notice for version 7.0.0
+## Breaking change notice for version 7.0.0
 
-#### Changes to ShopifyAPI::Session
+### Changes to ShopifyAPI::Session
 When creating sessions, `api_version`is now required and uses keyword arguments.
 
 To upgrade your use of ShopifyAPI you will need to make the following changes.
@@ -441,7 +558,7 @@ if you want to use the `unstable` version, you will create a session like this:
 session = ShopifyAPI::Session.new(domain: domain, token: token, api_version: :unstable)
 ```
 
-#### Changes to how to define resources
+### Changes to how to define resources
 
 If you have defined or customized Resources, classes that extend `ShopifyAPI::Base`:
 The use of `self.prefix =` has been deprecated; you should now use `self.resource =` and not include `/admin`.
@@ -458,7 +575,7 @@ class MyResource < ShopifyAPI::Base
 end
 ```
 
-#### URL construction
+### URL construction
 
 If you have specified any full paths for API calls in find
 ```ruby
@@ -476,7 +593,7 @@ def self.current(options = {})
 end
 ```
 
-#### URLs that have not changed
+### URLs that have not changed
 
 - OAuth URLs for `authorize`, getting the `access_token` from a code, `access_scopes`, and using a `refresh_token` have _not_ changed.
   - get: `/admin/oauth/authorize`
@@ -484,11 +601,31 @@ end
   - get: `/admin/oauth/access_scopes`
 - URLs for the merchant’s web admin have _not_ changed. For example: to send the merchant to the product page the url is still `/admin/product/<id>`
 
-## Additional Resources
+# Using Development Version
+
+Download the source code and run:
+
+```bash
+bundle install
+bundle exec rake test
+```
+
+or if you'd rather use docker just run:
+```bash
+docker run -it --name shopify_api -v "$PWD:/shopify_api" -w="/shopify_api" ruby:2.6 bundle install
+docker exec -it shopify_api bash
+```
+
+or you can even use our automated rake task for docker:
+```bash
+bundle exec rake docker
+```
+
+# Additional Resources
 
 * [API Reference](https://help.shopify.com/api/reference)
 * [Ask questions on the forums](http://ecommerce.shopify.com/c/shopify-apis-and-technology)
 
-## Copyright
+# Copyright
 
 Copyright (c) 2014 "Shopify Inc.". See LICENSE for details.
