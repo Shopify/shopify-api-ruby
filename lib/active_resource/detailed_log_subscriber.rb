@@ -38,8 +38,8 @@ module ActiveResource
 
         when VERSION_EOL_WARNING_HEADER
           warning_message = <<-MSG
-          [Version EOL Warning] ShopifyAPI made a call to #{payload[:method].upcase} #{payload[:path]}, and this call made
-          use of an API version that is expired or will expire within 30 days. See #{header_value} for more details.
+          [API Version Warning] ShopifyAPI made a call to #{payload[:method].upcase} #{payload[:path]}, and this call used
+          an API version that is unsupported or will become unsupported within 30 days. See #{header_value} for more details.
           MSG
 
           warn warning_message

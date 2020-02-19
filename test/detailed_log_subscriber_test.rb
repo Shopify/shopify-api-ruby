@@ -115,7 +115,7 @@ class LogSubscriberTest < Test::Unit::TestCase
     )
   end
 
-  test "warns when the server responds with a x-shopify-api-version-warning" do
+  test "warns when the server responds with a x-shopify-api-version-warning header" do
     fake(
       "pages/1",
       method: :get,
@@ -128,7 +128,7 @@ class LogSubscriberTest < Test::Unit::TestCase
     assert_equal 1, @logger.logged(:warn).size
 
     assert_match(
-      %r{\[Version EOL Warning\] ShopifyAPI made a call to GET /admin/api/2019-01/pages/1.json},
+      %r{\[API Version Warning\] ShopifyAPI made a call to GET /admin/api/2019-01/pages/1.json},
       @logger.logged(:warn).first
     )
     assert_match(
