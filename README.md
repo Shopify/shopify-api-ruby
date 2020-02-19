@@ -192,17 +192,16 @@ ShopifyAPI uses ActiveResource to communicate with the REST web service. ActiveR
    shopify_session = ShopifyAPI::Session.new(domain: "SHOP_NAME.myshopify.com", api_version: api_version, token: nil)
    ```
 
-   Then call:
-
-   ```ruby
-   scope = ["write_products"]
-   permission_url = shopify_session.create_permission_url(scope)
-   ```
-
-   or if you want a custom redirect_uri:
+   Then call `create_permission_url` with the redirect_uri you've registered for your application:
 
    ```ruby
    permission_url = shopify_session.create_permission_url(scope, "https://my_redirect_uri.com")
+   ```
+
+   You can also pass a state parameter in the options hash as a last argument:
+
+   ```ruby
+   permission_url = shopify_session.create_permission_url(scope, "https://my_redirect_uri.com", { state: "My Nonce" })
    ```
 
 4. Once authorized, the shop redirects the owner to the return URL of your application with a parameter named 'code'. This is a temporary token that the app can exchange for a permanent access token.
@@ -347,15 +346,18 @@ gem install shopify_api_console
 
 ## GraphQL
 
-This library also supports Shopify's new [GraphQL API](https://help.shopify.com/api/graphql-admin-api)
-via a dependency on the [graphql-client](https://github.com/github/graphql-client) gem.
+Note: the GraphQL client has improved and changed in version 9.0. See the [client documentation](docs/graphql.md)
+for full usage details and a [migration guide](docs/graphql.md#migration-guide).
+
+This library also supports Shopify's [GraphQL Admin API](https://help.shopify.com/api/graphql-admin-api)
+via integration with the [graphql-client](https://github.com/github/graphql-client) gem.
 The authentication process (steps 1-5 under [Getting Started](#getting-started))
-is identical. Once your session is activated, simply construct a new graphql
-client and use `parse` and `query` as defined by
+is identical. Once your session is activated, simply access the GraphQL client
+and use `parse` and `query` as defined by
 [graphql-client](https://github.com/github/graphql-client#defining-queries).
 
 ```ruby
-client = ShopifyAPI::GraphQL.new
+client = ShopifyAPI::GraphQL.client
 
 SHOP_NAME_QUERY = client.parse <<-'GRAPHQL'
   {
@@ -368,6 +370,8 @@ GRAPHQL
 result = client.query(SHOP_NAME_QUERY)
 result.data.shop.name
 ```
+
+[GraphQL client documentation](docs/graphql.md)
 
 ## Threadsafety
 
@@ -401,6 +405,14 @@ while products.next_page?
   products = products.fetch_next_page
   process_products(products)
 end
+```
+
+If you want cursor based pagination to work across page loads, or want to distribute workload across multiple background jobs, you can use #next_page_info or #previous_page_info methods that return strings:
+
+```
+  first_batch_products = ShopifyAPI::Product.find(:all, params: { limit: 50 })
+  second_batch_products = ShopifyAPI::Product.find(:all, params: { limit: 50, page_info: first_batch_products.next_page_info })
+  ...
 ```
 
 Relative cursor pagination is currently available for all endpoints using the `2019-10` and later API versions.

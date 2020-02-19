@@ -173,6 +173,20 @@ class BaseTest < Test::Unit::TestCase
     assert_equal ShopifyAPI::ApiVersion::NullVersion, ShopifyAPI::Base.api_version
   end
 
+  test "#version_validation! does not raise is api_version is newer or equal to minimum supported version" do
+    ShopifyAPI::Base.api_version = '2020-01'
+    assert_nil ShopifyAPI::Base::version_validation!('2020-01')
+  end
+
+  test "#version_validation! raises NotImplemetedError if api_version is older than minimum supported version" do
+    ShopifyAPI::Base.api_version = '2019-10'
+    exception = assert_raises NotImplementedError do
+      ShopifyAPI::Base::version_validation!('2020-01')
+    end
+    assert_equal 'The minimum supported version is 2020-01.', exception.message
+  end
+
+
   def clear_header(header)
     [ActiveResource::Base, ShopifyAPI::Base, ShopifyAPI::Product].each do |klass|
       klass.headers.delete(header)
