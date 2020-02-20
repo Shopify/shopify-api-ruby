@@ -114,4 +114,26 @@ class LogSubscriberTest < Test::Unit::TestCase
       @logger.logged(:warn).first
     )
   end
+
+  test "warns when the server responds with a x-shopify-api-version-warning header" do
+    fake(
+      "pages/1",
+      method: :get,
+      body: @page,
+      x_shopify_api_version_warning: 'https://shopify.dev/concepts/about-apis/versioning'
+    )
+
+    ShopifyAPI::Page.find(1)
+
+    assert_equal 1, @logger.logged(:warn).size
+
+    assert_match(
+      %r{\[API Version Warning\] ShopifyAPI made a call to GET /admin/api/2019-01/pages/1.json},
+      @logger.logged(:warn).first
+    )
+    assert_match(
+      %r{See https:\/\/shopify.dev\/concepts\/about-apis\/versioning for more details.},
+      @logger.logged(:warn).first
+    )
+  end
 end
