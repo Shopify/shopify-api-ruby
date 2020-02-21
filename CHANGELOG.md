@@ -1,3 +1,6 @@
+== Version 9.0.1
+
+* Added warning message if API version used is unsupported or soon to be unsupported  [#685](https://github.com/Shopify/shopify_api/pull/685)
 * Take into account "errors" messages from response body [#677](https://github.com/Shopify/shopify_api/pull/677)
 
 == Version 9.0.0
