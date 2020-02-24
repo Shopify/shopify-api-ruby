@@ -1,6 +1,6 @@
 # Change log
 
-## master (unreleased)
+## Master (unreleased)
 
 * Take into account "errors" messages from response body [#677](https://github.com/Shopify/shopify_api/pull/677)
 
