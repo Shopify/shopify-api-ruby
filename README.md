@@ -129,7 +129,7 @@ Public and Custom apps need an access token from each shop to access that shop's
    
 After creating the permission URL, the user should be directed to this URL to approve the app.
 
-Under the hood, the the `create_permission_url` method is preparing the app to make the following request :
+Under the hood, the `create_permission_url` method is preparing the app to make the following request :
 
    ```
    GET https://SHOP_NAME.myshopify.com/admin/oauth/authorize
