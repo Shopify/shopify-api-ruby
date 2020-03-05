@@ -39,7 +39,7 @@ module ShopifyAPI
         @_client_cache = {}
       end
 
-      def initialize_clients
+      def initialize_clients(raise_on_invalid_schema: true)
         initialize_client_cache
 
         Dir.glob(schema_location.join("*.json")).each do |schema_file|
@@ -49,7 +49,11 @@ module ShopifyAPI
           if matches
             api_version = ShopifyAPI::ApiVersion.new(handle: matches[1])
           else
-            raise InvalidSchema, "Invalid schema file name `#{schema_file}`. Does not match format of: `<version>.json`."
+            if raise_on_invalid_schema
+              raise InvalidSchema, "Invalid schema file name `#{schema_file}`. Does not match format of: `<version>.json`."
+            else
+              next
+            end
           end
 
           schema = ::GraphQL::Client.load_schema(schema_file.to_s)
