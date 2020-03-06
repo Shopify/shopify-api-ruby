@@ -1,3 +1,7 @@
+## Version 9.0.2
+
+* Added optional flag passed to `initialize_clients` to prevent from raising the `InvalidSchema` exception [#693](https://github.com/Shopify/shopify_api/pull/693)
+
 ## Version 9.0.1
 
 * Added warning message if API version used is unsupported or soon to be unsupported  [#685](https://github.com/Shopify/shopify_api/pull/685)
