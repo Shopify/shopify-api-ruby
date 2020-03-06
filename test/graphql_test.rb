@@ -53,6 +53,17 @@ class GraphQLTest < Test::Unit::TestCase
     end
   end
 
+  test '#initialize_clients does not raise if raise_on_invalid_schema is set to false' do
+    version_fixtures('unstable') do |dir|
+      ShopifyAPI::GraphQL.schema_location = dir
+      FileUtils.touch(ShopifyAPI::GraphQL.schema_location.join('nope.json'))
+
+      ShopifyAPI::GraphQL.initialize_clients(raise_on_invalid_schema: false)
+
+      assert ShopifyAPI::GraphQL.client('unstable')
+    end
+  end
+
   test '#client returns default schema if only one exists' do
     version_fixtures('unstable') do |dir|
       ShopifyAPI::Base.api_version = 'unstable'
