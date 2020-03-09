@@ -91,9 +91,9 @@ module ShopifyAPI
       self.extra = extra
     end
 
-    def create_permission_url(scope, redirect_uri = nil)
-      params = {:client_id => api_key, :scope => scope.join(',')}
-      params[:redirect_uri] = redirect_uri if redirect_uri
+    def create_permission_url(scope, redirect_uri, options = {})
+      params = { client_id: api_key, scope: scope.join(','), redirect_uri: redirect_uri }
+      params[:state] = options[:state] if options[:state]
       construct_oauth_url("authorize", params)
     end
 
@@ -104,7 +104,7 @@ module ShopifyAPI
         raise ShopifyAPI::ValidationException, "Invalid Signature: Possible malicious login"
       end
 
-      response = access_token_request(params['code'])
+      response = access_token_request(params[:code])
       if response.code == "200"
         self.extra = JSON.parse(response.body)
         self.token = extra.delete('access_token')
@@ -127,11 +127,11 @@ module ShopifyAPI
     end
 
     def api_version=(version)
-      @api_version = version.nil? ? nil : ApiVersion.coerce_to_version(version)
+      @api_version = ApiVersion::NullVersion.matches?(version) ? ApiVersion::NullVersion : ApiVersion.find_version(version)
     end
 
     def valid?
-      domain.present? && token.present? && api_version.present?
+      domain.present? && token.present? && api_version.is_a?(ApiVersion)
     end
 
     def expires_in

@@ -129,15 +129,14 @@ class RecurringApplicationChargeTest < Test::Unit::TestCase
     fake "recurring_application_charges", body: {recurring_application_charges: []}.to_json
 
     assert_equal 0, ShopifyAPI::RecurringApplicationCharge.all.count
-    assert_equal nil, ShopifyAPI::RecurringApplicationCharge.current
+    assert_nil ShopifyAPI::RecurringApplicationCharge.current
     assert_equal [], ShopifyAPI::RecurringApplicationCharge.pending
   end
 
   def test_recurring_application_charge_not_found_error
     fake "recurring_application_charges", body: '{"errors":"Not Found"}', status: 404
-
-    assert_equal(nil, ShopifyAPI::RecurringApplicationCharge.all)
-    assert_equal(nil, ShopifyAPI::RecurringApplicationCharge.current)
+    assert_nil ShopifyAPI::RecurringApplicationCharge.all
+    assert_nil ShopifyAPI::RecurringApplicationCharge.current
     assert_equal([], ShopifyAPI::RecurringApplicationCharge.pending)
   end
 end

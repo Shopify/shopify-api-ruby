@@ -11,6 +11,8 @@ module ShopifyAPI
                                   "ActiveResource/#{ActiveResource::VERSION::STRING}",
                                   "Ruby/#{RUBY_VERSION}"].join(' ')
 
+    self.collection_parser = ShopifyAPI::PaginatedCollection
+
     def encode(options = {})
       same = dup
       same.attributes = {self.class.element_name => same.attributes} if self.class.format.extension == 'json'
@@ -30,26 +32,13 @@ module ShopifyAPI
 
     class << self
       threadsafe_attribute(:_api_version)
-
-      if ActiveResource::Base.respond_to?(:_headers) && ActiveResource::Base.respond_to?(:_headers_defined?)
-        def headers
-          if _headers_defined?
-            _headers
-          elsif superclass != Object && superclass.headers
-            superclass.headers
-          else
-            _headers ||= {}
-          end
-        end
-      else
-        def headers
-          if defined?(@headers)
-            @headers
-          elsif superclass != Object && superclass.headers
-            superclass.headers
-          else
-            @headers ||= {}
-          end
+      def headers
+        if _headers_defined?
+          _headers
+        elsif superclass != Object && superclass.headers
+          superclass.headers
+        else
+          _headers ||= {}
         end
       end
 
@@ -73,11 +62,13 @@ module ShopifyAPI
           _api_version
         elsif superclass != Object && superclass.site
           superclass.api_version.dup.freeze
+        else
+          ApiVersion::NullVersion
         end
       end
 
       def api_version=(version)
-        self._api_version = version.nil? ? nil : ApiVersion.coerce_to_version(version)
+        self._api_version = ApiVersion::NullVersion.matches?(version) ? ApiVersion::NullVersion : ApiVersion.find_version(version)
       end
 
       def prefix(options = {})
@@ -135,6 +126,26 @@ module ShopifyAPI
         define_method resource_id.to_sym do
           @prefix_options[resource_id]
         end
+      end
+
+      def early_july_pagination?
+        !!early_july_pagination
+      end
+
+      def version_validation!(minimum_version)
+        available_in_version = ShopifyAPI::ApiVersion.find_version(minimum_version)
+
+        unless ShopifyAPI::Base.api_version >= available_in_version
+          raise NotImplementedError, "The minimum supported version is #{minimum_version}."
+        end
+      end
+
+      private
+
+      attr_accessor :early_july_pagination
+
+      def early_july_pagination_release!
+        self.early_july_pagination = true
       end
     end
 

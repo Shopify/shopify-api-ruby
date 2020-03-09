@@ -33,9 +33,9 @@ class BaseTest < Test::Unit::TestCase
 
     ShopifyAPI::Base.clear_session
 
-    assert_equal nil, ShopifyAPI::Base.user
-    assert_equal nil, ShopifyAPI::Base.password
-    assert_equal nil, ShopifyAPI::Base.site
+    assert_nil ShopifyAPI::Base.user
+    assert_nil ShopifyAPI::Base.password
+    assert_nil ShopifyAPI::Base.site
   end
 
   test '#clear_session should clear site and headers from Base' do
@@ -92,8 +92,9 @@ class BaseTest < Test::Unit::TestCase
   test "prefix= will forward to resource when the value does not start with admin" do
     session = ShopifyAPI::Session.new(domain: 'shop1.myshopify.com', token: 'token1', api_version: '2019-01')
     ShopifyAPI::Base.activate_session(session)
-
-    TestResource.prefix = 'a/regular/path/'
+    silence_warnings do
+      TestResource.prefix = 'a/regular/path/'
+    end
 
     assert_equal('/admin/api/2019-01/a/regular/path/', TestResource.prefix)
   end
@@ -157,10 +158,34 @@ class BaseTest < Test::Unit::TestCase
     assert_equal 2, ShopifyAPI::Shop.current.id
   end
 
-  test "#api_version should set ApiVersion" do
+  test "#api_version= should set ApiVersion" do
     ShopifyAPI::Base.api_version = '2019-04'
     assert_equal '2019-04', ShopifyAPI::Base.api_version.to_s
   end
+
+  test "#api_version= nil should set ApiVersion to ShopifyAPI::ApiVersion::NullVersion" do
+    ShopifyAPI::Base.api_version = nil
+    assert_equal ShopifyAPI::ApiVersion::NullVersion, ShopifyAPI::Base.api_version
+  end
+
+  test "#api_version= ShopifyAPI::ApiVersion::NullVersion should set ApiVersion to ShopifyAPI::ApiVersion::NullVersion" do
+    ShopifyAPI::Base.api_version = ShopifyAPI::ApiVersion::NullVersion
+    assert_equal ShopifyAPI::ApiVersion::NullVersion, ShopifyAPI::Base.api_version
+  end
+
+  test "#version_validation! does not raise is api_version is newer or equal to minimum supported version" do
+    ShopifyAPI::Base.api_version = '2020-01'
+    assert_nil ShopifyAPI::Base::version_validation!('2020-01')
+  end
+
+  test "#version_validation! raises NotImplemetedError if api_version is older than minimum supported version" do
+    ShopifyAPI::Base.api_version = '2019-10'
+    exception = assert_raises NotImplementedError do
+      ShopifyAPI::Base::version_validation!('2020-01')
+    end
+    assert_equal 'The minimum supported version is 2020-01.', exception.message
+  end
+
 
   def clear_header(header)
     [ActiveResource::Base, ShopifyAPI::Base, ShopifyAPI::Product].each do |klass|
