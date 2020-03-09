@@ -73,6 +73,12 @@ Or install via [gem](http://rubygems.org/)
 gem install shopify_api
 ```
 
+Once the gem is installed, it must be added to your project by placing the following line in your app :
+
+```ruby
+require 'shopify_api'
+```
+
 ## Getting Started
 
 ShopifyAPI sessions need to be configured with a fully authorized URL of a particular store before they can start making API calls. To obtain that URL, you can follow these steps:
