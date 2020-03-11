@@ -11,7 +11,7 @@ module ShopifyAPI
     self.protocol = 'https'
     self.myshopify_domain = 'myshopify.com'
 
-    attr_accessor :url, :token, :name
+    attr_accessor :url, :token, :name, :api_version, :extra
 
     class << self
 
@@ -20,10 +20,10 @@ module ShopifyAPI
       end
 
       def temp(domain, token, &block)
-        session = new(domain, token)
+        session = new(domain: domain, token: token, api_version: api_version)
         original_site = ShopifyAPI::Base.site.to_s
         original_token = ShopifyAPI::Base.headers['X-Shopify-Access-Token']
-        original_session = new(original_site, original_token)
+        original_session = new(domain: original_site, token: original_token, api_version: api_version)
 
         begin
           ShopifyAPI::Base.activate_session(session)
@@ -67,9 +67,11 @@ module ShopifyAPI
       end
     end
 
-    def initialize(url, token = nil)
-      self.url = self.class.prepare_url(url)
+    def initialize(domain:, token:, api_version:, extra: {})
+      self.url = self.class.prepare_url(domain)
       self.token = token
+      self.api_version = api_version
+      self.extra = extra
     end
 
     def create_permission_url(scope, redirect_uri = nil)
@@ -101,7 +103,7 @@ module ShopifyAPI
     end
 
     def site
-      "#{protocol}://#{url}/admin"
+      "#{protocol}://#{url}/admin/api/#{api_version}"
     end
 
     def valid?
