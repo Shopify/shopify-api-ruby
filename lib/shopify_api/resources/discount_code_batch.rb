@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module ShopifyAPI
   class DiscountCodeBatch < Base
     init_prefix :price_rule
@@ -11,8 +12,8 @@ module ShopifyAPI
     def discount_code_job
       @discount_codes ||= begin
         if id
-          path = "/admin/price_rules/#{price_rule_id}/batch/#{id}/discount_codes.json"
-          discount_codes  = ShopifyAPI::DiscountCode.find :all, from: path
+          path = self.class.api_version.construct_api_path("price_rules/#{price_rule_id}/batch/#{id}/discount_codes.json")
+          discount_codes = ShopifyAPI::DiscountCode.find :all, from: path
           discount_codes.each do |code|
             errors = code.attributes['errors']
             errors.attributes.each do |key, values|
