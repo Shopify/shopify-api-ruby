@@ -42,6 +42,9 @@ module ShopifyAPI
     end
 
     class << self
+      alias next all
+      alias previous all
+
       threadsafe_attribute(:api_version)
       if ActiveResource::Base.respond_to?(:_headers) && ActiveResource::Base.respond_to?(:_headers_defined?)
         def headers
@@ -71,13 +74,19 @@ module ShopifyAPI
         !!CURSOR_VERSIONS[api_ver]&.include?(to_s.split('::').last)
       end
 
-      def all(attrs = {})
+      def all(*args)
+        options = args.slice!(0) || {}
+
         if cursor_based?
-          attrs = attrs.with_indifferent_access
-          attrs.try(:[], :params).try(:delete, :page)
+          options = options.with_indifferent_access
+          if options[:params].present?
+            options[:params].delete :page
+
+            options[:params].slice!(:page_info, :limit, :fields) if options.dig(:params, :page_info).present?
+          end
         end
 
-        super attrs
+        find :all, *([options] + args)
       end
 
       def activate_session(session)
