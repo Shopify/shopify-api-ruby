@@ -11,6 +11,8 @@ Gem::Specification.new do |s|
   s.email = %q{developers@jadedpixel.com}
   s.homepage = %q{http://www.shopify.com/partners/apps}
 
+  s.metadata['allowed_push_host'] = 'http://rubygems.org'
+
   s.extra_rdoc_files = [
     "LICENSE",
     "README.md"
