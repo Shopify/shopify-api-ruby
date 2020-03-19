@@ -1,3 +1,15 @@
+## Version 9.0.3
+
+* We now raise a `ShopifyAPI::ValidationException` exception when clients try to use `Product` and `Variant` with deprecated inventory-related fields in API version `2019-10` or later. [#655](https://github.com/shopify/shopify_api/pull/655) Deprecation and migration information can be found in the following documents:
+  * [Product Variant REST API Reference](https://shopify.dev/docs/admin-api/rest/reference/products/product-variant)
+  * [Migrate your app to support multiple locations](https://shopify.dev/tutorials/migrate-your-app-to-support-multiple-locations)
+  * [Manage product inventory with the Admin API](https://shopify.dev/tutorials/manage-product-inventory-with-admin-api)
+* Added support for the Discount Code API batch endpoints [#701](https://github.com/shopify/shopify_api/pull/701)
+  * [Create](https://shopify.dev/docs/admin-api/rest/reference/discounts/discountcode#batch_create-2020-01)
+  * [Show](https://shopify.dev/docs/admin-api/rest/reference/discounts/discountcode#batch_show-2020-01)
+  * [List](https://shopify.dev/docs/admin-api/rest/reference/discounts/discountcode#batch_discount_codes_index-2020-01)
+* Fix issue in the README to explicitly say clients need to require the `shopify_api` gem [#700](https://github.com/Shopify/shopify_api/pull/700)
+
 ## Version 9.0.2
 
 * Added optional flag passed to `initialize_clients` to prevent from raising the `InvalidSchema` exception [#693](https://github.com/Shopify/shopify_api/pull/693)
