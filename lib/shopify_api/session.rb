@@ -19,7 +19,7 @@ module ShopifyAPI
         params.each { |k,value| public_send("#{k}=", value) }
       end
 
-      def temp(domain, token, &block)
+      def temp(domain, token, api_version, &block)
         session = new(domain: domain, token: token, api_version: api_version)
         original_site = ShopifyAPI::Base.site.to_s
         original_token = ShopifyAPI::Base.headers['X-Shopify-Access-Token']
