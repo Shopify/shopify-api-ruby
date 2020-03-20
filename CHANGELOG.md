@@ -1,3 +1,7 @@
+## Version 9.0.4
+
+* Contains [#708](https://github.com/Shopify/shopify_api/pull/708) which is a revert for [#655](https://github.com/shopify/shopify_api/pull/655) due to the deprecated inventory parameters not being removed correctly in some cases
+
 ## Version 9.0.3
 
 * We now raise a `ShopifyAPI::ValidationException` exception when clients try to use `Product` and `Variant` with deprecated inventory-related fields in API version `2019-10` or later. [#655](https://github.com/shopify/shopify_api/pull/655) Deprecation and migration information can be found in the following documents:

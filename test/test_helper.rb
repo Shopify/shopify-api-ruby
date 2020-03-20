@@ -96,7 +96,7 @@ module Test
         body   = options.has_key?(:body) ? options.delete(:body) : load_fixture(endpoint)
         format = options.delete(:format) || :json
         method = options.delete(:method) || :get
-        api_version = options.delete(:api_version) || ShopifyAPI::Base.api_version
+        api_version = options.delete(:api_version) || ShopifyAPI::ApiVersion.find_version('2019-01')
         extension = ".#{options.delete(:extension)||'json'}" unless options[:extension]==false
         status = options.delete(:status) || 200
         url = if options.has_key?(:url)
