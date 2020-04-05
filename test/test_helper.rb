@@ -2,7 +2,7 @@ require 'rubygems'
 require 'minitest/autorun'
 require 'webmock/minitest'
 require_relative 'lib/webmock_extensions/last_request'
-require 'mocha/setup'
+require 'mocha/minitest'
 require 'pry'
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
