@@ -346,6 +346,88 @@ class SessionTest < Test::Unit::TestCase
     assert_equal('testshop.myshopify.com', session.url)
   end
 
+  test "equality verifies domain" do
+    session = ShopifyAPI::Session.new(
+      domain: "http://testshop.myshopify.com",
+      token: "any-token",
+      api_version: '2019-01',
+      extra: { foo: "bar" }
+    )
+    other_session = ShopifyAPI::Session.new(
+      domain: "http://testshop.myshopify.com",
+      token: "any-token",
+      api_version: '2019-01',
+      extra: { foo: "bar" }
+    )
+    different_session = ShopifyAPI::Session.new(
+      domain: "http://another_testshop.myshopify.com",
+      token: "any-token",
+      api_version: '2019-01',
+      extra: { foo: "bar" }
+    )
+    assert_equal(session, other_session)
+    refute_equal(session, different_session)
+  end
+
+  test "equality verifies token" do
+    session = ShopifyAPI::Session.new(
+      domain: "http://testshop.myshopify.com",
+      token: "any-token",
+      api_version: '2019-01',
+      extra: { foo: "bar" }
+    )
+    different_session = ShopifyAPI::Session.new(
+      domain: "http://testshop.myshopify.com",
+      token: "very-different-token",
+      api_version: '2019-01',
+      extra: { foo: "bar" }
+    )
+    refute_equal(session, different_session)
+  end
+
+  test "equality verifies api_version" do
+    session = ShopifyAPI::Session.new(
+      domain: "http://testshop.myshopify.com",
+      token: "any-token",
+      api_version: '2019-01',
+      extra: { foo: "bar" }
+    )
+    different_session = ShopifyAPI::Session.new(
+      domain: "http://testshop.myshopify.com",
+      token: "any-token",
+      api_version: :unstable,
+      extra: { foo: "bar" }
+    )
+    refute_equal(session, different_session)
+  end
+
+  test "equality verifies extra" do
+    session = ShopifyAPI::Session.new(
+      domain: "http://testshop.myshopify.com",
+      token: "any-token",
+      api_version: '2019-01',
+      extra: { foo: "bar" }
+    )
+    different_session = ShopifyAPI::Session.new(
+      domain: "http://testshop.myshopify.com",
+      token: "any-token",
+      api_version: '2019-01',
+      extra: { bar: "other-bar" }
+    )
+    refute_equal(session, different_session)
+  end
+
+  test "equality verifies other is a Session" do
+    session = ShopifyAPI::Session.new(
+      domain: "http://testshop.myshopify.com",
+      token: "any-token",
+      api_version: '2019-01',
+      extra: { foo: "bar" }
+    )
+    different_session = nil
+    refute_equal(session, different_session)
+  end
+
   private
 
   def make_sorted_params(params)
