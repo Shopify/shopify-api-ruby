@@ -149,12 +149,20 @@ module ShopifyAPI
       expires_in <= 0
     end
 
+    def hash
+      state.hash
+    end
+
     def ==(other)
-      self.class == other.class &&
-        domain == other.domain &&
-        token == other.token &&
-        api_version == other.api_version &&
-        extra == other.extra
+      self.class == other.class && state == other.state
+    end
+
+    alias_method :eql?, :==
+
+    protected
+
+    def state
+      [domain, token, api_version, extra]
     end
 
     private

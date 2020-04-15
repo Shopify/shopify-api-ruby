@@ -346,6 +346,22 @@ class SessionTest < Test::Unit::TestCase
     assert_equal('testshop.myshopify.com', session.url)
   end
 
+  test "#hash returns the same value for equal Sessions" do
+    session = ShopifyAPI::Session.new(
+      domain: "http://testshop.myshopify.com",
+      token: "any-token",
+      api_version: '2019-01',
+      extra: { foo: "bar" }
+    )
+    other_session = ShopifyAPI::Session.new(
+      domain: "http://testshop.myshopify.com",
+      token: "any-token",
+      api_version: '2019-01',
+      extra: { foo: "bar" }
+    )
+    assert_equal(session.hash, other_session.hash)
+  end
+
   test "equality verifies domain" do
     session = ShopifyAPI::Session.new(
       domain: "http://testshop.myshopify.com",
@@ -426,6 +442,29 @@ class SessionTest < Test::Unit::TestCase
     )
     different_session = nil
     refute_equal(session, different_session)
+  end
+
+  test "#eql? and #hash are implemented" do
+    session = ShopifyAPI::Session.new(
+      domain: "http://testshop.myshopify.com",
+      token: "any-token",
+      api_version: '2019-01',
+      extra: { foo: "bar" }
+    )
+    other_session = ShopifyAPI::Session.new(
+      domain: "http://testshop.myshopify.com",
+      token: "any-token",
+      api_version: '2019-01',
+      extra: { foo: "bar" }
+    )
+    different_session = ShopifyAPI::Session.new(
+      domain: "http://another_testshop.myshopify.com",
+      token: "any-token",
+      api_version: '2019-01',
+      extra: { foo: "bar" }
+    )
+
+    assert_equal([session, different_session], [session, other_session, different_session].uniq)
   end
 
   private
