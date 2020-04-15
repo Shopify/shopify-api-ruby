@@ -1,3 +1,7 @@
+## Version 9.1.0
+
+* Implements equality operator on `Session` [#714](https://github.com/Shopify/shopify_api/pull/714)
+
 ## Version 9.0.4
 
 * Contains [#708](https://github.com/Shopify/shopify_api/pull/708) which is a revert for [#655](https://github.com/shopify/shopify_api/pull/655) due to the deprecated inventory parameters not being removed correctly in some cases
