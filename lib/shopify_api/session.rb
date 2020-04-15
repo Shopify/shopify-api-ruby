@@ -149,6 +149,14 @@ module ShopifyAPI
       expires_in <= 0
     end
 
+    def ==(other)
+      self.class == other.class &&
+        domain == other.domain &&
+        token == other.token &&
+        api_version == other.api_version &&
+        extra == other.extra
+    end
+
     private
 
     def parameterize(params)
