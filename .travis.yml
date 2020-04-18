@@ -1,9 +1,10 @@
 language: ruby
 
 rvm:
-  - 2.4.6
-  - 2.5.5
-  - 2.6.2
+  - 2.4
+  - 2.5
+  - 2.6
+  - 2.7
 
 gemfile:
   - Gemfile_ar41
@@ -13,10 +14,15 @@ gemfile:
 
 matrix:
   fast_finish: true
+  exclude:
+    - rvm: 2.7
+      gemfile: Gemfile_ar41
   allow_failures:
-    - rvm: 2.4.6
+    - rvm: 2.4
       gemfile: Gemfile_ar_master
-    - rvm: 2.5.5
+    - rvm: 2.5
       gemfile: Gemfile_ar_master
-    - rvm: 2.6.2
+    - rvm: 2.6
+      gemfile: Gemfile_ar_master
+    - rvm: 2.7
       gemfile: Gemfile_ar_master
