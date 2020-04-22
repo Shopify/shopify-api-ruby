@@ -38,6 +38,22 @@ class BaseTest < Test::Unit::TestCase
     assert_nil ShopifyAPI::Base.site
   end
 
+  # test to  check session reset api version remains the same after session reset
+  test '#clear_session should not change the api_version' do
+    ShopifyAPI::Base.site = "https://zoo:lion@www.zoo.com"
+
+
+    assert_equal "zoo", ShopifyAPI::Base.user
+    assert_equal "lion", ShopifyAPI::Base.password
+
+    ShopifyAPI::Base.clear_session
+
+    assert_nil ShopifyAPI::Base.user
+    assert_nil ShopifyAPI::Base.password
+    assert_nil ShopifyAPI::Base.site
+    assert_equal ShopifyAPI::Base.api_version,@session1.api_version
+  end
+
   test '#clear_session should clear site and headers from Base' do
     ShopifyAPI::Base.activate_session @session1
     ShopifyAPI::Base.clear_session
