@@ -53,7 +53,6 @@ module ShopifyAPI
         self.site = nil
         self.password = nil
         self.user = nil
-        self.api_version = nil
         self.headers.delete('X-Shopify-Access-Token')
       end
 
