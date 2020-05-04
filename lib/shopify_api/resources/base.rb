@@ -21,6 +21,29 @@ module ShopifyAPI
         Product
         Productlisting
         ProductVariants
+      ],
+      '2019-10' => %w[
+        Checkout
+        Article
+        Blog
+        Comment
+        Customer
+        CustomCollection
+        DiscountCode
+        DraftOrder
+        Fulfillment
+        GiftCard
+        Order
+        OrderRisk
+        Page
+        PriceRule
+        Variant
+        Redirect
+        Refund
+        ScriptTag
+        SmartCollection
+        Transaction
+        Webhook
       ]
     }
 
@@ -83,6 +106,8 @@ module ShopifyAPI
             options[:params].delete :page
 
             options[:params].slice!(:page_info, :limit, :fields) if options.dig(:params, :page_info).present?
+
+            options[:params].delete_if { |_k, v| v.nil? }
           end
         end
 
