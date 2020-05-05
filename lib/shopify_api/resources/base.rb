@@ -23,6 +23,16 @@ module ShopifyAPI
         ProductVariants
       ],
       '2019-10' => %w[
+        Collect
+        Collectionlisting
+        Collection
+        CustomerSavedSearch
+        Event
+        Metafield
+        Product
+        Productlisting
+        ProductVariants
+
         Checkout
         Article
         Blog
