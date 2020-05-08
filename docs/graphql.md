@@ -193,4 +193,4 @@ result = client.query(SHOP_NAME_QUERY)
 result.data.shop.name
 ```
 
-See [making queries](#making-queries) for more usage details.
+See [make queries](#make-queries) for more usage details.
