@@ -15,7 +15,7 @@ module ShopifyAPI
 
         # Open the file using OpenURI, this will save a temp file and will be
         # read one line at a time for memory efficiency.
-        open(url) do |file|
+        URI.open(url) do |file|
           file.reverse_each do |line|
             next if line.blank?
 
