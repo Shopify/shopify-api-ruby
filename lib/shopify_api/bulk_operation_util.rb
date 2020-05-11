@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'open-uri'
 
 module ShopifyAPI
@@ -15,11 +16,16 @@ module ShopifyAPI
 
         # Open the file using OpenURI, this will save a temp file and will be
         # read one line at a time for memory efficiency.
-        URI.open(url) do |file|
+        URI.parse(url).open do |file|
           file.reverse_each do |line|
             next if line.blank?
 
-            node = JSON.parse(line)
+            begin
+              node = JSON.parse(line)
+            rescue JSON::ParserError => e
+              raise JSON::ParserError, "Failed to parse bulk operation line " \
+                                       "'#{line.slice(0, 150)}...': #{e.message}"
+            end
 
             if (parent_id = node["__parentId"])
               (parent_nodes[parent_id] ||= []) << node.except("__parentId")
@@ -28,9 +34,6 @@ module ShopifyAPI
 
               yield(node)
             end
-          rescue JSON::ParserError => e
-            raise JSON::ParserError, "Failed to parse bulk operation line " \
-                                     "'#{line.truncate(150)}': #{e.message}"
           end
         end
       end
