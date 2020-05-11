@@ -20,7 +20,7 @@ class BulkOperationUtilTest < Test::Unit::TestCase
 
     nodes = []
 
-    ShopifyAPI::BulkOperationUtil.with_nested_connections(url) do |node|
+    ShopifyAPI::BulkOperationUtil.open_with_nested_connections(url) do |node|
       nodes << node
     end
 
@@ -49,7 +49,7 @@ class BulkOperationUtilTest < Test::Unit::TestCase
 
     nodes = []
 
-    ShopifyAPI::BulkOperationUtil.with_nested_connections(url) do |node|
+    ShopifyAPI::BulkOperationUtil.open_with_nested_connections(url) do |node|
       nodes << node
     end
 
@@ -77,7 +77,7 @@ class BulkOperationUtilTest < Test::Unit::TestCase
 
     nodes = []
 
-    ShopifyAPI::BulkOperationUtil.with_nested_connections(url) do |node|
+    ShopifyAPI::BulkOperationUtil.open_with_nested_connections(url) do |node|
       nodes << node
     end
 
@@ -102,7 +102,7 @@ class BulkOperationUtilTest < Test::Unit::TestCase
     stub_request(:get, url).to_return(body: data)
 
     assert_raises(JSON::ParserError) do
-      ShopifyAPI::BulkOperationUtil.with_nested_connections(url) {}
+      ShopifyAPI::BulkOperationUtil.open_with_nested_connections(url) {}
     end
   end
 
@@ -120,7 +120,7 @@ class BulkOperationUtilTest < Test::Unit::TestCase
     stub_request(:get, url).to_return(body: response_body, status: 400)
 
     assert_raises(OpenURI::HTTPError) do
-      ShopifyAPI::BulkOperationUtil.with_nested_connections(url) {}
+      ShopifyAPI::BulkOperationUtil.open_with_nested_connections(url) {}
     end
   end
 end

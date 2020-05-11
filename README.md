@@ -466,7 +466,7 @@ Take note that nested connections are listed on their own line in the file and a
 url = "https://storage.googleapis.com/shopify/k524jdq...json"
 
 # Only output parent nodes with nested connections, in reverse order
-ShopifyAPI::BulkOperationUtil.with_nested_connections(url) do |node|
+ShopifyAPI::BulkOperationUtil.open_with_nested_connections(url) do |node|
   # A `__children` property is added to the parsed result, which will contain
   # any child nodes that reference the node from "__parentId"
   puts node["__children"]

@@ -10,7 +10,7 @@ module ShopifyAPI
       # bulk operations output nested connections as new lines in the file, we
       # must loop through each line and connect these resources. This will read
       # the file in reverse so that any child nodes will be listed first.
-      def with_nested_connections(url)
+      def open_with_nested_connections(url)
         # Keep a list of nodes that will collect child nodes
         parent_nodes = {}
 
