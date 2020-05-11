@@ -25,6 +25,7 @@ require 'shopify_api/connection'
 require 'shopify_api/pagination_link_headers'
 require 'shopify_api/graphql'
 require 'shopify_api/graphql/railtie' if defined?(Rails)
+require 'shopify_api/bulk_operation_util'
 
 if ShopifyAPI::Base.respond_to?(:connection_class)
   ShopifyAPI::Base.connection_class = ShopifyAPI::Connection

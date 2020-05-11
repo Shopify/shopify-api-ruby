@@ -461,6 +461,26 @@ jsonl.each_line do |line|
 end
 ```
 
+Take note that nested connections are listed on their own line in the file and although guaranteed to follow the parent resource in order, it's not a guarantee it will located directly after that resource. A trick is to read the file in reverse, so that any children nodes are tracked before the parent node is discovered. You can use the `BulkOperationUtil` class to parse and output nodes along with their children nested within each node:
+```
+url = "https://storage.googleapis.com/shopify/k524jdq...json"
+
+# Only output parent nodes with nested connections, in reverse order
+ShopifyAPI::BulkOperationUtil.with_nested_connections(url) do |node|
+  # A `__children` property is added to the parsed result, which will contain
+  # any child nodes that reference the node from "__parentId"
+  puts node["__children"]
+end
+```
+
+Using the JSON example above, this parses an output as such:
+```
+{"id"=>"gid://shopify/Product/1921569357880", "__children"=>[{"id"=>"gid://shopify/ProductVariant/19435459117112", "title"=>"47"}]}
+...
+{"id"=>"gid://shopify/Product/1921569226808", "__children"=>[{"id"=>"gid://shopify/ProductVariant/19435458986123", "title"=>"52"},
+                                                             {"id"=>"gid://shopify/ProductVariant/19435458986040", "title"=>"70"}]}
+```
+
 ## Pagination
 
 Shopify uses [Relative cursor-based pagination](https://shopify.dev/tutorials/make-paginated-requests-to-rest-admin-api) to provide more than a single page of results. 
