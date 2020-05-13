@@ -24,8 +24,8 @@ module ShopifyAPI
       if allow_inventory_params?
         super(options)
       else
-        super(options).tap do |serialized_hash|
-          (serialized_hash['variant'] || serialized_hash).except!('inventory_quantity', 'old_inventory_quantity')
+        super(options).tap do |resource|
+          (resource['variant'] || resource).except!('inventory_quantity', 'old_inventory_quantity')
         end
       end
     end
