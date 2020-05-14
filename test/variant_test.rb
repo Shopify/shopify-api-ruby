@@ -27,7 +27,6 @@ class VariantTest < Test::Unit::TestCase
   end
 
   def test_product_id_should_be_accessible_if_via_variant_endpoint
-    fake "variants/808950810", :method => :get, :body => load_fixture('variant')
     assert_equal 632910392, @variant.product_id
   end
 
