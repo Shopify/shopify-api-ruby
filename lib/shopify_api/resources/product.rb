@@ -15,6 +15,15 @@ module ShopifyAPI
         format % prices.min
       end
     end
+    
+    def total_inventory=(new_value)
+      raise_deprecated_inventory_call('total_inventory') unless allow_inventory_params?
+      super
+    end
+
+    def serializable_hash(options = {})
+      allow_inventory_params? ? super(options) : super(options).except('total_inventory')
+    end
 
     def collections
       CustomCollection.find(:all, :params => {:product_id => self.id})
@@ -30,6 +39,18 @@ module ShopifyAPI
 
     def remove_from_collection(collection)
       collection.remove_product(self)
+    end
+    
+    private
+
+    def raise_deprecated_inventory_call(parameter)
+      raise(ShopifyAPI::ValidationException,
+        "'#{parameter}' is deprecated - see https://help.shopify.com/en/api/guides/inventory-migration-guide",
+        )
+    end
+
+    def allow_inventory_params?
+      Base.api_version < ApiVersion.find_version('2019-10')
     end
   end
 end
