@@ -466,10 +466,17 @@ Take note that nested connections are listed on their own line in the file and a
 url = "https://storage.googleapis.com/shopify/k524jdq...json"
 
 # Only output parent nodes with nested connections, in reverse order
-ShopifyAPI::BulkOperationUtil.open_with_nested_connections(url) do |node|
+ShopifyAPI::BulkOperationUtil.open_with_nested_connections(url) do |node, index|
   # A `__children` property is added to the parsed result, which will contain
   # any child nodes that reference the node from "__parentId"
   puts node["__children"]
+
+  # Note: since this parses the data in reverse, the index will also be reversed,
+  # and not correlate one-to-one per line, but rather per parent resource (i.e. 
+  # the last line will be index 0 and work forward toward the beginning).
+  # In most cases, the order of the line number isn't significant, but helpful to
+  # track which nodes you've processed.
+  puts "Index: #{index}"
 end
 ```
 
