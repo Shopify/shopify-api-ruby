@@ -17,7 +17,7 @@ module ShopifyAPI
         # Open the file using OpenURI, this will save a temp file and will be
         # read one line at a time for memory efficiency.
         URI.parse(url).open do |file|
-          file.reverse_each do |line|
+          file.reverse_each.with_index do |line, index|
             next if line.blank?
 
             begin
@@ -32,7 +32,7 @@ module ShopifyAPI
             else
               node["__children"] = parent_nodes.delete(node["id"]) || []
 
-              yield(node)
+              yield(node, index)
             end
           end
         end
