@@ -5,7 +5,7 @@ module ShopifyAPI
 
     # The default path structure in ActiveResource for delete would result in:
     # /admin/api/<version>/inventory_levels/#{ inventory_level.id }.json?#{ params }, but since
-    # InventroyLevels are a second class resource made up of a Where and a What
+    # InventoryLevels are a second class resource made up of a Where and a What
     # (Location and InventoryItem), it does not have a resource ID. Here we
     # redefine element_path to remove the id so HTTP DELETE requests go to
     # /admin/api/<version>/inventory_levels.json?#{ params } instead.
