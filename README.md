@@ -606,9 +606,9 @@ end
   - get: `/admin/oauth/access_scopes`
 - URLs for the merchant’s web admin have _not_ changed. For example: to send the merchant to the product page the url is still `/admin/product/<id>`
 
-# Using Development Version
+# Development
 
-Download the source code and run:
+To run the tests, download the source code and run:
 
 ```bash
 bundle install
@@ -625,6 +625,10 @@ or you can even use our automated rake task for docker:
 ```bash
 bundle exec rake docker
 ```
+
+The content for
+[shopify.github.io/shopify_api](https://shopify.github.io/shopify_api/)
+is in the [gh-pages](https://github.com/Shopify/shopify_api/tree/gh-pages) branch.
 
 # Additional Resources
 
