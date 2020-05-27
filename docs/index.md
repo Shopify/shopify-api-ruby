@@ -270,4 +270,4 @@ Ask questions on the forums: http://ecommerce.shopify.com/c/shopify-apis-and-tec
 
 ## Copyright
 
-Copyright (c) 2014 "Shopify Inc.". See LICENSE for details.
+Copyright (c) 2020 "Shopify Inc.". See LICENSE for details.
