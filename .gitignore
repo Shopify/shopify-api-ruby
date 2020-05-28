@@ -11,3 +11,5 @@ pkg
 .dev/
 .bundle/
 vendor/
+_site/
+docs/.jekyll-cache/
