@@ -21,7 +21,12 @@ rescue LoadError
   end
 end
 
-task :default => :test
+task :default => [:test, :verify_docs]
+
+require 'verify_docs'
+task :verify_docs do
+  VerifyDocs.call
+end
 
 require 'rdoc/task'
 Rake::RDocTask.new do |rdoc|
