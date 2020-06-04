@@ -147,6 +147,32 @@ during your boot process.
 The goal is to have all clients created at boot so there's no schema loading,
 parsing, or client instantiation done during runtime when your app serves a request.
 
+## Using a custom client
+`ShopifyAPI::GraphQL::HTTPClient` inherits from `::GraphQL::Client::HTTP` and instruments
+the headers, url and api version for you. However, you may find that you wish to add
+additional functionality to the client responsible for executing and parsing queries.
+For instance, you may wish to create a client which loads responses from a file for your
+tests, or you may want to implement a client which raises errors instead of passing them
+back through the results object.
+
+To set a custom client set `ShopifyAPI::GraphQL.client_klass` to your client:
+```ruby
+class RaisingHTTPClient < ShopifyAPI::GraphQL::HTTPClient
+  def execute(document:, operation_name: nil, variables: {}, context: {})
+    result = super
+    do_work(result)
+  end
+
+  private
+
+  def do_work(result)
+    result
+  end
+end
+
+ShopifyAPI::GraphQL.client_klass = RaisingHTTPClient
+```
+
 ## Migration guide
 Prior to shopify_api v9.0 the GraphQL client implementation was limited and almost
 unusable due to the client making dynamic introspection queries to Shopify's API.

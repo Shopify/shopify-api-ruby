@@ -143,6 +143,22 @@ class GraphQLTest < Test::Unit::TestCase
     end
   end
 
+  test '#client creates client based off configured class' do
+    class SuperDuperClient < ShopifyAPI::GraphQL::HTTPClient
+    end
+
+    ShopifyAPI::GraphQL.client_klass = SuperDuperClient
+    version_fixtures('unstable') do |dir|
+      ShopifyAPI::Base.api_version = 'unstable'
+
+      ShopifyAPI::GraphQL.initialize_clients
+
+      assert_instance_of SuperDuperClient, ShopifyAPI::GraphQL.client('unstable').execute
+    end
+
+    ShopifyAPI::GraphQL.client_klass = nil
+  end
+
   private
 
   def version_fixtures(*versions)
