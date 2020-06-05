@@ -18,18 +18,21 @@ class SessionTest < Test::Unit::TestCase
     assert_not session.valid?
   end
 
-  test "not be valid without an api version" do
+  test "not be valid without an API version" do
+    session = ShopifyAPI::Session.new(domain: "testshop.myshopify.com", token: "any-token", api_version: nil)
+    assert_not session.valid?
+
     session = ShopifyAPI::Session.new(domain: "testshop.myshopify.com", token: "any-token", api_version: ShopifyAPI::ApiVersion::NullVersion)
     assert_not session.valid?
   end
 
-  test "default to base api version" do
-    session = ShopifyAPI::Session.new(domain: "testshop.myshopify.com", token: "any-token", api_version: nil)
+  test "default to base API version" do
+    session = ShopifyAPI::Session.new(domain: "testshop.myshopify.com", token: "any-token")
     assert session.valid?
     assert_equal session.api_version, ShopifyAPI::Base.api_version
   end
 
-  test "can override the base api version" do
+  test "can override the base API version" do
     different_api_version = '2020-01'
     session = ShopifyAPI::Session.new(domain: "testshop.myshopify.com", token: "any-token", api_version: different_api_version)
     assert session.valid?
