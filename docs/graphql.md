@@ -147,15 +147,16 @@ during your boot process.
 The goal is to have all clients created at boot so there's no schema loading,
 parsing, or client instantiation done during runtime when your app serves a request.
 
-## Using a custom client
-`ShopifyAPI::GraphQL::HTTPClient` inherits from `::GraphQL::Client::HTTP` and instruments
-the headers, url and api version for you. However, you may find that you wish to add
-additional functionality to the client responsible for executing and parsing queries.
-For instance, you may wish to create a client which loads responses from a file for your
-tests, or you may want to implement a client which raises errors instead of passing them
-back through the results object.
+## Using a custom query execution adapter
+Github's GraphQL Client uses an adapter pattern so that you can define how you interact
+with GraphQL API's. Shopify provides a minimal implementation in `ShopifyAPI::GraphQL::HTTPClient`.
+If you need to add additional functionality pre, during or post query execution you can
+consider implementing these within a custom query execution adapter, inheriting from
+`ShopifyAPI::GraphQL::HTTPClient` which provides the necessary implementation for
+headers, url, and api versions
 
-To set a custom client set `ShopifyAPI::GraphQL.client_klass` to your client:
+
+To set a custom query executiona dapter set `ShopifyAPI::GraphQL.execution_adapter` to your client:
 ```ruby
 class RaisingHTTPClient < ShopifyAPI::GraphQL::HTTPClient
   def execute(document:, operation_name: nil, variables: {}, context: {})
@@ -170,8 +171,11 @@ class RaisingHTTPClient < ShopifyAPI::GraphQL::HTTPClient
   end
 end
 
-ShopifyAPI::GraphQL.client_klass = RaisingHTTPClient
+ShopifyAPI::GraphQL.execution_adapter = RaisingHTTPClient
 ```
+
+Note, the execution adapter has `client` in the name. This is to remain consistent with
+the naming conventions within the Github GraphQL Client library.
 
 ## Migration guide
 Prior to shopify_api v9.0 the GraphQL client implementation was limited and almost
