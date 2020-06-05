@@ -21,7 +21,14 @@ rescue LoadError
   end
 end
 
-task :default => :test
+task :default => [:test, :verify_docs]
+
+require 'verify_docs'
+task :verify_docs do
+  unless VerifyDocs.call
+    abort("\nWARNING: docs/index.md and README.md no longer have identical content. Please correct this.")
+  end
+end
 
 require 'rdoc/task'
 Rake::RDocTask.new do |rdoc|
