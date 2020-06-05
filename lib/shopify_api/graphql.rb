@@ -6,6 +6,7 @@ module ShopifyAPI
   module GraphQL
     DEFAULT_SCHEMA_LOCATION_PATH = Pathname('shopify_graphql_schemas')
     DEFAULT_EXECUTION_ADAPTER = HTTPClient
+    DEFAULT_GRAPHQL_CLIENT = ::GraphQL::Client
 
     InvalidSchema = Class.new(StandardError)
     InvalidClient = Class.new(StandardError)
@@ -57,8 +58,8 @@ module ShopifyAPI
             end
           end
 
-          schema = ::GraphQL::Client.load_schema(schema_file.to_s)
-          client = ::GraphQL::Client.new(schema: schema, execute: execution_adapter.new(api_version)).tap do |c|
+          schema = graphql_client.load_schema(schema_file.to_s)
+          client = graphql_client.new(schema: schema, execute: execution_adapter.new(api_version)).tap do |c|
             c.allow_dynamic_queries = true
           end
 
@@ -80,6 +81,14 @@ module ShopifyAPI
 
       def execution_adapter=(executor)
         @execution_adapter = executor
+      end
+
+      def graphql_client
+        @graphql_client || DEFAULT_GRAPHQL_CLIENT
+      end
+
+      def graphql_client=(client)
+        @graphql_client = client
       end
 
       private

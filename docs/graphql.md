@@ -147,6 +147,21 @@ during your boot process.
 The goal is to have all clients created at boot so there's no schema loading,
 parsing, or client instantiation done during runtime when your app serves a request.
 
+
+## Using a custom GraphQL Client
+By default `ShopifyAPI::GraphQL` wraps the Github GraphQL Client library. However, this client
+may not suitable for various reasons. If you wish to expand on the interface of the client or
+improve the required functions for your use case you can implement a client of your own.
+
+To use a custom GraphQL Client:
+```
+class CustomGraphQLClient < ::GraphQL::Client
+end
+
+ShopifyAPI::GraphQL.graphql_client = CustomGraphQLClient
+```
+
+
 ## Using a custom query execution adapter
 Github's GraphQL Client uses an adapter pattern so that you can define how you interact
 with GraphQL API's. Shopify provides a minimal implementation in `ShopifyAPI::GraphQL::HTTPClient`.
