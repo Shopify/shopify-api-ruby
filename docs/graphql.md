@@ -147,6 +147,51 @@ during your boot process.
 The goal is to have all clients created at boot so there's no schema loading,
 parsing, or client instantiation done during runtime when your app serves a request.
 
+
+## Using a custom GraphQL Client
+By default `ShopifyAPI::GraphQL` wraps the Github GraphQL Client library. However, this client
+may not suitable for various reasons. If you wish to expand on the interface of the client or
+improve the required functions for your use case you can implement a client of your own.
+
+To use a custom GraphQL Client:
+```
+class CustomGraphQLClient < ::GraphQL::Client
+end
+
+ShopifyAPI::GraphQL.graphql_client = CustomGraphQLClient
+```
+
+
+## Using a custom query execution adapter
+Github's GraphQL Client uses an adapter pattern so that you can define how you interact
+with GraphQL API's. Shopify provides a minimal implementation in `ShopifyAPI::GraphQL::HTTPClient`.
+If you need to add additional functionality pre, during or post query execution you can
+consider implementing these within a custom query execution adapter, inheriting from
+`ShopifyAPI::GraphQL::HTTPClient` which provides the necessary implementation for
+headers, url, and api versions
+
+
+To set a custom query executiona dapter set `ShopifyAPI::GraphQL.execution_adapter` to your client:
+```ruby
+class RaisingHTTPClient < ShopifyAPI::GraphQL::HTTPClient
+  def execute(document:, operation_name: nil, variables: {}, context: {})
+    result = super
+    do_work(result)
+  end
+
+  private
+
+  def do_work(result)
+    result
+  end
+end
+
+ShopifyAPI::GraphQL.execution_adapter = RaisingHTTPClient
+```
+
+Note, the execution adapter has `client` in the name. This is to remain consistent with
+the naming conventions within the Github GraphQL Client library.
+
 ## Migration guide
 Prior to shopify_api v9.0 the GraphQL client implementation was limited and almost
 unusable due to the client making dynamic introspection queries to Shopify's API.
