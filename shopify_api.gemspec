@@ -19,7 +19,6 @@ Gem::Specification.new do |s|
   ]
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test}/*`.split("\n")
-  s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
 
   s.rdoc_options = ["--charset=UTF-8"]
   s.summary = %q{ShopifyAPI is a lightweight gem for accessing the Shopify admin REST web services}
