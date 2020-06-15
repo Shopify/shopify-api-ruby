@@ -143,6 +143,38 @@ class GraphQLTest < Test::Unit::TestCase
     end
   end
 
+  test '#client creates execution adapter based off configured class' do
+    class SuperDuperExecutionAdapter < ShopifyAPI::GraphQL::HTTPClient
+    end
+
+    ShopifyAPI::GraphQL.execution_adapter = SuperDuperExecutionAdapter
+    version_fixtures('unstable') do |dir|
+      ShopifyAPI::Base.api_version = 'unstable'
+
+      ShopifyAPI::GraphQL.initialize_clients
+      assert_instance_of SuperDuperExecutionAdapter, ShopifyAPI::GraphQL.client('unstable').execute
+    end
+
+    ShopifyAPI::GraphQL.execution_adapter = nil
+  end
+
+  test '#client creates client based off configured class' do
+    class SuperDuperClient < ::GraphQL::Client
+    end
+
+    ShopifyAPI::GraphQL.graphql_client = SuperDuperClient
+    version_fixtures('unstable') do |dir|
+      ShopifyAPI::Base.api_version = 'unstable'
+
+      ShopifyAPI::GraphQL.initialize_clients
+
+      assert_instance_of SuperDuperClient, ShopifyAPI::GraphQL.client('unstable')
+    end
+
+    ShopifyAPI::GraphQL.clear_clients
+    ShopifyAPI::GraphQL.graphql_client = nil
+  end
+
   private
 
   def version_fixtures(*versions)
