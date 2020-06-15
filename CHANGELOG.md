@@ -1,3 +1,7 @@
+## Version 9.1.2
+
+* Removes the `shopify` binary which will be used by the Shopify CLI
+
 ## Version 9.1.1
 
 * Make cursor based pagination return relative uri's when fetching next and previous pages. [#726](https://github.com/Shopify/shopify_api/pull/726)
