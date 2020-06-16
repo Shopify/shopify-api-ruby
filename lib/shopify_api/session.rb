@@ -20,7 +20,7 @@ module ShopifyAPI
         params.each { |k,value| public_send("#{k}=", value) }
       end
 
-      def temp(domain:, token:, api_version:, &block)
+      def temp(domain:, token:, api_version: ShopifyAPI::Base.api_version, &block)
         session = new(domain: domain, token: token, api_version: api_version)
 
         with_session(session, &block)
@@ -84,7 +84,7 @@ module ShopifyAPI
       end
     end
 
-    def initialize(domain:, token:, api_version:, extra: {})
+    def initialize(domain:, token:, api_version: ShopifyAPI::Base.api_version, extra: {})
       self.domain = self.class.prepare_domain(domain)
       self.api_version = api_version
       self.token = token
