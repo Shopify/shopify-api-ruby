@@ -23,7 +23,7 @@ module ShopifyAPI
         end
       end
 
-      def client(shop_id, api_version = VERSION)
+      def client(shop_id = nil, api_version = VERSION)
         initialize_client_cache
         cached_client = @_client_cache["#{shop_id}_#{api_version}"] || @_client_cache[api_version.to_s]
 
