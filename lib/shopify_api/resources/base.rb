@@ -87,7 +87,7 @@ module ShopifyAPI
       def resource_prefix=(value)
         @prefix_parameters = nil
 
-        resource_prefix_call = value.gsub(/:\w+/) { |key| "\#{URI.parser.escape options[#{key}].to_s}" }
+        resource_prefix_call = value.gsub(/:\w+/) { |key| "\#{URI::DEFAULT_PARSER.escape options[#{key}].to_s}" }
 
         silence_warnings do
           # Redefine the new methods.
