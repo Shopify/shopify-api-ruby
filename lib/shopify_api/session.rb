@@ -28,12 +28,17 @@ module ShopifyAPI
 
       def with_session(session, &_block)
         original_session = extract_current_session
+        original_user = ShopifyAPI::Base.user
+        original_password = ShopifyAPI::Base.password
 
         begin
+          ShopifyAPI::Base.clear_session
           ShopifyAPI::Base.activate_session(session)
           yield
         ensure
           ShopifyAPI::Base.activate_session(original_session)
+          ShopifyAPI::Base.user = original_user
+          ShopifyAPI::Base.password = original_password
         end
       end
 
