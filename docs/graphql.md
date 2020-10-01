@@ -32,7 +32,7 @@ result.data.shop.name
 ## Getting started
 
 1. [Dump the schema](#dump-the-schema)
-2. [Configure session/authencation](#sessions-and-authentication)
+2. [Configure session/authentication](#sessions-and-authentication)
 3. [Make queries](#make-queries)
 
 ### Dump the schema
