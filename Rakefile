@@ -1,12 +1,15 @@
 require 'rake'
 require "bundler/gem_tasks"
-
 require 'rake/testtask'
+require 'rubocop/rake_task'
+
 Rake::TestTask.new(:test) do |test|
   test.libs << 'lib' << 'test'
   test.pattern = 'test/**/*_test.rb'
   test.warning = false
 end
+
+RuboCop::RakeTask.new
 
 begin
   require 'rcov/rcovtask'
@@ -21,7 +24,7 @@ rescue LoadError
   end
 end
 
-task :default => [:test, :verify_docs]
+task :default => [:test, :rubocop, :verify_docs]
 
 require 'verify_docs'
 task :verify_docs do
