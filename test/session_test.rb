@@ -519,7 +519,7 @@ class SessionTest < Test::Unit::TestCase
 
   def generate_signature(params)
     params = make_sorted_params(params) if params.is_a?(Hash)
-    OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new, ShopifyAPI::Session.secret, params)
+    OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('SHA256'), ShopifyAPI::Session.secret, params)
   end
 
   def any_api_version

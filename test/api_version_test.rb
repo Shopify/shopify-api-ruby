@@ -151,6 +151,7 @@ class ApiVersionTest < Test::Unit::TestCase
 
   class TestApiVersion < ShopifyAPI::ApiVersion
     def initialize(name)
+      super(name)
       @version_name = name
     end
   end

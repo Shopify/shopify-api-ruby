@@ -2,5 +2,30 @@ inherit_from:
   - https://shopify.github.io/ruby-style-guide/rubocop.yml
   - .rubocop_todo.yml
 
+# The entries below are not included automatically in the TODO file, they should be fixed and removed as well
+Layout/SpaceInsideHashLiteralBraces:
+  Enabled: false
+Layout/SpaceBeforeBlockBraces:
+  Enabled: false
+Layout/SpaceAroundEqualsInParameterDefault:
+  Enabled: false
+Style/RaiseArgs:
+  Enabled: false
+
 AllCops:
   TargetRubyVersion: 2.4
+
+Lint/SuppressedException:
+  Exclude:
+    # Warning on test setup, the exception is expected
+    - 'test/test_helper.rb'
+
+Lint/MissingSuper:
+  Exclude:
+    # We explicitly do not want to call super here
+    - 'lib/shopify_api/graphql/http_client.rb'
+
+Lint/UnderscorePrefixedVariableName:
+  Exclude:
+    # This is an internal attribute and we want to make sure it's called _headers
+    - 'lib/shopify_api/resources/base.rb'

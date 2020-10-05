@@ -56,7 +56,7 @@ module ShopifyAPI
         # extract host, removing any username, password or path
         shop = URI.parse("https://#{domain}").host
         # extract subdomain of .myshopify.com
-        if idx = shop.index(".")
+        if (idx = shop.index("."))
           shop = shop.slice(0, idx)
         end
         return nil if shop.empty?
@@ -67,9 +67,9 @@ module ShopifyAPI
 
       def validate_signature(params)
         params = (params.respond_to?(:to_unsafe_hash) ? params.to_unsafe_hash : params).with_indifferent_access
-        return false unless signature = params[:hmac]
+        return false unless (signature = params[:hmac])
 
-        calculated_signature = OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new(), secret, encoded_params_for_signature(params))
+        calculated_signature = OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('SHA256'), secret, encoded_params_for_signature(params))
 
         Rack::Utils.secure_compare(calculated_signature, signature)
       end
@@ -114,7 +114,7 @@ module ShopifyAPI
         self.extra = JSON.parse(response.body)
         self.token = extra.delete('access_token')
 
-        if expires_in = extra.delete('expires_in')
+        if (expires_in = extra.delete('expires_in'))
           extra['expires_at'] = Time.now.utc.to_i + expires_in
         end
         token

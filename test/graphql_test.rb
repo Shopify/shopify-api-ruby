@@ -15,7 +15,7 @@ class GraphQLTest < Test::Unit::TestCase
   end
 
   test '#initialize_clients creates a GraphQL::Client from local schema file' do
-    version_fixtures('unstable') do |dir|
+    version_fixtures('unstable') do |_dir|
       ShopifyAPI::GraphQL.initialize_clients
 
       assert ShopifyAPI::GraphQL.client('unstable')
@@ -23,7 +23,7 @@ class GraphQLTest < Test::Unit::TestCase
   end
 
   test '#initialize_clients handles multiple schema files' do
-    version_fixtures('unstable', '2019-10') do |dir|
+    version_fixtures('unstable', '2019-10') do |_dir|
       ShopifyAPI::GraphQL.initialize_clients
 
       assert ShopifyAPI::GraphQL.client('unstable')
@@ -32,7 +32,7 @@ class GraphQLTest < Test::Unit::TestCase
   end
 
   test '#initialize_clients ignores non JSON schema files' do
-    version_fixtures('unstable', '2019-10') do |dir|
+    version_fixtures('unstable', '2019-10') do |_dir|
       FileUtils.touch(ShopifyAPI::GraphQL.schema_location.join('nope.txt'))
 
       ShopifyAPI::GraphQL.initialize_clients
@@ -65,7 +65,7 @@ class GraphQLTest < Test::Unit::TestCase
   end
 
   test '#client returns default schema if only one exists' do
-    version_fixtures('unstable') do |dir|
+    version_fixtures('unstable') do |_dir|
       ShopifyAPI::Base.api_version = 'unstable'
 
       ShopifyAPI::GraphQL.initialize_clients
@@ -75,7 +75,7 @@ class GraphQLTest < Test::Unit::TestCase
   end
 
   test '#client accepts optional api_version parameter' do
-    version_fixtures('unstable') do |dir|
+    version_fixtures('unstable') do |_dir|
       ShopifyAPI::Base.api_version = 'unstable'
 
       ShopifyAPI::GraphQL.initialize_clients
@@ -85,7 +85,7 @@ class GraphQLTest < Test::Unit::TestCase
   end
 
   test '#client executes queries on specified API version' do
-    version_fixtures('unstable', '2019-10') do |dir|
+    version_fixtures('unstable', '2019-10') do |_dir|
       ShopifyAPI::Base.api_version = 'unstable'
 
       ShopifyAPI::GraphQL.initialize_clients
@@ -111,7 +111,7 @@ class GraphQLTest < Test::Unit::TestCase
   end
 
   test '#client raises exception for version that does not exist' do
-    version_fixtures('unstable') do |dir|
+    version_fixtures('unstable') do |_dir|
       ShopifyAPI::Base.api_version = '2019-10'
 
       ShopifyAPI::GraphQL.initialize_clients
@@ -123,7 +123,7 @@ class GraphQLTest < Test::Unit::TestCase
   end
 
   test '#client lazily initializes clients' do
-    version_fixtures('unstable') do |dir|
+    version_fixtures('unstable') do |_dir|
       ShopifyAPI::Base.api_version = 'unstable'
 
       assert_raises ShopifyAPI::GraphQL::InvalidClient do
@@ -133,7 +133,7 @@ class GraphQLTest < Test::Unit::TestCase
   end
 
   test '#client caches lookups' do
-    version_fixtures('unstable') do |dir|
+    version_fixtures('unstable') do |_dir|
       ShopifyAPI::Base.api_version = 'unstable'
 
       client1 = ShopifyAPI::GraphQL.client
@@ -148,7 +148,7 @@ class GraphQLTest < Test::Unit::TestCase
     end
 
     ShopifyAPI::GraphQL.execution_adapter = SuperDuperExecutionAdapter
-    version_fixtures('unstable') do |dir|
+    version_fixtures('unstable') do |_dir|
       ShopifyAPI::Base.api_version = 'unstable'
 
       ShopifyAPI::GraphQL.initialize_clients
@@ -163,7 +163,7 @@ class GraphQLTest < Test::Unit::TestCase
     end
 
     ShopifyAPI::GraphQL.graphql_client = SuperDuperClient
-    version_fixtures('unstable') do |dir|
+    version_fixtures('unstable') do |_dir|
       ShopifyAPI::Base.api_version = 'unstable'
 
       ShopifyAPI::GraphQL.initialize_clients

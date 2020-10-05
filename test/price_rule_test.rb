@@ -43,7 +43,7 @@ class PriceRuleTest < Test::Unit::TestCase
     )
 
     assert_equal '{"price_rule":{"target_type":"line_item","allocation_method":"across","value_type":"fixed_amount","value":-10.0,"customer_selection":"all","starts_at":"2017-01-19T00:00:00Z"}}', WebMock.last_request.body
-    assert_equal -10, price_rule.value
+    assert_equal(-10, price_rule.value)
   end
 
   def test_update_price_rule

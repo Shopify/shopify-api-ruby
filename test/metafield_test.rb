@@ -3,7 +3,7 @@ require 'test_helper'
 class MetafieldTest < Test::Unit::TestCase
   def test_get_metafields
     fake "metafields", :method => :get, :body => load_fixture('metafields')
-    metafields = ShopifyAPI::Metafield.find(:all)
+    ShopifyAPI::Metafield.find(:all)
   end
 
   def test_get_metafield
@@ -43,4 +43,3 @@ class MetafieldTest < Test::Unit::TestCase
     assert metafield.destroy
   end
 end
-
