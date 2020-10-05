@@ -5,6 +5,11 @@ module ShopifyAPI
 
     early_july_pagination_release!
 
+    def initialize(*)
+      super
+      self.attributes.except!('total_inventory') unless allow_inventory_params?
+    end
+
     # compute the price range
     def price_range
       prices = variants.collect(&:price).collect(&:to_f)
@@ -19,10 +24,6 @@ module ShopifyAPI
     def total_inventory=(new_value)
       raise_deprecated_inventory_call('total_inventory') unless allow_inventory_params?
       super
-    end
-
-    def serializable_hash(options = {})
-      allow_inventory_params? ? super(options) : super(options).except('total_inventory')
     end
 
     def collections

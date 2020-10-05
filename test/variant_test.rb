@@ -3,8 +3,7 @@ require 'test_helper'
 class VariantTest < Test::Unit::TestCase
   def setup
     super
-    fake "products/632910392/variants/808950810", method: :get, body: load_fixture('variant')
-    @variant = ShopifyAPI::Variant.find(808950810, :params => { :product_id => 632910392 })
+    refresh_variant
   end
 
   def test_get_variants
@@ -37,21 +36,25 @@ class VariantTest < Test::Unit::TestCase
 
   def test_deprecated_inventory_fields_are_included_in_2019_07
     ShopifyAPI::Base.api_version = '2019-07'
+    refresh_variant(api_version: ShopifyAPI::Base.api_version)
     assert @variant.as_json.include?('inventory_quantity')
   end
 
   def test_deprecated_inventory_fields_are_removed_in_2020_01
     ShopifyAPI::Base.api_version = '2020-01'
+    refresh_variant(api_version: ShopifyAPI::Base.api_version)
     refute @variant.as_json.include?('inventory_quantity')
   end
 
   def test_setting_variant_inventory_quantity_adjustment_passes_in_api_before_2019_10
     ShopifyAPI::Base.api_version = '2019-07'
+    refresh_variant(api_version: ShopifyAPI::Base.api_version)
     @variant.inventory_quantity_adjustment = 8
   end
 
   def test_setting_variant_inventory_quantity_adjustment_fails_in_2019_10_api
     ShopifyAPI::Base.api_version = '2019-10'
+    refresh_variant(api_version: ShopifyAPI::Base.api_version)
     assert_raises(ShopifyAPI::ValidationException) do
       @variant.inventory_quantity_adjustment = 8
     end
@@ -100,5 +103,12 @@ class VariantTest < Test::Unit::TestCase
     assert_raises(ShopifyAPI::ValidationException) do
       @variant.old_inventory_quantity = 8
     end
+  end
+
+  private
+
+  def refresh_variant(api_version: nil)
+    fake "products/632910392/variants/808950810", method: :get, body: load_fixture('variant'), api_version: api_version
+    @variant = ShopifyAPI::Variant.find(808950810, :params => { :product_id => 632910392 })
   end
 end
