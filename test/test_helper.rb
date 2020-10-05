@@ -23,7 +23,7 @@ module Test
         self.test("should_#{string}", &block)
       end
 
-      def self.context(string)
+      def self.context(_string)
         yield
       end
 
@@ -34,6 +34,7 @@ module Test
             const = mod.const_get(const)
             const.format = :json if const.respond_to?(:format=)
           rescue NameError
+            # Do nothing
           end
         end
 

@@ -38,7 +38,7 @@ module ShopifyAPI
 
     conditional_prefix :theme
 
-    def self.element_path(id, prefix_options = {}, query_options = nil) #:nodoc:
+    def self.element_path(_id, prefix_options = {}, query_options = nil) #:nodoc:
       prefix_options, query_options = split_options(prefix_options) if query_options.nil?
       "#{prefix(prefix_options)}#{collection_name}.#{format.extension}#{query_string(query_options)}"
     end

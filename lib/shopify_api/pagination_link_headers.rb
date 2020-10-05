@@ -9,8 +9,6 @@ module ShopifyAPI
       links = parse_link_header(link_header)
       @previous_link = links.find { |link| link.rel == :previous }
       @next_link = links.find { |link| link.rel == :next }
-
-      self
     end
 
     private

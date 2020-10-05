@@ -227,7 +227,7 @@ class PaginationTest < Test::Unit::TestCase
       body: load_fixture('orders'),
       link: "<https://this-is-my-test-shop.myshopify.com/admin/api/2019-10/orders.json?#{first_request_params}>; rel=\"next\""
     )
-    orders = ShopifyAPI::Order.where(limit: 5)
+    ShopifyAPI::Order.where(limit: 5)
 
     second_request_params = "page_info=#{@next_page_info}&limit=5"
     fake(
@@ -239,8 +239,7 @@ class PaginationTest < Test::Unit::TestCase
       body: load_fixture('orders'),
       link: "<https://this-is-my-test-shop.myshopify.com/admin/api/2019-10/orders.json?#{second_request_params}>; rel=\"next\""
     )
-
-    orders2 = ShopifyAPI::Order.where(limit: 10)
+    orders = ShopifyAPI::Order.where(limit: 10)
 
     fake(
       'orders',
