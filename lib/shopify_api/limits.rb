@@ -38,7 +38,7 @@ module ShopifyAPI
       # @param {Symbol} scope [:shop]
       # @return {Integer}
       #
-      def credit_limit(scope=:shop)
+      def credit_limit(scope = :shop)
         api_credit_limit_param(scope).pop.to_i - 1
       end
       alias_method :call_limit, :credit_limit
@@ -48,7 +48,7 @@ module ShopifyAPI
       # @param {Symbol} scope [:shop]
       # @return {Integer}
       #
-      def credit_used(scope=:shop)
+      def credit_used(scope = :shop)
         api_credit_limit_param(scope).shift.to_i
       end
       alias_method :call_count, :credit_used

@@ -14,7 +14,7 @@ module ShopifyAPI
       get(:authors, options)
     end
 
-    def self.tags(options={})
+    def self.tags(options = {})
       get(:tags, options)
     end
   end

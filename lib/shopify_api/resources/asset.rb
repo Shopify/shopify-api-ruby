@@ -75,7 +75,7 @@ module ShopifyAPI
     end
 
     def destroy
-      connection.delete(element_path(prefix_options.merge(:asset => {:key => key})), self.class.headers)
+      connection.delete(element_path(prefix_options.merge(:asset => { :key => key })), self.class.headers)
     end
 
     def new?

@@ -15,7 +15,7 @@ module ShopifyAPI
 
     def encode(options = {})
       same = dup
-      same.attributes = {self.class.element_name => same.attributes} if self.class.format.extension == 'json'
+      same.attributes = { self.class.element_name => same.attributes } if self.class.format.extension == 'json'
 
       same.send("to_#{self.class.format.extension}", options)
     end
@@ -43,7 +43,7 @@ module ShopifyAPI
       end
 
       def activate_session(session)
-        raise InvalidSessionError.new("Session cannot be nil") if session.nil?
+        raise InvalidSessionError, "Session cannot be nil" if session.nil?
         self.site = session.site
         self.headers.merge!('X-Shopify-Access-Token' => session.token)
         self.api_version = session.api_version

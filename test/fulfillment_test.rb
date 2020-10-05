@@ -12,7 +12,7 @@ class FulFillmentTest < Test::Unit::TestCase
   context "Fulfillment" do
     context "#complete" do
       should "be able to complete fulfillment" do
-        fulfillment = ShopifyAPI::Fulfillment.find(255858046, :params => {:order_id => 450789469})
+        fulfillment = ShopifyAPI::Fulfillment.find(255858046, :params => { :order_id => 450789469 })
 
         success = ActiveSupport::JSON.decode(load_fixture('fulfillment'))
         success['fulfillment']['status'] = 'success'
@@ -26,7 +26,7 @@ class FulFillmentTest < Test::Unit::TestCase
 
     context "#cancel" do
       should "be able to cancel fulfillment" do
-        fulfillment = ShopifyAPI::Fulfillment.find(255858046, :params => {:order_id => 450789469})
+        fulfillment = ShopifyAPI::Fulfillment.find(255858046, :params => { :order_id => 450789469 })
 
         cancelled = ActiveSupport::JSON.decode(load_fixture('fulfillment'))
         cancelled['fulfillment']['status'] = 'cancelled'
@@ -40,7 +40,7 @@ class FulFillmentTest < Test::Unit::TestCase
 
     context "#open" do
       should "be able to open a fulfillment" do
-        fulfillment = ShopifyAPI::Fulfillment.find(255858046, :params => {:order_id => 450789469})
+        fulfillment = ShopifyAPI::Fulfillment.find(255858046, :params => { :order_id => 450789469 })
 
         open_fulfillment = ActiveSupport::JSON.decode(load_fixture('fulfillment'))
         open_fulfillment['fulfillment']['status'] = 'open'
@@ -54,7 +54,7 @@ class FulFillmentTest < Test::Unit::TestCase
 
     context "#find" do
       should "be able to find fulfillment" do
-        fulfillment = ShopifyAPI::Fulfillment.find(255858046, :params => {:order_id => 450789469})
+        fulfillment = ShopifyAPI::Fulfillment.find(255858046, :params => { :order_id => 450789469 })
         assert_equal 255858046, fulfillment.id
         assert_equal 450789469, fulfillment.order_id
       end

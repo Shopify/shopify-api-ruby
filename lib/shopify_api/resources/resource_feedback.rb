@@ -13,7 +13,7 @@ module ShopifyAPI
 
     def save
       return super unless persisted?
-      raise ExistingFeedbackSaved.new(EXISTING_FEEDBACK_SAVED_ERROR_MESSAGE)
+      raise ExistingFeedbackSaved, EXISTING_FEEDBACK_SAVED_ERROR_MESSAGE
     end
   end
 end

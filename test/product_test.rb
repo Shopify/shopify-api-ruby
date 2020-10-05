@@ -25,7 +25,7 @@ class ProductTest < Test::Unit::TestCase
     metafields = @product.metafields
 
     assert_equal 3, metafields.length
-    assert metafields.all?{ |m| m.is_a? ShopifyAPI::Metafield }
+    assert metafields.all? { |m| m.is_a? ShopifyAPI::Metafield }
   end
 
   def test_get_2_metafields_for_product
@@ -37,7 +37,7 @@ class ProductTest < Test::Unit::TestCase
     metafields = @product.metafields limit: 2
 
     assert_equal 2, metafields.length
-    assert metafields.all?{ |m| m.is_a? ShopifyAPI::Metafield }
+    assert metafields.all? { |m| m.is_a? ShopifyAPI::Metafield }
   end
 
   def test_update_loaded_variant
@@ -57,7 +57,7 @@ class ProductTest < Test::Unit::TestCase
 
     assert_equal('100.00 - 199.00', @product.price_range)
   end
-  
+
   def test_deprecated_variant_inventory_fields_are_included_in_2019_07
     ShopifyAPI::Base.api_version = '2019-07'
     variant = @product.variants.first
@@ -77,13 +77,13 @@ class ProductTest < Test::Unit::TestCase
 
   def test_setting_product_total_inventory_passes_in_api_before_2019_10
     ShopifyAPI::Base.api_version = '2019-07'
-    fake("products/632910392", {:body => load_fixture('product')})
+    fake("products/632910392", { :body => load_fixture('product') })
     @product.total_inventory = 8
   end
 
   def test_setting_product_total_inventory_fails_in_2019_10_api
     ShopifyAPI::Base.api_version = '2019-10'
-    fake("products/632910392", {:body => load_fixture('product')})
+    fake("products/632910392", { :body => load_fixture('product') })
     assert_raises(ShopifyAPI::ValidationException) do
       @product.total_inventory = 8
     end
@@ -91,7 +91,7 @@ class ProductTest < Test::Unit::TestCase
 
   def test_setting_product_total_inventory_fails_in_the_unstable_api
     ShopifyAPI::Base.api_version = :unstable
-    fake("products/632910392", {:body => load_fixture('product')})
+    fake("products/632910392", { :body => load_fixture('product') })
     assert_raises(ShopifyAPI::ValidationException) do
       @product.total_inventory = 8
     end

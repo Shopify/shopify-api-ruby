@@ -13,7 +13,7 @@ class MetafieldTest < Test::Unit::TestCase
 
   def test_get_metafield_of_a_blog
     fake "blogs/1008414260/metafields/721389482", :method => :get, :body => load_fixture('metafield')
-    metafield = ShopifyAPI::Metafield.find(721389482, :params => {:resource => "blogs", :resource_id => 1008414260})
+    metafield = ShopifyAPI::Metafield.find(721389482, :params => { :resource => "blogs", :resource_id => 1008414260 })
     assert_equal 1008414260, metafield.prefix_options[:resource_id]
   end
 

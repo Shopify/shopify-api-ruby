@@ -19,7 +19,7 @@ class ShopTest < Test::Unit::TestCase
   def test_current_with_options_should_return_current_shop
     fake "shop.json?fields%5B%5D=name&fields%5B%5D=myshopify_domain", :extension => false, :method => :get, :status => 201, :body => load_fixture('shop')
 
-    @shop = ShopifyAPI::Shop.current(params: { fields: [:name, :myshopify_domain]})
+    @shop = ShopifyAPI::Shop.current(params: { fields: [:name, :myshopify_domain] })
     assert @shop.is_a?(ShopifyAPI::Shop)
     assert_equal "Apple Computers", @shop.name
     assert_equal "apple.myshopify.com", @shop.myshopify_domain
@@ -31,7 +31,7 @@ class ShopTest < Test::Unit::TestCase
     metafields = @shop.metafields
 
     assert_equal 3, metafields.length
-    assert metafields.all?{|m| m.is_a?(ShopifyAPI::Metafield)}
+    assert metafields.all? { |m| m.is_a?(ShopifyAPI::Metafield) }
   end
 
   def test_get_2_metafields_for_shop
@@ -43,7 +43,7 @@ class ShopTest < Test::Unit::TestCase
     metafields = @shop.metafields limit: 2
 
     assert_equal 2, metafields.length
-    assert metafields.all?{ |m| m.is_a? ShopifyAPI::Metafield }
+    assert metafields.all? { |m| m.is_a? ShopifyAPI::Metafield }
   end
 
   def test_add_metafield
@@ -63,6 +63,6 @@ class ShopTest < Test::Unit::TestCase
     events = @shop.events
 
     assert_equal 3, events.length
-    assert events.all?{|m| m.is_a?(ShopifyAPI::Event)}
+    assert events.all? { |m| m.is_a?(ShopifyAPI::Event) }
   end
 end

@@ -121,7 +121,7 @@ class DraftOrderTest < Test::Unit::TestCase
     metafields = @draft_order.metafields limit: 2
 
     assert_equal 2, metafields.length
-    assert metafields.all?{ |m| m.is_a? ShopifyAPI::Metafield }
+    assert metafields.all? { |m| m.is_a? ShopifyAPI::Metafield }
   end
 
   def test_complete_draft_order_with_no_params

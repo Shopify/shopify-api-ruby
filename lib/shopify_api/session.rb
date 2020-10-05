@@ -78,7 +78,7 @@ module ShopifyAPI
 
       def encoded_params_for_signature(params)
         params = params.except(:signature, :hmac, :action, :controller)
-        params.map{|k,v| "#{URI.escape(k.to_s, '&=%')}=#{URI.escape(v.to_s, '&%')}"}.sort.join('&')
+        params.map { |k,v| "#{URI.escape(k.to_s, '&=%')}=#{URI.escape(v.to_s, '&%')}" }.sort.join('&')
       end
 
       def extract_current_session

@@ -6,14 +6,14 @@ class OrderTest < Test::Unit::TestCase
 
   test "create should create order" do
     fake 'orders', :method => :post, :status => 201, :body => load_fixture('order')
-    order = ShopifyAPI::Order.create(line_items: [{quantity:1, variant_id:39072856}], financial_status:"authorized")
+    order = ShopifyAPI::Order.create(line_items: [{ quantity:1, variant_id:39072856 }], financial_status:"authorized")
     assert_equal 39072856, order.line_items.first.variant_id
   end
 
   test "create should create an order with custom properties" do
-    props = [{ :"By default may label with \"Roasted for " => { :"Your First Name" => { :"\". If you want something specific on the label, enter it here:" => "" }}}]
+    props = [{ :"By default may label with \"Roasted for " => { :"Your First Name" => { :"\". If you want something specific on the label, enter it here:" => "" } } }]
     fake 'orders', :method => :post, :status => 201, :body => load_fixture('order_with_properties')
-    order = ShopifyAPI::Order.create(line_items: [{quantity:1, variant_id:39072856, properties:props}], financial_status:"authorized")
+    order = ShopifyAPI::Order.create(line_items: [{ quantity:1, variant_id:39072856, properties:props }], financial_status:"authorized")
     assert_equal 39072856, order.line_items.first.variant_id
   end
 
@@ -56,7 +56,7 @@ class OrderTest < Test::Unit::TestCase
     fake 'orders/450789469/cancel', :method => :post, :body => load_fixture('order')
     order = ShopifyAPI::Order.find(450789469)
     order.cancel(email: false, restock: true)
-    assert_request_body({'email' => false, 'restock' => true}.to_json)
+    assert_request_body({ 'email' => false, 'restock' => true }.to_json)
   end
 
   test "capture an order with currency param" do
