@@ -14,20 +14,20 @@ class ImageTest < Test::Unit::TestCase
 
   def test_get_images
     fake "products/632910392/images", :method => :get, :body => load_fixture('images')
-    image = ShopifyAPI::Image.find(:all, :params => {:product_id => 632910392})
+    image = ShopifyAPI::Image.find(:all, :params => { :product_id => 632910392 })
     assert_equal 2, image.size
   end
 
   def test_get_image
     fake "products/632910392/images/850703190", :method => :get, :body => load_fixture('image')
-    image = ShopifyAPI::Image.find(850703190, :params => {:product_id => 632910392})
+    image = ShopifyAPI::Image.find(850703190, :params => { :product_id => 632910392 })
     assert_equal 850703190, image.id
   end
 
   def test_delete_image
     fake "products/632910392/images/850703190", :method => :get, :body => load_fixture('image')
     fake "products/632910392/images/850703190", :method => :delete, :body => "destroyed"
-    image = ShopifyAPI::Image.find(850703190, :params => {:product_id => 632910392})
+    image = ShopifyAPI::Image.find(850703190, :params => { :product_id => 632910392 })
     assert image.destroy
   end
 

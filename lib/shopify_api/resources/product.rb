@@ -15,7 +15,7 @@ module ShopifyAPI
         format % prices.min
       end
     end
-    
+
     def total_inventory=(new_value)
       raise_deprecated_inventory_call('total_inventory') unless allow_inventory_params?
       super
@@ -26,11 +26,11 @@ module ShopifyAPI
     end
 
     def collections
-      CustomCollection.find(:all, :params => {:product_id => self.id})
+      CustomCollection.find(:all, :params => { :product_id => self.id })
     end
 
     def smart_collections
-      SmartCollection.find(:all, :params => {:product_id => self.id})
+      SmartCollection.find(:all, :params => { :product_id => self.id })
     end
 
     def add_to_collection(collection)
@@ -40,7 +40,7 @@ module ShopifyAPI
     def remove_from_collection(collection)
       collection.remove_product(self)
     end
-    
+
     private
 
     def raise_deprecated_inventory_call(parameter)

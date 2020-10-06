@@ -84,7 +84,7 @@ module Test
         assert array.include?(value)
       end
 
-      def load_fixture(name, format=:json)
+      def load_fixture(name, format = :json)
         File.read(File.dirname(__FILE__) + "/fixtures/#{name}.#{format}")
       end
 
@@ -92,7 +92,7 @@ module Test
         assert_equal expected, WebMock.last_request.body
       end
 
-      def fake(endpoint, options={})
+      def fake(endpoint, options = {})
         request_body = options.has_key?(:request_body) ? options.delete(:request_body) : nil
         body   = options.has_key?(:body) ? options.delete(:body) : load_fixture(endpoint)
         format = options.delete(:format) || :json

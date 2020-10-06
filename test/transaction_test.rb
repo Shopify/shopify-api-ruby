@@ -9,7 +9,7 @@ class TransactionTest < Test::Unit::TestCase
   context "Transaction" do
     context "#find" do
       should "find a specific transaction" do
-        transaction = ShopifyAPI::Transaction.find(389404469, :params => {:order_id => 450789469})
+        transaction = ShopifyAPI::Transaction.find(389404469, :params => { :order_id => 450789469 })
         assert_equal "409.94", transaction.amount
       end
     end

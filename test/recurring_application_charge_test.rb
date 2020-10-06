@@ -126,7 +126,7 @@ class RecurringApplicationChargeTest < Test::Unit::TestCase
   end
 
   def test_no_recurring_application_charge_found
-    fake "recurring_application_charges", body: {recurring_application_charges: []}.to_json
+    fake "recurring_application_charges", body: { recurring_application_charges: [] }.to_json
 
     assert_equal 0, ShopifyAPI::RecurringApplicationCharge.all.count
     assert_nil ShopifyAPI::RecurringApplicationCharge.current

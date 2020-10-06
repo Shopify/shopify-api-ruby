@@ -81,7 +81,7 @@ class SessionTest < Test::Unit::TestCase
   test "raise error if params passed but signature omitted" do
     assert_raises(ShopifyAPI::ValidationException) do
       session = ShopifyAPI::Session.new(domain: "testshop.myshopify.com", token: nil, api_version: any_api_version)
-      session.request_token({'code' => 'any-code'})
+      session.request_token({ 'code' => 'any-code' })
     end
   end
 
@@ -337,7 +337,7 @@ class SessionTest < Test::Unit::TestCase
   end
 
   test "raise error if signature does not match expected" do
-    params = {:code => "any-code", :timestamp => Time.now}
+    params = { :code => "any-code", :timestamp => Time.now }
     signature = generate_signature(params)
     params[:foo] = 'world'
     assert_raises(ShopifyAPI::ValidationException) do
@@ -347,7 +347,7 @@ class SessionTest < Test::Unit::TestCase
   end
 
   test "raise error if timestamp is too old" do
-    params = {:code => "any-code", :timestamp => Time.now - 2.days}
+    params = { :code => "any-code", :timestamp => Time.now - 2.days }
     signature = generate_signature(params)
     params[:foo] = 'world'
     assert_raises(ShopifyAPI::ValidationException) do

@@ -5,7 +5,7 @@ class DiscountCodeTest < Test::Unit::TestCase
     super
     fake 'price_rules/102586120/discount_codes/1002091923', body: load_fixture('discount_code')
 
-    @discount_code = ShopifyAPI::DiscountCode.find(1002091923, params: {price_rule_id: 102586120})
+    @discount_code = ShopifyAPI::DiscountCode.find(1002091923, params: { price_rule_id: 102586120 })
   end
 
   def test_get_discount_code

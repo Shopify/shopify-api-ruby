@@ -7,7 +7,7 @@ module ShopifyAPI
       Product.find(:all, params: { collection_id: id })
     end
 
-    def order(options={})
+    def order(options = {})
       load_attributes_from_response(put(:order, options, only_id))
     end
 
