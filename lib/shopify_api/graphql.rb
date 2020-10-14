@@ -30,7 +30,10 @@ module ShopifyAPI
               To dump the schema file, use the `rake shopify_api:graphql:dump` task.
             MSG
           else
-            puts '[WARNING] Client was not pre-initialized. Ensure `ShopifyAPI::GraphQL.initialize_clients` is called during app initialization.'
+            puts(
+              '[WARNING] Client was not pre-initialized. Ensure `ShopifyAPI::GraphQL.initialize_clients` ' \
+                'is called during app initialization.'
+            )
             initialize_clients
             @_client_cache[api_version]
           end
@@ -52,7 +55,8 @@ module ShopifyAPI
             api_version = ShopifyAPI::ApiVersion.new(handle: matches[1])
           else
             if raise_on_invalid_schema
-              raise InvalidSchema, "Invalid schema file name `#{schema_file}`. Does not match format of: `<version>.json`."
+              raise InvalidSchema,
+                "Invalid schema file name `#{schema_file}`. Does not match format of: `<version>.json`."
             else
               next
             end

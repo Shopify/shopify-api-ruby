@@ -11,7 +11,11 @@ class ApplicationChargeTest < Test::Unit::TestCase
         return_url: "http://google.com"
     )
 
-    assert_equal('https://this-is-my-test-shop.myshopify.com/admin/charges/803742/confirm_application_charge?signature=BAhpA55DDA%3D%3D--55b44e274e438c619be4631c804abcbcb6ee915a', charge.confirmation_url)
+    assert_equal(
+      'https://this-is-my-test-shop.myshopify.com/admin/charges/803742/confirm_application_charge?' \
+        'signature=BAhpA55DDA%3D%3D--55b44e274e438c619be4631c804abcbcb6ee915a',
+      charge.confirmation_url
+    )
   end
 
   def test_get_application_charge

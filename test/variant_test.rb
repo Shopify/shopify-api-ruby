@@ -108,7 +108,9 @@ class VariantTest < Test::Unit::TestCase
   private
 
   def refresh_variant(api_version: nil)
-    fake("products/632910392/variants/808950810", method: :get, body: load_fixture('variant'), api_version: api_version)
+    fake(
+      "products/632910392/variants/808950810", method: :get, body: load_fixture('variant'), api_version: api_version
+    )
     @variant = ShopifyAPI::Variant.find(808950810, params: { product_id: 632910392 })
   end
 end

@@ -18,7 +18,7 @@ class GraphQLTest < Test::Unit::TestCase
     version_fixtures('unstable') do |_dir|
       ShopifyAPI::GraphQL.initialize_clients
 
-      assert ShopifyAPI::GraphQL.client('unstable')
+      assert(ShopifyAPI::GraphQL.client('unstable'))
     end
   end
 
@@ -26,8 +26,8 @@ class GraphQLTest < Test::Unit::TestCase
     version_fixtures('unstable', '2019-10') do |_dir|
       ShopifyAPI::GraphQL.initialize_clients
 
-      assert ShopifyAPI::GraphQL.client('unstable')
-      assert ShopifyAPI::GraphQL.client('2019-10')
+      assert(ShopifyAPI::GraphQL.client('unstable'))
+      assert(ShopifyAPI::GraphQL.client('2019-10'))
     end
   end
 
@@ -37,8 +37,8 @@ class GraphQLTest < Test::Unit::TestCase
 
       ShopifyAPI::GraphQL.initialize_clients
 
-      assert ShopifyAPI::GraphQL.client('unstable')
-      assert ShopifyAPI::GraphQL.client('2019-10')
+      assert(ShopifyAPI::GraphQL.client('unstable'))
+      assert(ShopifyAPI::GraphQL.client('2019-10'))
     end
   end
 
@@ -47,7 +47,7 @@ class GraphQLTest < Test::Unit::TestCase
       ShopifyAPI::GraphQL.schema_location = dir
       FileUtils.touch(ShopifyAPI::GraphQL.schema_location.join('nope.json'))
 
-      assert_raises ShopifyAPI::GraphQL::InvalidSchema do
+      assert_raises(ShopifyAPI::GraphQL::InvalidSchema) do
         ShopifyAPI::GraphQL.initialize_clients
       end
     end
@@ -60,7 +60,7 @@ class GraphQLTest < Test::Unit::TestCase
 
       ShopifyAPI::GraphQL.initialize_clients(raise_on_invalid_schema: false)
 
-      assert ShopifyAPI::GraphQL.client('unstable')
+      assert(ShopifyAPI::GraphQL.client('unstable'))
     end
   end
 
@@ -70,7 +70,7 @@ class GraphQLTest < Test::Unit::TestCase
 
       ShopifyAPI::GraphQL.initialize_clients
 
-      assert_instance_of ::GraphQL::Client, ShopifyAPI::GraphQL.client
+      assert_instance_of(::GraphQL::Client, ShopifyAPI::GraphQL.client)
     end
   end
 
@@ -80,7 +80,7 @@ class GraphQLTest < Test::Unit::TestCase
 
       ShopifyAPI::GraphQL.initialize_clients
 
-      assert_instance_of ::GraphQL::Client, ShopifyAPI::GraphQL.client('unstable')
+      assert_instance_of(::GraphQL::Client, ShopifyAPI::GraphQL.client('unstable'))
     end
   end
 
@@ -93,7 +93,7 @@ class GraphQLTest < Test::Unit::TestCase
 
       client = ShopifyAPI::GraphQL.client('2019-10')
 
-      assert_instance_of ::GraphQL::Client, client
+      assert_instance_of(::GraphQL::Client, client)
 
       query = client.parse(<<~GRAPHQL)
         {
@@ -116,7 +116,7 @@ class GraphQLTest < Test::Unit::TestCase
 
       ShopifyAPI::GraphQL.initialize_clients
 
-      assert_raises ShopifyAPI::GraphQL::InvalidClient do
+      assert_raises(ShopifyAPI::GraphQL::InvalidClient) do
         ShopifyAPI::GraphQL.client('2019-10')
       end
     end
@@ -126,7 +126,7 @@ class GraphQLTest < Test::Unit::TestCase
     version_fixtures('unstable') do |_dir|
       ShopifyAPI::Base.api_version = 'unstable'
 
-      assert_raises ShopifyAPI::GraphQL::InvalidClient do
+      assert_raises(ShopifyAPI::GraphQL::InvalidClient) do
         ShopifyAPI::GraphQL.client('2019-10')
       end
     end
@@ -139,7 +139,7 @@ class GraphQLTest < Test::Unit::TestCase
       client1 = ShopifyAPI::GraphQL.client
       client2 = ShopifyAPI::GraphQL.client('unstable')
 
-      assert_equal client1, client2
+      assert_equal(client1, client2)
     end
   end
 
@@ -152,7 +152,7 @@ class GraphQLTest < Test::Unit::TestCase
       ShopifyAPI::Base.api_version = 'unstable'
 
       ShopifyAPI::GraphQL.initialize_clients
-      assert_instance_of SuperDuperExecutionAdapter, ShopifyAPI::GraphQL.client('unstable').execute
+      assert_instance_of(SuperDuperExecutionAdapter, ShopifyAPI::GraphQL.client('unstable').execute)
     end
 
     ShopifyAPI::GraphQL.execution_adapter = nil
@@ -168,7 +168,7 @@ class GraphQLTest < Test::Unit::TestCase
 
       ShopifyAPI::GraphQL.initialize_clients
 
-      assert_instance_of SuperDuperClient, ShopifyAPI::GraphQL.client('unstable')
+      assert_instance_of(SuperDuperClient, ShopifyAPI::GraphQL.client('unstable'))
     end
 
     ShopifyAPI::GraphQL.clear_clients

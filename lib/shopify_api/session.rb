@@ -69,7 +69,9 @@ module ShopifyAPI
         params = (params.respond_to?(:to_unsafe_hash) ? params.to_unsafe_hash : params).with_indifferent_access
         return false unless (signature = params[:hmac])
 
-        calculated_signature = OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('SHA256'), secret, encoded_params_for_signature(params))
+        calculated_signature = OpenSSL::HMAC.hexdigest(
+          OpenSSL::Digest.new('SHA256'), secret, encoded_params_for_signature(params)
+        )
 
         Rack::Utils.secure_compare(calculated_signature, signature)
       end
@@ -132,7 +134,11 @@ module ShopifyAPI
     end
 
     def api_version=(version)
-      @api_version = ApiVersion::NullVersion.matches?(version) ? ApiVersion::NullVersion : ApiVersion.find_version(version)
+      @api_version = if ApiVersion::NullVersion.matches?(version)
+        ApiVersion::NullVersion
+      else
+        ApiVersion.find_version(version)
+      end
     end
 
     def valid?

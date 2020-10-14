@@ -2,10 +2,11 @@ require 'test_helper'
 
 class FulFillmentEventTest < Test::Unit::TestCase
   def test_find_all_resources
-    fake('orders/450789469/fulfillments/255858046/events',
-         method: :get,
-         body: "[#{load_fixture('fulfillment_event')}]")
-
+    fake(
+      'orders/450789469/fulfillments/255858046/events',
+      method: :get,
+      body: "[#{load_fixture('fulfillment_event')}]"
+    )
     events = ShopifyAPI::FulfillmentEvent.all(
       params: { fulfillment_id: 255858046, order_id: 450789469 }
     )
@@ -14,10 +15,11 @@ class FulFillmentEventTest < Test::Unit::TestCase
   end
 
   def test_find_a_resource
-    fake('orders/450789469/fulfillments/255858046/events/334455',
-         method: :get,
-         body: load_fixture('fulfillment_event'))
-
+    fake(
+      'orders/450789469/fulfillments/255858046/events/334455',
+      method: :get,
+      body: load_fixture('fulfillment_event')
+    )
     event = ShopifyAPI::FulfillmentEvent.find(
       334455, params: { fulfillment_id: 255858046, order_id: 450789469 }
     )
@@ -40,10 +42,11 @@ class FulFillmentEventTest < Test::Unit::TestCase
   end
 
   def test_update_a_resource
-    fake('orders/450789469/fulfillments/255858046/events/334455',
-         method: :get,
-         body: load_fixture('fulfillment_event'))
-
+    fake(
+      'orders/450789469/fulfillments/255858046/events/334455',
+      method: :get,
+      body: load_fixture('fulfillment_event')
+    )
     event = ShopifyAPI::FulfillmentEvent.find(
       334455, params: { fulfillment_id: 255858046, order_id: 450789469 }
     )
@@ -54,10 +57,11 @@ class FulFillmentEventTest < Test::Unit::TestCase
   end
 
   def test_destroy_a_resource
-    fake('orders/450789469/fulfillments/255858046/events/334455',
-         method: :get,
-         body: load_fixture('fulfillment_event'))
-
+    fake(
+      'orders/450789469/fulfillments/255858046/events/334455',
+      method: :get,
+      body: load_fixture('fulfillment_event')
+    )
     event = ShopifyAPI::FulfillmentEvent.find(
       334455, params: { fulfillment_id: 255858046, order_id: 450789469 }
     )

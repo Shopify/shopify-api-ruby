@@ -30,7 +30,7 @@ class LimitsTest < Test::Unit::TestCase
     should "raise error when header doesn't exist" do
       @header_hash = {}
       ShopifyAPI::Base.connection.expects(:response).at_least(1).returns(@header_hash)
-      assert_raises ShopifyAPI::Limits::LimitUnavailable do
+      assert_raises(ShopifyAPI::Limits::LimitUnavailable) do
         ShopifyAPI.credit_left
       end
     end

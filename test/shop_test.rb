@@ -17,7 +17,13 @@ class ShopTest < Test::Unit::TestCase
   end
 
   def test_current_with_options_should_return_current_shop
-    fake("shop.json?fields%5B%5D=name&fields%5B%5D=myshopify_domain", extension: false, method: :get, status: 201, body: load_fixture('shop'))
+    fake(
+      "shop.json?fields%5B%5D=name&fields%5B%5D=myshopify_domain",
+      extension: false,
+      method: :get,
+      status: 201,
+      body: load_fixture('shop')
+    )
 
     @shop = ShopifyAPI::Shop.current(params: { fields: [:name, :myshopify_domain] })
     assert(@shop.is_a?(ShopifyAPI::Shop))
@@ -49,8 +55,15 @@ class ShopTest < Test::Unit::TestCase
   def test_add_metafield
     fake("metafields", method: :post, status: 201, body: load_fixture('metafield'))
 
-    field = @shop.add_metafield(ShopifyAPI::Metafield.new(namespace: "contact", key: "email", value: "123@example.com", value_type: "string"))
-    assert_equal(ActiveSupport::JSON.decode('{"metafield":{"namespace":"contact","key":"email","value":"123@example.com","value_type":"string"}}'), ActiveSupport::JSON.decode(WebMock.last_request.body))
+    field = @shop.add_metafield(
+      ShopifyAPI::Metafield.new(namespace: "contact", key: "email", value: "123@example.com", value_type: "string")
+    )
+    assert_equal(
+      ActiveSupport::JSON.decode(
+        '{"metafield":{"namespace":"contact","key":"email","value":"123@example.com","value_type":"string"}}'
+      ),
+      ActiveSupport::JSON.decode(WebMock.last_request.body)
+    )
     assert(!field.new_record?)
     assert_equal("contact", field.namespace)
     assert_equal("email", field.key)

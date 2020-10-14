@@ -42,7 +42,7 @@ class CollectionTest < Test::Unit::TestCase
 
     collection = ShopifyAPI::Collection.find(1)
 
-    assert_raises NotImplementedError do
+    assert_raises(NotImplementedError) do
       collection.products
     end
   end
