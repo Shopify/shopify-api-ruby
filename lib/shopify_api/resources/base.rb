@@ -91,7 +91,7 @@ module ShopifyAPI
 
         silence_warnings do
           # Redefine the new methods.
-          instance_eval <<-RUBY_EVAL, __FILE__, __LINE__ + 1
+          instance_eval(<<-RUBY_EVAL, __FILE__, __LINE__ + 1)
             def prefix_source() "#{value}" end
             def resource_prefix(options={}) "#{resource_prefix_call}" end
           RUBY_EVAL
@@ -122,7 +122,7 @@ module ShopifyAPI
       def init_prefix_explicit(resource_type, resource_id)
         self.resource_prefix = "#{resource_type}/:#{resource_id}/"
 
-        define_method resource_id.to_sym do
+        define_method(resource_id.to_sym) do
           @prefix_options[resource_id]
         end
       end
@@ -155,7 +155,7 @@ module ShopifyAPI
     private
 
     def only_id
-      encode(:only => :id, :include => [], :methods => [])
+      encode(only: :id, include: [], methods: [])
     end
   end
 end

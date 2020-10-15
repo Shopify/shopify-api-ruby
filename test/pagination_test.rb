@@ -16,7 +16,7 @@ class PaginationTest < Test::Unit::TestCase
   test "navigates using next and previous link headers with no original params" do
     link_header ="#{@previous_link_header}, #{@next_link_header}"
 
-    fake 'orders', :method => :get, :status => 200, api_version: @version, :body => load_fixture('orders'), :link => link_header
+    fake 'orders', method: :get, status: 200, api_version: @version, body: load_fixture('orders'), link: link_header
     orders = ShopifyAPI::Order.all
 
     fake(
@@ -68,7 +68,7 @@ class PaginationTest < Test::Unit::TestCase
   end
 
   test "returns empty next page if just the previous page is present" do
-    fake 'orders', :method => :get, :status => 200, api_version: @version, :body => load_fixture('orders'), :link => @previous_link_header
+    fake 'orders', method: :get, status: 200, api_version: @version, body: load_fixture('orders'), link: @previous_link_header
     orders = ShopifyAPI::Order.all
 
     next_page = orders.fetch_next_page
@@ -76,7 +76,7 @@ class PaginationTest < Test::Unit::TestCase
   end
 
   test "returns an empty previous page if just the next page is present" do
-    fake 'orders', :method => :get, :status => 200, api_version: @version, :body => load_fixture('orders'), :link => @next_link_header
+    fake 'orders', method: :get, status: 200, api_version: @version, body: load_fixture('orders'), link: @next_link_header
     orders = ShopifyAPI::Order.all
 
     next_page = orders.fetch_previous_page
@@ -84,63 +84,63 @@ class PaginationTest < Test::Unit::TestCase
   end
 
   test "#next_page? returns true if next page is present" do
-    fake 'orders', :method => :get, :status => 200, api_version: @version, :body => load_fixture('orders'), :link => @next_link_header
+    fake 'orders', method: :get, status: 200, api_version: @version, body: load_fixture('orders'), link: @next_link_header
     orders = ShopifyAPI::Order.all
 
     assert orders.next_page?
   end
 
   test "#next_page? returns false if next page is not present" do
-    fake 'orders', :method => :get, :status => 200, api_version: @version, :body => load_fixture('orders'), :link => @previous_link_header
+    fake 'orders', method: :get, status: 200, api_version: @version, body: load_fixture('orders'), link: @previous_link_header
     orders = ShopifyAPI::Order.all
 
     refute orders.next_page?
   end
 
   test "#next_page_info returns next_page_info if next page is present" do
-    fake 'orders', :method => :get, :status => 200, api_version: @version, :body => load_fixture('orders'), :link => @next_link_header
+    fake 'orders', method: :get, status: 200, api_version: @version, body: load_fixture('orders'), link: @next_link_header
     orders = ShopifyAPI::Order.all
 
     assert_equal @next_page_info, orders.next_page_info
   end
 
   test "#next_page_info returns nil if next page is not present" do
-    fake 'orders', :method => :get, :status => 200, api_version: @version, :body => load_fixture('orders'), :link => @previous_link_header
+    fake 'orders', method: :get, status: 200, api_version: @version, body: load_fixture('orders'), link: @previous_link_header
     orders = ShopifyAPI::Order.all
 
     assert_nil orders.next_page_info
   end
 
   test "#previous_page? returns true if previous page is present" do
-    fake 'orders', :method => :get, :status => 200, api_version: @version, :body => load_fixture('orders'), :link => @previous_link_header
+    fake 'orders', method: :get, status: 200, api_version: @version, body: load_fixture('orders'), link: @previous_link_header
     orders = ShopifyAPI::Order.all
 
     assert orders.previous_page?
   end
 
   test "#previous_page? returns false if next page is not present" do
-    fake 'orders', :method => :get, :status => 200, api_version: @version, :body => load_fixture('orders'), :link => @next_link_header
+    fake 'orders', method: :get, status: 200, api_version: @version, body: load_fixture('orders'), link: @next_link_header
     orders = ShopifyAPI::Order.all
 
     refute orders.previous_page?
   end
 
   test "#previous_page_info returns previous_page_info if next page is present" do
-    fake 'orders', :method => :get, :status => 200, api_version: @version, :body => load_fixture('orders'), :link => @previous_link_header
+    fake 'orders', method: :get, status: 200, api_version: @version, body: load_fixture('orders'), link: @previous_link_header
     orders = ShopifyAPI::Order.all
 
     assert_equal @previous_page_info, orders.previous_page_info
   end
 
   test "#previous_page_info returns nil if next page is not present" do
-    fake 'orders', :method => :get, :status => 200, api_version: @version, :body => load_fixture('orders'), :link => @next_link_header
+    fake 'orders', method: :get, status: 200, api_version: @version, body: load_fixture('orders'), link: @next_link_header
     orders = ShopifyAPI::Order.all
 
     assert_nil orders.previous_page_info
   end
 
   test "pagination handles no link headers" do
-    fake 'orders', :method => :get, :status => 200, api_version: @version, :body => load_fixture('orders')
+    fake 'orders', method: :get, status: 200, api_version: @version, body: load_fixture('orders')
     orders = ShopifyAPI::Order.all
 
     refute orders.next_page?
@@ -151,7 +151,7 @@ class PaginationTest < Test::Unit::TestCase
 
   test "raises on invalid pagination links" do
     link_header = "<https://this-is-my-test-shop.myshopify.com/admin/api/2019-10/orders.json?page_info=#{@next_page_info}>;"
-    fake 'orders', :method => :get, :status => 200, api_version: @version, :body => load_fixture('orders'), :link => link_header
+    fake 'orders', method: :get, status: 200, api_version: @version, body: load_fixture('orders'), link: link_header
 
     assert_raises ShopifyAPI::InvalidPaginationLinksError do
       ShopifyAPI::Order.all
@@ -162,7 +162,7 @@ class PaginationTest < Test::Unit::TestCase
     version = ShopifyAPI::ApiVersion.find_version('2019-04')
     ShopifyAPI::Base.api_version = version.to_s
 
-    fake 'orders', :method => :get, :status => 200, api_version: version, :body => load_fixture('orders')
+    fake 'orders', method: :get, status: 200, api_version: version, body: load_fixture('orders')
     orders = ShopifyAPI::Order.all
 
     assert_raises NotImplementedError do
@@ -174,7 +174,7 @@ class PaginationTest < Test::Unit::TestCase
     version = ShopifyAPI::ApiVersion.find_version('2019-07')
     ShopifyAPI::Base.api_version = version.to_s
 
-    fake 'orders', :method => :get, :status => 200, api_version: version, :body => load_fixture('orders')
+    fake 'orders', method: :get, status: 200, api_version: version, body: load_fixture('orders')
     orders = ShopifyAPI::Order.all
 
     assert_raises NotImplementedError do
@@ -186,7 +186,7 @@ class PaginationTest < Test::Unit::TestCase
     version = ShopifyAPI::ApiVersion.find_version('2019-07')
     ShopifyAPI::Base.api_version = version.to_s
 
-    fake 'events', :method => :get, :status => 200, api_version: version, :body => load_fixture('events')
+    fake 'events', method: :get, status: 200, api_version: version, body: load_fixture('events')
     events = ShopifyAPI::Event.all
 
     assert_empty events.fetch_next_page
@@ -200,7 +200,7 @@ class PaginationTest < Test::Unit::TestCase
 
     link_header ="#{@previous_link_header}, #{@next_link_header}"
 
-    fake 'orders', :method => :get, :status => 200, api_version: version, :body => load_fixture('orders'), :link => link_header
+    fake 'orders', method: :get, status: 200, api_version: version, body: load_fixture('orders'), link: link_header
     orders = ShopifyAPI::Order.all
 
     fake(

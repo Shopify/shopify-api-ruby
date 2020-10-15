@@ -3,40 +3,40 @@ require 'test_helper'
 class CollectionListingTest < Test::Unit::TestCase
 
   def test_get_collection_listings
-    fake "collection_listings", method: :get, status: 201, body: load_fixture('collection_listings')
+    fake("collection_listings", method: :get, status: 201, body: load_fixture('collection_listings'))
 
     collection_listings = ShopifyAPI::CollectionListing.find(:all)
 
-    assert_equal 1, collection_listings.count
-    assert_equal 1, collection_listings.first.collection_id
-    assert_equal 'Home page', collection_listings.first.title
+    assert_equal(1, collection_listings.count)
+    assert_equal(1, collection_listings.first.collection_id)
+    assert_equal('Home page', collection_listings.first.title)
   end
 
   def test_get_collection_listing
-    fake "collection_listings/1", method: :get, status: 201, body: load_fixture('collection_listing')
+    fake("collection_listings/1", method: :get, status: 201, body: load_fixture('collection_listing'))
 
     collection_listing = ShopifyAPI::CollectionListing.find(1)
 
-    assert_equal 1, collection_listing.collection_id
-    assert_equal 'Home page', collection_listing.title
+    assert_equal(1, collection_listing.collection_id)
+    assert_equal('Home page', collection_listing.title)
   end
 
   def test_get_collection_listing_reload
-    fake "collection_listings/1", method: :get, status: 201, body: load_fixture('collection_listing')
+    fake("collection_listings/1", method: :get, status: 201, body: load_fixture('collection_listing'))
 
     collection_listing = ShopifyAPI::CollectionListing.new(collection_id: 1)
     collection_listing.reload
 
-    assert_equal 1, collection_listing.collection_id
-    assert_equal 'Home page', collection_listing.title
+    assert_equal(1, collection_listing.collection_id)
+    assert_equal('Home page', collection_listing.title)
   end
 
   def test_get_collection_listing_product_ids
-    fake "collection_listings/1/product_ids", method: :get, status: 201, body: load_fixture('collection_listing_product_ids')
+    fake("collection_listings/1/product_ids", method: :get, status: 201, body: load_fixture('collection_listing_product_ids'))
 
     collection_listing = ShopifyAPI::CollectionListing.new(collection_id: 1)
 
-    assert_equal [1, 2], collection_listing.product_ids
+    assert_equal([1, 2], collection_listing.product_ids)
   end
 
   def test_get_collection_listing_product_ids_multi_page_with_cursor
@@ -61,8 +61,8 @@ class CollectionListingTest < Test::Unit::TestCase
     )
 
     product_ids = collection_listing.product_ids
-    assert_equal [1, 2], product_ids
-    assert product_ids.next_page?
+    assert_equal([1, 2], product_ids)
+    assert(product_ids.next_page?)
 
     fake(
       "collection_listings/1/product_ids",
@@ -74,6 +74,6 @@ class CollectionListingTest < Test::Unit::TestCase
     )
 
     next_page = product_ids.fetch_next_page
-    assert_equal [3, 4], next_page
+    assert_equal([3, 4], next_page)
   end
 end

@@ -3,7 +3,7 @@ require 'test_helper'
 class FulFillmentRequestTest < Test::Unit::TestCase
   def setup
     super
-    fake "orders/450789469/fulfillment_requests/695890229", method: :get, body: load_fixture('fulfillment_request')
+    fake("orders/450789469/fulfillment_requests/695890229", method: :get, body: load_fixture('fulfillment_request'))
   end
 
   context "#mark_as_failed" do

@@ -14,13 +14,13 @@ module ShopifyAPI
 
         init_prefix_explicit(resource_type, resource_id)
 
-        define_singleton_method :resource_prefix do |options = {}|
+        define_singleton_method(:resource_prefix) do |options = {}|
           resource_type = options[resource] if flexible
 
           options[resource_id].nil? ? '' : "#{resource_type}/#{options[resource_id]}/"
         end
 
-        define_singleton_method :instantiate_record do |record, prefix_options = {}|
+        define_singleton_method(:instantiate_record) do |record, prefix_options = {}|
           new(record, true).tap do |resource_instance|
             resource_instance.prefix_options = prefix_options unless prefix_options.blank?
           end

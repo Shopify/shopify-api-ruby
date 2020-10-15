@@ -9,7 +9,7 @@ module ShopifyAPI
     end
 
     def metafields(**options)
-      Metafield.find :all, params: options
+      Metafield.find(:all, params: options)
     end
 
     def add_metafield(metafield)

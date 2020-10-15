@@ -19,12 +19,12 @@ begin
     test.verbose = true
   end
 rescue LoadError
-  task :rcov do
-    abort "RCov is not available. In order to run rcov, you must: sudo gem install spicycode-rcov"
+  task(:rcov) do
+    abort("RCov is not available. In order to run rcov, you must: sudo gem install spicycode-rcov")
   end
 end
 
-task :default => [:test, :rubocop, :verify_docs]
+task default: [:test, :rubocop, :verify_docs]
 
 require 'verify_docs'
 task :verify_docs do

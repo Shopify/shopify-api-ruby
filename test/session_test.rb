@@ -86,7 +86,7 @@ class SessionTest < Test::Unit::TestCase
   end
 
   test "setup api_key and secret for all sessions" do
-    ShopifyAPI::Session.setup(:api_key => "My test key", :secret => "My test secret")
+    ShopifyAPI::Session.setup(api_key: "My test key", secret: "My test secret")
     assert_equal "My test key", ShopifyAPI::Session.api_key
     assert_equal "My test secret", ShopifyAPI::Session.secret
   end
@@ -254,7 +254,7 @@ class SessionTest < Test::Unit::TestCase
   end
 
   test "raise exception if code invalid in request token" do
-    ShopifyAPI::Session.setup(:api_key => "My test key", :secret => "My test secret")
+    ShopifyAPI::Session.setup(api_key: "My test key", secret: "My test secret")
     session = ShopifyAPI::Session.new(
       domain: 'http://localhost.myshopify.com',
       token: nil,
@@ -337,22 +337,22 @@ class SessionTest < Test::Unit::TestCase
   end
 
   test "raise error if signature does not match expected" do
-    params = { :code => "any-code", :timestamp => Time.now }
+    params = { code: "any-code", timestamp: Time.now }
     signature = generate_signature(params)
     params[:foo] = 'world'
     assert_raises(ShopifyAPI::ValidationException) do
       session = ShopifyAPI::Session.new(domain: "testshop.myshopify.com", token: nil, api_version: any_api_version)
-      session.request_token(params.merge(:hmac => signature))
+      session.request_token(params.merge(hmac: signature))
     end
   end
 
   test "raise error if timestamp is too old" do
-    params = { :code => "any-code", :timestamp => Time.now - 2.days }
+    params = { code: "any-code", timestamp: Time.now - 2.days }
     signature = generate_signature(params)
     params[:foo] = 'world'
     assert_raises(ShopifyAPI::ValidationException) do
       session = ShopifyAPI::Session.new(domain: "testshop.myshopify.com", token: nil, api_version: any_api_version)
-      session.request_token(params.merge(:hmac => signature))
+      session.request_token(params.merge(hmac: signature))
     end
   end
 

@@ -5,7 +5,7 @@ require 'test_helper'
 class TenderTransactionTest < Test::Unit::TestCase
   def setup
     super
-    fake "tender_transactions", method: :get, body: load_fixture('tender_transactions')
+    fake("tender_transactions", method: :get, body: load_fixture('tender_transactions'))
   end
 
   context "Tender Transaction" do

@@ -9,7 +9,7 @@ class LogSubscriberTest < Test::Unit::TestCase
 
   def setup
     super
-    @page = { :page => { :id => 1, :title => 'Shopify API' } }.to_json
+    @page = { page: { id: 1, title: 'Shopify API' } }.to_json
     @ua_header = "\"User-Agent\"=>\"ShopifyAPI/#{ShopifyAPI::VERSION} ActiveResource/#{ActiveResource::VERSION::STRING} Ruby/#{RUBY_VERSION}\""
     @request_headers = "Headers: {\"Accept\"=>\"application/json\", " \
       "#{@ua_header}, \"X-Shopify-Access-Token\"=>\"access_token\"}"
@@ -30,8 +30,8 @@ class LogSubscriberTest < Test::Unit::TestCase
 
     ShopifyAPI::Base.activate_session(session)
 
-    ActiveResource::LogSubscriber.attach_to :active_resource
-    ActiveResource::DetailedLogSubscriber.attach_to :active_resource_detailed
+    ActiveResource::LogSubscriber.attach_to(:active_resource)
+    ActiveResource::DetailedLogSubscriber.attach_to(:active_resource_detailed)
   end
 
   def teardown
@@ -45,7 +45,7 @@ class LogSubscriberTest < Test::Unit::TestCase
   end
 
   test "logging on #find" do
-    fake "pages/1", :method => :get, :body => @page
+    fake "pages/1", method: :get, body: @page
 
     ShopifyAPI::Page.find(1)
 
@@ -64,7 +64,7 @@ class LogSubscriberTest < Test::Unit::TestCase
   end
 
   test "logging on #find with an error" do
-    fake "pages/2", :method => :get, :body => nil, :status => 404
+    fake "pages/2", method: :get, body: nil, status: 404
 
     assert_raises ActiveResource::ResourceNotFound do
       ShopifyAPI::Page.find(2)

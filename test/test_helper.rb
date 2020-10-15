@@ -69,7 +69,7 @@ module Test
 
       # Custom Assertions
       def assert_not(expression)
-        refute expression, "Expected <#{expression}> to be false!"
+        refute(expression, "Expected <#{expression}> to be false!")
       end
 
       def assert_nothing_raised
@@ -77,11 +77,11 @@ module Test
       end
 
       def assert_not_includes(array, value)
-        refute array.include?(value)
+        refute(array.include?(value))
       end
 
       def assert_includes(array, value)
-        assert array.include?(value)
+        assert(array.include?(value))
       end
 
       def load_fixture(name, format = :json)
@@ -89,7 +89,7 @@ module Test
       end
 
       def assert_request_body(expected)
-        assert_equal expected, WebMock.last_request.body
+        assert_equal(expected, WebMock.last_request.body)
       end
 
       def fake(endpoint, options = {})
