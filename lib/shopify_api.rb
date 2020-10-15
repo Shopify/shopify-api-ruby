@@ -1,4 +1,4 @@
-$:.unshift File.dirname(__FILE__)
+$:.unshift(File.dirname(__FILE__))
 require 'active_resource'
 require 'active_support/core_ext/class/attribute_accessors'
 require 'digest/md5'

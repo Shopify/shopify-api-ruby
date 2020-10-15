@@ -95,7 +95,7 @@ class GraphQLTest < Test::Unit::TestCase
 
       assert_instance_of ::GraphQL::Client, client
 
-      query = client.parse <<~GRAPHQL
+      query = client.parse(<<~GRAPHQL)
         {
           product {
             name

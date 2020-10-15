@@ -3,7 +3,7 @@ require 'test_helper'
 class InventoryLevelTest < Test::Unit::TestCase
   def setup
     super
-    @inventory_level_response = ActiveSupport::JSON.decode load_fixture('inventory_level')
+    @inventory_level_response = ActiveSupport::JSON.decode(load_fixture('inventory_level'))
     @inventory_level = ShopifyAPI::InventoryLevel.new(@inventory_level_response['inventory_level'])
   end
 

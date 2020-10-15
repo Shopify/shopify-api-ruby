@@ -18,9 +18,9 @@ module ActiveResource
       headers = data.extract_options!
       request_body = data.first
 
-      info "Request:\n#{request_body}" if request_body
-      info "Headers: #{headers.inspect}"
-      info "Response:\n#{event.payload[:response].body}"
+      info("Request:\n#{request_body}") if request_body
+      info("Headers: #{headers.inspect}")
+      info("Response:\n#{event.payload[:response].body}")
     end
 
     def warn_on_deprecated_header_or_version_eol_header(event)
@@ -34,7 +34,7 @@ module ActiveResource
           use of a deprecated endpoint, behaviour, or parameter. See #{header_value} for more details.
           MSG
 
-          warn warning_message
+          warn(warning_message)
 
         when VERSION_EOL_WARNING_HEADER
           warning_message = <<-MSG
@@ -42,11 +42,11 @@ module ActiveResource
           an API version that is unsupported or will become unsupported within 30 days. See #{header_value} for more details.
           MSG
 
-          warn warning_message
+          warn(warning_message)
         end
       end
     end
   end
 end
 
-ActiveResource::DetailedLogSubscriber.attach_to :active_resource_detailed
+ActiveResource::DetailedLogSubscriber.attach_to(:active_resource_detailed)

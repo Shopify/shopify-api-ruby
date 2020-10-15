@@ -25,11 +25,11 @@ class FulfillmentV2Test < Test::Unit::TestCase
       }
     }
     @url_prefix = url_prefix_for_activated_session_for('2020-01')
-    fake 'fulfillments',
+    fake('fulfillments',
       url: "#{@url_prefix}/fulfillments/#{@fake_fulfillment['id']}/update_tracking.json",
       method: :post,
       request_body: ActiveSupport::JSON.encode(@request_body),
-      body: ActiveSupport::JSON.encode(fulfillment: @fake_fulfillment)
+      body: ActiveSupport::JSON.encode(fulfillment: @fake_fulfillment))
   end
 
   context "FulfillmentV2" do

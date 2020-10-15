@@ -4,7 +4,7 @@ require 'test_helper'
 class CurrencyTest < Test::Unit::TestCase
   def setup
     super
-    fake "currencies", method: :get, body: load_fixture('currencies')
+    fake("currencies", method: :get, body: load_fixture('currencies'))
   end
 
   context "Currency" do

@@ -3,7 +3,7 @@ module ShopifyAPI
     init_prefix :order
 
     def self.calculate(*args)
-      options = { :refund => args[0] }
+      options = { refund: args[0] }
       params = {}
       params = args[1][:params] if args[1] && args[1][:params]
 

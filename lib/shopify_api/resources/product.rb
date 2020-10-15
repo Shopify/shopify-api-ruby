@@ -27,11 +27,11 @@ module ShopifyAPI
     end
 
     def collections
-      CustomCollection.find(:all, :params => { :product_id => self.id })
+      CustomCollection.find(:all, params: { product_id: self.id })
     end
 
     def smart_collections
-      SmartCollection.find(:all, :params => { :product_id => self.id })
+      SmartCollection.find(:all, params: { product_id: self.id })
     end
 
     def add_to_collection(collection)

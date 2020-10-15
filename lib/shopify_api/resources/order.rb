@@ -16,7 +16,7 @@ module ShopifyAPI
     end
 
     def transactions
-      Transaction.find(:all, :params => { :order_id => id })
+      Transaction.find(:all, params: { order_id: id })
     end
 
     def capture(amount = "", currency: nil)
