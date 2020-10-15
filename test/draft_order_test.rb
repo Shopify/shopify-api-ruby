@@ -79,7 +79,9 @@ class DraftOrderTest < Test::Unit::TestCase
     draft_order_invoice = ActiveSupport::JSON.decode(draft_order_invoice_fixture)
     fake('draft_orders/517119332/send_invoice', method: :post, body: draft_order_invoice_fixture)
 
-    draft_order_invoice_response = @draft_order.send_invoice(ShopifyAPI::DraftOrderInvoice.new(draft_order_invoice['draft_order_invoice']))
+    draft_order_invoice_response = @draft_order.send_invoice(
+      ShopifyAPI::DraftOrderInvoice.new(draft_order_invoice['draft_order_invoice'])
+    )
 
     assert_equal(draft_order_invoice, ActiveSupport::JSON.decode(WebMock.last_request.body))
     assert_kind_of(ShopifyAPI::DraftOrderInvoice, draft_order_invoice_response)
@@ -94,9 +96,16 @@ class DraftOrderTest < Test::Unit::TestCase
   def test_add_metafields_to_draft_order
     fake('draft_orders/517119332/metafields', method: :post, status: 201, body: load_fixture('metafield'))
 
-    field = @draft_order.add_metafield(ShopifyAPI::Metafield.new(namespace: 'contact', key: 'email', value: '123@example.com', value_type: 'string'))
+    field = @draft_order.add_metafield(
+      ShopifyAPI::Metafield.new(namespace: 'contact', key: 'email', value: '123@example.com', value_type: 'string')
+    )
 
-    assert_equal(ActiveSupport::JSON.decode('{"metafield":{"namespace":"contact","key":"email","value":"123@example.com","value_type":"string"}}'), ActiveSupport::JSON.decode(WebMock.last_request.body))
+    assert_equal(
+      ActiveSupport::JSON.decode(
+        '{"metafield":{"namespace":"contact","key":"email","value":"123@example.com","value_type":"string"}}'
+      ),
+      ActiveSupport::JSON.decode(WebMock.last_request.body)
+    )
     assert(!field.new_record?)
     assert_equal('contact', field.namespace)
     assert_equal('email', field.key)
@@ -140,7 +149,13 @@ class DraftOrderTest < Test::Unit::TestCase
     completed_fixture = load_fixture('draft_order_completed')
     completed_draft = ActiveSupport::JSON.decode(completed_fixture)['draft_order']
     complete_params = { payment_pending: true }
-    fake('draft_orders/517119332/complete.json?payment_pending=true', extension: false, method: :put, status: 200, body: completed_fixture)
+    fake(
+      'draft_orders/517119332/complete.json?payment_pending=true',
+      extension: false,
+      method: :put,
+      status: 200,
+      body: completed_fixture
+    )
 
     @draft_order.complete(complete_params)
 

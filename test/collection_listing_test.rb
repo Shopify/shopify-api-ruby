@@ -32,7 +32,12 @@ class CollectionListingTest < Test::Unit::TestCase
   end
 
   def test_get_collection_listing_product_ids
-    fake("collection_listings/1/product_ids", method: :get, status: 201, body: load_fixture('collection_listing_product_ids'))
+    fake(
+      "collection_listings/1/product_ids",
+      method: :get,
+      status: 201,
+      body: load_fixture('collection_listing_product_ids')
+    )
 
     collection_listing = ShopifyAPI::CollectionListing.new(collection_id: 1)
 

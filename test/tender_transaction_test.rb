@@ -11,8 +11,8 @@ class TenderTransactionTest < Test::Unit::TestCase
   context "Tender Transaction" do
     should 'return a list of transactions' do
       tender_transactions = ShopifyAPI::TenderTransaction.all
-      assert_equal 3, tender_transactions.length
-      assert_equal [1, 2, 3], tender_transactions.map(&:id)
+      assert_equal(3, tender_transactions.length)
+      assert_equal([1, 2, 3], tender_transactions.map(&:id))
     end
   end
 end

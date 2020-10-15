@@ -10,8 +10,15 @@ class ProductTest < Test::Unit::TestCase
   def test_add_metafields_to_product
     fake("products/632910392/metafields", method: :post, status: 201, body: load_fixture('metafield'))
 
-    field = @product.add_metafield(ShopifyAPI::Metafield.new(namespace: "contact", key: "email", value: "123@example.com", value_type: "string"))
-    assert_equal(ActiveSupport::JSON.decode('{"metafield":{"namespace":"contact","key":"email","value":"123@example.com","value_type":"string"}}'), ActiveSupport::JSON.decode(WebMock.last_request.body))
+    field = @product.add_metafield(
+      ShopifyAPI::Metafield.new(namespace: "contact", key: "email", value: "123@example.com", value_type: "string")
+    )
+    assert_equal(
+      ActiveSupport::JSON.decode(
+        '{"metafield":{"namespace":"contact","key":"email","value":"123@example.com","value_type":"string"}}'
+      ),
+      ActiveSupport::JSON.decode(WebMock.last_request.body)
+    )
     assert(!field.new_record?)
     assert_equal("contact", field.namespace)
     assert_equal("email", field.key)

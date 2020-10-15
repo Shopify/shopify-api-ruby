@@ -54,8 +54,8 @@ module ShopifyAPI
 
       def define_known_versions
         warn(
-          '[DEPRECATED] ShopifyAPI::ApiVersion.define_known_versions is deprecated and will be removed in a future version. ' \
-            'Use `fetch_known_versions` instead.'
+          '[DEPRECATED] ShopifyAPI::ApiVersion.define_known_versions is deprecated and will be ' \
+            'removed in a future version. Use `fetch_known_versions` instead.'
         )
         fetch_known_versions
       end
@@ -70,15 +70,16 @@ module ShopifyAPI
 
       def clear_defined_versions
         warn(
-          '[DEPRECATED] ShopifyAPI::ApiVersion.clear_defined_versions is deprecated and will be removed in a future version. ' \
-            'Use `clear_known_versions` instead.'
+          '[DEPRECATED] ShopifyAPI::ApiVersion.clear_defined_versions is deprecated and will be ' \
+            'removed in a future version. Use `clear_known_versions` instead.'
         )
         clear_known_versions
       end
 
       def latest_stable_version
         warn(
-          '[DEPRECATED] ShopifyAPI::ApiVersion.latest_stable_version is deprecated and will be removed in a future version.'
+          '[DEPRECATED] ShopifyAPI::ApiVersion.latest_stable_version is deprecated and will be ' \
+            'removed in a future version.'
         )
         versions.values.find(&:latest_supported?)
       end

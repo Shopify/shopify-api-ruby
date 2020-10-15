@@ -16,11 +16,13 @@ class FulFillmentTest < Test::Unit::TestCase
 
         success = ActiveSupport::JSON.decode(load_fixture('fulfillment'))
         success['fulfillment']['status'] = 'success'
-        fake "orders/450789469/fulfillments/255858046/complete", method: :post, body: ActiveSupport::JSON.encode(success)
+        fake(
+          "orders/450789469/fulfillments/255858046/complete", method: :post, body: ActiveSupport::JSON.encode(success)
+        )
 
-        assert_equal 'pending', fulfillment.status
-        assert fulfillment.complete
-        assert_equal 'success', fulfillment.status
+        assert_equal('pending', fulfillment.status)
+        assert(fulfillment.complete)
+        assert_equal('success', fulfillment.status)
       end
     end
 
@@ -30,11 +32,13 @@ class FulFillmentTest < Test::Unit::TestCase
 
         cancelled = ActiveSupport::JSON.decode(load_fixture('fulfillment'))
         cancelled['fulfillment']['status'] = 'cancelled'
-        fake "orders/450789469/fulfillments/255858046/cancel", method: :post, body: ActiveSupport::JSON.encode(cancelled)
+        fake(
+          "orders/450789469/fulfillments/255858046/cancel", method: :post, body: ActiveSupport::JSON.encode(cancelled)
+        )
 
-        assert_equal 'pending', fulfillment.status
-        assert fulfillment.cancel
-        assert_equal 'cancelled', fulfillment.status
+        assert_equal('pending', fulfillment.status)
+        assert(fulfillment.cancel)
+        assert_equal('cancelled', fulfillment.status)
       end
     end
 
@@ -44,19 +48,23 @@ class FulFillmentTest < Test::Unit::TestCase
 
         open_fulfillment = ActiveSupport::JSON.decode(load_fixture('fulfillment'))
         open_fulfillment['fulfillment']['status'] = 'open'
-        fake "orders/450789469/fulfillments/255858046/open", method: :post, body: ActiveSupport::JSON.encode(open_fulfillment)
+        fake(
+          "orders/450789469/fulfillments/255858046/open",
+          method: :post,
+          body: ActiveSupport::JSON.encode(open_fulfillment)
+        )
 
-        assert_equal 'pending', fulfillment.status
-        assert fulfillment.open
-        assert_equal 'open', fulfillment.status
+        assert_equal('pending', fulfillment.status)
+        assert(fulfillment.open)
+        assert_equal('open', fulfillment.status)
       end
     end
 
     context "#find" do
       should "be able to find fulfillment" do
         fulfillment = ShopifyAPI::Fulfillment.find(255858046, params: { order_id: 450789469 })
-        assert_equal 255858046, fulfillment.id
-        assert_equal 450789469, fulfillment.order_id
+        assert_equal(255858046, fulfillment.id)
+        assert_equal(450789469, fulfillment.order_id)
       end
     end
 
@@ -80,16 +88,17 @@ class FulFillmentTest < Test::Unit::TestCase
         request_body = { fulfillment: create_fulfillment_attributes }
         response_body = { fulfillment: create_fulfillment_attributes.merge(id: 346743624) }
         url_prefix = url_prefix_for_activated_session_for('2020-01')
-        fake 'fulfillments',
+        fake(
+          'fulfillments',
           url: "#{url_prefix}/fulfillments.json",
           method: :post,
           request_body: ActiveSupport::JSON.encode(request_body),
           body: ActiveSupport::JSON.encode(response_body)
-
+        )
         fulfillment = ShopifyAPI::Fulfillment.create(create_fulfillment_attributes)
-        assert fulfillment.is_a?(ShopifyAPI::Fulfillment)
-        assert fulfillment.persisted?
-        assert_equal 346743624, fulfillment.id
+        assert(fulfillment.is_a?(ShopifyAPI::Fulfillment))
+        assert(fulfillment.persisted?)
+        assert_equal(346743624, fulfillment.id)
       end
 
       should "raise NotImplementedError when api_version is older than 2020-01" do
@@ -111,13 +120,14 @@ class FulFillmentTest < Test::Unit::TestCase
         request_body = { fulfillment: create_fulfillment_attributes }
         response_body = { fulfillment: create_fulfillment_attributes.merge(id: 346743624) }
         url_prefix = url_prefix_for_activated_session_for('2019-10')
-        fake 'fulfillments',
+        fake(
+          'fulfillments',
           url: "#{url_prefix}/fulfillments.json",
           method: :post,
           request_body: ActiveSupport::JSON.encode(request_body),
           body: ActiveSupport::JSON.encode(response_body)
-
-        assert_raises NotImplementedError do
+        )
+        assert_raises(NotImplementedError) do
           ShopifyAPI::Fulfillment.create(create_fulfillment_attributes)
         end
       end
@@ -143,17 +153,18 @@ class FulFillmentTest < Test::Unit::TestCase
         request_body = { fulfillment: create_fulfillment_attributes }
         response_body = { fulfillment: create_fulfillment_attributes.merge(id: 346743624) }
         url_prefix = url_prefix_for_activated_session_for('2020-01')
-        fake 'fulfillments',
+        fake(
+          'fulfillments',
           url: "#{url_prefix}/fulfillments.json",
           method: :post,
           request_body: ActiveSupport::JSON.encode(request_body),
           body: ActiveSupport::JSON.encode(response_body)
-
+        )
         fulfillment = ShopifyAPI::Fulfillment.new(create_fulfillment_attributes)
-        assert fulfillment.save
-        assert fulfillment.is_a?(ShopifyAPI::Fulfillment)
-        assert fulfillment.persisted?
-        assert_equal 346743624, fulfillment.id
+        assert(fulfillment.save)
+        assert(fulfillment.is_a?(ShopifyAPI::Fulfillment))
+        assert(fulfillment.persisted?)
+        assert_equal(346743624, fulfillment.id)
       end
 
       should "save a fulfillment without line_items_by_fulfillment_order" do
@@ -169,17 +180,19 @@ class FulFillmentTest < Test::Unit::TestCase
         }
         request_body = { fulfillment: create_fulfillment_attributes }
         response_body = { fulfillment: create_fulfillment_attributes.merge(id: 346743624) }
-        fake "orders/#{order_id}/fulfillments", method: :post,
+        fake(
+          "orders/#{order_id}/fulfillments",
+          method: :post,
           request_body: ActiveSupport::JSON.encode(request_body),
           body: ActiveSupport::JSON.encode(response_body)
-
+        )
         fulfillment = ShopifyAPI::Fulfillment.new(create_fulfillment_attributes)
         fulfillment.prefix_options[:order_id] = order_id
 
-        assert fulfillment.save
-        assert fulfillment.is_a?(ShopifyAPI::Fulfillment)
-        assert fulfillment.persisted?
-        assert_equal 346743624, fulfillment.id
+        assert(fulfillment.save)
+        assert(fulfillment.is_a?(ShopifyAPI::Fulfillment))
+        assert(fulfillment.persisted?)
+        assert_equal(346743624, fulfillment.id)
       end
     end
 
@@ -204,20 +217,21 @@ class FulFillmentTest < Test::Unit::TestCase
           }
         }
         url_prefix = url_prefix_for_activated_session_for('2020-01')
-        fake 'fulfillments',
+        fake(
+          'fulfillments',
           url: "#{url_prefix}/fulfillments/#{fake_fulfillment['id']}/update_tracking.json",
           method: :post,
           request_body: ActiveSupport::JSON.encode(request_body),
           body: ActiveSupport::JSON.encode(fulfillment: fake_fulfillment)
-
+        )
         fulfillment = ShopifyAPI::Fulfillment.new(id: fake_fulfillment['id'])
-        assert fulfillment.update_tracking(tracking_info: tracking_info, notify_customer: true)
+        assert(fulfillment.update_tracking(tracking_info: tracking_info, notify_customer: true))
 
-        assert_equal tracking_info[:number], fulfillment.tracking_number
-        assert_equal [tracking_info[:number]], fulfillment.tracking_numbers
-        assert_equal tracking_info[:url], fulfillment.tracking_url
-        assert_equal [tracking_info[:url]], fulfillment.tracking_urls
-        assert_equal tracking_info[:company], fulfillment.tracking_company
+        assert_equal(tracking_info[:number], fulfillment.tracking_number)
+        assert_equal([tracking_info[:number]], fulfillment.tracking_numbers)
+        assert_equal(tracking_info[:url], fulfillment.tracking_url)
+        assert_equal([tracking_info[:url]], fulfillment.tracking_urls)
+        assert_equal(tracking_info[:company], fulfillment.tracking_company)
       end
     end
   end

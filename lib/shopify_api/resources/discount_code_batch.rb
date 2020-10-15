@@ -12,7 +12,9 @@ module ShopifyAPI
     def discount_code_job
       @discount_codes ||= begin
         if id
-          path = self.class.api_version.construct_api_path("price_rules/#{price_rule_id}/batch/#{id}/discount_codes.json")
+          path = self.class.api_version.construct_api_path(
+            "price_rules/#{price_rule_id}/batch/#{id}/discount_codes.json"
+          )
           discount_codes = ShopifyAPI::DiscountCode.find(:all, from: path)
           discount_codes.each do |code|
             errors = code.attributes['errors']

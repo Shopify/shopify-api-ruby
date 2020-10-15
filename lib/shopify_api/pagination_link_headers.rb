@@ -18,7 +18,9 @@ module ShopifyAPI
       links = link_header.split(',')
       links.map do |link|
         parts = link.split('; ')
-        raise ShopifyAPI::InvalidPaginationLinksError, "Invalid link header: url and rel expected" unless parts.length == 2
+        unless parts.length == 2
+          raise ShopifyAPI::InvalidPaginationLinksError, "Invalid link header: url and rel expected"
+        end
 
         url = parts[0][/<(.*)>/, 1]
         rel = parts[1][/rel="(.*)"/, 1]&.to_sym

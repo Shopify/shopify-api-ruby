@@ -14,11 +14,12 @@ class DiscountCodeBatchTest < Test::Unit::TestCase
   end
 
   def test_get_batch_discount_codes
-    fake('price_rules/102586120/batch/989355119/discount_codes',
+    fake(
+      'price_rules/102586120/batch/989355119/discount_codes',
       method: :get,
       status: 200,
-      body: load_fixture('discount_code_batch_discount_codes'))
-
+      body: load_fixture('discount_code_batch_discount_codes')
+    )
     batch = ShopifyAPI::DiscountCodeBatch.find(989355119, params: { price_rule_id: 102586120 })
     discount_code_job = batch.discount_code_job
 

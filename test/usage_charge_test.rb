@@ -11,7 +11,12 @@ class UsageChargeTest < Test::Unit::TestCase
   end
 
   def test_get_usage_charges
-    fake("recurring_application_charges/654381177/usage_charges/359376002", method: :get, status: 201, body: load_fixture('usage_charge'))
+    fake(
+      "recurring_application_charges/654381177/usage_charges/359376002",
+      method: :get,
+      status: 201,
+      body: load_fixture('usage_charge')
+    )
 
     usage_charge = ShopifyAPI::UsageCharge.find(359376002, params: { recurring_application_charge_id: 654381177 })
 

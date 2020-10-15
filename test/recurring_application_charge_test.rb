@@ -3,7 +3,9 @@ require 'test_helper'
 class RecurringApplicationChargeTest < Test::Unit::TestCase
 
   def test_recurring_application_charges_create
-    fake("recurring_application_charges", method: :post, status: 201, body: load_fixture('recurring_application_charge'))
+    fake(
+      "recurring_application_charges", method: :post, status: 201, body: load_fixture('recurring_application_charge')
+    )
 
     charge = ShopifyAPI::RecurringApplicationCharge.create(
       name: "Default Plan",
@@ -11,11 +13,20 @@ class RecurringApplicationChargeTest < Test::Unit::TestCase
       return_url: "http://test.com/confirm"
     )
 
-    assert_equal('http://apple.myshopify.com/admin/charges/654381177/confirm_recurring_application_charge?signature=BAhpBHkQASc%3D--419fc7424f8c290ac2b21b9004ed223e35b52164', charge.confirmation_url)
+    assert_equal(
+      'http://apple.myshopify.com/admin/charges/654381177/confirm_recurring_application_charge?' \
+        'signature=BAhpBHkQASc%3D--419fc7424f8c290ac2b21b9004ed223e35b52164',
+      charge.confirmation_url
+      )
   end
 
   def test_get_recurring_application_charges
-    fake("recurring_application_charges/654381177", method: :get, status: 201, body: load_fixture('recurring_application_charge'))
+    fake(
+      "recurring_application_charges/654381177",
+      method: :get,
+      status: 201,
+      body: load_fixture('recurring_application_charge')
+    )
 
     charge = ShopifyAPI::RecurringApplicationCharge.find(654381177)
 
@@ -23,7 +34,9 @@ class RecurringApplicationChargeTest < Test::Unit::TestCase
   end
 
   def test_list_recurring_application_charges
-    fake("recurring_application_charges", method: :get, status: 201, body: load_fixture('recurring_application_charges'))
+    fake(
+      "recurring_application_charges", method: :get, status: 201, body: load_fixture('recurring_application_charges')
+    )
 
     charge = ShopifyAPI::RecurringApplicationCharge.find(:all)
 
@@ -31,7 +44,13 @@ class RecurringApplicationChargeTest < Test::Unit::TestCase
   end
 
   def test_list_since_recurring_application_charges
-    fake("recurring_application_charges.json?since_id=64512345",extension: false, method: :get, status: 201, body: load_fixture('recurring_application_charges'))
+    fake(
+      "recurring_application_charges.json?since_id=64512345",
+      extension: false,
+      method: :get,
+      status: 201,
+      body: load_fixture('recurring_application_charges')
+    )
 
     charge = ShopifyAPI::RecurringApplicationCharge.find(:all, params: { since_id: '64512345' })
 
@@ -39,7 +58,13 @@ class RecurringApplicationChargeTest < Test::Unit::TestCase
   end
 
   def test_list_fields_recurring_application_charges
-    fake("recurring_application_charges.json?fields=name",extension: false, method: :get, status: 201, body: load_fixture('recurring_application_charges'))
+    fake(
+      "recurring_application_charges.json?fields=name",
+      extension: false,
+      method: :get,
+      status: 201,
+      body: load_fixture('recurring_application_charges')
+    )
 
     charge = ShopifyAPI::RecurringApplicationCharge.find(:all, params: { fields: 'name' })
 
@@ -47,7 +72,9 @@ class RecurringApplicationChargeTest < Test::Unit::TestCase
   end
 
   def test_pending_recurring_application_charge
-    fake("recurring_application_charges", method: :get, status: 201, body: load_fixture('recurring_application_charges'))
+    fake(
+      "recurring_application_charges", method: :get, status: 201, body: load_fixture('recurring_application_charges')
+    )
 
     charge = ShopifyAPI::RecurringApplicationCharge.pending
 
@@ -55,7 +82,9 @@ class RecurringApplicationChargeTest < Test::Unit::TestCase
   end
 
   def test_cancelled_recurring_application_charge
-    fake("recurring_application_charges", method: :get, status: 201, body: load_fixture('recurring_application_charges'))
+    fake(
+      "recurring_application_charges", method: :get, status: 201, body: load_fixture('recurring_application_charges')
+    )
 
     charge = ShopifyAPI::RecurringApplicationCharge.cancelled
 
@@ -63,7 +92,9 @@ class RecurringApplicationChargeTest < Test::Unit::TestCase
   end
 
   def test_accepted_recurring_application_charge
-    fake("recurring_application_charges", method: :get, status: 201, body: load_fixture('recurring_application_charges'))
+    fake(
+      "recurring_application_charges", method: :get, status: 201, body: load_fixture('recurring_application_charges')
+    )
 
     charge = ShopifyAPI::RecurringApplicationCharge.accepted
 
@@ -72,7 +103,9 @@ class RecurringApplicationChargeTest < Test::Unit::TestCase
   end
 
   def test_declined_recurring_application_charge
-    fake("recurring_application_charges", method: :get, status: 201, body: load_fixture('recurring_application_charges'))
+    fake(
+      "recurring_application_charges", method: :get, status: 201, body: load_fixture('recurring_application_charges')
+    )
 
     charge = ShopifyAPI::RecurringApplicationCharge.declined
 
@@ -80,7 +113,9 @@ class RecurringApplicationChargeTest < Test::Unit::TestCase
   end
 
   def test_activate_recurring_application_charge
-    fake("recurring_application_charges", method: :get, status: 201, body: load_fixture('recurring_application_charges'))
+    fake(
+      "recurring_application_charges", method: :get, status: 201, body: load_fixture('recurring_application_charges')
+    )
     fake("recurring_application_charges/455696199/activate", method: :post, status: 200, body: "{}")
 
     charge = ShopifyAPI::RecurringApplicationCharge.accepted
@@ -89,8 +124,18 @@ class RecurringApplicationChargeTest < Test::Unit::TestCase
   end
 
   def test_adjust_recurring_application_charge
-    fake("recurring_application_charges/654381177", method: :get, status: 201, body: load_fixture('recurring_application_charge'))
-    fake("recurring_application_charges/654381177/customize.json?recurring_application_charge%5Bcapped_amount%5D=200", method: :put, body: load_fixture('recurring_application_charge_adjustment'), extension: false)
+    fake(
+      "recurring_application_charges/654381177",
+      method: :get,
+      status: 201,
+      body: load_fixture('recurring_application_charge')
+    )
+    fake(
+      "recurring_application_charges/654381177/customize.json?recurring_application_charge%5Bcapped_amount%5D=200",
+      method: :put,
+      body: load_fixture('recurring_application_charge_adjustment'),
+      extension: false
+    )
 
     charge = ShopifyAPI::RecurringApplicationCharge.find(654381177)
 
@@ -98,7 +143,9 @@ class RecurringApplicationChargeTest < Test::Unit::TestCase
   end
 
   def test_cancel_recurring_application_charge
-    fake("recurring_application_charges", method: :get, status: 201, body: load_fixture('recurring_application_charges'))
+    fake(
+      "recurring_application_charges", method: :get, status: 201, body: load_fixture('recurring_application_charges')
+    )
     fake("recurring_application_charges/455696194", method: :delete, status: 200, body: "{}")
 
     charge = ShopifyAPI::RecurringApplicationCharge.current
@@ -106,8 +153,18 @@ class RecurringApplicationChargeTest < Test::Unit::TestCase
   end
 
   def test_usage_charges_recurring_application_charge_found
-    fake("recurring_application_charges/654381177", method: :get, status: 201, body: load_fixture('recurring_application_charge'))
-    fake("recurring_application_charges/654381177/usage_charges", method: :get, status: 201, body: load_fixture('usage_charges'))
+    fake(
+      "recurring_application_charges/654381177",
+      method: :get,
+      status: 201,
+      body: load_fixture('recurring_application_charge')
+    )
+    fake(
+      "recurring_application_charges/654381177/usage_charges",
+      method: :get,
+      status: 201,
+      body: load_fixture('usage_charges')
+    )
 
     charge = ShopifyAPI::RecurringApplicationCharge.find(654381177)
     usage_charges = charge.usage_charges
@@ -116,7 +173,12 @@ class RecurringApplicationChargeTest < Test::Unit::TestCase
   end
 
   def test_usage_charges_recurring_application_charge_not_found
-    fake("recurring_application_charges/654381177", method: :get, status: 201, body: load_fixture('recurring_application_charge'))
+    fake(
+      "recurring_application_charges/654381177",
+      method: :get,
+      status: 201,
+      body: load_fixture('recurring_application_charge')
+    )
     fake("recurring_application_charges/654381177/usage_charges", method: :get, status: 201, body: "[]")
 
     charge = ShopifyAPI::RecurringApplicationCharge.find(654381177)

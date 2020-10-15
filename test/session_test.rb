@@ -10,33 +10,37 @@ class SessionTest < Test::Unit::TestCase
 
   test "not be valid without a url" do
     session = ShopifyAPI::Session.new(domain: nil, token: "any-token", api_version: any_api_version)
-    assert_not session.valid?
+    assert_not(session.valid?)
   end
 
   test "not be valid without token" do
     session = ShopifyAPI::Session.new(domain: "testshop.myshopify.com", token: nil, api_version: any_api_version)
-    assert_not session.valid?
+    assert_not(session.valid?)
   end
 
   test "not be valid without an API version" do
     session = ShopifyAPI::Session.new(domain: "testshop.myshopify.com", token: "any-token", api_version: nil)
-    assert_not session.valid?
+    assert_not(session.valid?)
 
-    session = ShopifyAPI::Session.new(domain: "testshop.myshopify.com", token: "any-token", api_version: ShopifyAPI::ApiVersion::NullVersion)
-    assert_not session.valid?
+    session = ShopifyAPI::Session.new(
+      domain: "testshop.myshopify.com", token: "any-token", api_version: ShopifyAPI::ApiVersion::NullVersion
+    )
+    assert_not(session.valid?)
   end
 
   test "default to base API version" do
     session = ShopifyAPI::Session.new(domain: "testshop.myshopify.com", token: "any-token")
-    assert session.valid?
-    assert_equal session.api_version, ShopifyAPI::Base.api_version
+    assert(session.valid?)
+    assert_equal(session.api_version, ShopifyAPI::Base.api_version)
   end
 
   test "can override the base API version" do
     different_api_version = '2020-01'
-    session = ShopifyAPI::Session.new(domain: "testshop.myshopify.com", token: "any-token", api_version: different_api_version)
-    assert session.valid?
-    assert_equal session.api_version, ShopifyAPI::ApiVersion.find_version(different_api_version)
+    session = ShopifyAPI::Session.new(
+      domain: "testshop.myshopify.com", token: "any-token", api_version: different_api_version
+    )
+    assert(session.valid?)
+    assert_equal(session.api_version, ShopifyAPI::ApiVersion.find_version(different_api_version))
   end
 
   test "be valid with any token, any url and version" do
@@ -45,7 +49,7 @@ class SessionTest < Test::Unit::TestCase
       token: "any-token",
       api_version: any_api_version
     )
-    assert session.valid?
+    assert(session.valid?)
   end
 
   test "not raise error without params" do
@@ -87,8 +91,8 @@ class SessionTest < Test::Unit::TestCase
 
   test "setup api_key and secret for all sessions" do
     ShopifyAPI::Session.setup(api_key: "My test key", secret: "My test secret")
-    assert_equal "My test key", ShopifyAPI::Session.api_key
-    assert_equal "My test secret", ShopifyAPI::Session.secret
+    assert_equal("My test key", ShopifyAPI::Session.api_key)
+    assert_equal("My test secret", ShopifyAPI::Session.secret)
   end
 
   test "#temp reset ShopifyAPI::Base values to original value" do
@@ -168,7 +172,7 @@ class SessionTest < Test::Unit::TestCase
       api_version: :unstable
     )
 
-    assert_raises StandardError do
+    assert_raises(StandardError) do
       ShopifyAPI::Session.with_session(other_session) { raise StandardError, "" }
     end
 
@@ -214,7 +218,11 @@ class SessionTest < Test::Unit::TestCase
     )
     scope = ["write_products"]
     permission_url = session.create_permission_url(scope, "http://my_redirect_uri.com")
-    assert_equal "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&scope=write_products&redirect_uri=http://my_redirect_uri.com", permission_url
+    assert_equal(
+      "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&" \
+        "scope=write_products&redirect_uri=http://my_redirect_uri.com",
+      permission_url
+    )
   end
 
   test "create_permission_url returns correct url with dual scope" do
@@ -226,7 +234,11 @@ class SessionTest < Test::Unit::TestCase
     )
     scope = ["write_products","write_customers"]
     permission_url = session.create_permission_url(scope, "http://my_redirect_uri.com")
-    assert_equal "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&scope=write_products,write_customers&redirect_uri=http://my_redirect_uri.com", permission_url
+    assert_equal(
+      "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&" \
+        "scope=write_products,write_customers&redirect_uri=http://my_redirect_uri.com",
+      permission_url
+    )
   end
 
   test "create_permission_url returns correct url with no scope" do
@@ -238,7 +250,11 @@ class SessionTest < Test::Unit::TestCase
     )
     scope = []
     permission_url = session.create_permission_url(scope, "http://my_redirect_uri.com")
-    assert_equal "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&scope=&redirect_uri=http://my_redirect_uri.com", permission_url
+    assert_equal(
+      "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&" \
+        "scope=&redirect_uri=http://my_redirect_uri.com",
+      permission_url
+    )
   end
 
   test "create_permission_url returns correct url with state" do
@@ -250,7 +266,11 @@ class SessionTest < Test::Unit::TestCase
     )
     scope = []
     permission_url = session.create_permission_url(scope, "http://my_redirect_uri.com", state: "My nonce")
-    assert_equal "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&scope=&redirect_uri=http://my_redirect_uri.com&state=My%20nonce", permission_url
+    assert_equal(
+      "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&" \
+        "scope=&redirect_uri=http://my_redirect_uri.com&state=My%20nonce",
+      permission_url
+    )
   end
 
   test "raise exception if code invalid in request token" do
@@ -270,7 +290,7 @@ class SessionTest < Test::Unit::TestCase
     assert_raises(ShopifyAPI::ValidationException) do
       session.request_token(code: "bad-code")
     end
-    assert_equal false, session.valid?
+    assert_equal(false, session.valid?)
   end
 
   test "return site for session" do
@@ -279,59 +299,65 @@ class SessionTest < Test::Unit::TestCase
       token: "any-token",
       api_version: any_api_version
     )
-    assert_equal "https://testshop.myshopify.com", session.site
+    assert_equal("https://testshop.myshopify.com", session.site)
   end
 
   test "return_token_if_signature_is_valid" do
     api_version = any_api_version
-    fake nil,
+    fake(
+      nil,
       url: "https://testshop.myshopify.com/admin/oauth/access_token",
       method: :post,
       body: '{"access_token":"any-token"}'
+    )
     session = ShopifyAPI::Session.new(domain: "testshop.myshopify.com", token: nil, api_version: api_version)
 
     params = { code: 'any-code', timestamp: Time.now }
     token = session.request_token(params.merge(hmac: generate_signature(params)))
 
-    assert_equal "any-token", token
-    assert_equal "any-token", session.token
+    assert_equal("any-token", token)
+    assert_equal("any-token", session.token)
   end
 
   test "extra parameters are stored in session" do
     api_version = ShopifyAPI::ApiVersion.new(handle: :unstable)
-    fake nil,
+    fake(
+      nil,
       url: "https://testshop.myshopify.com/admin/oauth/access_token",
       method: :post,
       body: '{"access_token":"any-token","foo":"example"}'
+    )
     session = ShopifyAPI::Session.new(domain: "testshop.myshopify.com", token: nil, api_version: api_version)
 
     params = { code: 'any-code', timestamp: Time.now }
-    assert session.request_token(params.merge(hmac: generate_signature(params)))
+    assert(session.request_token(params.merge(hmac: generate_signature(params))))
 
-    assert_equal ({ "foo" => "example" }), session.extra
+    assert_equal(({ "foo" => "example" }), session.extra)
   end
 
   test "expires_in is automatically converted in expires_at" do
     api_version = any_api_version
-    fake nil,
+    fake(
+      nil,
       url: "https://testshop.myshopify.com/admin/oauth/access_token",
       method: :post,
       body: '{"access_token":"any-token","expires_in":86393}'
+    )
     session = ShopifyAPI::Session.new(domain: "testshop.myshopify.com", token: nil, api_version: api_version)
 
     Timecop.freeze do
       params = { code: 'any-code', timestamp: Time.now }
-      assert session.request_token(params.merge(hmac: generate_signature(params)))
+      assert(session.request_token(params.merge(hmac: generate_signature(params))))
 
       expires_at = Time.now.utc + 86393
-      assert_equal ({ "expires_at" => expires_at.to_i }), session.extra
-      assert session.expires_at.is_a?(Time)
-      assert_equal expires_at.to_i, session.expires_at.to_i
-      assert_equal 86393, session.expires_in
-      assert_equal false, session.expired?
+      assert_equal(({ "expires_at" => expires_at.to_i }), session.extra)
+      assert(session.expires_at.is_a?(Time))
+      assert_equal(expires_at.to_i, session.expires_at.to_i)
+      assert_equal(86393, session.expires_in)
+      assert_equal(false, session.expired?)
 
       Timecop.travel(session.expires_at) do
-        assert_equal true, session.expired?
+        assert_equal(true, session.expired?)
       end
     end
   end
@@ -359,7 +385,7 @@ class SessionTest < Test::Unit::TestCase
   test "return true when the signature is valid and the keys of params are strings" do
     params = { 'code' => 'any-code', 'timestamp' => Time.now }
     params[:hmac] = generate_signature(params)
-    assert_equal true, ShopifyAPI::Session.validate_signature(params)
+    assert_equal(true, ShopifyAPI::Session.validate_signature(params))
   end
 
   test "return true when validating signature of params with ampersand and equal sign characters" do
@@ -367,7 +393,7 @@ class SessionTest < Test::Unit::TestCase
     params = { 'a' => '1&b=2', 'c=3&d' => '4' }
     to_sign = 'a=1%26b=2&c%3D3%26d=4'
     params[:hmac] = generate_signature(to_sign)
-    assert_equal true, ShopifyAPI::Session.validate_signature(params)
+    assert_equal(true, ShopifyAPI::Session.validate_signature(params))
   end
 
   test "return true when validating signature of params with percent sign characters" do
@@ -375,7 +401,7 @@ class SessionTest < Test::Unit::TestCase
     params = { 'a%3D1%26b' => '2%26c%3D3' }
     to_sign = 'a%253D1%2526b=2%2526c%253D3'
     params[:hmac] = generate_signature(to_sign)
-    assert_equal true, ShopifyAPI::Session.validate_signature(params)
+    assert_equal(true, ShopifyAPI::Session.validate_signature(params))
   end
 
   test "url is aliased to domain to minimize the upgrade changes" do

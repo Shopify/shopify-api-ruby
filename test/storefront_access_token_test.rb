@@ -12,7 +12,6 @@ class StorefrontAccessTokenTest < Test::Unit::TestCase
   def test_delete_storefront_access_token
     fake('storefront_access_tokens/1', method: :get, status: 200, body: load_fixture('storefront_access_token'))
     fake('storefront_access_tokens/1', method: :delete, status: 200, body: 'destroyed')
-    
     storefront_access_tokens = ShopifyAPI::StorefrontAccessToken.find(1)
     assert(storefront_access_tokens.destroy)
   end

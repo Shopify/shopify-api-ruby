@@ -45,7 +45,7 @@ class ApiVersionTest < Test::Unit::TestCase
   test "find_version does raise when coercing a string if no versions are defined when version_lookup_mode is :raise_on_unknown" do
     refute ShopifyAPI::ApiVersion.versions['made up version']
     ShopifyAPI::ApiVersion.version_lookup_mode = :raise_on_unknown
-    assert_raises ShopifyAPI::ApiVersion::UnknownVersion do
+    assert_raises(ShopifyAPI::ApiVersion::UnknownVersion) do
       ShopifyAPI::ApiVersion.find_version('made up version')
     end
   end
@@ -54,7 +54,7 @@ class ApiVersionTest < Test::Unit::TestCase
     ShopifyAPI::ApiVersion.clear_known_versions
     ShopifyAPI::ApiVersion.version_lookup_mode = :define_on_unknown
     assert_equal :define_on_unknown, ShopifyAPI::ApiVersion.version_lookup_mode
-    assert_raises ArgumentError do
+    assert_raises(ArgumentError) do
       ShopifyAPI::ApiVersion.find_version(ShopifyAPI::ApiVersion::NullVersion)
     end
   end

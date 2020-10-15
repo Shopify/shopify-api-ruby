@@ -9,10 +9,10 @@ module ShopifyAPI
   # or assets/bg-body.gif.
   #
   # Initialize with a key:
-  #   asset = ShopifyAPI::Asset.new(:key => 'assets/special.css', :theme_id => 12345)
+  #   asset = ShopifyAPI::Asset.new(key: 'assets/special.css', theme_id: 12345)
   #
   # Find by key:
-  #   asset = ShopifyAPI::Asset.find('assets/image.png', :params => {:theme_id => 12345})
+  #   asset = ShopifyAPI::Asset.find('assets/image.png', params: {theme_id: 12345})
   #
   # Get the text or binary value:
   #   asset.value # decodes from attachment attribute if necessary
@@ -44,7 +44,7 @@ module ShopifyAPI
     end
 
     # find an asset by key:
-    #   ShopifyAPI::Asset.find('layout/theme.liquid', :params => { theme_id: 99 })
+    #   ShopifyAPI::Asset.find('layout/theme.liquid', params: { theme_id: 99 })
     def self.find(*args)
       if args[0].is_a?(Symbol)
         super

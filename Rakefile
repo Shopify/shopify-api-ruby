@@ -24,10 +24,10 @@ rescue LoadError
   end
 end
 
-task default: [:test, :rubocop, :verify_docs]
+task(default: [:test, :rubocop, :verify_docs])
 
 require 'verify_docs'
-task :verify_docs do
+task(:verify_docs) do
   unless VerifyDocs.call
     abort("\nWARNING: docs/index.md and README.md no longer have identical content. Please correct this.")
   end
@@ -48,7 +48,7 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
-task :docker do
+task(:docker) do
   cmd = "docker-compose up -d && docker exec -i -t shopify_api bash"
   exec(cmd, err: File::NULL)
 end
