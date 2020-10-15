@@ -112,6 +112,8 @@ GEM
       unicode-display_width (>= 1.4.0, < 2.0)
     rubocop-ast (0.8.0)
       parser (>= 2.7.1.5)
+    rubocop-shopify (1.0.6)
+      rubocop (>= 0.92, < 0.94)
     ruby-progressbar (1.10.1)
     safe_yaml (1.0.5)
     sassc (2.3.0)
@@ -140,7 +142,7 @@ DEPENDENCIES
   pry
   pry-byebug
   rake
-  rubocop
+  rubocop-shopify
   shopify_api!
   timecop
   webmock
