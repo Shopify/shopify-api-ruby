@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'shopify_api/resources/customer'
 
 module ShopifyAPI

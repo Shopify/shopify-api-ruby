@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module ShopifyAPI
   class FulfillmentEvent < Base
     self.resource_prefix = "orders/:order_id/fulfillments/:fulfillment_id/"

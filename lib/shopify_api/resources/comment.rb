@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module ShopifyAPI
   class Comment < Base
     def remove;   load_attributes_from_response(post(:remove, {}, only_id)); end

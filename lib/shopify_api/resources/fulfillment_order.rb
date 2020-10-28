@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module ShopifyAPI
   class FulfillmentOrder < Base
     MINIMUM_VERSION = '2020-01'

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module ShopifyAPI
   class FulfillmentV2 < Base
     self.element_name = 'fulfillment'

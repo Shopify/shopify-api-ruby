@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class ResourceFeedbackTest < Test::Unit::TestCase
   def test_get_resource_feedback
     body = { resource_feedback: [ { resource_type: 'Shop' } ] }.to_json
