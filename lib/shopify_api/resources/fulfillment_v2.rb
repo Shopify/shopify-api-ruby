@@ -11,8 +11,8 @@ module ShopifyAPI
       body = {
         fulfillment: {
           tracking_info: tracking_info,
-          notify_customer: notify_customer
-        }
+          notify_customer: notify_customer,
+        },
       }
       load_attributes_from_response(post(:update_tracking, {}, body.to_json))
     end

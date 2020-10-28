@@ -11,7 +11,7 @@ module ShopifyAPI
 
       metafield.prefix_options = {
         resource: self.class.collection_name,
-        resource_id: id
+        resource_id: id,
       }
       metafield.save
       metafield

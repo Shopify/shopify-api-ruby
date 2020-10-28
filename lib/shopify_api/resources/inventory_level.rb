@@ -33,7 +33,7 @@ module ShopifyAPI
       body = {
         location_id: location_id,
         inventory_item_id: inventory_item_id,
-        available: new_available
+        available: new_available,
       }
       body[:disconnect_if_necessary] = disconnect_if_necessary unless disconnect_if_necessary.nil?
       load_attributes_from_response(
@@ -45,7 +45,7 @@ module ShopifyAPI
       body = {
         location_id: location_id,
         inventory_item_id: inventory_item_id,
-        available_adjustment: available_adjustment
+        available_adjustment: available_adjustment,
       }
       load_attributes_from_response(
         self.class.post(:adjust, {}, body.to_json)

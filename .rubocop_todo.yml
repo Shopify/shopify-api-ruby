@@ -333,22 +333,6 @@ Style/TrailingCommaInArrayLiteral:
     - 'test/fulfillment_test.rb'
     - 'test/meta_test.rb'
 
-# Offense count: 66
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleForMultiline.
-# SupportedStylesForMultiline: comma, consistent_comma, no_comma
-Style/TrailingCommaInHashLiteral:
-  Exclude:
-    - 'lib/shopify_api/metafields.rb'
-    - 'lib/shopify_api/resources/fulfillment_order.rb'
-    - 'lib/shopify_api/resources/fulfillment_v2.rb'
-    - 'lib/shopify_api/resources/inventory_level.rb'
-    - 'test/fulfillment_order_test.rb'
-    - 'test/fulfillment_test.rb'
-    - 'test/fulfillment_v2_test.rb'
-    - 'test/marketing_event_test.rb'
-    - 'test/meta_test.rb'
-
 # Offense count: 2
 # Cop supports --auto-correct.
 # Configuration parameters: ExactNameMatch, AllowPredicates, AllowDSLWriters, IgnoreClassMethods, AllowedMethods.

@@ -210,8 +210,8 @@ class FulFillmentOrderTest < Test::Unit::TestCase
         closed['status'] = 'incomplete'
         request_body = {
           fulfillment_order: {
-            message: "Test close message."
-          }
+            message: "Test close message.",
+          },
         }
         fake(
           'fulfillment_orders',
@@ -240,15 +240,15 @@ class FulFillmentOrderTest < Test::Unit::TestCase
         body = {
           original_fulfillment_order: fake_original_fulfillment_order,
           submitted_fulfillment_order: fake_submitted_fulfillment_order,
-          unsubmitted_fulfillment_order: fake_unsubmitted_fulfillment_order
+          unsubmitted_fulfillment_order: fake_unsubmitted_fulfillment_order,
         }
         request_body = {
           fulfillment_request: {
             fulfillment_order_line_items: [
               { id: 1, quantity: 1 }
             ],
-            message: 'Fulfill this FO, please.'
-          }
+            message: 'Fulfill this FO, please.',
+          },
         }
         fake(
           'fulfillment_orders',
@@ -260,7 +260,7 @@ class FulFillmentOrderTest < Test::Unit::TestCase
         fulfillment_order = ShopifyAPI::FulfillmentOrder.find(519788021)
         params = {
           fulfillment_order_line_items: [{ id: 1, quantity: 1 }],
-          message: "Fulfill this FO, please."
+          message: "Fulfill this FO, please.",
         }
         response_fulfillment_orders = fulfillment_order.request_fulfillment(params)
 
@@ -299,8 +299,8 @@ class FulFillmentOrderTest < Test::Unit::TestCase
             fulfillment_order_line_items: [
               { id: 1, quantity: 1 }
             ],
-            message: 'Fulfill this FO, please.'
-          }
+            message: 'Fulfill this FO, please.',
+          },
         }
         fake(
           'fulfillment_orders',
@@ -312,7 +312,7 @@ class FulFillmentOrderTest < Test::Unit::TestCase
         fulfillment_order = ShopifyAPI::FulfillmentOrder.find(519788021)
         params = {
           fulfillment_order_line_items: [{ id: 1, quantity: 1 }],
-          message: "Fulfill this FO, please."
+          message: "Fulfill this FO, please.",
         }
         response_fulfillment_orders = fulfillment_order.request_fulfillment(params)
 
@@ -339,11 +339,11 @@ class FulFillmentOrderTest < Test::Unit::TestCase
         message = "LGTM. Accept this FO fulfillment request"
         request_body = {
           'fulfillment_request' => {
-            'message' => message
-          }
+            'message' => message,
+          },
         }
         fake_response = {
-          fulfillment_order: fulfillment_order.attributes.merge(status: 'in_progress', request_status: 'accepted')
+          fulfillment_order: fulfillment_order.attributes.merge(status: 'in_progress', request_status: 'accepted'),
         }
         fake(
           'fulfillment_orders',
@@ -367,11 +367,11 @@ class FulFillmentOrderTest < Test::Unit::TestCase
         message = "LBTM. Reject this FO fulfillment request"
         request_body = {
           'fulfillment_request' => {
-            'message' => message
-          }
+            'message' => message,
+          },
         }
         fake_response = {
-          fulfillment_order: fulfillment_order.attributes.merge(status: 'open', request_status: 'rejected')
+          fulfillment_order: fulfillment_order.attributes.merge(status: 'open', request_status: 'rejected'),
         }
         fake(
           'fulfillment_orders',
@@ -395,8 +395,8 @@ class FulFillmentOrderTest < Test::Unit::TestCase
         message = "Cancelling this please."
         request_body = {
           'cancellation_request' => {
-            'message' => message
-          }
+            'message' => message,
+          },
         }
         cancelling = ActiveSupport::JSON.decode(load_fixture('fulfillment_order'))
         cancelling['status'] = 'in_progress'
@@ -423,12 +423,12 @@ class FulFillmentOrderTest < Test::Unit::TestCase
         message = 'Already in-progress. Reject this FO cancellation request'
         request_body = {
           'cancellation_request' => {
-            'message' => message
-          }
+            'message' => message,
+          },
         }
         fake_response = {
           fulfillment_order: fulfillment_order.attributes.merge(status: 'cancelled',
-                                                                request_status: 'cancellation_accepted')
+                                                                request_status: 'cancellation_accepted'),
         }
         fake(
           'fulfillment_orders',
@@ -452,12 +452,12 @@ class FulFillmentOrderTest < Test::Unit::TestCase
         message = "Already in-progress. Reject this FO cancellation request"
         request_body = {
           'cancellation_request' => {
-            'message' => message
-          }
+            'message' => message,
+          },
         }
         fake_response = {
           fulfillment_order: fulfillment_order.attributes.merge(status: 'in_progress',
-                                                                request_status: 'cancellation_rejected')
+                                                                request_status: 'cancellation_rejected'),
         }
         fake(
           'fulfillment_orders',
