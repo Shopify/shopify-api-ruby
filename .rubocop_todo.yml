@@ -6,213 +6,12 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, IndentOneStep, IndentationWidth.
-# SupportedStyles: case, end
-Layout/CaseIndentation:
-  Exclude:
-    - 'lib/shopify_api/countable.rb'
-
-# Offense count: 9
-# Cop supports --auto-correct.
-Layout/ClosingParenthesisIndentation:
-  Exclude:
-    - 'lib/shopify_api/resources/product.rb'
-    - 'lib/shopify_api/resources/variant.rb'
-    - 'test/application_charge_test.rb'
-    - 'test/assigned_fulfillment_order_test.rb'
-    - 'test/collection_test.rb'
-    - 'test/recurring_application_charge_test.rb'
-
-# Offense count: 6
-# Cop supports --auto-correct.
-# Configuration parameters: AllowAdjacentOneLineDefs, NumberOfEmptyLines.
-Layout/EmptyLineBetweenDefs:
-  Exclude:
-    - 'lib/shopify_api/resources/comment.rb'
-    - 'lib/shopify_api/resources/fulfillment.rb'
-
-# Offense count: 4
-# Cop supports --auto-correct.
-Layout/EmptyLines:
-  Exclude:
-    - 'test/base_test.rb'
-    - 'test/customer_test.rb'
-    - 'test/meta_test.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: around, only_before
-Layout/EmptyLinesAroundAccessModifier:
-  Exclude:
-    - 'test/customer_saved_search_test.rb'
-    - 'test/gift_card_test.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: empty_lines, no_empty_lines
-Layout/EmptyLinesAroundBlockBody:
-  Exclude:
-    - 'test/api_version_test.rb'
-    - 'test/meta_test.rb'
-    - 'test/tax_service_test.rb'
-
-# Offense count: 24
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: empty_lines, empty_lines_except_namespace, empty_lines_special, no_empty_lines, beginning_only, ending_only
-Layout/EmptyLinesAroundClassBody:
-  Enabled: false
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: empty_lines, empty_lines_except_namespace, empty_lines_special, no_empty_lines
-Layout/EmptyLinesAroundModuleBody:
-  Exclude:
-    - 'lib/shopify_api/session.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: AllowForAlignment, AllowBeforeTrailingComments, ForceEqualSignAlignment.
-Layout/ExtraSpacing:
-  Exclude:
-    - 'lib/shopify_api/resources/product.rb'
-
-# Offense count: 6
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, IndentationWidth.
-# SupportedStyles: consistent, consistent_relative_to_receiver, special_for_inner_method_call, special_for_inner_method_call_in_parentheses
-Layout/FirstArgumentIndentation:
-  Exclude:
-    - 'test/application_charge_test.rb'
-    - 'test/assigned_fulfillment_order_test.rb'
-    - 'test/collection_test.rb'
-
-# Offense count: 12
-# Cop supports --auto-correct.
-# Configuration parameters: IndentationWidth, EnforcedStyle.
-# SupportedStyles: spaces, tabs
-Layout/IndentationStyle:
-  Exclude:
-    - 'test/fulfillment_service_test.rb'
-
-# Offense count: 4
-# Cop supports --auto-correct.
-# Configuration parameters: Width, IgnoredPatterns.
-Layout/IndentationWidth:
-  Exclude:
-    - 'test/fulfillment_service_test.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: symmetrical, new_line, same_line
-Layout/MultilineMethodCallBraceLayout:
-  Exclude:
-    - 'lib/shopify_api/resources/product.rb'
-    - 'lib/shopify_api/resources/variant.rb'
-    - 'test/fulfillment_order_test.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Layout/RescueEnsureAlignment:
-  Exclude:
-    - 'lib/shopify_api/message_enricher.rb'
-
-# Offense count: 7
-# Cop supports --auto-correct.
-Layout/SpaceAfterColon:
-  Exclude:
-    - 'test/order_test.rb'
-
-# Offense count: 6
-# Cop supports --auto-correct.
-Layout/SpaceAfterComma:
-  Exclude:
-    - 'lib/active_resource/json_errors.rb'
-    - 'lib/shopify_api/session.rb'
-    - 'test/base_test.rb'
-    - 'test/fulfillment_order_test.rb'
-    - 'test/session_test.rb'
-
-# Offense count: 6
-# Cop supports --auto-correct.
-# Configuration parameters: AllowForAlignment, EnforcedStyleForExponentOperator.
-# SupportedStylesForExponentOperator: space, no_space
-Layout/SpaceAroundOperators:
-  Exclude:
-    - 'lib/shopify_api/resources/product.rb'
-    - 'test/pagination_test.rb'
-    - 'test/test_helper.rb'
-
-# Offense count: 4
-# Cop supports --auto-correct.
-Layout/SpaceBeforeComma:
-  Exclude:
-    - 'test/carrier_service_test.rb'
-    - 'test/fulfillment_service_test.rb'
-
-# Offense count: 4
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, EnforcedStyleForEmptyBrackets.
-# SupportedStyles: space, no_space, compact
-# SupportedStylesForEmptyBrackets: space, no_space
-Layout/SpaceInsideArrayLiteralBrackets:
-  Exclude:
-    - 'test/resource_feedback_test.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: space, no_space
-Layout/SpaceInsideParens:
-  Exclude:
-    - 'lib/shopify_api/resources/recurring_application_charge.rb'
-
-# Offense count: 4
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: final_newline, final_blank_line
-Layout/TrailingEmptyLines:
-  Exclude:
-    - 'lib/shopify_api/meta.rb'
-    - 'lib/shopify_api/resources/announcement.rb'
-    - 'lib/shopify_api/resources/cart.rb'
-    - 'test/cart_test.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: AllowInHeredoc.
-Layout/TrailingWhitespace:
-  Exclude:
-    - 'test/user_test.rb'
-
-# Offense count: 1
-Naming/AccessorMethodName:
-  Exclude:
-    - 'test/detailed_log_subscriber_test.rb'
-
 # Offense count: 6
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: snake_case, camelCase
 Naming/VariableName:
   Exclude:
     - 'lib/shopify_api/resources/fulfillment.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, ProceduralMethods, FunctionalMethods, IgnoredMethods, AllowBracesOnProceduralOneLiners, BracesRequiredMethods.
-# SupportedStyles: line_count_based, semantic, braces_for_chaining, always_braces
-# ProceduralMethods: benchmark, bm, bmbm, create, each_with_object, measure, new, realtime, tap, with_object
-# FunctionalMethods: let, let!, subject, watch
-# IgnoredMethods: lambda, proc, it
-Style/BlockDelimiters:
-  Exclude:
-    - 'test/inventory_level_test.rb'
 
 # Offense count: 2
 # Cop supports --auto-correct.
@@ -236,35 +35,9 @@ Style/FrozenStringLiteralComment:
   Enabled: false
 
 # Offense count: 1
-# Configuration parameters: AllowIfModifier.
-Style/IfInsideElse:
-  Exclude:
-    - 'lib/shopify_api/graphql.rb'
-
-# Offense count: 1
 Style/MissingRespondToMissing:
   Exclude:
     - 'lib/shopify_api/resources/asset.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: short, verbose
-Style/PreferredHashMethods:
-  Exclude:
-    - 'test/test_helper.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/RedundantException:
-  Exclude:
-    - 'lib/shopify_api/session.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/RedundantParentheses:
-  Exclude:
-    - 'test/session_test.rb'
 
 # Offense count: 5
 # Cop supports --auto-correct.
@@ -285,33 +58,11 @@ Style/RedundantSelf:
 
 # Offense count: 1
 # Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, AllowInnerSlashes.
-# SupportedStyles: slashes, percent_r, mixed
-Style/RegexpLiteral:
-  Exclude:
-    - 'lib/shopify_api/resources/image.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/RescueModifier:
-  Exclude:
-    - 'lib/active_resource/json_errors.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
 # Configuration parameters: ConvertCodeThatCanStartToReturnNil, AllowedMethods.
 # AllowedMethods: present?, blank?, presence, try, try!
 Style/SafeNavigation:
   Exclude:
     - 'lib/shopify_api/resources/custom_collection.rb'
-
-# Offense count: 8
-# Cop supports --auto-correct.
-# Configuration parameters: AllowIfMethodIsEmpty.
-Style/SingleLineMethods:
-  Exclude:
-    - 'lib/shopify_api/resources/comment.rb'
-    - 'lib/shopify_api/resources/fulfillment.rb'
 
 # Offense count: 2
 # Cop supports --auto-correct.
@@ -321,17 +72,6 @@ Style/SpecialGlobalVars:
   Exclude:
     - 'lib/shopify_api.rb'
     - 'shopify_api.gemspec'
-
-# Offense count: 7
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleForMultiline.
-# SupportedStylesForMultiline: comma, consistent_comma, no_comma
-Style/TrailingCommaInArrayLiteral:
-  Exclude:
-    - 'shopify_api.gemspec'
-    - 'test/fulfillment_order_test.rb'
-    - 'test/fulfillment_test.rb'
-    - 'test/meta_test.rb'
 
 # Offense count: 2
 # Cop supports --auto-correct.

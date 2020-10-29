@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class CollectionListingTest < Test::Unit::TestCase
-
   def test_get_collection_listings
     fake("collection_listings", method: :get, status: 201, body: load_fixture('collection_listings'))
 

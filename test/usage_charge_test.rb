@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class UsageChargeTest < Test::Unit::TestCase
-
   def test_create_usage_charges
     fake("recurring_application_charges/654381177/usage_charges", method: :post, body: load_fixture('usage_charge'))
 
@@ -22,5 +21,4 @@ class UsageChargeTest < Test::Unit::TestCase
 
     assert_equal("1000 emails", usage_charge.description)
   end
-
 end

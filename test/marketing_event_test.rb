@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class MarketingEventTest < Test::Unit::TestCase
-
   def test_get_marketing_events
     fake("marketing_events", method: :get, body: load_fixture('marketing_events'))
     marketing_events = ShopifyAPI::MarketingEvent.all

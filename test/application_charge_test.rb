@@ -1,14 +1,13 @@
 require 'test_helper'
 
 class ApplicationChargeTest < Test::Unit::TestCase
-
   def test_application_charge_create
     fake("application_charges", method: :post, status: 201, body: load_fixture('application_charge'))
 
     charge = ShopifyAPI::ApplicationCharge.create(
-        name: "iPod Cleaning",
-        price: 5.00,
-        return_url: "http://google.com"
+      name: "iPod Cleaning",
+      price: 5.00,
+      return_url: "http://google.com"
     )
 
     assert_equal(
@@ -79,5 +78,4 @@ class ApplicationChargeTest < Test::Unit::TestCase
 
     assert(charge.last.activate)
   end
-
 end

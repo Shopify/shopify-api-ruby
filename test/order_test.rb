@@ -6,7 +6,10 @@ class OrderTest < Test::Unit::TestCase
 
   test "create should create order" do
     fake('orders', method: :post, status: 201, body: load_fixture('order'))
-    order = ShopifyAPI::Order.create(line_items: [{ quantity:1, variant_id:39072856 }], financial_status:"authorized")
+    order = ShopifyAPI::Order.create(
+      line_items: [{ quantity: 1, variant_id: 39072856 }],
+      financial_status: "authorized"
+    )
     assert_equal(39072856, order.line_items.first.variant_id)
   end
 
@@ -22,7 +25,8 @@ class OrderTest < Test::Unit::TestCase
     ]
     fake('orders', method: :post, status: 201, body: load_fixture('order_with_properties'))
     order = ShopifyAPI::Order.create(
-      line_items: [{ quantity:1, variant_id:39072856, properties:props }], financial_status:"authorized"
+      line_items: [{ quantity: 1, variant_id: 39072856, properties: props }],
+      financial_status: "authorized"
     )
     assert_equal(39072856, order.line_items.first.variant_id)
   end

@@ -4,8 +4,8 @@ module ShopifyAPI
       data = get(:count, options)
 
       count = case data
-        when Hash then data["count"]
-        else data
+      when Hash then data["count"]
+      else data
       end
 
       Integer(count)

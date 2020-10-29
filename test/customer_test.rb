@@ -48,7 +48,6 @@ class CustomerTest < Test::Unit::TestCase
     customer_invite = ActiveSupport::JSON.decode(customer_invite_fixture)
     fake('customers/207119551/send_invite', method: :post, body: customer_invite_fixture)
 
-
     customer_invite_response = @customer.send_invite(ShopifyAPI::CustomerInvite.new(customer_invite['customer_invite']))
 
     assert_equal(customer_invite, ActiveSupport::JSON.decode(WebMock.last_request.body))
