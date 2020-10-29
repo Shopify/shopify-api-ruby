@@ -37,8 +37,8 @@ module ShopifyAPI
     def move(new_location_id:)
       body = {
         fulfillment_order: {
-          new_location_id: new_location_id
-        }
+          new_location_id: new_location_id,
+        },
       }
       keyed_fulfillment_orders = keyed_fulfillment_orders_from_response(post(:move, {}, body.to_json))
       load_keyed_fulfillment_order(keyed_fulfillment_orders, 'original_fulfillment_order')
@@ -54,8 +54,8 @@ module ShopifyAPI
     def close(message: nil)
       body = {
         fulfillment_order: {
-          message: message
-        }
+          message: message,
+        },
       }
       load_attributes_from_response(post(:close, {}, body.to_json))
     end
@@ -64,8 +64,8 @@ module ShopifyAPI
       body = {
         fulfillment_request: {
           fulfillment_order_line_items: fulfillment_order_line_items,
-          message: message
-        }
+          message: message,
+        },
       }
       keyed_fulfillment_orders = keyed_fulfillment_orders_from_response(post(:fulfillment_request, {}, body.to_json))
       load_keyed_fulfillment_order(keyed_fulfillment_orders, 'original_fulfillment_order')
@@ -75,8 +75,8 @@ module ShopifyAPI
     def accept_fulfillment_request(message: nil)
       body = {
         fulfillment_request: {
-          message: message
-        }
+          message: message,
+        },
       }
       load_attributes_from_response(post('fulfillment_request/accept', {}, body.to_json))
     end
@@ -84,8 +84,8 @@ module ShopifyAPI
     def reject_fulfillment_request(message: nil)
       body = {
         fulfillment_request: {
-          message: message
-        }
+          message: message,
+        },
       }
       load_attributes_from_response(post('fulfillment_request/reject', {}, body.to_json))
     end
@@ -93,8 +93,8 @@ module ShopifyAPI
     def request_cancellation(message: nil)
       body = {
         cancellation_request: {
-          message: message
-        }
+          message: message,
+        },
       }
       load_attributes_from_response(post(:cancellation_request, {}, body.to_json))
     end
@@ -102,8 +102,8 @@ module ShopifyAPI
     def accept_cancellation_request(message: nil)
       body = {
         cancellation_request: {
-          message: message
-        }
+          message: message,
+        },
       }
       load_attributes_from_response(post('cancellation_request/accept', {}, body.to_json))
     end
@@ -111,8 +111,8 @@ module ShopifyAPI
     def reject_cancellation_request(message: nil)
       body = {
         cancellation_request: {
-          message: message
-        }
+          message: message,
+        },
       }
       load_attributes_from_response(post('cancellation_request/reject', {}, body.to_json))
     end

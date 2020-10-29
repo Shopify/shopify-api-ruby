@@ -60,7 +60,7 @@ class MarketingEventTest < Test::Unit::TestCase
       favorites_count: nil,
       comments_count: nil,
       ad_spend: nil,
-      is_cumulative: true
+      is_cumulative: true,
     }
     marketing_event.add_engagements(engagement)
     assert("2017-04-20", engagement[:occurred_on])
