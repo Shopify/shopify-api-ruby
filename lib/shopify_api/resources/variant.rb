@@ -31,9 +31,10 @@ module ShopifyAPI
     private
 
     def raise_deprecated_inventory_call(parameter)
-      raise(ShopifyAPI::ValidationException,
+      raise(
+        ShopifyAPI::ValidationException,
         "'#{parameter}' is deprecated - see https://help.shopify.com/en/api/guides/inventory-migration-guide",
-        )
+      )
     end
 
     def allow_inventory_params?

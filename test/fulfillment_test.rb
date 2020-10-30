@@ -77,14 +77,14 @@ class FulFillmentTest < Test::Unit::TestCase
           tracking_info: {
             number: "XSDFHYR23475",
             url: "https://tracking.example.com/XSDFHYR23475",
-            company: "TFTC - the fulfillment/tracking company"
+            company: "TFTC - the fulfillment/tracking company",
           },
           line_items_by_fulfillment_order: [
             {
               fulfillment_order_id: 3,
-              fulfillment_order_line_items: [{ id: 2, quantity: 1 }]
-            }
-          ]
+              fulfillment_order_line_items: [{ id: 2, quantity: 1 }],
+            },
+          ],
         }
         request_body = { fulfillment: create_fulfillment_attributes }
         response_body = { fulfillment: create_fulfillment_attributes.merge(id: 346743624) }
@@ -109,14 +109,14 @@ class FulFillmentTest < Test::Unit::TestCase
           tracking_info: {
             number: "XSDFHYR23475",
             url: "https://tracking.example.com/XSDFHYR23475",
-            company: "TFTC - the fulfillment/tracking company"
+            company: "TFTC - the fulfillment/tracking company",
           },
           line_items_by_fulfillment_order: [
             {
               fulfillment_order_id: 3,
-              fulfillment_order_line_items: [{ id: 2, quantity: 1 }]
-            }
-          ]
+              fulfillment_order_line_items: [{ id: 2, quantity: 1 }],
+            },
+          ],
         }
         request_body = { fulfillment: create_fulfillment_attributes }
         response_body = { fulfillment: create_fulfillment_attributes.merge(id: 346743624) }
@@ -142,14 +142,14 @@ class FulFillmentTest < Test::Unit::TestCase
           tracking_info: {
             number: "XSDFHYR23475",
             url: "https://tracking.example.com/XSDFHYR23475",
-            company: "TFTC - the fulfillment/tracking company"
+            company: "TFTC - the fulfillment/tracking company",
           },
           line_items_by_fulfillment_order: [
             {
               fulfillment_order_id: 3,
-              fulfillment_order_line_items: [{ id: 2, quantity: 1 }]
-            }
-          ]
+              fulfillment_order_line_items: [{ id: 2, quantity: 1 }],
+            },
+          ],
         }
         request_body = { fulfillment: create_fulfillment_attributes }
         response_body = { fulfillment: create_fulfillment_attributes.merge(id: 346743624) }
@@ -176,8 +176,8 @@ class FulFillmentTest < Test::Unit::TestCase
           tracking_info: {
             number: "XSDFHYR23475",
             url: "https://tracking.example.com/XSDFHYR23475",
-            company: "TFTC - the fulfillment/tracking company"
-          }
+            company: "TFTC - the fulfillment/tracking company",
+          },
         }
         request_body = { fulfillment: create_fulfillment_attributes }
         response_body = { fulfillment: create_fulfillment_attributes.merge(id: 346743624) }
@@ -214,8 +214,8 @@ class FulFillmentTest < Test::Unit::TestCase
         request_body = {
           fulfillment: {
             tracking_info: tracking_info,
-            notify_customer: true
-          }
+            notify_customer: true,
+          },
         }
         url_prefix = url_prefix_for_activated_session_for('2020-01')
         fake(

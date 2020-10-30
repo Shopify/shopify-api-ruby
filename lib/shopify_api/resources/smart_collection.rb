@@ -11,6 +11,5 @@ module ShopifyAPI
     def order(options = {})
       load_attributes_from_response(put(:order, options, only_id))
     end
-
   end
 end

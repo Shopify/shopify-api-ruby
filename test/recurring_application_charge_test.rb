@@ -2,7 +2,6 @@
 require 'test_helper'
 
 class RecurringApplicationChargeTest < Test::Unit::TestCase
-
   def test_recurring_application_charges_create
     fake(
       "recurring_application_charges", method: :post, status: 201, body: load_fixture('recurring_application_charge')
@@ -18,7 +17,7 @@ class RecurringApplicationChargeTest < Test::Unit::TestCase
       'http://apple.myshopify.com/admin/charges/654381177/confirm_recurring_application_charge?' \
         'signature=BAhpBHkQASc%3D--419fc7424f8c290ac2b21b9004ed223e35b52164',
       charge.confirmation_url
-      )
+    )
   end
 
   def test_get_recurring_application_charges

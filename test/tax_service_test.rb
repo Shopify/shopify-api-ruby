@@ -8,6 +8,5 @@ class TaxServiceTest < Test::Unit::TestCase
       '{"tax_service":{"name":"My Tax Service","url":"https://mytaxservice.com"}}',
       WebMock.last_request.body
     )
-
   end
 end

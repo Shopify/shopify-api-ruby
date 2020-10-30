@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 class ResourceFeedbackTest < Test::Unit::TestCase
   def test_get_resource_feedback
-    body = { resource_feedback: [ { resource_type: 'Shop' } ] }.to_json
+    body = { resource_feedback: [{ resource_type: 'Shop' }] }.to_json
     fake('resource_feedback', method: :get, body: body)
     resource_feedback = ShopifyAPI::ResourceFeedback.find(:all)
     assert_equal('Shop', resource_feedback.first.resource_type)
@@ -15,7 +15,7 @@ class ResourceFeedbackTest < Test::Unit::TestCase
   end
 
   def test_get_resource_feedback_with_product_id
-    body = { resource_feedback: [ { resource_type: 'Product' } ] }.to_json
+    body = { resource_feedback: [{ resource_type: 'Product' }] }.to_json
     fake('products/42/resource_feedback', method: :get, body: body)
     resource_feedback = ShopifyAPI::ResourceFeedback.find(:all, params: { product_id: 42 })
     assert_equal('Product', resource_feedback.first.resource_type)

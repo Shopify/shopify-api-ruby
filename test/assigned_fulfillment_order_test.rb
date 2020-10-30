@@ -45,7 +45,7 @@ class AssignedFulFillmentOrderTest < Test::Unit::TestCase
           extension: false
 
         assigned_fulfillment_orders = ShopifyAPI::AssignedFulfillmentOrder.all(
-            params: { assigned_status: 'cancellation_requested' }
+          params: { assigned_status: 'cancellation_requested' }
         )
 
         assert_equal 2, assigned_fulfillment_orders.count
@@ -64,7 +64,7 @@ class AssignedFulFillmentOrderTest < Test::Unit::TestCase
           body: @fulfillment_order_fixture, extension: false
 
         assigned_fulfillment_orders = ShopifyAPI::AssignedFulfillmentOrder.all(
-            params: { location_ids: [assigned_location_id] }
+          params: { location_ids: [assigned_location_id] }
         )
 
         assert_equal 2, assigned_fulfillment_orders.count

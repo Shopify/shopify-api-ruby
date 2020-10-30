@@ -3,7 +3,6 @@ require 'openssl'
 require 'rack'
 
 module ShopifyAPI
-
   class ValidationException < StandardError
   end
 
@@ -16,9 +15,8 @@ module ShopifyAPI
     alias_method :url, :domain
 
     class << self
-
       def setup(params)
-        params.each { |k,value| public_send("#{k}=", value) }
+        params.each { |k, value| public_send("#{k}=", value) }
       end
 
       def temp(domain:, token:, api_version: ShopifyAPI::Base.api_version, &block)
@@ -81,7 +79,7 @@ module ShopifyAPI
 
       def encoded_params_for_signature(params)
         params = params.except(:signature, :hmac, :action, :controller)
-        params.map { |k,v| "#{URI.escape(k.to_s, '&=%')}=#{URI.escape(v.to_s, '&%')}" }.sort.join('&')
+        params.map { |k, v| "#{URI.escape(k.to_s, '&=%')}=#{URI.escape(v.to_s, '&%')}" }.sort.join('&')
       end
 
       def extract_current_session
@@ -122,7 +120,7 @@ module ShopifyAPI
         end
         token
       else
-        raise RuntimeError, response.msg
+        raise response.msg
       end
     end
 

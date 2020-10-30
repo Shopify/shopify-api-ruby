@@ -16,6 +16,7 @@ class GiftCardTest < Test::Unit::TestCase
   end
 
   private
+
   def load_gift_card
     fake('gift_cards/1023670', body: load_fixture('gift_card'))
     @gift_card = ShopifyAPI::GiftCard.find(1023670)

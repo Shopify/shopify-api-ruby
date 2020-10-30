@@ -2,7 +2,6 @@
 require 'test_helper'
 
 class RefundTest < Test::Unit::TestCase
-
   test '#create should create a refund' do
     fake("orders/450789469/refunds", method: :post, status: 201, body: load_fixture('refund'))
     refund = ShopifyAPI::Refund.create(

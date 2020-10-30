@@ -20,10 +20,10 @@ class InventoryLevelTest < Test::Unit::TestCase
     inventory_levels = ShopifyAPI::InventoryLevel.find(:all, params: params)
 
     assert(
-      inventory_levels.all? { |item|
+      inventory_levels.all? do |item|
         params[:location_ids].include?(item.location_id) &&
         params[:inventory_item_ids].include?(item.inventory_item_id)
-      },
+      end,
       message: 'Response contained inventory_items or locations not requested.'
     )
   end

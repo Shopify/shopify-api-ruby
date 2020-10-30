@@ -4,7 +4,12 @@ require 'active_resource/base'
 module ActiveResource
   class Errors < ActiveModel::Errors
     def from_json(json, save_cache = false)
-      data = ActiveSupport::JSON.decode(json)['errors'] || {} rescue {}
+      data =
+        begin
+          ActiveSupport::JSON.decode(json)['errors'] || {}
+        rescue
+          {}
+        end
       case data
       when String
         from_string(data, save_cache)
@@ -16,7 +21,7 @@ module ActiveResource
     def from_hash(messages, save_cache = false)
       clear unless save_cache
 
-      messages.each do |key,errors|
+      messages.each do |key, errors|
         errors.each do |error|
           add(key, error)
         end

@@ -14,7 +14,7 @@ module ShopifyAPI
     # compute the price range
     def price_range
       prices = variants.collect(&:price).collect(&:to_f)
-      format =  "%0.2f"
+      format = "%0.2f"
       if prices.min != prices.max
         "#{format % prices.min} - #{format % prices.max}"
       else
@@ -46,9 +46,10 @@ module ShopifyAPI
     private
 
     def raise_deprecated_inventory_call(parameter)
-      raise(ShopifyAPI::ValidationException,
+      raise(
+        ShopifyAPI::ValidationException,
         "'#{parameter}' is deprecated - see https://help.shopify.com/en/api/guides/inventory-migration-guide",
-        )
+      )
     end
 
     def allow_inventory_params?
