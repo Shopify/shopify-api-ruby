@@ -53,13 +53,11 @@ module ShopifyAPI
 
           if matches
             api_version = ShopifyAPI::ApiVersion.new(handle: matches[1])
+          elsif raise_on_invalid_schema
+            raise InvalidSchema,
+              "Invalid schema file name `#{schema_file}`. Does not match format of: `<version>.json`."
           else
-            if raise_on_invalid_schema
-              raise InvalidSchema,
-                "Invalid schema file name `#{schema_file}`. Does not match format of: `<version>.json`."
-            else
-              next
-            end
+            next
           end
 
           schema = graphql_client.load_schema(schema_file.to_s)

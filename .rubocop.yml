@@ -21,3 +21,8 @@ Lint/UnderscorePrefixedVariableName:
   Exclude:
     # This is an internal attribute and we want to make sure it's called _headers
     - 'lib/shopify_api/resources/base.rb'
+
+Naming/AccessorMethodName:
+  Exclude:
+    # This comes from activesupport, so we can't rename it
+    - 'test/detailed_log_subscriber_test.rb'

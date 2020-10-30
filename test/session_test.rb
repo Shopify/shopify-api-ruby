@@ -2,7 +2,6 @@ require 'test_helper'
 require 'timecop'
 
 class SessionTest < Test::Unit::TestCase
-
   def setup
     super
     ShopifyAPI::Session.secret = 'secret'
@@ -232,7 +231,7 @@ class SessionTest < Test::Unit::TestCase
       token: 'any-token',
       api_version: any_api_version
     )
-    scope = ["write_products","write_customers"]
+    scope = ["write_products", "write_customers"]
     permission_url = session.create_permission_url(scope, "http://my_redirect_uri.com")
     assert_equal(
       "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&" \
@@ -332,7 +331,7 @@ class SessionTest < Test::Unit::TestCase
     params = { code: 'any-code', timestamp: Time.now }
     assert(session.request_token(params.merge(hmac: generate_signature(params))))
 
-    assert_equal(({ "foo" => "example" }), session.extra)
+    assert_equal({ "foo" => "example" }, session.extra)
   end
 
   test "expires_in is automatically converted in expires_at" do
@@ -350,7 +349,7 @@ class SessionTest < Test::Unit::TestCase
       assert(session.request_token(params.merge(hmac: generate_signature(params))))
 
       expires_at = Time.now.utc + 86393
-      assert_equal(({ "expires_at" => expires_at.to_i }), session.extra)
+      assert_equal({ "expires_at" => expires_at.to_i }, session.extra)
       assert(session.expires_at.is_a?(Time))
       assert_equal(expires_at.to_i, session.expires_at.to_i)
       assert_equal(86393, session.expires_in)

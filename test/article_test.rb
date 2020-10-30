@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class ArticleTest < Test::Unit::TestCase
-
   def test_create_article
     fake("blogs/1008414260/articles", method: :post, body: load_fixture('article'))
     article = ShopifyAPI::Article.new(blog_id: 1008414260)
@@ -69,5 +68,4 @@ class ArticleTest < Test::Unit::TestCase
     tags = ShopifyAPI::Article.tags(popular: 1, limit: 1)
     assert_equal(3, tags.length)
   end
-
 end

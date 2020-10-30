@@ -108,7 +108,6 @@ class ApiVersionTest < Test::Unit::TestCase
       }
     )
     silence_warnings do
-
       refute_equal(
         ShopifyAPI::ApiVersion.new(handle: '2019-01'),
         ShopifyAPI::ApiVersion.latest_stable_version

@@ -16,7 +16,7 @@ class PaginationTest < Test::Unit::TestCase
   end
 
   test "navigates using next and previous link headers with no original params" do
-    link_header ="#{@previous_link_header}, #{@next_link_header}"
+    link_header = "#{@previous_link_header}, #{@next_link_header}"
 
     fake('orders', method: :get, status: 200, api_version: @version, body: load_fixture('orders'), link: link_header)
     orders = ShopifyAPI::Order.all
@@ -229,7 +229,7 @@ class PaginationTest < Test::Unit::TestCase
     @next_link_header = "<https://this-is-my-test-shop.myshopify.com/admin/api/unstable/" \
       "orders.json?page_info=#{@next_page_info}>; rel=\"next\""
 
-    link_header ="#{@previous_link_header}, #{@next_link_header}"
+    link_header = "#{@previous_link_header}, #{@next_link_header}"
 
     fake('orders', method: :get, status: 200, api_version: version, body: load_fixture('orders'), link: link_header)
     orders = ShopifyAPI::Order.all
@@ -286,5 +286,4 @@ class PaginationTest < Test::Unit::TestCase
     next_page = orders.fetch_next_page
     assert_equal(450789469, next_page.first.id)
   end
-
 end

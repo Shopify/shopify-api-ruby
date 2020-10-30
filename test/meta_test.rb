@@ -39,11 +39,9 @@ class ApiVersionTest < Test::Unit::TestCase
         "latest_supported": false,
         "display_name": "unstable",
         "supported": false,
-      }
+      },
     ].to_json
 
-
     assert_equal versions, ShopifyAPI::Meta.admin_versions.to_json
-
   end
 end

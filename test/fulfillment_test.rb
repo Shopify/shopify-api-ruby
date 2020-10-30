@@ -82,7 +82,7 @@ class FulFillmentTest < Test::Unit::TestCase
             {
               fulfillment_order_id: 3,
               fulfillment_order_line_items: [{ id: 2, quantity: 1 }],
-            }
+            },
           ],
         }
         request_body = { fulfillment: create_fulfillment_attributes }
@@ -114,7 +114,7 @@ class FulFillmentTest < Test::Unit::TestCase
             {
               fulfillment_order_id: 3,
               fulfillment_order_line_items: [{ id: 2, quantity: 1 }],
-            }
+            },
           ],
         }
         request_body = { fulfillment: create_fulfillment_attributes }
@@ -147,7 +147,7 @@ class FulFillmentTest < Test::Unit::TestCase
             {
               fulfillment_order_id: 3,
               fulfillment_order_line_items: [{ id: 2, quantity: 1 }],
-            }
+            },
           ],
         }
         request_body = { fulfillment: create_fulfillment_attributes }

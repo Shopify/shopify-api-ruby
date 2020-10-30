@@ -67,7 +67,8 @@ class FulFillmentOrderTest < Test::Unit::TestCase
 
     context "#all" do
       should "be able to list fulfillment orders for an order" do
-        fake('orders',
+        fake(
+          'orders',
           url: "#{@url_prefix}/orders/450789469/fulfillment_orders.json",
           method: :get,
           body: load_fixture('fulfillment_orders')
@@ -125,7 +126,7 @@ class FulFillmentOrderTest < Test::Unit::TestCase
 
         location = location_for_move.location
         assert(location.is_a?(ShopifyAPI::Location))
-        assert_equal(1059367776,location.id)
+        assert_equal(1059367776, location.id)
       end
     end
 
@@ -245,7 +246,7 @@ class FulFillmentOrderTest < Test::Unit::TestCase
         request_body = {
           fulfillment_request: {
             fulfillment_order_line_items: [
-              { id: 1, quantity: 1 }
+              { id: 1, quantity: 1 },
             ],
             message: 'Fulfill this FO, please.',
           },
@@ -297,7 +298,7 @@ class FulFillmentOrderTest < Test::Unit::TestCase
         request_body = {
           fulfillment_request: {
             fulfillment_order_line_items: [
-              { id: 1, quantity: 1 }
+              { id: 1, quantity: 1 },
             ],
             message: 'Fulfill this FO, please.',
           },

@@ -1,6 +1,5 @@
 module ShopifyAPI
   class AssignedFulfillmentOrder < Base
-
     def initialize(attributes = {}, persisted = false)
       ShopifyAPI::Base.version_validation!(FulfillmentOrder::MINIMUM_VERSION)
       super(attributes, persisted)

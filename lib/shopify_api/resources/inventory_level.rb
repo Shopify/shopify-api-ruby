@@ -2,7 +2,6 @@
 
 module ShopifyAPI
   class InventoryLevel < Base
-
     # The default path structure in ActiveResource for delete would result in:
     # /admin/api/<version>/inventory_levels/#{ inventory_level.id }.json?#{ params }, but since
     # InventoryLevels are a second class resource made up of a Where and a What

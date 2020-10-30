@@ -93,14 +93,14 @@ module Test
       end
 
       def fake(endpoint, options = {})
-        request_body = options.has_key?(:request_body) ? options.delete(:request_body) : nil
-        body   = options.has_key?(:body) ? options.delete(:body) : load_fixture(endpoint)
+        request_body = options.key?(:request_body) ? options.delete(:request_body) : nil
+        body = options.key?(:body) ? options.delete(:body) : load_fixture(endpoint)
         format = options.delete(:format) || :json
         method = options.delete(:method) || :get
         api_version = options.delete(:api_version) || ShopifyAPI::ApiVersion.find_version('2019-01')
-        extension = ".#{options.delete(:extension)||'json'}" unless options[:extension]==false
+        extension = ".#{options.delete(:extension) || 'json'}" unless options[:extension] == false
         status = options.delete(:status) || 200
-        url = if options.has_key?(:url)
+        url = if options.key?(:url)
           options[:url]
         else
           "https://this-is-my-test-shop.myshopify.com#{api_version.construct_api_path("#{endpoint}#{extension}")}"
