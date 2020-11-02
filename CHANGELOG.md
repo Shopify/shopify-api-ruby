@@ -2,6 +2,8 @@
 
 * Freeze all string literals. This should have no impact unless your application is modifying ('monkeypatching') the internals of the library in an unusual way.
 
+* Release new Endpoint `fulfillment_order.open` and `fulfillment_order.reschedule` in 2021-01 REST API version [#797](https://github.com/Shopify/shopify_api/pull/797)
+
 ## Version 9.2.0
 
 * Removes the `shopify` binary which will be used by the Shopify CLI

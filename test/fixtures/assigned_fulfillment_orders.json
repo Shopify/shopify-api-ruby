@@ -13,6 +13,7 @@
       "assigned_location_id": 905684977,
       "request_status": "cancellation_accepted",
       "delivery_category": null,
+      "fulfill_at": null,
       "fulfillment_order_line_items": [
          {
             "id": 519788021,
@@ -51,6 +52,7 @@
       "assigned_location_id": 905684977,
       "request_status": "cancellation_accepted",
       "delivery_category": null,
+      "fulfill_at": null,
       "fulfillment_order_line_items": [
          {
             "id": 519788021,

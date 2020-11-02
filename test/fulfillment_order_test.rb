@@ -227,6 +227,57 @@ class FulFillmentOrderTest < Test::Unit::TestCase
       end
     end
 
+    context "#open" do
+      should "be able to open fulfillment order" do
+        fulfillment_order = ShopifyAPI::FulfillmentOrder.find(519788021)
+        fulfillment_order.status = 'scheduled'
+
+        opened = ActiveSupport::JSON.decode(load_fixture('fulfillment_order'))
+        opened['status'] = 'open'
+        body = {
+          fulfillment_order: opened,
+        }
+
+        fake(
+          'fulfillment_orders',
+          url: "#{@url_prefix}/fulfillment_orders/519788021/open.json",
+          method: :post,
+          body: ActiveSupport::JSON.encode(body)
+        )
+        assert(fulfillment_order.open)
+        assert_equal('open', fulfillment_order.status)
+      end
+    end
+
+    context "#reschedule" do
+      should "be able to rescheduled fulfillment order" do
+        fulfillment_order = ShopifyAPI::FulfillmentOrder.find(519788021)
+        fulfillment_order.status = 'scheduled'
+        new_fulfill_at = "2021-11-29"
+
+        rescheduled = ActiveSupport::JSON.decode(load_fixture('fulfillment_order'))
+        rescheduled['status'] = 'scheduled'
+        rescheduled['fulfill_at'] = new_fulfill_at
+        body = {
+          fulfillment_order: rescheduled,
+        }
+
+        request_body = { fulfillment_order: { new_fulfill_at: new_fulfill_at } }
+
+        fake(
+          'fulfillment_orders',
+          url: "#{@url_prefix}/fulfillment_orders/519788021/reschedule.json",
+          method: :post,
+          request_body: ActiveSupport::JSON.encode(request_body),
+          body: ActiveSupport::JSON.encode(body)
+        )
+
+        assert(fulfillment_order.reschedule(new_fulfill_at: new_fulfill_at))
+        assert_equal('scheduled', fulfillment_order.status)
+        assert_equal(new_fulfill_at, fulfillment_order.fulfill_at)
+      end
+    end
+
     context "#request_fulfillment" do
       should "make a fulfillment request for a fulfillment order including unsubmitted" do
         fake_original_fulfillment_order = ActiveSupport::JSON.decode(load_fixture('fulfillment_order'))
