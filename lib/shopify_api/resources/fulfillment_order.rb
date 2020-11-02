@@ -52,6 +52,19 @@ module ShopifyAPI
       keyed_fulfillment_orders
     end
 
+    def open
+      load_attributes_from_response(post(:open, {}, only_id))
+    end
+
+    def reschedule(new_fulfill_at:)
+      body = {
+        fulfillment_order: {
+          new_fulfill_at: new_fulfill_at,
+        },
+      }
+      load_attributes_from_response(post(:reschedule, {}, body.to_json))
+    end
+
     def close(message: nil)
       body = {
         fulfillment_order: {
