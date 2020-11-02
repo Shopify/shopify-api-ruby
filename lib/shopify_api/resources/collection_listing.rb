@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module ShopifyAPI
   class CollectionListing < Base
     self.primary_key = :collection_id

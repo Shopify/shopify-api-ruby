@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module ShopifyAPI
   class AccessToken < Base
     def self.delegate(access_scope, expires_in = nil)

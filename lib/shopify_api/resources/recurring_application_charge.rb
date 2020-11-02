@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module ShopifyAPI
   class RecurringApplicationCharge < Base
     undef_method :test

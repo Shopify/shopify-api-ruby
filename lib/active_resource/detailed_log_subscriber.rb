@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module ActiveResource
   class DetailedLogSubscriber < ActiveSupport::LogSubscriber
     VERSION_EOL_WARNING_HEADER = 'x-shopify-api-version-warning'
