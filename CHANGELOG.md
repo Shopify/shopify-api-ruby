@@ -1,5 +1,7 @@
 ## Unreleased
 
+* Release new Endpoint `FulfillmentOrder.release_hold(:order_id)` in 2021-04 REST API version [#800](https://github.com/Shopify/shopify_api/pull/800)
+
 * Freeze all string literals. This should have no impact unless your application is modifying ('monkeypatching') the internals of the library in an unusual way.
 
 * Release new Endpoint `fulfillment_order.open` and `fulfillment_order.reschedule` in 2021-01 REST API version [#797](https://github.com/Shopify/shopify_api/pull/797)

@@ -22,6 +22,13 @@ module ShopifyAPI
       end
     end
 
+    def self.release_hold(order_id:)
+      ShopifyAPI::Base.version_validation!('unstable')
+
+      body = { order_id: order_id }
+      post(:release_hold, {}, body.to_json)
+    end
+
     def fulfillments(options = {})
       fulfillment_hashes = get(:fulfillments, options)
       fulfillment_hashes.map { |fulfillment_hash| Fulfillment.new(fulfillment_hash) }

@@ -526,5 +526,35 @@ class FulFillmentOrderTest < Test::Unit::TestCase
         assert_equal('cancellation_rejected', fulfillment_order.request_status)
       end
     end
+
+    context "#release_hold" do
+      should "require order_id" do
+        assert_raises(ArgumentError) do
+          ShopifyAPI::FulfillmentOrder.release_hold
+        end
+      end
+
+      should "throw exception if called for an unsupported version of the API" do
+        assert_raises(NotImplementedError) do
+          ShopifyAPI::FulfillmentOrder.release_hold(order_id: 450789469)
+        end
+      end
+
+      should "be able to release fulfillment hold on an order" do
+        url_prefix = url_prefix_for_activated_session_for('unstable')
+
+        fake(
+          'fulfillment_orders',
+          url: "#{url_prefix}/fulfillment_orders/release_hold.json",
+          method: :post,
+          request_body: ActiveSupport::JSON.encode({ :order_id => 450789469 }),
+          body: ActiveSupport::JSON.encode({})
+        )
+
+        response = ShopifyAPI::FulfillmentOrder.release_hold(order_id: 450789469)
+        assert_equal Net::HTTPOK, response.code_type
+        assert_equal "{}", response.body
+      end
+    end
   end
 end
