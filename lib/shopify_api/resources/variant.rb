@@ -9,7 +9,7 @@ module ShopifyAPI
     def initialize(*)
       super
       unless allow_inventory_params?
-        attributes.except!('inventory_quantity_adjustment', 'inventory_quantity', 'old_inventory_quantity')
+        attributes.except!('inventory_quantity_adjustment', 'old_inventory_quantity')
       end
     end
 
