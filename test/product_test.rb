@@ -73,12 +73,12 @@ class ProductTest < Test::Unit::TestCase
     assert(variant.as_json.include?('inventory_quantity'))
   end
 
-  def test_deprecated_variant_inventory_fields_are_removed_in_2020_01
+  def test_read_only_variant_inventory_quantity_is_present_2020_01
     ShopifyAPI::Base.api_version = '2020-01'
     refresh_product(api_version: ShopifyAPI::Base.api_version)
 
     variant = @product.variants.first
-    refute(variant.as_json.include?('inventory_quantity'))
+    assert(variant.as_json.include?('inventory_quantity'))
   end
 
   def test_deprecated_inventory_fields_are_removed_in_2020_01
