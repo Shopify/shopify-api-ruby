@@ -70,7 +70,7 @@ class ProductTest < Test::Unit::TestCase
     refresh_product(api_version: ShopifyAPI::Base.api_version)
 
     variant = @product.variants.first
-    assert(10, variant.inventory_quantity)
+    assert_equal(10, variant.inventory_quantity)
   end
 
   def test_deprecated_inventory_fields_are_removed_in_2020_01
