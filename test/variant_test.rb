@@ -35,10 +35,11 @@ class VariantTest < Test::Unit::TestCase
     assert(@variant.destroy)
   end
 
-  def test_read_only_inventory_quantity_is_present_in_2020_01
+  def test_read_only_inventory_quantity
     ShopifyAPI::Base.api_version = '2020-01'
     refresh_variant(api_version: ShopifyAPI::Base.api_version)
-    assert(@variant.as_json.include?('inventory_quantity'))
+    assert(@variant.inventory_quantity, 10)
+    refute(@variant.as_json.include?('inventory_quantity'))
   end
 
   def test_setting_variant_inventory_quantity_adjustment_fails_in_the_unstable_api
