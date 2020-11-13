@@ -8,7 +8,7 @@ module ShopifyAPI
 
     def initialize(*)
       super
-      attributes.except!('inventory_quantity_adjustment', 'old_inventory_quantity')
+      attributes.except!('old_inventory_quantity')
     end
 
     def inventory_quantity_adjustment=(new_value)
@@ -27,7 +27,7 @@ module ShopifyAPI
     end
 
     def save
-      attributes.except!('inventory_quantity', 'old_inventory_quantity')
+      attributes.except!('inventory_quantity')
       super
     end
 
