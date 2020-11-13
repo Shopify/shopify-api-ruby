@@ -26,10 +26,9 @@ module ShopifyAPI
       super
     end
 
-    def serializable_hash(options = {})
-      super(options).tap do |resource|
-        (resource['variant'] || resource).except!('inventory_quantity', 'old_inventory_quantity')
-      end
+    def save
+      attributes.except!('inventory_quantity', 'old_inventory_quantity')
+      super
     end
 
     private

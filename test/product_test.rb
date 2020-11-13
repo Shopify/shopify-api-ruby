@@ -65,12 +65,12 @@ class ProductTest < Test::Unit::TestCase
     assert_equal('100.00 - 199.00', @product.price_range)
   end
 
-  def test_read_only_variant_inventory_fields_not_present_in_2020_01
+  def test_read_only_variant_inventory_fields_not_removed_in_2020_01
     ShopifyAPI::Base.api_version = '2020-01'
     refresh_product(api_version: ShopifyAPI::Base.api_version)
 
     variant = @product.variants.first
-    refute(variant.as_json.include?('inventory_quantity'))
+    assert(10, variant.inventory_quantity)
   end
 
   def test_deprecated_inventory_fields_are_removed_in_2020_01
