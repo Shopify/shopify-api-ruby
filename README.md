@@ -1,3 +1,4 @@
+CI TEST
 Shopify API
 ===========
 [![Version][gem]][gem_url] [![Build Status](https://travis-ci.org/Shopify/shopify_api.svg?branch=master)](https://travis-ci.org/Shopify/shopify_api)
