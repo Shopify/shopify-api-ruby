@@ -26,6 +26,7 @@ jobs:
       #   run: gem install activeresource -v ${{ matrix.ar_version }}
       - name: Install dependencies
         run: |
+          export BUNDLE_GEMFILE="${GITHUB_WORKSPACE}/${{ matrix.gemfile }}
           gem install bundler
           bundle install
       - name: Double checking....
