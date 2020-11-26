@@ -6,7 +6,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Ruby ${{ matrix.version }}
+    name: Ruby ${{ matrix.version }} ActiveResource ${{ matrix.gemfile }}
     strategy:
       matrix:
         version: [2.5, 2.6, 2.7]
@@ -23,5 +23,7 @@ jobs:
           # bundler-cache: true
       - name: Install dependencies
         run: bundle install
+      - name: Double checking....
+        run: gem list activeresource
       - name: Run Tests
         run: bundle exec rake test
