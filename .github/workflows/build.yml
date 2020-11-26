@@ -5,30 +5,24 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     name: Ruby ${{ matrix.version }}, ${{ matrix.gemfile }}
     strategy:
       matrix:
         version: [2.4, 2.5, 2.6, 2.7]
         gemfile: [Gemfile_ar41, Gemfile_ar50, Gemfile_ar51]
-        # ar_version: [4.1.0, 5.0.0, 5.1.0]
 
     steps:
       - uses: actions/checkout@v2
-      # - name: Set gemfile 
-      #   run: export BUNDLE_GEMFILE=$PWD/${{ matrix.gemfile}}
       - name: Set up Ruby ${{ matrix.version }}
         uses: actions/setup-ruby@v1
         with: 
           ruby-version: ${{ matrix.version }}
           # bundler-cache: true
-      # - name: AR gem
-      #   run: gem install activeresource -v ${{ matrix.ar_version }}
       - name: Install dependencies
         run: |
           export BUNDLE_GEMFILE=${GITHUB_WORKSPACE}/${{ matrix.gemfile }}
           gem install bundler
-          gem install concurrent-ruby
           bundle install --jobs=3 --retry=3
       - name: Double checking....
         run: gem list activeresource
