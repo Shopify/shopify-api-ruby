@@ -14,14 +14,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - name: Set gemfile 
+        run: export BUNDLE_GEMFILE=$PWD/${{ matrix.gemfile}}
       - name: Set up Ruby ${{ matrix.version }}
         uses: ruby/setup-ruby@v1
         with: 
           ruby-version: ${{ matrix.version }}
           bundler-cache: true
-      - name: Set gemfile 
-        run: export BUNDLE_GEMFILE=$PWD/${{ matrix.gemfile}}
-      - name: Install dependencies
-        run: bundle install
       - name: Run Tests
         run: bundle exec rake test
