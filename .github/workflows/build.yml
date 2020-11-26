@@ -18,7 +18,7 @@ jobs:
       # - name: Set gemfile 
       #   run: export BUNDLE_GEMFILE=$PWD/${{ matrix.gemfile}}
       - name: Set up Ruby ${{ matrix.version }}
-        uses: actions/setup-ruby@v1
+        uses: ruby/setup-ruby@v1
         with: 
           ruby-version: ${{ matrix.version }}
           # bundler-cache: true
