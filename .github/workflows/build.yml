@@ -20,6 +20,6 @@ jobs:
         uses: ruby/setup-ruby@v1
         with: 
           ruby-version: ${{ matrix.version }}
-          bundler-cache: true
+          # bundler-cache: true
       - name: Run Tests
         run: bundle exec rake test
