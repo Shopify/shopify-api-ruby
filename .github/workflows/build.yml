@@ -18,7 +18,7 @@ jobs:
       # - name: Set gemfile 
       #   run: export BUNDLE_GEMFILE=$PWD/${{ matrix.gemfile}}
       - name: Set up Ruby ${{ matrix.version }}
-        uses: ruby/setup-ruby@v1
+        uses: actions/setup-ruby@v1
         with: 
           ruby-version: ${{ matrix.version }}
           # bundler-cache: true
@@ -28,6 +28,7 @@ jobs:
         run: |
           export BUNDLE_GEMFILE=${GITHUB_WORKSPACE}/${{ matrix.gemfile }}
           gem install bundler
+          gem install concurrent-ruby
           bundle install --jobs=3 --retry=3
       - name: Double checking....
         run: gem list activeresource
