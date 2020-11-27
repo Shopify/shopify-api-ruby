@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set up Ruby ${{ matrix.version }}
-        uses: actions/setup-ruby@v1
+        uses: ruby/setup-ruby@v1
         with: 
           ruby-version: ${{ matrix.version }}
           # bundler-cache: true
@@ -27,7 +27,7 @@ jobs:
           gem install bundler
           bundle install --jobs=3 --retry=3
           gem install jekyll
-          bundle update rake
+          bundle lock
       - name: Double checking....
         run: gem list activeresource
       - name: Run Tests
