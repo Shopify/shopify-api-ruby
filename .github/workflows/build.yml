@@ -27,8 +27,9 @@ jobs:
           gem install bundler
           bundle install --jobs=3 --retry=3
           gem install jekyll
-          bundle lock
       - name: Double checking....
         run: gem list activeresource
       - name: Run Tests
-        run: bundle exec rake test
+        run: |
+          bundle
+          bundle exec rake test
