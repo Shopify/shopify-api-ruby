@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set up Ruby ${{ matrix.version }}
-        uses: ruby/setup-ruby@v1
+        uses: actions/setup-ruby@v1
         with: 
           ruby-version: ${{ matrix.version }}
           # bundler-cache: true
@@ -23,9 +23,11 @@ jobs:
         run: |
           export BUNDLE_GEMFILE=${GITHUB_WORKSPACE}/${{ matrix.gemfile }}
           rm -f ${GITHUB_WORKSPACE}/Gemfile.lock
+          sudo apt-get install ruby-dev
           gem install bundler
           bundle install --jobs=3 --retry=3
           gem install jekyll
+          bundle update rake
       - name: Double checking....
         run: gem list activeresource
       - name: Run Tests
