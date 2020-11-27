@@ -19,10 +19,6 @@ jobs:
         with: 
           ruby-version: ${{ matrix.version }}
           # bundler-cache: true
-      - name: Gem?
-        run: |
-          gem --version
-          gem update --system
       - name: Install dependencies
         run: |
           export BUNDLE_GEMFILE=${GITHUB_WORKSPACE}/${{ matrix.gemfile }}
