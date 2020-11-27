@@ -25,7 +25,7 @@ jobs:
           rm -f ${GITHUB_WORKSPACE}/Gemfile.lock
           gem install bundler
           gem install jekyll
-          bundle
       - name: Run Tests
         run: |
+          bundle
           bundle exec rake test
