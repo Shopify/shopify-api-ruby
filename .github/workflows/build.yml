@@ -23,9 +23,9 @@ jobs:
         run: |
           export BUNDLE_GEMFILE=${GITHUB_WORKSPACE}/${{ matrix.gemfile }}
           rm -f ${GITHUB_WORKSPACE}/Gemfile.lock
+          gem update --system
           gem install bundler
           gem install jekyll
-          gem update --system 
       - name: Run Tests
         run: |
           bundle
