@@ -5,25 +5,27 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     name: Ruby ${{ matrix.version }}, ${{ matrix.gemfile }}
     strategy:
       matrix:
-        version: [2.4, 2.5, 2.6, 2.7]
+        version: [2.5, 2.6, 2.7]
         gemfile: [Gemfile_ar41, Gemfile_ar50, Gemfile_ar51]
 
     steps:
       - uses: actions/checkout@v2
       - name: Set up Ruby ${{ matrix.version }}
-        uses: actions/setup-ruby@v1
+        uses: ruby/setup-ruby@v1
         with: 
           ruby-version: ${{ matrix.version }}
           # bundler-cache: true
       - name: Install dependencies
         run: |
           export BUNDLE_GEMFILE=${GITHUB_WORKSPACE}/${{ matrix.gemfile }}
+          rm -f ${GITHUB_WORKSPACE}/Gemfile.lock
           gem install bundler
           bundle install --jobs=3 --retry=3
+          gem install jekyll
       - name: Double checking....
         run: gem list activeresource
       - name: Run Tests
