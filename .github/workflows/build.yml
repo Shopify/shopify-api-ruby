@@ -19,14 +19,16 @@ jobs:
         with: 
           ruby-version: ${{ matrix.version }}
           # bundler-cache: true
+      - name: Gem?
+        run: |
+          gem --version
+          gem update --system
       - name: Install dependencies
         run: |
           export BUNDLE_GEMFILE=${GITHUB_WORKSPACE}/${{ matrix.gemfile }}
           rm -f ${GITHUB_WORKSPACE}/Gemfile.lock
           gem install bundler
           gem install jekyll
-          gem --version
-          gem update --system
           bundle
       - name: Run Tests
         run: |
