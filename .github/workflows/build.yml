@@ -24,8 +24,7 @@ jobs:
       - name: Install dependencies
         run: |
           export BUNDLE_GEMFILE=${GITHUB_WORKSPACE}/${{ matrix.gemfile }}
-          rm -f ${GITHUB_WORKSPACE}/Gemfile.lock
+          bundle --with docs
       - name: Run Tests
         run: |
-          bundle --with docs
           bundle exec rake test
