@@ -24,6 +24,7 @@ jobs:
       - name: Set up gemfile
         run: |
           export BUNDLE_GEMFILE=${GITHUB_WORKSPACE}/${{ matrix.gemfile }}
+          rm -f ${GITHUB_WORKSPACE}/Gemfile.lock
       - name: Run Tests
         run: |
           bundle --with docs
