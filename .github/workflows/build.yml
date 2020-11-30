@@ -21,7 +21,6 @@ jobs:
         uses: ruby/setup-ruby@v1
         with: 
           ruby-version: ${{ matrix.version }}
-          bundler-cache: true
       - name: Install dependencies
         run: |
           export BUNDLE_GEMFILE=${GITHUB_WORKSPACE}/${{ matrix.gemfile }}
