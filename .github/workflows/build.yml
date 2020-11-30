@@ -21,10 +21,10 @@ jobs:
         uses: ruby/setup-ruby@v1
         with: 
           ruby-version: ${{ matrix.version }}
-      - name: Install dependencies
+      - name: Set up gemfile
         run: |
           export BUNDLE_GEMFILE=${GITHUB_WORKSPACE}/${{ matrix.gemfile }}
-          bundle --with docs
       - name: Run Tests
         run: |
+          bundle --with docs
           bundle exec rake test
