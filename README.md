@@ -1,6 +1,6 @@
 Shopify API
 ===========
-[![Version][gem]][gem_url] [![Build Status](https://travis-ci.org/Shopify/shopify_api.svg?branch=master)](https://travis-ci.org/Shopify/shopify_api)
+[![Version][gem]][gem_url] [![Build Status](https://github.com/Shopify/shopify_api/workflows/CI/badge.svg?branch=master)](https://github.com/Shopify/shopify_api/actions)
 
 [gem]: https://img.shields.io/gem/v/shopify_api.svg
 [gem_url]: https://rubygems.org/gems/shopify_api
