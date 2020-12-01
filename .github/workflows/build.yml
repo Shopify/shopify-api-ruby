@@ -27,5 +27,6 @@ jobs:
           rm -f ${GITHUB_WORKSPACE}/Gemfile.lock
       - name: Run Tests
         run: |
-          bundle --with docs
+          bundle config set with docs
+          bundle
           bundle exec rake test
