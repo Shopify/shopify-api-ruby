@@ -1,6 +1,7 @@
 ## Unreleased
 
 * Freeze all string literals. This should have no impact unless your application is modifying ('monkeypatching') the internals of the library in an unusual way.
+* Fix the HTTP errors are processed when the response body is an array [#812](https://github.com/Shopify/shopify_api/pull/812)
 
 ## Version 9.2.0
 

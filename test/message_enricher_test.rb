@@ -8,6 +8,12 @@ class MessageEnricherTest < Test::Unit::TestCase
     assert_equal('InitialMessage (My Error)', response.message)
   end
 
+  def test_enriches_initial_message_when_body_is_an_array
+    response = enriched_response(422, 'InitialMessage', [{}, {}])
+
+    assert_equal('InitialMessage', response.message)
+  end
+
   def test_enriches_initial_message_when_body_contains_errors_array
     response = enriched_response(422, 'InitialMessage', { errors: ['My Error1', 'My Error2'] })
 
@@ -22,6 +28,12 @@ class MessageEnricherTest < Test::Unit::TestCase
 
   def test_returns_initial_message_when_code_is_200
     response = enriched_response(200, 'InitialMessage', { result: 'Success' })
+
+    assert_equal('InitialMessage', response.message)
+  end
+
+  def test_returns_initial_message_when_code_is_200_and_body_is_an_array
+    response = enriched_response(200, 'InitialMessage', [{ id: 1 }, { id: 2 }])
 
     assert_equal('InitialMessage', response.message)
   end

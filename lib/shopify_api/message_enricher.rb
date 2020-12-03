@@ -14,7 +14,7 @@ module ShopifyAPI
             elsif parsed_body['errors']
               Array(parsed_body['errors']).join('; ')
             end
-          rescue JSON::ParserError
+          rescue JSON::ParserError, TypeError
             nil
           end
 
