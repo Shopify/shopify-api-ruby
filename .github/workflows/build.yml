@@ -28,6 +28,6 @@ jobs:
       - name: Run Tests
         run: |
           bundle config set --with docs
-          bundle config set ignore_messages
+          bundle config set ignore_messages true
           bundle
           bundle exec rake test
