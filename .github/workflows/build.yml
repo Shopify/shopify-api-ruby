@@ -27,6 +27,7 @@ jobs:
           rm -f ${GITHUB_WORKSPACE}/Gemfile.lock
       - name: Run Tests
         run: |
-          bundle config set with docs
+          bundle config set --with docs
+          bundle config set ignore_messages true
           bundle
           bundle exec rake test
