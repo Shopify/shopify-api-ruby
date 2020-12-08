@@ -11,5 +11,6 @@ Releasing ShopifyAPI
 7. Push out the tags
   $ git push --tags
 8. Publish the gem using Shipit
-9. Consider if the dependency in Shopify/shopify or Shopify/shopify_app should be updated to use the latest release. It's used only by the tests so is a low risk change.
+9. Consider if the dependency in Shopify/shopify. It's used only by the tests so is a low risk change.
+Also consider Shopify/shopify_app whose gemspec depends on this.
 We don't need to do this for every release, but we should try to keep it relatively up to date.
