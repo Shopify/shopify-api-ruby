@@ -35,30 +35,10 @@ class VariantTest < Test::Unit::TestCase
     assert(@variant.destroy)
   end
 
-  def test_deprecated_inventory_fields_are_included_in_2019_07
-    ShopifyAPI::Base.api_version = '2019-07'
-    refresh_variant(api_version: ShopifyAPI::Base.api_version)
-    assert(@variant.as_json.include?('inventory_quantity'))
-  end
-
-  def test_deprecated_inventory_fields_are_removed_in_2020_01
+  def test_read_only_inventory_quantity
     ShopifyAPI::Base.api_version = '2020-01'
     refresh_variant(api_version: ShopifyAPI::Base.api_version)
-    refute(@variant.as_json.include?('inventory_quantity'))
-  end
-
-  def test_setting_variant_inventory_quantity_adjustment_passes_in_api_before_2019_10
-    ShopifyAPI::Base.api_version = '2019-07'
-    refresh_variant(api_version: ShopifyAPI::Base.api_version)
-    @variant.inventory_quantity_adjustment = 8
-  end
-
-  def test_setting_variant_inventory_quantity_adjustment_fails_in_2019_10_api
-    ShopifyAPI::Base.api_version = '2019-10'
-    refresh_variant(api_version: ShopifyAPI::Base.api_version)
-    assert_raises(ShopifyAPI::ValidationException) do
-      @variant.inventory_quantity_adjustment = 8
-    end
+    assert_equal(10, @variant.inventory_quantity)
   end
 
   def test_setting_variant_inventory_quantity_adjustment_fails_in_the_unstable_api
@@ -68,34 +48,10 @@ class VariantTest < Test::Unit::TestCase
     end
   end
 
-  def test_setting_variant_inventory_quantity_passes_in_api_before_2019_10
-    ShopifyAPI::Base.api_version = '2019-07'
-    @variant.inventory_quantity = 8
-  end
-
-  def test_setting_variant_inventory_quantity_fails_in_2019_10_api
-    ShopifyAPI::Base.api_version = '2019-10'
-    assert_raises(ShopifyAPI::ValidationException) do
-      @variant.inventory_quantity = 8
-    end
-  end
-
   def test_setting_variant_inventory_quantity_fails_in_the_unstable_api
     ShopifyAPI::Base.api_version = :unstable
     assert_raises(ShopifyAPI::ValidationException) do
       @variant.inventory_quantity = 8
-    end
-  end
-
-  def test_setting_variant_old_inventory_quantity_passes_in_api_before_2019_10
-    ShopifyAPI::Base.api_version = '2019-07'
-    @variant.old_inventory_quantity = 8
-  end
-
-  def test_setting_variant_old_inventory_quantity_fails_in_2019_10_api
-    ShopifyAPI::Base.api_version = '2019-10'
-    assert_raises(ShopifyAPI::ValidationException) do
-      @variant.old_inventory_quantity = 8
     end
   end
 
