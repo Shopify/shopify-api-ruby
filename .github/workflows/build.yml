@@ -1,30 +1,38 @@
 name: CI
 
-on: 
-  push:
+on:
+  - push
 
 jobs:
   build:
+    name: Ruby ${{ matrix.version }} ${{ matrix.gemfile }}
     runs-on: ubuntu-latest
-    name: Ruby ${{ matrix.version }}, ${{ matrix.gemfile }}
+    env:
+      BUNDLE_GEMFILE: ${{ matrix.gemfile }}
     strategy:
       matrix:
-        version: [2.4, 2.5, 2.6, 2.7]
-        gemfile: [Gemfile_ar41, Gemfile_ar50, Gemfile_ar51, Gemfile_ar_master]
+        version:
+          - 2.4
+          - 2.5
+          - 2.6
+          - 2.7
+        gemfile:
+          - Gemfile_ar41
+          - Gemfile_ar50
+          - Gemfile_ar51
+          - Gemfile_ar_master
         exclude:
           - version: 2.7
             gemfile: Gemfile_ar41
-
     steps:
       - uses: actions/checkout@v2
+      - name: Remove Gemfile.lock
+        run: |
+          rm -f ${GITHUB_WORKSPACE}/Gemfile.lock
       - name: Set up Ruby ${{ matrix.version }}
         uses: ruby/setup-ruby@v1
-        with: 
+        with:
           ruby-version: ${{ matrix.version }}
-      - name: Set up gemfile
-        run: |
-          export BUNDLE_GEMFILE=${GITHUB_WORKSPACE}/${{ matrix.gemfile }}
-          rm -f ${GITHUB_WORKSPACE}/Gemfile.lock
       - name: Run Tests
         run: |
           bundle config set --with docs
