@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 require 'openssl'
 require 'rack'
+require 'active_support/time'
 
 module ShopifyAPI
   class ValidationException < StandardError
