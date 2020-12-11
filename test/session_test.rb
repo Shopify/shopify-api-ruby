@@ -3,6 +3,8 @@ require 'test_helper'
 require 'timecop'
 
 class SessionTest < Test::Unit::TestCase
+  SECONDS_IN_A_DAY = 24 * 60 * 60
+
   def setup
     super
     ShopifyAPI::Session.secret = 'secret'
@@ -373,7 +375,7 @@ class SessionTest < Test::Unit::TestCase
   end
 
   test "raise error if timestamp is too old" do
-    params = { code: "any-code", timestamp: Time.now - 2.days }
+    params = { code: "any-code", timestamp: Time.now - 2 * SECONDS_IN_A_DAY }
     signature = generate_signature(params)
     params[:foo] = 'world'
     assert_raises(ShopifyAPI::ValidationException) do
