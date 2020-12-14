@@ -6,8 +6,6 @@
 
 * [#802](https://github.com/Shopify/shopify_api/pull/802) Made `inventory_quantity` a read-only field in Variant
 
-* [#817](https://github.com/Shopify/shopify_api/pull/817) Fix ActiveSupport dependency for Rails 6.1.0
-
 ## Version 9.2.0
 
 * Removes the `shopify` binary which will be used by the Shopify CLI
