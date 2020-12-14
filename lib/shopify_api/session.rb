@@ -7,6 +7,8 @@ module ShopifyAPI
   end
 
   class Session
+    SECONDS_IN_A_DAY = 24 * 60 * 60
+
     cattr_accessor :api_key, :secret, :myshopify_domain
     self.myshopify_domain = 'myshopify.com'
 
@@ -106,7 +108,8 @@ module ShopifyAPI
     def request_token(params)
       return token if token
 
-      unless self.class.validate_signature(params) && params[:timestamp].to_i > 24.hours.ago.utc.to_i
+      twenty_four_hours_ago = Time.now.utc.to_i - SECONDS_IN_A_DAY
+      unless self.class.validate_signature(params) && params[:timestamp].to_i > twenty_four_hours_ago
         raise ShopifyAPI::ValidationException, "Invalid Signature: Possible malicious login"
       end
 
