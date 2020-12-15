@@ -32,3 +32,8 @@ if ShopifyAPI::Base.respond_to?(:connection_class)
 else
   require 'active_resource/connection_ext'
 end
+
+if ENV["SHOPIFY_LOG"] == '1'
+  ActiveResource::Base.logger = Logger.new("shopify_api.log")
+  ActiveResource::DetailedLogSubscriber
+end
