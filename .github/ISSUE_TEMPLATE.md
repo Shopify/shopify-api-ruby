@@ -25,7 +25,7 @@ Tip: include an error message (in a `<details></details>` tag) if your issue is 
 1.
 
 ## Logs
-Enable logs with `export SHOPIFY_LOG=1` and paste them here
+Enable logs with `export SHOPIFY_LOG=1` and paste them here from "shopify_api.log"
 
 
 

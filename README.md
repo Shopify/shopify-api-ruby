@@ -634,6 +634,8 @@ Enable ActiveResource's logger with
 
 `export SHOPIFY_LOG=1`
 
+This will create "shopify_api.log" in the current project directory.
+
 # Additional Resources
 
 * [GraphQL API Reference](https://shopify.dev/docs/admin-api/graphql/reference)
