@@ -25,12 +25,12 @@ Tip: include an error message (in a `<details></details>` tag) if your issue is 
 1.
 
 ## Logs
-Enable logs with `export SHOPIFY_LOG=1` and paste them here from "shopify_api.log"
+If applicable, enable the logs as described in the README, and paste the relevant portion here.
 
 
 
 ## Specifications
 
-- `shopify_python_api` version:
-- `pyactiveresource` version:
-- Shopify API version used (e.g. `'2020-07'`):
+- `shopify_api` version:
+- `activeresource` version:
+- Shopify API version used (example: `2020-07`):
