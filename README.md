@@ -632,9 +632,9 @@ bundle exec rake docker
 
 Enable ActiveResource's logger with 
 
-`export SHOPIFY_LOG=1`
+`export SHOPIFY_LOG_PATH={your_log_path}`
 
-This will create "shopify_api.log" in the current project directory.
+This will create file `your_log_path` in the current project directory.
 
 # Additional Resources
 
