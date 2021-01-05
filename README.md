@@ -127,7 +127,7 @@ Public and Custom apps need an access token from each shop to access that shop's
 
    ```ruby
    # We need to instantiate the session object before using it
-   shopify_session = ShopifyAPI::Session.new(domain: "SHOP_NAME.myshopify.com", api_version: api_version, token: nil)
+   shopify_session = ShopifyAPI::Session.new(domain: "#{SHOP_NAME}.myshopify.com", api_version: api_version, token: nil)
    
 # Then, create a permission URL with the session
    permission_url = shopify_session.create_permission_url(scope, "https://my_redirect_uri.com", { state: "My Nonce" })
@@ -202,7 +202,7 @@ Once authorized, the shop redirects the owner to the return URL of your applicat
 Once you have a token, simply pass in the `token` and `extra` hash (optional) when creating the session object:
 
    ```ruby
-   shopify_session = ShopifyAPI::Session.new(domain: "SHOP_NAME.myshopify.com", token: token, api_version: api_version, extra: extra)
+   shopify_session = ShopifyAPI::Session.new(domain: "#{SHOP_NAME}.myshopify.com", token: token, api_version: api_version, extra: extra)
    ```
 
 The session must be activated before use:
@@ -266,7 +266,7 @@ Responses to REST requests are returned as ActiveResource instances:
    Alternatively, you can use #temp to initialize a Session and execute a command which also handles temporarily setting ActiveResource::Base.site:
 
    ```ruby
-   products = ShopifyAPI::Session.temp(domain: "SHOP_NAME.myshopify.com", token: token, api_version: api_version) do
+   products = ShopifyAPI::Session.temp(domain: "#{SHOP_NAME}.myshopify.com", token: token, api_version: api_version) do
      ShopifyAPI::Product.find(:all)
    end
    ```
@@ -274,7 +274,7 @@ Responses to REST requests are returned as ActiveResource instances:
 If you would like to run a small number of calls against a different API version you can use this block syntax:
 
    ```ruby
-   ShopifyAPI::Session.temp(domain: "SHOP_NAME.myshopify.com", token: token, api_version: '2019-04') do
+   ShopifyAPI::Session.temp(domain: "#{SHOP_NAME}.myshopify.com", token: token, api_version: '2019-04') do
      ShopifyAPI::Product.find(:all)  # find call against version `2019-04`
 
      ShopifyAPI::Session.with_version(:unstable) do
