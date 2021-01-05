@@ -33,7 +33,7 @@ else
   require 'active_resource/connection_ext'
 end
 
-if ENV["SHOPIFY_LOG"] == '1'
-  ActiveResource::Base.logger = Logger.new("shopify_api.log")
+if ENV["SHOPIFY_LOG_PATH"]
+  ActiveResource::Base.logger = Logger.new(ENV["SHOPIFY_LOG_PATH"])
   ActiveResource::DetailedLogSubscriber
 end
