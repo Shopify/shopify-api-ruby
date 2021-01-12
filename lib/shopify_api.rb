@@ -35,5 +35,5 @@ end
 
 if ENV["SHOPIFY_LOG_PATH"]
   ActiveResource::Base.logger = Logger.new(ENV["SHOPIFY_LOG_PATH"])
-  ActiveResource::DetailedLogSubscriber
+  ActiveResource::DetailedLogSubscriber.attach_to(:active_resource_detailed)
 end
