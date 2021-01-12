@@ -6,6 +6,9 @@
 
 * [#802](https://github.com/Shopify/shopify_api/pull/802) Made `inventory_quantity` a read-only field in Variant
 
+* [#821](https://github.com/Shopify/shopify_api/pull/821) Add logging based on environment variable, move log subscriber out of `detailed_log_subscriber`.
+  The `ActiveResource::DetailedLogSubscriber` no longer automatically attaches when the class is loaded. If you were previously relying on that behaviour, you'll now need to call `ActiveResource::DetailedLogSubscriber.attach_to(:active_resource_detailed)`. (If using the new `SHOPIFY_LOG_PATH` environment setting then this is handled for you).
+
 ## Version 9.2.0
 
 * Removes the `shopify` binary which will be used by the Shopify CLI
