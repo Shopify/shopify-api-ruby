@@ -634,7 +634,7 @@ Enable ActiveResource's logger with
 
 `export SHOPIFY_LOG_PATH={your_log_path}`
 
-This will create file `your_log_path` in the current project directory.
+This will log to a file at the given path, relative to the current project directory.
 
 # Additional Resources
 
