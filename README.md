@@ -13,34 +13,36 @@ The REST API is implemented as JSON over HTTP using all four verbs (GET/POST/PUT
 
 - [Shopify API](#shopify-api)
 - [Usage](#usage)
-  * [Requirements](#requirements)
-    + [Ruby version](#ruby-version)
-  * [Installation](#installation)
-  * [Getting Started](#getting-started)
-    + [1) Create an app](#1-create-an-app)
-    + [2A) Private Apps](#2a-private-apps)
-    + [2B) Public and Custom Apps](#2b-public-and-custom-apps)
-    + [3) Requesting access from a shop](#3-requesting-access-from-a-shop)
-    + [4) Trading your `code` for an access token.](#4-trading-your--code--for-an-access-token)
-    + [5) Activating the session](#5-activating-the-session)
-    + [6A) Making requests to the GraphQL API](#6a-making-requests-to-the-graphql-api)
-    + [6B) Making requests to the REST API](#6b-making-requests-to-the-rest-api)
-  * [Console](#console)
-  * [Thread safety](#thread-safety)
-  * [Bulk Operations](#bulk-operations)
-    + [Example](#example)
+  - [Requirements](#requirements)
+    - [Ruby version](#ruby-version)
+  - [Installation](#installation)
+  - [Getting Started](#getting-started)
+    - [1) Create an app](#1-create-an-app)
+    - [2A) Private Apps](#2a-private-apps)
+    - [2B) Public and Custom Apps](#2b-public-and-custom-apps)
+    - [3) Requesting access from a shop](#3-requesting-access-from-a-shop)
+    - [4) Trading your `code` for an access token.](#4-trading-your-code-for-an-access-token)
+    - [5) Activating the session](#5-activating-the-session)
+    - [6A) Making requests to the GraphQL API](#6a-making-requests-to-the-graphql-api)
+          - [Note: the GraphQL client has improved and changed in version 9.0. See the client documentation for full usage details and a [migration guide](docs/graphql.md#migration-guide).](#note-the-graphql-client-has-improved-and-changed-in-version-90-see-the-client-documentation-for-full-usage-details-and-a-migration-guide)
+    - [6B) Making requests to the REST API](#6b-making-requests-to-the-rest-api)
+  - [Console](#console)
+  - [Thread safety](#thread-safety)
+  - [Bulk Operations](#bulk-operations)
+    - [Example](#example)
       - [1) Start the bulk operation](#1-start-the-bulk-operation)
-      - [2) Poll the status of the bulk operation](#2-poll-the-status-of-the-bulk-operation)
-      - [3) Retrieve your data](#3-retrieve-your-data)
-  * [Pagination](#pagination)
+      - [Step 2) Poll the status of the bulk operation](#step-2-poll-the-status-of-the-bulk-operation)
+      - [Step 3) Retrieve your data](#step-3-retrieve-your-data)
+  - [Pagination](#pagination)
 - [Breaking Change Notices](#breaking-change-notices)
-  * [Breaking change notice for version 8.0.0](#breaking-change-notice-for-version-800)
-  * [Breaking change notice for version 7.0.0](#breaking-change-notice-for-version-700)
-    + [Changes to ShopifyAPI::Session](#changes-to-shopifyapi--session)
-    + [Changes to how to define resources](#changes-to-how-to-define-resources)
-    + [URL construction](#url-construction)
-    + [URLs that have not changed](#urls-that-have-not-changed)
+  - [Breaking change notice for version 8.0.0](#breaking-change-notice-for-version-800)
+  - [Breaking change notice for version 7.0.0](#breaking-change-notice-for-version-700)
+    - [Changes to ShopifyAPI::Session](#changes-to-shopifyapisession)
+    - [Changes to how to define resources](#changes-to-how-to-define-resources)
+    - [URL construction](#url-construction)
+    - [URLs that have not changed](#urls-that-have-not-changed)
 - [Using Development Version](#using-development-version)
+- [Logging](#logging)
 - [Additional Resources](#additional-resources)
 - [Copyright](#copyright)
 
@@ -625,6 +627,14 @@ or you can even use our automated rake task for docker:
 ```bash
 bundle exec rake docker
 ```
+
+# Logging 
+
+Enable ActiveResource's logger with 
+
+`export SHOPIFY_LOG_PATH={your_log_path}`
+
+This will log to a file at the given path, relative to the current project directory.
 
 # Additional Resources
 

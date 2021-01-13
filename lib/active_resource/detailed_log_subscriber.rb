@@ -49,5 +49,3 @@ module ActiveResource
     end
   end
 end
-
-ActiveResource::DetailedLogSubscriber.attach_to(:active_resource_detailed)
