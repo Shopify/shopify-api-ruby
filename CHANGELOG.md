@@ -1,5 +1,7 @@
 ## Unreleased
 
+* [#797](https://github.com/Shopify/shopify_api/pull/797) Release new Endpoint `fulfillment_order.open` and `fulfillment_order.reschedule`.
+
 * [#818](https://github.com/Shopify/shopify_api/pull/818) Avoid depending on ActiveSupport in Sesssion class.
 
 * Freeze all string literals. This should have no impact unless your application is modifying ('monkeypatching') the internals of the library in an unusual way.
