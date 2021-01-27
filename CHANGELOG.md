@@ -1,4 +1,4 @@
-## Unreleased
+## Version 9.3.0
 
 * [#797](https://github.com/Shopify/shopify_api/pull/797) Release new Endpoint `fulfillment_order.open` and `fulfillment_order.reschedule`.
 
@@ -11,7 +11,6 @@
 * [#821](https://github.com/Shopify/shopify_api/pull/821) Add logging based on environment variable, move log subscriber out of `detailed_log_subscriber`.
   The `ActiveResource::DetailedLogSubscriber` no longer automatically attaches when the class is loaded. If you were previously relying on that behaviour, you'll now need to call `ActiveResource::DetailedLogSubscriber.attach_to(:active_resource_detailed)`. (If using the new `SHOPIFY_LOG_PATH` environment setting then this is handled for you).
 
-## Version 9.3.0
 * Provide `ApiAccess` value object to encapsulate scope operations [#829](https://github.com/Shopify/shopify_api/pull/829)
 
 ## Version 9.2.0
