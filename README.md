@@ -7,8 +7,6 @@ Shopify API
 
 The Shopify API gem allows Ruby developers to access the admin section of Shopify stores programmatically.
 
-The best way to consume the Shopify API is through GraphQL, which enables high volume mutations, bulk operations, and access to all new features.
-
 The REST API is implemented as JSON over HTTP using all four verbs (GET/POST/PUT/DELETE). Each resource, like Order, Product, or Collection, has a distinct URL and is manipulated in isolation. In other words, we’ve tried to make the API follow the REST principles as much as possible.
 
 - [Shopify API](#shopify-api)
@@ -23,16 +21,9 @@ The REST API is implemented as JSON over HTTP using all four verbs (GET/POST/PUT
     - [3) Requesting access from a shop](#3-requesting-access-from-a-shop)
     - [4) Trading your `code` for an access token.](#4-trading-your-code-for-an-access-token)
     - [5) Activating the session](#5-activating-the-session)
-    - [6A) Making requests to the GraphQL API](#6a-making-requests-to-the-graphql-api)
-          - [Note: the GraphQL client has improved and changed in version 9.0. See the client documentation for full usage details and a [migration guide](docs/graphql.md#migration-guide).](#note-the-graphql-client-has-improved-and-changed-in-version-90-see-the-client-documentation-for-full-usage-details-and-a-migration-guide)
-    - [6B) Making requests to the REST API](#6b-making-requests-to-the-rest-api)
+    - [6) Making requests to the REST API](#6-making-requests-to-the-rest-api)
   - [Console](#console)
   - [Thread safety](#thread-safety)
-  - [Bulk Operations](#bulk-operations)
-    - [Example](#example)
-      - [1) Start the bulk operation](#1-start-the-bulk-operation)
-      - [Step 2) Poll the status of the bulk operation](#step-2-poll-the-status-of-the-bulk-operation)
-      - [Step 3) Retrieve your data](#step-3-retrieve-your-data)
   - [Pagination](#pagination)
 - [Breaking Change Notices](#breaking-change-notices)
   - [Breaking change notice for version 8.0.0](#breaking-change-notice-for-version-800)
@@ -213,37 +204,7 @@ The session must be activated before use:
    ShopifyAPI::Base.activate_session(shopify_session)
    ```
 
-### 6A) Making requests to the GraphQL API
-
-The GraphQL API is the recommended way to consume the Shopify API. It is more fully-featured than REST, more performant, and future-proof. Whenever possible, GraphQL should be used to consume the Shopify API.
-
-###### Note: the GraphQL client has improved and changed in version 9.0. See the [client documentation](docs/graphql.md) for full usage details and a [migration guide](docs/graphql.md#migration-guide).
-
-This library also supports Shopify's [GraphQL Admin API](https://shopify.dev/docs/admin-api/graphql/reference)
-via integration with the [graphql-client](https://github.com/github/graphql-client) gem.
-The authentication process (steps 1-5 under [Getting Started](#getting-started))
-is identical. Once your session is activated, simply access the GraphQL client
-and use `parse` and `query` as defined by
-[graphql-client](https://github.com/github/graphql-client#defining-queries).
-
-```ruby
-client = ShopifyAPI::GraphQL.client
-
-SHOP_NAME_QUERY = client.parse <<-'GRAPHQL'
-  {
-    shop {
-      name
-    }
-  }
-GRAPHQL
-
-result = client.query(SHOP_NAME_QUERY)
-result.data.shop.name
-```
-
-[GraphQL client documentation](docs/graphql.md)
-
-### 6B) Making requests to the REST API
+### 6) Making requests to the REST API
 
 Responses to REST requests are returned as ActiveResource instances:
 
@@ -330,138 +291,6 @@ gem install shopify_api_console
 ActiveResource is threadsafe as of version 4.1 (which works with Rails 4.x and above).
 
 If you were previously using Shopify's [activeresource fork](https://github.com/shopify/activeresource), then you should remove it and use ActiveResource 4.1.
-
-## Bulk Operations
-
-With the GraphQL Admin API, you can use bulk operations to asynchronously fetch data in bulk. The API is designed to reduce complexity and improve performance when dealing with large volumes of data. 
-
-Instead of manually paginating results and managing a client-side throttle, you can instead run a bulk query operation. Shopify’s infrastructure does the hard work of executing your query, and then provides you with a URL where you can download all of the data.
-
-Apps are limited to running a single bulk operation at a time per shop. When the operation is complete, the results are delivered in the form of a JSONL file that Shopify makes available at a URL.
-
-### Example
-
-The following mutation queries the products connection and returns each product's ID and title.
-
-#### 1) Start the bulk operation
-
-```ruby
-client = ShopifyAPI::GraphQL.client
-
-PRODUCTS_BULK_QUERY = client.parse <<-'GRAPHQL'
-    mutation {
-      bulkOperationRunQuery(
-       query: """
-        {
-          products {
-            edges {
-              node {
-                id
-                title
-              }
-            }
-          }
-        }
-        """
-      ) {
-        bulkOperation {
-          id
-          status
-        }
-        userErrors {
-          field
-          message
-        }
-      }
-    }
-GRAPHQL
-
-result = client.query(PRODUCTS_BULK_QUERY)
-```
-#### Step 2) Poll the status of the bulk operation
-
-While the operation is running, you need to poll to see its progress using the `currentBulkOperation` field. The `objectCount` field increments to indicate the operation's progress, and the `status` field returns whether the operation is completed.
-
-```ruby
-BULK_POLL_QUERY = client.parse <<-'GRAPHQL'
-    query {
-      currentBulkOperation {
-        id
-        status
-        errorCode
-        createdAt
-        completedAt
-        objectCount
-        fileSize
-        url
-        partialDataUrl
-      }
-    }
-GRAPHQL
-
-result = client.query(BULK_POLL_QUERY)
-```
-
-The JSON response of a completed query will look like this :
-
-```json
-{
-  "data": {
-    "currentBulkOperation": {
-      "id": "gid:\/\/shopify\/BulkOperation\/720918",
-      "status": "COMPLETED",
-      "errorCode": null,
-      "createdAt": "2019-08-29T17:16:35Z",
-      "completedAt": "2019-08-29T17:23:25Z",
-      "objectCount": "57",
-      "fileSize": "358",
-      "url": "https:\/\/storage.googleapis.com\/shopify\/dyfkl3g72empyyoenvmtidlm9o4g?<params>",
-      "partialDataUrl": null
-    }
-  },
-  ...
-}
-```
-
-#### Step 3) Retrieve your data
-
-Since bulk operations are specifically designed to fetch large datasets, we’ve chosen the [JSON Lines](http://jsonlines.org/) (JSONL) format for the response data so that clients have more flexibility in how they consume the data. JSONL is similar to JSON, but each line is a valid JSON object. The file can be parsed one line at a time by using file streaming functionality to avoid issues with memory consumption.
-
-A JSONL output file is available for download at the URL specified in the `url` field when the operation completes.
-
-Each line in the file is a node object returned in a connection. If a node has a nested connection, then each child node is extracted into a new object on the next line. Below is an example of a JSONL file.
-
-```json
-{"id":"gid://shopify/Product/1921569226808"}
-{"id":"gid://shopify/ProductVariant/19435458986040","title":"70","__parentId":"gid://shopify/Product/1921569226808"}
-{"id":"gid://shopify/Product/1921569259576"}
-{"id":"gid://shopify/ProductVariant/19435459018808","title":"34","__parentId":"gid://shopify/Product/1921569259576"}
-{"id":"gid://shopify/Product/1921569292344"}
-{"id":"gid://shopify/ProductVariant/19435459051576","title":"Default Title","__parentId":"gid://shopify/Product/1921569292344"}
-{"id":"gid://shopify/Product/1921569325112"}
-{"id":"gid://shopify/ProductVariant/19435459084344","title":"36","__parentId":"gid://shopify/Product/1921569325112"}
-{"id":"gid://shopify/Product/1921569357880"}
-{"id":"gid://shopify/ProductVariant/19435459117112","title":"47","__parentId":"gid://shopify/Product/1921569357880"}
-{"id":"gid://shopify/ProductVariant/19435458986123","title":"52","__parentId":"gid://shopify/Product/1921569226808"}
-```
-
-Here's a simple example in Ruby to demonstrate the proper way of loading and parsing a JSONL file:
-
-```ruby
-# Efficient: reads the file a single line at a time
-File.open(file) do |f|
-  f.each do |line|
-    JSON.parse(line)
-  end
-end
-
-# Inefficient: reads the entire file into memory
-jsonl = File.read(file)
-
-jsonl.each_line do |line|
-  JSON.parse(line)
-end
-```
 
 ## Pagination
 
@@ -638,7 +467,6 @@ This will log to a file at the given path, relative to the current project direc
 
 # Additional Resources
 
-* [GraphQL API Reference](https://shopify.dev/docs/admin-api/graphql/reference)
 * [REST API Reference](https://shopify.dev/docs/admin-api/rest/reference)
 * [Ask questions on the forums](https://community.shopify.com/c/Shopify-Community/ct-p/en?profile.language=en)
 
