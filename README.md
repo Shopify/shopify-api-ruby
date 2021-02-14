@@ -1,9 +1,9 @@
-Shopify API
+Shopify REST API
 ===========
-[![Version][gem]][gem_url] [![Build Status](https://github.com/Shopify/shopify_api/workflows/CI/badge.svg?branch=master)](https://github.com/Shopify/shopify_api/actions)
 
-[gem]: https://img.shields.io/gem/v/shopify_api.svg
-[gem_url]: https://rubygems.org/gems/shopify_api
+This is a fork of the [Shopify API gem](https://github.com/Shopify/shopify_api) that removes all graphql dependencies. Just requiring the GraphQL client uses over 11 MB of memory which is extra overhead that your Rails app does not need if it's just trying to use the REST API.
+
+==========
 
 The Shopify API gem allows Ruby developers to access the admin section of Shopify stores programmatically.
 
