@@ -126,10 +126,6 @@ class ApiVersionTest < Test::Unit::TestCase
     end
 
     assert_raises(ShopifyAPI::ApiVersion::ApiVersionNotSetError) do
-      ShopifyAPI::ApiVersion::NullVersion.construct_graphql_path
-    end
-
-    assert_raises(ShopifyAPI::ApiVersion::ApiVersionNotSetError) do
       ShopifyAPI::ApiVersion::NullVersion.stable?
     end
   end

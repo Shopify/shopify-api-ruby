@@ -144,10 +144,6 @@ module ShopifyAPI
       "#{API_PREFIX}#{handle}/#{path}"
     end
 
-    def construct_graphql_path
-      construct_api_path('graphql.json')
-    end
-
     def name
       warn(
         '[DEPRECATED] ShopifyAPI::ApiVersion#name is deprecated and will be removed in a future version. ' \
@@ -189,7 +185,6 @@ module ShopifyAPI
         end
         alias_method :stable?, :raise_not_set_error
         alias_method :construct_api_path, :raise_not_set_error
-        alias_method :construct_graphql_path, :raise_not_set_error
         alias_method :latest_supported?, :raise_not_set_error
         alias_method :supported?, :raise_not_set_error
         alias_method :verified?, :raise_not_set_error
