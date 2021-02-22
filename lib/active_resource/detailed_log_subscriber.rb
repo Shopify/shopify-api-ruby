@@ -20,7 +20,7 @@ module ActiveResource
       request_body = data.first
 
       info("Request:\n#{request_body}") if request_body
-      info("Headers: #{headers.inspect}")
+      info("Headers: #{headers.except("X-Shopify-Access-Token").inspect}")
       info("Response:\n#{event.payload[:response].body}")
     end
 
