@@ -13,7 +13,7 @@ module ShopifyAPI
     self.myshopify_domain = 'myshopify.com'
 
     attr_accessor :domain, :token, :name, :extra
-    attr_reader :api_version
+    attr_reader :api_version, :access_scopes
     alias_method :url, :domain
 
     class << self
@@ -92,10 +92,11 @@ module ShopifyAPI
       end
     end
 
-    def initialize(domain:, token:, api_version: ShopifyAPI::Base.api_version, extra: {})
+    def initialize(domain:, token:, access_scopes: nil, api_version: ShopifyAPI::Base.api_version, extra: {})
       self.domain = self.class.prepare_domain(domain)
       self.api_version = api_version
       self.token = token
+      self.access_scopes = access_scopes
       self.extra = extra
     end
 
@@ -179,6 +180,11 @@ module ShopifyAPI
     end
 
     private
+
+    def access_scopes=(access_scopes)
+      return unless access_scopes
+      @access_scopes = ShopifyAPI::ApiAccess.new(access_scopes)
+    end
 
     def parameterize(params)
       URI.escape(params.collect { |k, v| "#{k}=#{v}" }.join('&'))
