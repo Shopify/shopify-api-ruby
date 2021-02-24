@@ -54,6 +54,39 @@ class SessionTest < Test::Unit::TestCase
     assert(session.valid?)
   end
 
+  test "be valid with nil access_scopes" do
+    session = ShopifyAPI::Session.new(
+      domain: "testshop.myshopify.com",
+      token: "any-token",
+      api_version: any_api_version,
+      access_scopes: nil
+    )
+
+    assert(session.valid?)
+  end
+
+  test "be valid with string of access_scopes" do
+    session = ShopifyAPI::Session.new(
+      domain: "testshop.myshopify.com",
+      token: "any-token",
+      api_version: any_api_version,
+      access_scopes: "read_products, write_orders"
+    )
+
+    assert(session.valid?)
+  end
+
+  test "be valid with a collection of access_scopes" do
+    session = ShopifyAPI::Session.new(
+      domain: "testshop.myshopify.com",
+      token: "any-token",
+      api_version: any_api_version,
+      access_scopes: %w(read_products write_orders)
+    )
+
+    assert(session.valid?)
+  end
+
   test "not raise error without params" do
     assert_nothing_raised do
       ShopifyAPI::Session.new(domain: "testshop.myshopify.com", token: "any-token", api_version: any_api_version)
@@ -81,6 +114,36 @@ class SessionTest < Test::Unit::TestCase
   test "not raise error without params" do
     assert_nothing_raised do
       ShopifyAPI::Session.new(domain: "testshop.myshopify.com", token: "any-token", api_version: any_api_version)
+    end
+  end
+
+  test "provides default nil access_scopes attribute" do
+    session = ShopifyAPI::Session.new(
+      domain: "testshop.myshopify.com",
+      token: "any-token",
+      api_version: any_api_version
+    )
+    assert_nil session.access_scopes
+  end
+
+  test "provides specified nil access_scopes attribute" do
+    session = ShopifyAPI::Session.new(
+      domain: "testshop.myshopify.com",
+      token: "any-token",
+      access_scopes: "read_products",
+      api_version: any_api_version
+    )
+    assert_equal "read_products", session.access_scopes.to_s
+  end
+
+  test "session instantiation raises error if bad access scopes are provided" do
+    assert_raises NoMethodError do
+      ShopifyAPI::Session.new(
+        domain: "testshop.myshopify.com",
+        token: "any-token",
+        access_scopes: { bad_input: "bad_input" },
+        api_version: any_api_version
+      )
     end
   end
 
