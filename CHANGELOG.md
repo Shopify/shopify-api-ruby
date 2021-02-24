@@ -1,3 +1,8 @@
+## Version 9.4.0
+
+* [#843](https://github.com/Shopify/shopify_api/pull/843) Introduce a new `access_scopes` attribute on the Session class.
+  * Specifying this in the Session constructor is optional. By default, this attribute returns `nil`.
+
 ## Version 9.3.0
 
 * [#797](https://github.com/Shopify/shopify_api/pull/797) Release new Endpoint `fulfillment_order.open` and `fulfillment_order.reschedule`.
