@@ -14,7 +14,7 @@ class LogSubscriberTest < Test::Unit::TestCase
     @ua_header = "\"User-Agent\"=>\"ShopifyAPI/#{ShopifyAPI::VERSION} " \
       "ActiveResource/#{ActiveResource::VERSION::STRING} Ruby/#{RUBY_VERSION}\""
     @request_headers = "Headers: {\"Accept\"=>\"application/json\", " \
-      "#{@ua_header}, \"X-Shopify-Access-Token\"=>\"access_token\"}"
+      "#{@ua_header}, \"X-Shopify-Access-Token\"=>\"[FILTERED]\"}"
 
     ShopifyAPI::Base.clear_session
     fake(

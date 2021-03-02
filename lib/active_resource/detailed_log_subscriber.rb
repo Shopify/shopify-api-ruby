@@ -3,6 +3,9 @@ module ActiveResource
   class DetailedLogSubscriber < ActiveSupport::LogSubscriber
     VERSION_EOL_WARNING_HEADER = 'x-shopify-api-version-warning'
     VERSION_DEPRECATION_HEADER = 'x-shopify-api-deprecated-reason'
+    SHOPIFY_ACCESS_TOKEN = 'X-Shopify-Access-Token'
+    FILTERED = '[FILTERED]'
+
     def request(event)
       log_request_response_details(event)
       warn_on_deprecated_header_or_version_eol_header(event)
@@ -17,6 +20,7 @@ module ActiveResource
     def log_request_response_details(event)
       data = event.payload[:data]
       headers = data.extract_options!
+      headers[SHOPIFY_ACCESS_TOKEN] = FILTERED
       request_body = data.first
 
       info("Request:\n#{request_body}") if request_body
