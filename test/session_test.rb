@@ -338,6 +338,22 @@ class SessionTest < Test::Unit::TestCase
     )
   end
 
+  test "create_permission_url returns correct url with grant_options[]" do
+    ShopifyAPI::Session.setup(api_key: "My_test_key", secret: "My test secret")
+    session = ShopifyAPI::Session.new(
+      domain: 'http://localhost.myshopify.com',
+      token: 'any-token',
+      api_version: any_api_version
+    )
+    scope = []
+    permission_url = session.create_permission_url(scope, "http://my_redirect_uri.com", grant_options: "per-user")
+    assert_equal(
+      "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&" \
+        "scope=&redirect_uri=http://my_redirect_uri.com&grant_options[]=per-user",
+      permission_url
+    )
+  end
+
   test "raise exception if code invalid in request token" do
     ShopifyAPI::Session.setup(api_key: "My test key", secret: "My test secret")
     session = ShopifyAPI::Session.new(
