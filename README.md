@@ -149,7 +149,7 @@ Under the hood, the `create_permission_url` method is preparing the app to make 
    * ``scope`` – Required – The list of required scopes (explained here: https://shopify.dev/tutorials/authenticate-with-oauth#scopes)
    * ``redirect_uri`` – Required – The URL where you want to redirect the users after they authorize the client. The complete URL specified here must be identical to one of the Application Redirect URLs set in the app's section of the Partners dashboard.
    * ``state`` – Optional – A randomly selected value provided by your application, which is unique for each authorization request. During the OAuth callback phase, your application must check that this value matches the one you provided during authorization. [This mechanism is essential for the security of your application](https://tools.ietf.org/html/rfc6819#section-3.6).
-   * ``grant_options[]`` - Optional - Set this parameter to `per-user` to receive an access token that respects the user's permission level when making API requests (called online access). We strongly recommend using this parameter for embedded apps.
+   * ``grant_options`` - Optional - Set this parameter to `per-user` to receive an access token that respects the user's permission level when making API requests (called online access). We strongly recommend using this parameter for embedded apps.
 
 ### 4) Trading your `code` for an access token.
 

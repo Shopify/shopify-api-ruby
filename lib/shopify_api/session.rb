@@ -103,6 +103,7 @@ module ShopifyAPI
     def create_permission_url(scope, redirect_uri, options = {})
       params = { client_id: api_key, scope: ShopifyAPI::ApiAccess.new(scope).to_s, redirect_uri: redirect_uri }
       params[:state] = options[:state] if options[:state]
+      params["grant_options[]".to_sym] = options[:grant_options] if options[:grant_options]
       construct_oauth_url("authorize", params)
     end
 
