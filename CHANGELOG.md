@@ -1,3 +1,8 @@
+## Version 9.4.1
+
+* [#847](https://github.com/Shopify/shopify_api/pull/847) Update `create_permission_url` method to use grant_options
+* [#852](https://github.com/Shopify/shopify_api/pull/852) Bumping kramdown to fix a security vulnerability
+
 ## Version 9.4.0
 
 * [#843](https://github.com/Shopify/shopify_api/pull/843) Introduce a new `access_scopes` attribute on the Session class.
