@@ -176,6 +176,8 @@ module ShopifyAPI
 
     class NullVersion
       class << self
+        include Comparable
+
         def new(*_args)
           raise NoMethodError, "NullVersion is an abstract class and cannot be instantiated."
         end
@@ -200,8 +202,6 @@ module ShopifyAPI
         alias_method :verified, :raise_not_set_error
         alias_method :latest_supported, :raise_not_set_error
         alias_method :name, :raise_not_set_error
-        alias_method :<, :raise_not_set_error
-        alias_method :>, :raise_not_set_error
         alias_method :<=>, :raise_not_set_error
       end
     end
