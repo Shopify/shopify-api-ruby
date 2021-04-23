@@ -132,6 +132,18 @@ class ApiVersionTest < Test::Unit::TestCase
     assert_raises(ShopifyAPI::ApiVersion::ApiVersionNotSetError) do
       ShopifyAPI::ApiVersion::NullVersion.stable?
     end
+
+    assert_raises(ShopifyAPI::ApiVersion::ApiVersionNotSetError) do
+      ShopifyAPI::ApiVersion::NullVersion < ShopifyAPI::ApiVersion.find_version('2020-01')
+    end
+
+    assert_raises(ShopifyAPI::ApiVersion::ApiVersionNotSetError) do
+      ShopifyAPI::ApiVersion::NullVersion > ShopifyAPI::ApiVersion.find_version('2020-01')
+    end
+
+    assert_raises(ShopifyAPI::ApiVersion::ApiVersionNotSetError) do
+      ShopifyAPI::ApiVersion::NullVersion <=> ShopifyAPI::ApiVersion.find_version('2020-01')
+    end
   end
 
   test "NullVersion cannot be instantiated and raises NoMethodError if attempted" do

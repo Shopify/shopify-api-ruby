@@ -200,6 +200,9 @@ module ShopifyAPI
         alias_method :verified, :raise_not_set_error
         alias_method :latest_supported, :raise_not_set_error
         alias_method :name, :raise_not_set_error
+        alias_method :<, :raise_not_set_error
+        alias_method :>, :raise_not_set_error
+        alias_method :<=>, :raise_not_set_error
       end
     end
   end
