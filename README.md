@@ -263,6 +263,9 @@ Responses to REST requests are returned as ActiveResource instances:
    # Update a product
    product.handle = "burton-snowboard"
    product.save
+   
+   # Query the number of orders created within the last 6 days
+   ShopifyAPI::Order.where(created_at_min: Time.now - 6.days, created_at_max: Time.now).count
    ```
 
    Alternatively, you can use #temp to initialize a Session and execute a command which also handles temporarily setting ActiveResource::Base.site:
