@@ -53,7 +53,7 @@ module ShopifyAPI
     end
 
     def allow_inventory_params?
-      Base.api_version < ApiVersion.find_version('2019-10')
+      false
     end
   end
 end
