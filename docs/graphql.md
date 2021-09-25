@@ -44,14 +44,14 @@ This gem provides a `shopify_api:graphql:dump` Rake task to make it as easy as p
 
 #### Private apps
 ```bash
-$ rake shopify_api:graphql:dump SHOP_URL="https://API_KEY:PASSWORD@SHOP_NAME.myshopify.com" API_VERSION=2020-01
+$ rake shopify_api:graphql:dump SHOP_URL="https://API_KEY:PASSWORD@SHOP_NAME.myshopify.com" API_VERSION=2021-07
 ```
 #### Public apps
 ```bash
-$ rake shopify_api:graphql:dump SHOP_DOMAIN="SHOP_NAME.myshopify.com" ACCESS_TOKEN="SHOP_TOKEN" API_VERSION=2020-01
+$ rake shopify_api:graphql:dump SHOP_DOMAIN="SHOP_NAME.myshopify.com" ACCESS_TOKEN="SHOP_TOKEN" API_VERSION=2021-07
 ```
 
-If successful `db/shopify_graphql_schemas/2020-01.json` will be created.
+If successful `db/shopify_graphql_schemas/2021-07.json` will be created.
 
 You can either use private app authentication or an OAuth access token. Run `rake shopify_api:graphql:dump`
 to see full usage details.
