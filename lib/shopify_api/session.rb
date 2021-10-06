@@ -183,7 +183,7 @@ module ShopifyAPI
     end
 
     def parameterize(params)
-      URI.escape(params.collect { |k, v| "#{k}=#{v}" }.join('&'))
+      URI.encode_www_form(params)
     end
 
     def access_token_request(code)

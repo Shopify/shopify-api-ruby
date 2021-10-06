@@ -333,7 +333,7 @@ class SessionTest < Test::Unit::TestCase
     permission_url = session.create_permission_url(scope, "http://my_redirect_uri.com", state: "My nonce")
     assert_equal_uri(
       "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&" \
-        "scope=&redirect_uri=http://my_redirect_uri.com&state=My%20nonce",
+        "scope=&redirect_uri=http://my_redirect_uri.com&state=My+nonce",
       permission_url
     )
   end
