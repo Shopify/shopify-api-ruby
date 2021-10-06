@@ -5,6 +5,7 @@ PATH
       activeresource (>= 4.1.0, < 6.0.0)
       graphql-client
       rack
+      webrick
 
 GEM
   remote: https://rubygems.org/
@@ -78,7 +79,7 @@ GEM
       rb-inotify (~> 0.9, >= 0.9.10)
     mercenary (0.4.0)
     method_source (1.0.0)
-    minitest (5.14.1)
+    minitest (5.14.4)
     mocha (1.11.2)
     parallel (1.19.2)
     parser (2.7.2.0)
@@ -129,6 +130,7 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
+    webrick (1.7.0)
     zeitwerk (2.3.0)
 
 PLATFORMS
@@ -137,7 +139,7 @@ PLATFORMS
 DEPENDENCIES
   activeresource (~> 5.1)
   jekyll
-  minitest (>= 4.0)
+  minitest (>= 5.14)
   mocha (>= 1.4.0)
   pry
   pry-byebug

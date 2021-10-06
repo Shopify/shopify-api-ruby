@@ -315,7 +315,7 @@ class FulFillmentOrderTest < Test::Unit::TestCase
           fulfillment_order_line_items: [{ id: 1, quantity: 1 }],
           message: "Fulfill this FO, please.",
         }
-        response_fulfillment_orders = fulfillment_order.request_fulfillment(params)
+        response_fulfillment_orders = fulfillment_order.request_fulfillment(**params)
 
         assert_equal('closed', fulfillment_order.status)
         assert_equal(3, response_fulfillment_orders.size)
@@ -367,7 +367,7 @@ class FulFillmentOrderTest < Test::Unit::TestCase
           fulfillment_order_line_items: [{ id: 1, quantity: 1 }],
           message: "Fulfill this FO, please.",
         }
-        response_fulfillment_orders = fulfillment_order.request_fulfillment(params)
+        response_fulfillment_orders = fulfillment_order.request_fulfillment(**params)
 
         assert_equal('closed', fulfillment_order.status)
         assert_equal(3, response_fulfillment_orders.size)
