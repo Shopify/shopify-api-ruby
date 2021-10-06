@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'webrick/httputils'
 
 module ShopifyAPI
@@ -12,11 +13,11 @@ module ShopifyAPI
     end
 
     def self.encode_key(key)
-      URI.escape(key.to_s, '&=%')
+      _escape(key.to_s, _make_regex('&=%'))
     end
 
     def self.encode_value(value)
-      URI.escape(value.to_s, '&%')
+      _escape(value.to_s, _make_regex('&%'))
     end
   end
 end
