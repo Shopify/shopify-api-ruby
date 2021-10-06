@@ -79,7 +79,7 @@ GEM
       rb-inotify (~> 0.9, >= 0.9.10)
     mercenary (0.4.0)
     method_source (1.0.0)
-    minitest (5.14.1)
+    minitest (5.14.4)
     mocha (1.11.2)
     parallel (1.19.2)
     parser (2.7.2.0)
@@ -139,7 +139,7 @@ PLATFORMS
 DEPENDENCIES
   activeresource (~> 5.1)
   jekyll
-  minitest (>= 4.0)
+  minitest (>= 5.14)
   mocha (>= 1.4.0)
   pry
   pry-byebug
