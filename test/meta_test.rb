@@ -40,8 +40,8 @@ class ApiVersionTest < Test::Unit::TestCase
         "display_name": "unstable",
         "supported": false,
       },
-    ].to_json
+    ].as_json
 
-    assert_equal versions, ShopifyAPI::Meta.admin_versions.to_json
+    assert_equal versions, ShopifyAPI::Meta.admin_versions.as_json
   end
 end

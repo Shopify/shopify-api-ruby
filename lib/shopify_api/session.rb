@@ -71,18 +71,13 @@ module ShopifyAPI
         return false unless (signature = params[:hmac])
 
         calculated_signature = OpenSSL::HMAC.hexdigest(
-          OpenSSL::Digest.new('SHA256'), secret, encoded_params_for_signature(params)
+          OpenSSL::Digest.new('SHA256'), secret, ShopifyAPI::HmacParams.encode(params)
         )
 
         Rack::Utils.secure_compare(calculated_signature, signature)
       end
 
       private
-
-      def encoded_params_for_signature(params)
-        params = params.except(:signature, :hmac, :action, :controller)
-        params.map { |k, v| "#{URI.escape(k.to_s, '&=%')}=#{URI.escape(v.to_s, '&%')}" }.sort.join('&')
-      end
 
       def extract_current_session
         site = ShopifyAPI::Base.site.to_s
@@ -188,7 +183,7 @@ module ShopifyAPI
     end
 
     def parameterize(params)
-      URI.escape(params.collect { |k, v| "#{k}=#{v}" }.join('&'))
+      URI.encode_www_form(params)
     end
 
     def access_token_request(code)

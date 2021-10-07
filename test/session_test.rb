@@ -94,7 +94,7 @@ class SessionTest < Test::Unit::TestCase
   end
 
   test "ignore everything but the subdomain in the shop" do
-    assert_equal(
+    assert_equal_uri(
       "https://testshop.myshopify.com",
       ShopifyAPI::Session.new(
         domain: "http://user:pass@testshop.notshopify.net/path",
@@ -105,7 +105,7 @@ class SessionTest < Test::Unit::TestCase
   end
 
   test "append the myshopify domain if not given" do
-    assert_equal(
+    assert_equal_uri(
       "https://testshop.myshopify.com",
       ShopifyAPI::Session.new(domain: "testshop", token: "any-token", api_version: any_api_version).site
     )
@@ -283,7 +283,7 @@ class SessionTest < Test::Unit::TestCase
     )
     scope = ["write_products"]
     permission_url = session.create_permission_url(scope, "http://my_redirect_uri.com")
-    assert_equal(
+    assert_equal_uri(
       "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&" \
         "scope=write_products&redirect_uri=http://my_redirect_uri.com",
       permission_url
@@ -299,7 +299,7 @@ class SessionTest < Test::Unit::TestCase
     )
     scope = ["write_products", "write_customers"]
     permission_url = session.create_permission_url(scope, "http://my_redirect_uri.com")
-    assert_equal(
+    assert_equal_uri(
       "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&" \
         "scope=write_products,write_customers&redirect_uri=http://my_redirect_uri.com",
       permission_url
@@ -315,7 +315,7 @@ class SessionTest < Test::Unit::TestCase
     )
     scope = []
     permission_url = session.create_permission_url(scope, "http://my_redirect_uri.com")
-    assert_equal(
+    assert_equal_uri(
       "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&" \
         "scope=&redirect_uri=http://my_redirect_uri.com",
       permission_url
@@ -331,9 +331,9 @@ class SessionTest < Test::Unit::TestCase
     )
     scope = []
     permission_url = session.create_permission_url(scope, "http://my_redirect_uri.com", state: "My nonce")
-    assert_equal(
+    assert_equal_uri(
       "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&" \
-        "scope=&redirect_uri=http://my_redirect_uri.com&state=My%20nonce",
+        "scope=&redirect_uri=http://my_redirect_uri.com&state=My+nonce",
       permission_url
     )
   end
@@ -347,7 +347,7 @@ class SessionTest < Test::Unit::TestCase
     )
     scope = []
     permission_url = session.create_permission_url(scope, "http://my_redirect_uri.com", grant_options: "per-user")
-    assert_equal(
+    assert_equal_uri(
       "https://localhost.myshopify.com/admin/oauth/authorize?client_id=My_test_key&" \
         "scope=&redirect_uri=http://my_redirect_uri.com&grant_options[]=per-user",
       permission_url
@@ -380,7 +380,7 @@ class SessionTest < Test::Unit::TestCase
       token: "any-token",
       api_version: any_api_version
     )
-    assert_equal("https://testshop.myshopify.com", session.site)
+    assert_equal_uri("https://testshop.myshopify.com", session.site)
   end
 
   test "return_token_if_signature_is_valid" do
@@ -617,6 +617,10 @@ class SessionTest < Test::Unit::TestCase
   end
 
   private
+
+  def assert_equal_uri(expected, actual)
+    assert_equal(Addressable::URI.parse(expected), Addressable::URI.parse(actual))
+  end
 
   def make_sorted_params(params)
     params.with_indifferent_access.except(
