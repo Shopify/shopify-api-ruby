@@ -1,3 +1,7 @@
+## Version 9.5
+
+* [#883](https://github.com/Shopify/shopify_api/pull/883) Add support for Ruby 3.0
+
 ## Version 9.4.1
 
 * [#847](https://github.com/Shopify/shopify_api/pull/847) Update `create_permission_url` method to use grant_options
