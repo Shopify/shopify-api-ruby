@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    shopify_api (9.4.1)
+    shopify_api (9.5)
       activeresource (>= 4.1.0, < 6.0.0)
       graphql-client
       rack
@@ -42,10 +42,10 @@ GEM
     eventmachine (1.2.7)
     ffi (1.12.2)
     forwardable-extended (2.6.0)
-    graphql (1.12.6)
-    graphql-client (0.16.0)
+    graphql (1.12.16)
+    graphql-client (0.17.0)
       activesupport (>= 3.0)
-      graphql (~> 1.8)
+      graphql (~> 1.10)
     hashdiff (1.0.1)
     http_parser.rb (0.6.0)
     i18n (1.8.2)
