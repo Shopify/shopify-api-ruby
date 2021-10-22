@@ -5,7 +5,3 @@ type: ruby
 up:
   - ruby: 2.7.1
   - bundler
-
-commands:
-  test:
-    run: bundle exec rake test

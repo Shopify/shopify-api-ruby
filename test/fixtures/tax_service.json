@@ -1,9 +1,0 @@
-{
-  "tax_service": {
-    "name": "My Tax Service",
-    "url": "https://mytaxservice.com",
-    "id": 123456,
-    "default_tax_code": "TX123",
-    "active": "true"
-  }
-}
