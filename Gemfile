@@ -6,8 +6,8 @@ gem "sorbet", group: :development
 gem "tapioca", group: :development
 gem "sorbet-runtime"
 
-gem "minitest", :group => :development
-gem "rake", :group => :development
+gem "minitest", group: :development
+gem "rake", group: :development
 
 group :development, :test do
   gem "rubocop", require: false

@@ -5,10 +5,12 @@ require:
   - rubocop-sorbet
 
 AllCops:
+  TargetRubyVersion: 2.6
   NewCops: enable
   Exclude:
     - 'sorbet/**/*'
     - 'bin/**/*'
+    - 'test/**/*'
 
 Sorbet:
   Enabled: true
