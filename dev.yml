@@ -12,5 +12,8 @@ commands:
     aliases: ['tc']
     depends-railgun: false
     run: bundle exec srb tc
+  style:
+    desc: 'run rubocop'
+    run: bundle exec rubocop
   test:
     run: bundle exec rake test
