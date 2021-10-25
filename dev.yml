@@ -5,3 +5,10 @@ type: ruby
 up:
   - ruby: 2.7.1
   - bundler
+
+commands:
+  typecheck:
+    desc: 'run Sorbet typechecking'
+    aliases: ['tc']
+    depends-railgun: false
+    run: bundle exec srb tc
