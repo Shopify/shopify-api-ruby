@@ -12,3 +12,5 @@ commands:
     aliases: ['tc']
     depends-railgun: false
     run: bundle exec srb tc
+  test:
+    run: bundle exec rake test
