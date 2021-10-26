@@ -10,7 +10,6 @@ AllCops:
   Exclude:
     - 'sorbet/**/*'
     - 'bin/**/*'
-    - 'test/**/*'
 
 Sorbet:
   Enabled: true
@@ -22,6 +21,8 @@ Sorbet/StrictSigil:
   Enabled: true
   Exclude:
     - Gemfile*
+    - 'test/**/*'
+    - Rakefile
 Sorbet/ValidSigil:
   Enabled: true
 Sorbet/EnforceSigilOrder:
