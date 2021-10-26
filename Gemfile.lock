@@ -19,7 +19,7 @@ GEM
       unparser
     sorbet (0.5.9271)
       sorbet-static (= 0.5.9271)
-    sorbet-runtime (0.5.9267)
+    sorbet-runtime (0.5.9271)
     sorbet-static (0.5.9271-universal-darwin-20)
     sorbet-static (0.5.9271-x86_64-linux)
     spoom (1.1.5)
