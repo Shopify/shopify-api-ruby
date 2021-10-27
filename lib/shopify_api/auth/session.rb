@@ -39,7 +39,8 @@ module ShopifyAPI
           associated_user: T.nilable(AssociatedUser)
         ).void
       end
-      def initialize(shop:, id: nil, state: nil, access_token: "", scope: [], expires: nil, is_online: nil, associated_user: nil)
+      def initialize(shop:, id: nil, state: nil, access_token: "",
+        scope: [], expires: nil, is_online: nil, associated_user: nil)
         @id = id || SecureRandom.uuid
         @shop = shop
         @state = state
