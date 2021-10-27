@@ -7,13 +7,19 @@ up:
   - bundler
 
 commands:
-  typecheck:
-    desc: 'run Sorbet typechecking'
-    aliases: ['tc']
-    depends-railgun: false
-    run: bundle exec srb tc
+  console:
+    desc: 'start a ruby shell with ShopifyAPI already loaded'
+    aliases: ['c']
+    run: bundle exec irb -Ilib -rshopify_api
   style:
     desc: 'run rubocop'
     run: bundle exec rubocop
+  typecheck:
+    desc: 'run Sorbet typechecking'
+    aliases: ['tc']
+    run: bundle exec srb tc
   test:
     run: bundle exec rake test
+  sanity:
+    desc: 'run all static checks against the codebase'
+    run: bundle exec rubocop && bundle exec srb tc && bundle exec rake test
