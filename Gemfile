@@ -12,6 +12,8 @@ gem "sorbet-runtime"
 gem "minitest", group: :development
 gem "rake", group: :development
 
+gem "fakefs", group: :test
+
 group :development, :test do
   gem "rubocop", require: false
   gem "rubocop-shopify", require: false

@@ -13,8 +13,9 @@ module ShopifyAPI
       sig { params(path: String).void }
       def initialize(path: "/tmp/shopify_api_sessions")
         @path = path
-        Dir.mkdir(path) unless Dir.exist?(path)
+        FileUtils.mkdir_p(path) unless Dir.exist?(path)
       end
+
       sig do
         override.params(session: Session)
           .returns(T::Boolean)

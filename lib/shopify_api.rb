@@ -6,10 +6,10 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 require "sorbet-runtime"
 require "securerandom"
 
-require "shopify_api/context"
 require "shopify_api/auth/session"
 require "shopify_api/auth/associated_user"
 
 require "shopify_api/auth/session_storage"
-require "shopify_api/auth/memory_session_storage"
 require "shopify_api/auth/file_session_storage"
+
+require "shopify_api/context"
