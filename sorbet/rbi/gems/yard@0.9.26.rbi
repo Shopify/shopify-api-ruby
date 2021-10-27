@@ -2825,6 +2825,29 @@ class YARD::Parser::UndocumentableError < ::RuntimeError; end
 YARD::ROOT = T.let(T.unsafe(nil), String)
 module YARD::Rake; end
 
+class YARD::Rake::YardocTask < Rake::Task
+  def initialize(name = T.unsafe(nil)); end
+
+  def after; end
+  def after=(_arg0); end
+  def before; end
+  def before=(_arg0); end
+  def files; end
+  def files=(_arg0); end
+  def name; end
+  def name=(_arg0); end
+  def options; end
+  def options=(_arg0); end
+  def stats_options; end
+  def stats_options=(_arg0); end
+  def verifier; end
+  def verifier=(_arg0); end
+
+  protected
+
+  def define; end
+end
+
 module YARD::Registry
   extend ::Enumerable
 

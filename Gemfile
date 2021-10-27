@@ -3,6 +3,7 @@
 source "https://rubygems.org"
 
 gem "securerandom"
+gem "oj"
 
 gem "sorbet", group: :development
 gem "tapioca", group: :development

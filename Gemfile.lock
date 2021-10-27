@@ -6,6 +6,7 @@ GEM
     diff-lcs (1.4.4)
     method_source (1.0.0)
     minitest (5.14.4)
+    oj (3.13.9)
     parallel (1.21.0)
     parser (3.0.2.0)
       ast (~> 2.4.1)
@@ -72,6 +73,7 @@ PLATFORMS
 
 DEPENDENCIES
   minitest
+  oj
   rake
   rubocop
   rubocop-shopify
