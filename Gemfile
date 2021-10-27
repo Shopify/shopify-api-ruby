@@ -2,6 +2,8 @@
 
 source "https://rubygems.org"
 
+gem "securerandom"
+
 gem "sorbet", group: :development
 gem "tapioca", group: :development
 gem "sorbet-runtime"

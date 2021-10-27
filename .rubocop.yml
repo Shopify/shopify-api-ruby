@@ -21,6 +21,12 @@ Sorbet/StrictSigil:
   Enabled: true
   Exclude:
     - Gemfile*
+    - 'lib/shopify_api/auth/session.rb'
+    - Rakefile
+Sorbet/TrueSigil:
+  Enabled: true
+  Exclude:
+    - Gemfile*
     - 'test/**/*'
     - Rakefile
 Sorbet/ValidSigil:

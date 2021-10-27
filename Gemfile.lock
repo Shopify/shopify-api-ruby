@@ -37,6 +37,7 @@ GEM
     rubocop-sorbet (0.6.2)
       rubocop
     ruby-progressbar (1.11.0)
+    securerandom (0.1.1)
     sorbet (0.5.9271)
       sorbet-static (= 0.5.9271)
     sorbet-runtime (0.5.9271)
@@ -75,6 +76,7 @@ DEPENDENCIES
   rubocop
   rubocop-shopify
   rubocop-sorbet
+  securerandom
   sorbet
   sorbet-runtime
   tapioca
