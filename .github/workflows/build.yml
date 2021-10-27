@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  - push
+
+jobs:
+  build:
+    name: Ruby ${{ matrix.version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version:
+          - 2.6
+          - 2.7
+          - 3.0
+    steps:
+      - uses: actions/checkout@v2
+      - name: Remove Gemfile.lock
+        run: |
+          rm -f ${GITHUB_WORKSPACE}/Gemfile.lock
+      - name: Set up Ruby ${{ matrix.version }}
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.version }}
+      - name: Run Bundle Commands
+        run: |
+          bundle config set --with docs
+          bundle config set ignore_messages true
+          bundle
+      - name: Run RuboCop
+        run: |
+          bundle exec rubocop
+      - name: Run Typecheck
+        run: |
+          bundle exec srb tc
+      - name: Run Tests
+        run: |
+          bundle exec rake test
