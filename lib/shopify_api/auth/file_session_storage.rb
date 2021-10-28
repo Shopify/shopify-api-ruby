@@ -8,6 +8,9 @@ module ShopifyAPI
       extend T::Helpers
       include ShopifyAPI::Auth::SessionStorage
 
+      sig { returns(String) }
+      attr_accessor :path
+
       sig { params(path: String).void }
       def initialize(path: "/tmp/shopify_api_sessions")
         @path = path
@@ -41,6 +44,16 @@ module ShopifyAPI
         session_path = session_file_path(id)
         File.delete(session_path) if File.exist?(session_path)
         true
+      end
+
+      alias_method :eql?, :==
+      sig { params(other: T.nilable(FileSessionStorage)).returns(T::Boolean) }
+      def ==(other)
+        if other
+          @path == other.path
+        else
+          false
+        end
       end
 
       private

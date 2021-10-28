@@ -16,16 +16,20 @@ module ShopifyAPI
       prop :collaborator, T::Boolean
 
       alias_method :eql?, :==
-      sig { params(other: AssociatedUser).returns(T::Boolean) }
+      sig { params(other: T.nilable(AssociatedUser)).returns(T::Boolean) }
       def ==(other)
-        id == other.id &&
-          first_name == other.first_name &&
-          last_name == other.last_name &&
-          email == other.email &&
-          email_verified == other.email_verified &&
-          account_owner == other.account_owner &&
-          locale == other.locale &&
-          collaborator == other.collaborator
+        if other
+          id == other.id &&
+            first_name == other.first_name &&
+            last_name == other.last_name &&
+            email == other.email &&
+            email_verified == other.email_verified &&
+            account_owner == other.account_owner &&
+            locale == other.locale &&
+            collaborator == other.collaborator
+        else
+          false
+        end
       end
     end
   end
