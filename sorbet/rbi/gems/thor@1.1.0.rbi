@@ -625,6 +625,19 @@ Thor::Options::OPTS_END = T.let(T.unsafe(nil), String)
 Thor::Options::SHORT_NUM = T.let(T.unsafe(nil), Regexp)
 Thor::Options::SHORT_RE = T.let(T.unsafe(nil), Regexp)
 Thor::Options::SHORT_SQ_RE = T.let(T.unsafe(nil), Regexp)
+
+module Thor::RakeCompat
+  include ::FileUtils::StreamUtils_
+  include ::FileUtils
+  include ::Rake::FileUtilsExt
+  include ::Rake::DSL
+
+  class << self
+    def included(base); end
+    def rake_classes; end
+  end
+end
+
 class Thor::RequiredArgumentMissingError < ::Thor::InvocationError; end
 module Thor::Sandbox; end
 
