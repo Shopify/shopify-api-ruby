@@ -23,3 +23,6 @@ commands:
   sanity:
     desc: 'run all static checks against the codebase'
     run: bundle exec rubocop && bundle exec srb tc && bundle exec rake test
+  rbi:
+    desc: 'generate .rbi files for gems added to the project'
+    run: bin/tapioca gem --all
