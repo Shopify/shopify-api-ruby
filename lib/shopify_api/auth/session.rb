@@ -50,6 +50,18 @@ module ShopifyAPI
         @associated_user = associated_user
         @is_online = is_online || !associated_user.nil?
       end
+
+      alias_method :eql?, :==
+      sig { params(other: Session).returns(T::Boolean) }
+      def ==(other)
+        id == other.id &&
+          shop == other.shop &&
+          state == other.state &&
+          scope == other.scope &&
+          expires == other.expires &&
+          is_online == other.is_online &&
+          associated_user == T.must(other.associated_user)
+      end
     end
   end
 end

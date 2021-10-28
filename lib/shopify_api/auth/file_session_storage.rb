@@ -1,8 +1,6 @@
 # typed: strict
 # frozen_string_literal: true
 
-require "oj"
-
 module ShopifyAPI
   module Auth
     class FileSessionStorage

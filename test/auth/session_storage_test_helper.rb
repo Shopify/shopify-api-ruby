@@ -34,20 +34,7 @@ module SessionStorageTestHelper
   def test_load_session
     @storage.store_session(session)
     loaded_session = @storage.load_session(session.id)
-    assert_equal(session.id, loaded_session.id)
-    assert_equal(session.shop, loaded_session.shop)
-    assert_equal(session.state, loaded_session.state)
-    assert_equal(session.access_token, loaded_session.access_token)
-    assert_equal(session.scope, loaded_session.scope)
-    assert_equal(session.expires, loaded_session.expires)
-    assert_equal(session.is_online, loaded_session.is_online)
-    assert_equal(session.associated_user.id, loaded_session.associated_user.id)
-    assert_equal(session.associated_user.first_name, loaded_session.associated_user.first_name)
-    assert_equal(session.associated_user.last_name, loaded_session.associated_user.last_name)
-    assert_equal(session.associated_user.email_verified, loaded_session.associated_user.email_verified)
-    assert_equal(session.associated_user.account_owner, loaded_session.associated_user.account_owner)
-    assert_equal(session.associated_user.locale, loaded_session.associated_user.locale)
-    assert_equal(session.associated_user.collaborator, loaded_session.associated_user.collaborator)
+    assert_equal(session, loaded_session)
   end
 
   def test_delete_session
