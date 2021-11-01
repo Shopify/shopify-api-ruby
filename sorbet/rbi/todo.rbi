@@ -5,3 +5,6 @@
 # typed: false
 
 module FileSessionStorageTest::FakeFS; end
+module OpenSSL
+  def self.secure_compare(a, b); end
+end

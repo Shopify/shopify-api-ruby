@@ -8,6 +8,7 @@ gem "oj"
 gem "sorbet", group: :development
 gem "tapioca", group: :development
 gem "sorbet-runtime"
+gem "openssl"
 
 gem "minitest", group: :development
 gem "rake", group: :development
