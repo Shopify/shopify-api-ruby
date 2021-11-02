@@ -1,4 +1,4 @@
-# typed: false
+# typed: true
 # frozen_string_literal: true
 
 require_relative "./test_helper"
@@ -12,9 +12,9 @@ class ContextTest < Minitest::Test
       session_storage: ShopifyAPI::Auth::FileSessionStorage.new
     )
 
-    assert_equal(ShopifyAPI::Context.api_key, "key")
-    assert_equal(ShopifyAPI::Context.api_secret_key, "secret")
-    assert_equal(ShopifyAPI::Context.host_name, "host")
-    assert_equal(ShopifyAPI::Context.session_storage, ShopifyAPI::Auth::FileSessionStorage.new)
+    assert_equal("key", ShopifyAPI::Context.api_key)
+    assert_equal("secret", ShopifyAPI::Context.api_secret_key)
+    assert_equal("host", ShopifyAPI::Context.host_name)
+    assert_equal(ShopifyAPI::Auth::FileSessionStorage.new, ShopifyAPI::Context.session_storage)
   end
 end

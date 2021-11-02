@@ -8,7 +8,7 @@ class ContextTest < Minitest::Test
 
   def test_create_session_with_id
     session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop")
-    assert_equal(session.id, "id")
+    assert_equal("id", session.id)
   end
 
   def test_create_session_no_id
