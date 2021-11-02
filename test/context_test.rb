@@ -9,12 +9,14 @@ class ContextTest < Minitest::Test
       api_key: "key",
       api_secret_key: "secret",
       host_name: "host",
+      scope: ["scope1", "scope2"],
       session_storage: ShopifyAPI::Auth::FileSessionStorage.new
     )
 
-    assert_equal("key", ShopifyAPI::Context.api_key)
-    assert_equal("secret", ShopifyAPI::Context.api_secret_key)
-    assert_equal("host", ShopifyAPI::Context.host_name)
-    assert_equal(ShopifyAPI::Auth::FileSessionStorage.new, ShopifyAPI::Context.session_storage)
+    assert_equal(ShopifyAPI::Context.api_key, "key")
+    assert_equal(ShopifyAPI::Context.api_secret_key, "secret")
+    assert_equal(ShopifyAPI::Context.host_name, "host")
+    assert_equal(["scope1", "scope2"], ShopifyAPI::Context.scope)
+    assert_equal(ShopifyAPI::Context.session_storage, ShopifyAPI::Auth::FileSessionStorage.new)
   end
 end
