@@ -8,10 +8,7 @@ module ShopifyAPI
       include VerifiableQuery
 
       sig { returns(String) }
-      attr_reader :code, :shop, :timestamp, :state
-
-      sig { returns(T.nilable(String)) }
-      attr_reader :host, :hmac
+      attr_reader :code, :host, :hmac, :shop, :state, :timestamp
 
       sig do
         params(
@@ -19,11 +16,11 @@ module ShopifyAPI
           shop: String,
           timestamp: String,
           state: String,
-          host: T.nilable(String),
-          hmac: T.nilable(String)
+          host: String,
+          hmac: String
         ).void
       end
-      def initialize(code:, shop:, timestamp:, state:, host: nil, hmac: nil)
+      def initialize(code:, shop:, timestamp:, state:, host:, hmac:)
         @code = code
         @shop = shop
         @timestamp = timestamp
@@ -34,13 +31,13 @@ module ShopifyAPI
 
       sig { override.returns(T::Hash[Symbol, String]) }
       def to_signable_hash
-        params = {}
-        params[:code] = @code
-        params[:shop] = @shop
-        params[:state] = @state
-        params[:timestamp] = @timestamp
-        params[:host] = @host if @host
-        params
+        {
+          code: code,
+          host: host,
+          shop: shop,
+          state: state,
+          timestamp: timestamp,
+        }
       end
     end
   end
