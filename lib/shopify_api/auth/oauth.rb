@@ -16,10 +16,10 @@ module ShopifyAPI
             shop: String,
             redirect_path: String,
             is_online: T.nilable(T::Boolean)
-          ).returns(T::Hash[Symbol, T.any(String, SessionCookie)])
+          ).returns(T::Hash[Symbol, T.any(String, ShopifyAPI::Auth::Oauth::SessionCookie)])
         end
         def begin_auth(shop:, redirect_path:, is_online: true)
-          raise UnsupportedOauthError, "Cannot perform OAuth for private apps." if Context.is_private
+          raise ShopifyAPI::Errors::UnsupportedOauth, "Cannot perform OAuth for private apps." if Context.is_private
 
           state = SecureRandom.alphanumeric(NONCE_LENGTH)
           session = Session.new(shop: shop, state: state, is_online: is_online)
@@ -48,7 +48,7 @@ module ShopifyAPI
         def store_session(session)
           session_stored = Context.session_storage.store_session(session)
           unless session_stored
-            raise SessionStorageError,
+            raise ShopifyAPI::Errors::SessionStorage,
               "Session could not be saved. Please check your session storage implementation."
           end
         end

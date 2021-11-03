@@ -7,6 +7,7 @@ gem "oj"
 
 gem "sorbet-runtime"
 gem "openssl"
+gem "zeitwerk", "~> 2.5"
 
 group :development do
   gem "sorbet"
