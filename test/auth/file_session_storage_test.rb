@@ -7,7 +7,7 @@ require "fakefs/safe"
 class FileSessionStorageTest < Minitest::Test
   include SessionStorageTestHelper
   def setup
-    FakeFS.activate!
+    ::FakeFS.activate!
     @storage = ShopifyAPI::Auth::FileSessionStorage.new
   end
 end
