@@ -1,6 +1,6 @@
 ## Description
 
-Fixes #<issue-number>
+Fixes https://github.com/Shopify/first-party-library-planning/issues/<issue-number>
 
 Please, include a summary of what the PR is for:
 - What is the problem it is solving?
