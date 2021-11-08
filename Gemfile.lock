@@ -70,6 +70,7 @@ GEM
     yard-sorbet (0.6.0)
       sorbet-runtime (>= 0.5)
       yard (>= 0.9)
+    zeitwerk (2.5.1)
 
 PLATFORMS
   x86_64-darwin-20
@@ -88,6 +89,7 @@ DEPENDENCIES
   sorbet
   sorbet-runtime
   tapioca
+  zeitwerk (~> 2.5)
 
 BUNDLED WITH
    2.2.22

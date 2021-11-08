@@ -31,7 +31,7 @@ class OauthTest < Test::Unit::TestCase
       session_storage: ShopifyAPI::Auth::FileSessionStorage.new
     )
 
-    assert_raises(ShopifyAPI::UnsupportedOauthError) do
+    assert_raises(ShopifyAPI::Errors::UnsupportedOauth) do
       ShopifyAPI::Auth::Oauth.begin_auth(shop: @shop, redirect_path: "/redirect")
     end
   end
@@ -46,7 +46,7 @@ class OauthTest < Test::Unit::TestCase
       session_storage: TestHelpers::FakeSessionStorage.new(sessions: {}, error_on_save: true)
     )
 
-    assert_raises(ShopifyAPI::SessionStorageError) do
+    assert_raises(ShopifyAPI::Errors::SessionStorage) do
       ShopifyAPI::Auth::Oauth.begin_auth(shop: @shop, redirect_path: "/redirect")
     end
   end
