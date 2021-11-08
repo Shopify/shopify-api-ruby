@@ -19,6 +19,8 @@ module ShopifyAPI
           ).returns(T::Hash[Symbol, T.any(String, SessionCookie)])
         end
         def begin_auth(shop:, redirect_path:, is_online: true)
+          raise UnsupportedOauthError, "Cannot perform OAuth for private apps." if Context.is_private
+
           state = SecureRandom.alphanumeric(NONCE_LENGTH)
           session = Session.new(shop: shop, state: state, is_online: is_online)
 

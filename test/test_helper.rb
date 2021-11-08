@@ -26,6 +26,7 @@ module Test
           api_secret_key: API_SECRET_KEY,
           host_name: HOST_NAME,
           scope: SCOPE,
+          is_private: false,
           session_storage: TestHelpers::FakeSessionStorage.new(sessions: {}, error_on_save: false)
         )
       end

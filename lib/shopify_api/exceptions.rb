@@ -4,4 +4,7 @@
 module ShopifyAPI
   class SessionStorageError < StandardError
   end
+
+  class UnsupportedOauthError < StandardError
+  end
 end

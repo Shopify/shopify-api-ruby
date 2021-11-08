@@ -21,12 +21,28 @@ class OauthTest < Test::Unit::TestCase
     verify(auth_route: result[:auth_route], cookie: result[:cookie], is_online: true)
   end
 
+  def test_begin_auth_private_app
+    ShopifyAPI::Context.setup(
+      api_key: "key",
+      api_secret_key: "secret",
+      host_name: "host",
+      scope: ["scope1", "scope2"],
+      is_private: true,
+      session_storage: ShopifyAPI::Auth::FileSessionStorage.new
+    )
+
+    assert_raises(ShopifyAPI::UnsupportedOauthError) do
+      ShopifyAPI::Auth::Oauth.begin_auth(shop: @shop, redirect_path: "/redirect")
+    end
+  end
+
   def test_begin_auth_with_session_store_save_error
     ShopifyAPI::Context.setup(
       api_key: API_KEY,
       api_secret_key: API_SECRET_KEY,
       host_name: HOST_NAME,
       scope: SCOPE,
+      is_private: false,
       session_storage: TestHelpers::FakeSessionStorage.new(sessions: {}, error_on_save: true)
     )
 
