@@ -22,6 +22,19 @@ module ShopifyAPI
           Context.session_storage.load_session(session_id)
         end
 
+        sig do
+          params(
+            shop: String,
+            include_expired: T::Boolean,
+          ).returns(T.nilable(Session))
+        end
+        def load_offline_session(shop, include_expired: false)
+          session_id = offline_session_id(shop)
+          session = Context.session_storage.load_session(session_id)
+          return nil if session && !include_expired && session.expires && T.must(session.expires) < Time.now
+          session
+        end
+
         private
 
         sig do

@@ -71,7 +71,7 @@ You can use the OAuth methods to create both offline and online sessions. Once t
 - To load current session, you can use the following method:
 
 ```ruby
-ShopifyAPI::Auth::SessionLoader.load_current_session(headers,cookies, is_online)
+ShopifyAPI::Auth::SessionLoader.load_current_session(headers, cookies, is_online)
 ```
 Accepted arguments:
 | Parameter   | Type                      | Notes                                                                                                                                                                     |
@@ -81,3 +81,16 @@ Accepted arguments:
 | `is_online` | `Boolean`                 | Whether to load online or offline sessions                                                                                                                                |
 
 This method will return a `ShopifyAPI::Auth::Session`  if a session exists. Either a proper token or a proper cookie must be present.
+
+- To load offline session, you can use the following method:
+
+```ruby
+ShopifyAPI::Auth::SessionLoader.load_offline_session(shop)
+```
+Accepted arguments:
+| Parameter           | Type      | Notes                                                                                                                                                                     |
+| ------------------- | --------- | --------------------------------------------- |
+| `shop`              | `String`  | The shop url to find the offline session for. |
+| `include_expired`   | `Boolean` | Include expired sessions or not.              |
+
+This method will return a `ShopifyAPI::Auth::Session` if a session exists and `nil` otherwise. This method **does not** perform any validation on the shop domain, so it **must not** rely on user input for the domain. This method is typically meant to be used in background tasks like webhooks, where the data is expected to have been validated when the task was enqueued.
