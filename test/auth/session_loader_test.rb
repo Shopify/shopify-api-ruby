@@ -67,7 +67,7 @@ class SessionLoaderTest < Test::Unit::TestCase
     session_id = "#{@shop}_#{@jwt_payload[:sub]}"
     session = ShopifyAPI::Auth::Session.new(id: session_id, shop: @shop, is_online: true)
     ShopifyAPI::Context.session_storage.store_session(session)
-    assert_raises(ShopifyAPI::Errors::CookieNotFound) do
+    assert_raises(ShopifyAPI::Errors::CookieNotFoundError) do
       ShopifyAPI::Auth::SessionLoader.load_current_session(headers: {}, cookies: {}, online: true)
     end
   end
@@ -77,7 +77,7 @@ class SessionLoaderTest < Test::Unit::TestCase
     session_id = "#{@shop}_#{@jwt_payload[:sub]}"
     session = ShopifyAPI::Auth::Session.new(id: session_id, shop: @shop, is_online: true)
     assert(ShopifyAPI::Context.session_storage.store_session(session))
-    assert_raises(ShopifyAPI::Errors::InvalidJwtToken) do
+    assert_raises(ShopifyAPI::Errors::InvalidJwtTokenError) do
       ShopifyAPI::Auth::SessionLoader.load_current_session(headers: { authorization: "Bearer invalid" }, cookies: {},
         online: true)
     end
@@ -88,7 +88,7 @@ class SessionLoaderTest < Test::Unit::TestCase
     session_id = "#{@shop}_#{@jwt_payload[:sub]}"
     session = ShopifyAPI::Auth::Session.new(id: session_id, shop: @shop, is_online: true)
     assert(ShopifyAPI::Context.session_storage.store_session(session))
-    assert_raises(ShopifyAPI::Errors::MissingJwtToken) do
+    assert_raises(ShopifyAPI::Errors::MissingJwtTokenError) do
       ShopifyAPI::Auth::SessionLoader.load_current_session(headers: { authorization: "Not a Bearer token" },
         cookies: {}, online: true)
     end

@@ -81,7 +81,7 @@ class OauthTest < Test::Unit::TestCase
   def test_begin_auth_private_app
     modify_context(is_private: true)
 
-    assert_raises(ShopifyAPI::Errors::UnsupportedOauth) do
+    assert_raises(ShopifyAPI::Errors::UnsupportedOauthError) do
       ShopifyAPI::Auth::Oauth.begin_auth(shop: @shop, redirect_path: "/redirect")
     end
   end
@@ -89,7 +89,7 @@ class OauthTest < Test::Unit::TestCase
   def test_begin_auth_with_session_store_save_error
     modify_context(session_storage: TestHelpers::FakeSessionStorage.new(error_on_save: true))
 
-    assert_raises(ShopifyAPI::Errors::SessionStorage) do
+    assert_raises(ShopifyAPI::Errors::SessionStorageError) do
       ShopifyAPI::Auth::Oauth.begin_auth(shop: @shop, redirect_path: "/redirect")
     end
   end
@@ -197,7 +197,7 @@ class OauthTest < Test::Unit::TestCase
   def test_validate_auth_private_app
     modify_context(is_private: true)
 
-    assert_raises(ShopifyAPI::Errors::UnsupportedOauth) do
+    assert_raises(ShopifyAPI::Errors::UnsupportedOauthError) do
       ShopifyAPI::Auth::Oauth.validate_auth_callback(cookies: @cookies, auth_query: @auth_query)
     end
   end
@@ -230,7 +230,7 @@ class OauthTest < Test::Unit::TestCase
     modify_context(is_embedded: true, session_storage: TestHelpers::FakeSessionStorage.new(error_on_delete: true))
     ShopifyAPI::Context.session_storage.store_session(ShopifyAPI::Auth::Session.new(shop: @shop, id: @session_cookie,
       state: @callback_state, is_online: true))
-    assert_raises(ShopifyAPI::Errors::SessionStorage) do
+    assert_raises(ShopifyAPI::Errors::SessionStorageError) do
       ShopifyAPI::Auth::Oauth.validate_auth_callback(cookies: @cookies, auth_query: @auth_query)
     end
   end
@@ -254,7 +254,7 @@ class OauthTest < Test::Unit::TestCase
       sessions: { @session_cookie => ShopifyAPI::Auth::Session.new(shop: @shop, id: @session_cookie,
         state: @callback_state) }, error_on_save: true
     ))
-    assert_raises(ShopifyAPI::Errors::SessionStorage) do
+    assert_raises(ShopifyAPI::Errors::SessionStorageError) do
       ShopifyAPI::Auth::Oauth.validate_auth_callback(cookies: @cookies, auth_query: @auth_query)
     end
   end

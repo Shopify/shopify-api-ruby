@@ -3,7 +3,7 @@
 
 module ShopifyAPI
   module Errors
-    class MissingJwtToken < StandardError
+    class InvalidJwtTokenError < StandardError
     end
   end
 end

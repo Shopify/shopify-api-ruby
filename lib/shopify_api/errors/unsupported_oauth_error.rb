@@ -3,7 +3,7 @@
 
 module ShopifyAPI
   module Errors
-    class InvalidJwtToken < StandardError
+    class UnsupportedOauthError < StandardError
     end
   end
 end

@@ -20,7 +20,7 @@ module ShopifyAPI
           payload_hash = JWT.decode(token, Context.api_secret_key, true,
             { exp_leeway: JWT_EXPIRATION_LEEWAY, algorithm: "HS256" })[0]
         rescue
-          raise ShopifyAPI::Errors::InvalidJwtToken, "Failed to parse session token '#{token}'"
+          raise ShopifyAPI::Errors::InvalidJwtTokenError, "Failed to parse session token '#{token}'"
         end
 
         @iss = T.let(payload_hash["iss"], String)
@@ -33,8 +33,10 @@ module ShopifyAPI
         @jti = T.let(payload_hash["jti"], String)
         @sid = T.let(payload_hash["sid"], String)
 
-        raise ShopifyAPI::Errors::InvalidJwtToken, "Session token had invalid API key" unless @aud == Context.api_key
-        raise ShopifyAPI::Errors::InvalidJwtToken, "Session token had invalid shop" unless validate_shop(shop)
+        raise ShopifyAPI::Errors::InvalidJwtTokenError,
+          "Session token had invalid API key" unless @aud == Context.api_key
+        raise ShopifyAPI::Errors::InvalidJwtTokenError,
+          "Session token had invalid shop" unless validate_shop(shop)
       end
 
       sig { returns(String) }

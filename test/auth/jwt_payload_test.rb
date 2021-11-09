@@ -38,7 +38,7 @@ class JwtPayloadTest < Test::Unit::TestCase
 
   def test_decode_jwt_payload_fails_with_wrong_key
     jwt_token = JWT.encode(@jwt_payload, "Wrong", "HS256")
-    assert_raises(ShopifyAPI::Errors::InvalidJwtToken) do
+    assert_raises(ShopifyAPI::Errors::InvalidJwtTokenError) do
       ShopifyAPI::Auth::JwtPayload.new(jwt_token)
     end
   end
@@ -47,7 +47,7 @@ class JwtPayloadTest < Test::Unit::TestCase
     payload = @jwt_payload.dup
     payload[:exp] = (Time.now - 40).to_i
     jwt_token = JWT.encode(payload, ShopifyAPI::Context.api_secret_key, "HS256")
-    assert_raises(ShopifyAPI::Errors::InvalidJwtToken) do
+    assert_raises(ShopifyAPI::Errors::InvalidJwtTokenError) do
       ShopifyAPI::Auth::JwtPayload.new(jwt_token)
     end
   end
@@ -56,7 +56,7 @@ class JwtPayloadTest < Test::Unit::TestCase
     payload = @jwt_payload.dup
     payload[:nbf] = (Time.now + 10).to_i
     jwt_token = JWT.encode(payload, ShopifyAPI::Context.api_secret_key, "HS256")
-    assert_raises(ShopifyAPI::Errors::InvalidJwtToken) do
+    assert_raises(ShopifyAPI::Errors::InvalidJwtTokenError) do
       ShopifyAPI::Auth::JwtPayload.new(jwt_token)
     end
   end
@@ -65,7 +65,7 @@ class JwtPayloadTest < Test::Unit::TestCase
     payload = @jwt_payload.dup
     payload[:dest] = "https://notadomain"
     jwt_token = JWT.encode(payload, ShopifyAPI::Context.api_secret_key, "HS256")
-    assert_raises(ShopifyAPI::Errors::InvalidJwtToken) do
+    assert_raises(ShopifyAPI::Errors::InvalidJwtTokenError) do
       ShopifyAPI::Auth::JwtPayload.new(jwt_token)
     end
   end
@@ -81,7 +81,7 @@ class JwtPayloadTest < Test::Unit::TestCase
       is_embedded: true,
       session_storage: ShopifyAPI::Context.session_storage,
     )
-    assert_raises(ShopifyAPI::Errors::InvalidJwtToken) do
+    assert_raises(ShopifyAPI::Errors::InvalidJwtTokenError) do
       ShopifyAPI::Auth::JwtPayload.new(jwt_token)
     end
   end

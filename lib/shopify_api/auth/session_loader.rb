@@ -35,7 +35,8 @@ module ShopifyAPI
           if Context.is_embedded
             if headers[:authorization]
               matches = T.must(headers[:authorization]).match(/^Bearer (.+)$/)
-              raise ShopifyAPI::Errors::MissingJwtToken, "Missing Bearer token in authorization header" unless matches
+              raise ShopifyAPI::Errors::MissingJwtTokenError,
+                "Missing Bearer token in authorization header" unless matches
 
               jwt_payload = ShopifyAPI::Auth::JwtPayload.new(T.must(matches[1]))
               shop = jwt_payload.shop
@@ -47,12 +48,12 @@ module ShopifyAPI
               end
             else
               # falling back to session cookie
-              raise ShopifyAPI::Errors::CookieNotFound, "JWT token or Session cookie not found for app" unless
+              raise ShopifyAPI::Errors::CookieNotFoundError, "JWT token or Session cookie not found for app" unless
                 cookies && cookies[ShopifyAPI::Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME.to_sym]
               cookie_session_id(cookies)
             end
           else
-            raise ShopifyAPI::Errors::CookieNotFound, "Session cookie not found for app" unless
+            raise ShopifyAPI::Errors::CookieNotFoundError, "Session cookie not found for app" unless
               cookies && cookies[ShopifyAPI::Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME.to_sym]
             cookie_session_id(cookies)
           end

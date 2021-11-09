@@ -19,7 +19,7 @@ module ShopifyAPI
           ).returns(T::Hash[Symbol, T.any(String, SessionCookie)])
         end
         def begin_auth(shop:, redirect_path:, is_online: true)
-          raise Errors::UnsupportedOauth, "Cannot perform OAuth for private apps." if Context.is_private
+          raise Errors::UnsupportedOauthError, "Cannot perform OAuth for private apps." if Context.is_private
 
           state = SecureRandom.alphanumeric(NONCE_LENGTH)
           session = Session.new(shop: shop, state: state, is_online: is_online)
@@ -50,7 +50,7 @@ module ShopifyAPI
         end
         def validate_auth_callback(cookies:, auth_query:)
           raise Errors::InvalidOauthError, "Invalid OAuth callback." unless Utils::HmacValidator.validate(auth_query)
-          raise Errors::UnsupportedOauth, "Cannot perform OAuth for private apps." if Context.is_private
+          raise Errors::UnsupportedOauthError, "Cannot perform OAuth for private apps." if Context.is_private
 
           session_cookie = cookies[SessionCookie::SESSION_COOKIE_NAME]
           raise Errors::NoSessionCookieError unless session_cookie
@@ -81,7 +81,7 @@ module ShopifyAPI
           cookie = nil
           if Context.is_embedded
             unless session_storage.delete_session(session_cookie)
-              raise Errors::SessionStorage,
+              raise Errors::SessionStorageError,
                 "OAuth Session could not be deleted. Please check your session storage functionality."
             end
 
@@ -107,7 +107,7 @@ module ShopifyAPI
         def store_session(session)
           session_stored = Context.session_storage.store_session(session)
           unless session_stored
-            raise Errors::SessionStorage,
+            raise Errors::SessionStorageError,
               "Session could not be saved. Please check your session storage implementation."
           end
         end
