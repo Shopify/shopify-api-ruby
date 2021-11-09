@@ -5,6 +5,7 @@ source "https://rubygems.org"
 gem "securerandom"
 gem "oj"
 gem "httparty"
+gem "jwt"
 
 gem "sorbet-runtime"
 gem "openssl"

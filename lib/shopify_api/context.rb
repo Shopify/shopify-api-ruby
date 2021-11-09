@@ -12,6 +12,7 @@ module ShopifyAPI
     @is_embedded = T.let(false, T::Boolean)
     @session_storage = T.let(ShopifyAPI::Auth::FileSessionStorage.new, ShopifyAPI::Auth::SessionStorage)
     @is_private = T.let(false, T::Boolean)
+    @is_embedded = T.let(true, T::Boolean)
 
     class << self
       extend T::Sig
@@ -32,7 +33,6 @@ module ShopifyAPI
         @api_secret_key = api_secret_key
         @host_name = host_name
         @is_private = is_private
-        @session_storage = session_storage
         @scope = scope
         @is_embedded = is_embedded
         @session_storage = session_storage

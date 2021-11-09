@@ -64,3 +64,20 @@ def callback
   end
 end
 ```
+## Fetching sessions
+
+You can use the OAuth methods to create both offline and online sessions. Once the process is completed, the session will be stored as per your `Context.session_storage`, and can be retrieved with `SessionLoader` class methods.
+
+- To load current session, you can use the following method:
+
+```ruby
+ShopifyAPI::Auth::SessionLoader.load_current_session(headers,cookies, is_online)
+```
+Accepted arguments:
+| Parameter   | Type                      | Notes                                                                                                                                                                     |
+| ----------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `headers`   | `Hash(Symbol, String)`    | The headers from the HTTP request. JWT token from `headers` is used to load session for embedded apps. If JWT token is not provided this methods will try with `cookies`. |
+| `cookies`   | `Hash(Symbol, String)`    | The cookies from the HTTP request. A session cookie named `shopify_app_session` is used to load session for non-embedded apps.                                            |
+| `is_online` | `Boolean`                 | Whether to load online or offline sessions                                                                                                                                |
+
+This method will return a `ShopifyAPI::Auth::Session`  if a session exists. Either a proper token or a proper cookie must be present.

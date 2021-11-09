@@ -11,6 +11,7 @@ require "uri"
 require "openssl"
 require "httparty"
 require "zeitwerk"
+require "jwt"
 
 require_relative "shopify_api/inflector"
 
