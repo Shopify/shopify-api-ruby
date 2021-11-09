@@ -3,7 +3,7 @@
 
 module ShopifyAPI
   module Errors
-    class UnsupportedOauth < StandardError
+    class SessionStorageError < StandardError
     end
   end
 end

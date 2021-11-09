@@ -3,7 +3,7 @@
 
 module ShopifyAPI
   module Errors
-    class SessionStorage < StandardError
+    class CookieNotFoundError < StandardError
     end
   end
 end

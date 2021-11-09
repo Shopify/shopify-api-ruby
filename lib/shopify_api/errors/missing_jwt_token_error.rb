@@ -3,7 +3,7 @@
 
 module ShopifyAPI
   module Errors
-    class CookieNotFound < StandardError
+    class MissingJwtTokenError < StandardError
     end
   end
 end
