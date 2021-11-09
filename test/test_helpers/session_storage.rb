@@ -20,7 +20,7 @@ module TestHelpers
         state: "test-state",
         access_token: "test-access-token",
         scope: ["test-scope"],
-        expires: 12345,
+        expires: Time.now,
         is_online: true,
         associated_user: associated_user
       )

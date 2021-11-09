@@ -4,6 +4,7 @@ source "https://rubygems.org"
 
 gem "securerandom"
 gem "oj"
+gem "httparty"
 
 gem "sorbet-runtime"
 gem "openssl"
@@ -23,4 +24,5 @@ end
 group :test do
   gem "minitest"
   gem "fakefs", require: false
+  gem "webmock"
 end

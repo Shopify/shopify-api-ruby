@@ -1,4 +1,4 @@
-# typed: strict
+# typed: true
 # frozen_string_literal: true
 
 module TestHelpers
@@ -9,13 +9,17 @@ module TestHelpers
     sig { returns(T::Hash[String, ShopifyAPI::Auth::Session]) }
     attr_reader :sessions
 
-    sig { returns(T::Boolean) }
-    attr_reader :error_on_save
+    sig { returns(T.nilable(T::Boolean)) }
+    attr_reader :error_on_save, :error_on_delete
 
-    sig { params(sessions: T::Hash[String, ShopifyAPI::Auth::Session], error_on_save: T::Boolean).void }
-    def initialize(sessions:, error_on_save:)
-      @sessions = sessions
+    sig do
+      params(sessions: T.nilable(T::Hash[String, ShopifyAPI::Auth::Session]), error_on_save: T.nilable(T::Boolean),
+        error_on_delete: T.nilable(T::Boolean)).void
+    end
+    def initialize(sessions: {}, error_on_save: false, error_on_delete: false)
+      @sessions = T.must(sessions)
       @error_on_save = error_on_save
+      @error_on_delete = error_on_delete
     end
 
     sig do
@@ -41,6 +45,7 @@ module TestHelpers
         .returns(T::Boolean)
     end
     def delete_session(id)
+      return false if error_on_delete
       sessions.delete(id)
       true
     end

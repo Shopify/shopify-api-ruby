@@ -11,6 +11,7 @@ class ContextTest < Minitest::Test
       host_name: "host",
       scope: ["scope1", "scope2"],
       is_private: true,
+      is_embedded: true,
       session_storage: ShopifyAPI::Auth::FileSessionStorage.new
     )
 
@@ -19,6 +20,7 @@ class ContextTest < Minitest::Test
     assert_equal(ShopifyAPI::Context.host_name, "host")
     assert_equal(["scope1", "scope2"], ShopifyAPI::Context.scope)
     assert(ShopifyAPI::Context.is_private)
+    assert(ShopifyAPI::Context.is_embedded)
     assert_equal(ShopifyAPI::Context.session_storage, ShopifyAPI::Auth::FileSessionStorage.new)
   end
 end

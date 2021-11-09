@@ -18,7 +18,10 @@ module ShopifyAPI
       sig { returns(T::Array[String]) }
       attr_accessor :scope
 
-      sig { returns(T.nilable(Integer)) }
+      sig { returns(T.nilable(T::Array[String])) }
+      attr_accessor :associated_user_scope
+
+      sig { returns(T.nilable(Time)) }
       attr_accessor :expires
 
       sig { returns(T.nilable(AssociatedUser)) }
@@ -34,18 +37,20 @@ module ShopifyAPI
           state: T.nilable(String),
           access_token: T.nilable(String),
           scope: T::Array[String],
-          expires: T.nilable(Integer),
+          associated_user_scope: T.nilable(T::Array[String]),
+          expires: T.nilable(Time),
           is_online: T.nilable(T::Boolean),
           associated_user: T.nilable(AssociatedUser)
         ).void
       end
       def initialize(shop:, id: nil, state: nil, access_token: "",
-        scope: [], expires: nil, is_online: nil, associated_user: nil)
+        scope: [], associated_user_scope: nil, expires: nil, is_online: nil, associated_user: nil)
         @id = id || SecureRandom.uuid
         @shop = shop
         @state = state
         @access_token = access_token
         @scope = scope
+        @associated_user_scope = associated_user_scope
         @expires = expires
         @associated_user = associated_user
         @is_online = is_online || !associated_user.nil?
@@ -55,13 +60,16 @@ module ShopifyAPI
       sig { params(other: T.nilable(Session)).returns(T::Boolean) }
       def ==(other)
         if other
-          id == other.id &&
+          T.must(
+            id == other.id &&
             shop == other.shop &&
             state == other.state &&
             scope == other.scope &&
-            expires == other.expires &&
+            associated_user_scope == other.associated_user_scope &&
+            (!(expires.nil? ^ other.expires.nil?) && (expires.nil? || expires.to_i == other.expires.to_i)) &&
             is_online == other.is_online &&
             associated_user == other.associated_user
+          )
         else
           false
         end

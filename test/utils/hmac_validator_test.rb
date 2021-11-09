@@ -5,7 +5,7 @@ require_relative "../test_helper"
 
 class HmacValidatorTest < Test::Unit::TestCase
   def test_invalid_signature
-    query = ShopifyAPI::Utils::AuthQuery.new(
+    query = ShopifyAPI::Auth::Oauth::AuthQuery.new(
       code: "somecode",
       shop: "some-shop.myshopify.com",
       state: "1234",
@@ -29,7 +29,7 @@ class HmacValidatorTest < Test::Unit::TestCase
       ShopifyAPI::Context.api_secret_key,
       URI.encode_www_form(query_to_sign)
     )
-    query = ShopifyAPI::Utils::AuthQuery.new(
+    query = ShopifyAPI::Auth::Oauth::AuthQuery.new(
       code: "somecode",
       shop: "some-shop.myshopify.com",
       state: "1234",

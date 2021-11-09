@@ -39,3 +39,28 @@ class ShopifyAuthController < ApplicationController
   end
 end
 ```
+
+## Add your OAuth callback route
+
+After the app is authenticated with Shopify, the Shopify platform will send a request back to your app using this route (which you provided as a parameter to `begin_auth`, above). Your app will now use the provided `validate_auth_callback` method to finalize the OAuth process. This method returns a hash containing the new session and a nilable cookie to be set in the browser in form of {`session`: `ShopifyAPI::Auth::Session`, `cookie`: `ShopifyAPI::Auth::Oauth::SessionCookie`}.
+
+An example is shown below in a Rails app but these steps could be applied in any framework:
+
+```ruby
+def callback
+  begin
+    auth_result = ShopifyAPI::Auth::Oauth.validate_auth_callback(
+      cookies: cookies,
+      auth_query: ShopifyAPI::Auth::Oauth::AuthQuery.new(request.parameters.symbolize_keys.except(:controller, :action))
+    )
+
+    puts("OAuth complete! New access token: #{auth_result[:session].access_token}")
+
+    head 307
+    response.set_header("Location", "<some-redirect-url>")
+  rescue => e
+    puts(e.message)  
+    head 500
+  end
+end
+```
