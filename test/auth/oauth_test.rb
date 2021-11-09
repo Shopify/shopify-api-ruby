@@ -21,14 +21,14 @@ class OauthTest < Test::Unit::TestCase
       ShopifyAPI::Context.api_secret_key,
       URI.encode_www_form({
         code: @callback_code,
-        host: HOST_NAME,
+        host: ShopifyAPI::Context.host_name,
         shop: @shop,
         state: @callback_state,
         timestamp: @callback_timestamp,
       })
     )
     @auth_query = ShopifyAPI::Auth::Oauth::AuthQuery.new(code: @callback_code, shop: @shop,
-      timestamp: @callback_timestamp, host: HOST_NAME, state: @callback_state, hmac: @callback_hmac)
+      timestamp: @callback_timestamp, host: ShopifyAPI::Context.host_name, state: @callback_state, hmac: @callback_hmac)
     @access_token_request = {
       client_id: ShopifyAPI::Context.api_key,
       client_secret: ShopifyAPI::Context.api_secret_key,
@@ -187,7 +187,7 @@ class OauthTest < Test::Unit::TestCase
 
   def test_validate_auth_callback_invalid_hmac
     auth_query = ShopifyAPI::Auth::Oauth::AuthQuery.new(code: @callback_code, shop: @shop,
-      timestamp: @callback_timestamp, host: HOST_NAME, state: @callback_state, hmac: "")
+      timestamp: @callback_timestamp, host: ShopifyAPI::Context.host_name, state: @callback_state, hmac: "")
 
     assert_raises(ShopifyAPI::Errors::InvalidOauthError) do
       ShopifyAPI::Auth::Oauth.validate_auth_callback(cookies: @cookies, auth_query: auth_query)
@@ -263,9 +263,9 @@ class OauthTest < Test::Unit::TestCase
 
   def verify_oauth_begin(auth_route:, cookie:, is_online:)
     expected_query_params = {
-      client_id: API_KEY,
-      scope: SCOPE.join(","),
-      redirect_uri: "https://#{HOST_NAME}/redirect",
+      client_id: ShopifyAPI::Context.api_key,
+      scope: ShopifyAPI::Context.scope.join(","),
+      redirect_uri: "https://#{ShopifyAPI::Context.host_name}/redirect",
       "grant_options[]": is_online ? "per-user" : "",
     }
 

@@ -11,12 +11,6 @@ require "shopify_api"
 
 Dir[File.dirname(__FILE__) + "/test_helpers/*.rb"].each { |file| require file }
 
-API_KEY = "API_KEY"
-API_SECRET_KEY = "API_SECRET_KEY"
-HOST_NAME = "app-address.com"
-IS_EMBEDDED = false
-SCOPE = T.let(["scope1", "scope2"], T::Array[String])
-
 module Test
   module Unit
     class TestCase < Minitest::Test
@@ -25,12 +19,12 @@ module Test
       sig { void }
       def setup
         ShopifyAPI::Context.setup(
-          api_key: API_KEY,
-          api_secret_key: API_SECRET_KEY,
-          host_name: HOST_NAME,
-          scope: SCOPE,
+          api_key: "API_KEY",
+          api_secret_key: "API_SECRET_KEY",
+          host_name: "app-address.com",
+          scope: ["scope1", "scope2"],
           is_private: false,
-          is_embedded: IS_EMBEDDED,
+          is_embedded: false,
           session_storage: TestHelpers::FakeSessionStorage.new
         )
       end
