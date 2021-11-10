@@ -12,7 +12,7 @@ class OauthTest < Test::Unit::TestCase
     @stubbed_time_now = Time.now
     @shop = "test-shop.myshopify.com"
     @session_cookie = "cookie-id"
-    @cookies = { ShopifyAPI::Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME => @session_cookie }
+    @cookies = { ShopifyAPI::Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME.to_sym => @session_cookie }
     @callback_code = "auth-query-code"
     @callback_timestamp = Time.now.to_i.to_s
     @callback_state = "nonce"
