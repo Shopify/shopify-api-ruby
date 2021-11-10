@@ -5,7 +5,6 @@ PATH
       activeresource (>= 4.1.0, < 6.0.0)
       graphql-client
       rack
-      webrick
 
 GEM
   remote: https://rubygems.org/
@@ -130,7 +129,6 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
-    webrick (1.7.0)
     zeitwerk (2.3.0)
 
 PLATFORMS
