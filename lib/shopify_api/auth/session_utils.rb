@@ -3,7 +3,7 @@
 
 module ShopifyAPI
   module Auth
-    class SessionLoader
+    class SessionUtils
       extend T::Sig
 
       class << self
@@ -24,15 +24,38 @@ module ShopifyAPI
 
         sig do
           params(
+            headers: T::Hash[Symbol, String],
+            cookies: T.nilable(T::Hash[Symbol, String]),
+            online: T::Boolean
+          ).returns(T::Boolean)
+        end
+        def delete_current_session(headers:, cookies:, online:)
+          session_id = current_seesion_id(headers, cookies, online)
+          return false unless session_id
+          Context.session_storage.delete_session(session_id)
+        end
+
+        sig do
+          params(
             shop: String,
             include_expired: T::Boolean,
           ).returns(T.nilable(Session))
         end
-        def load_offline_session(shop, include_expired: false)
+        def load_offline_session(shop:, include_expired: false)
           session_id = offline_session_id(shop)
           session = Context.session_storage.load_session(session_id)
           return nil if session && !include_expired && session.expires && T.must(session.expires) < Time.now
           session
+        end
+
+        sig do
+          params(
+            shop: String
+          ).returns(T::Boolean)
+        end
+        def delete_offline_session(shop:)
+          session_id = offline_session_id(shop)
+          Context.session_storage.delete_session(session_id)
         end
 
         private

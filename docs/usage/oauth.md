@@ -66,12 +66,12 @@ end
 ```
 ## Fetching sessions
 
-You can use the OAuth methods to create both offline and online sessions. Once the process is completed, the session will be stored as per your `Context.session_storage`, and can be retrieved with `SessionLoader` class methods.
+You can use the OAuth methods to create both offline and online sessions. Once the process is completed, the session will be stored as per your `Context.session_storage`, and can be retrieved with `SessionUtils` class methods.
 
 - To load current session, you can use the following method:
 
 ```ruby
-ShopifyAPI::Auth::SessionLoader.load_current_session(headers, cookies, is_online)
+ShopifyAPI::Auth::SessionUtils.load_current_session(headers, cookies, is_online)
 ```
 Accepted arguments:
 | Parameter   | Type                      | Notes                                                                                                                                                                     |
@@ -85,7 +85,7 @@ This method will return a `ShopifyAPI::Auth::Session`  if a session exists. Eith
 - To load offline session, you can use the following method:
 
 ```ruby
-ShopifyAPI::Auth::SessionLoader.load_offline_session(shop)
+ShopifyAPI::Auth::SessionUtils.load_offline_session(shop)
 ```
 Accepted arguments:
 | Parameter           | Type      | Notes                                                                                                                                                                     |
