@@ -23,6 +23,7 @@ module Test
         ShopifyAPI::Context.setup(
           api_key: "API_KEY",
           api_secret_key: "API_SECRET_KEY",
+          api_version: "version",
           host_name: "app-address.com",
           scope: ["scope1", "scope2"],
           is_private: false,
@@ -35,6 +36,7 @@ module Test
         params(
           api_key: T.nilable(String),
           api_secret_key: T.nilable(String),
+          api_version: T.nilable(String),
           host_name: T.nilable(String),
           scope: T.nilable(T::Array[String]),
           is_private: T.nilable(T::Boolean),
@@ -45,6 +47,7 @@ module Test
       def modify_context(
         api_key: nil,
         api_secret_key: nil,
+        api_version: nil,
         host_name: nil,
         scope: nil,
         is_private: nil,
@@ -54,6 +57,7 @@ module Test
         ShopifyAPI::Context.setup(
           api_key: api_key ? api_key : ShopifyAPI::Context.api_key,
           api_secret_key: api_secret_key ? api_secret_key : ShopifyAPI::Context.api_secret_key,
+          api_version: api_version ? api_version : ShopifyAPI::Context.api_version,
           host_name: host_name ? host_name : ShopifyAPI::Context.host_name,
           scope: scope ? scope : ShopifyAPI::Context.scope,
           is_private: !is_private.nil? ? is_private : ShopifyAPI::Context.private?,

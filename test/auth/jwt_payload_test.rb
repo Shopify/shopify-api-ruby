@@ -72,15 +72,9 @@ class JwtPayloadTest < Test::Unit::TestCase
 
   def test_decode_jwt_payload_fails_with_invalid_api_key
     jwt_token = JWT.encode(@jwt_payload, ShopifyAPI::Context.api_secret_key, "HS256")
-    ShopifyAPI::Context.setup(
-      api_key: "invalid",
-      api_secret_key: ShopifyAPI::Context.api_secret_key,
-      host_name: ShopifyAPI::Context.host_name,
-      scope: ShopifyAPI::Context.scope,
-      is_private: false,
-      is_embedded: true,
-      session_storage: ShopifyAPI::Context.session_storage,
-    )
+
+    modify_context(api_key: "invalid")
+
     assert_raises(ShopifyAPI::Errors::InvalidJwtTokenError) do
       ShopifyAPI::Auth::JwtPayload.new(jwt_token)
     end

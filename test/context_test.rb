@@ -22,6 +22,7 @@ class ContextTest < Minitest::Test
     ShopifyAPI::Context.setup(
       api_key: "key",
       api_secret_key: "secret",
+      api_version: "version",
       host_name: "host",
       scope: ["scope1", "scope2"],
       is_private: true,
@@ -32,6 +33,7 @@ class ContextTest < Minitest::Test
     assert(ShopifyAPI::Context.setup?)
     assert_equal(ShopifyAPI::Context.api_key, "key")
     assert_equal(ShopifyAPI::Context.api_secret_key, "secret")
+    assert_equal(ShopifyAPI::Context.api_version, "version")
     assert_equal(ShopifyAPI::Context.host_name, "host")
     assert_equal(["scope1", "scope2"], ShopifyAPI::Context.scope)
     assert(ShopifyAPI::Context.private?)
