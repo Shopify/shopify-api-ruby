@@ -68,7 +68,7 @@ module ShopifyAPI
           ).returns(T.nilable(String))
         end
         def current_seesion_id(headers, cookies, online)
-          if Context.is_embedded
+          if Context.embedded?
             if headers[:authorization]
               matches = T.must(headers[:authorization]).match(/^Bearer (.+)$/)
               raise ShopifyAPI::Errors::MissingJwtTokenError,

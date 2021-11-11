@@ -29,6 +29,6 @@ class ContextTest < Minitest::Test
     )
 
     session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop", associated_user: user)
-    assert(session.is_online)
+    assert(session.online?)
   end
 end

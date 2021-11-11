@@ -56,8 +56,8 @@ module Test
           api_secret_key: api_secret_key ? api_secret_key : ShopifyAPI::Context.api_secret_key,
           host_name: host_name ? host_name : ShopifyAPI::Context.host_name,
           scope: scope ? scope : ShopifyAPI::Context.scope,
-          is_private: !is_private.nil? ? is_private : ShopifyAPI::Context.is_private,
-          is_embedded: !is_embedded.nil? ? is_embedded : ShopifyAPI::Context.is_embedded,
+          is_private: !is_private.nil? ? is_private : ShopifyAPI::Context.private?,
+          is_embedded: !is_embedded.nil? ? is_embedded : ShopifyAPI::Context.embedded?,
           session_storage: session_storage ? session_storage : ShopifyAPI::Context.session_storage
         )
       end

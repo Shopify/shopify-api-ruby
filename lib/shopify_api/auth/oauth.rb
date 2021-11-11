@@ -19,7 +19,10 @@ module ShopifyAPI
           ).returns(T::Hash[Symbol, T.any(String, SessionCookie)])
         end
         def begin_auth(shop:, redirect_path:, is_online: true)
-          raise Errors::UnsupportedOauthError, "Cannot perform OAuth for private apps." if Context.is_private
+          unless Context.setup?
+            raise Errors::ContextNotSetupError, "ShopifyAPI::Context not setup, please call ShopifyAPI::Context.setup"
+          end
+          raise Errors::UnsupportedOauthError, "Cannot perform OAuth for private apps." if Context.private?
 
           state = SecureRandom.alphanumeric(NONCE_LENGTH)
           session = Session.new(shop: shop, state: state, is_online: is_online)
@@ -49,8 +52,11 @@ module ShopifyAPI
           ).returns(T::Hash[Symbol, T.any(Session, T.nilable(SessionCookie))])
         end
         def validate_auth_callback(cookies:, auth_query:)
+          unless Context.setup?
+            raise Errors::ContextNotSetupError, "ShopifyAPI::Context not setup, please call ShopifyAPI::Context.setup"
+          end
           raise Errors::InvalidOauthError, "Invalid OAuth callback." unless Utils::HmacValidator.validate(auth_query)
-          raise Errors::UnsupportedOauthError, "Cannot perform OAuth for private apps." if Context.is_private
+          raise Errors::UnsupportedOauthError, "Cannot perform OAuth for private apps." if Context.private?
 
           session_cookie = cookies[SessionCookie::SESSION_COOKIE_NAME.to_sym]
           raise Errors::NoSessionCookieError unless session_cookie
@@ -79,7 +85,7 @@ module ShopifyAPI
           new_session = create_new_session(session_params, current_session)
 
           cookie = nil
-          if Context.is_embedded
+          if Context.embedded?
             unless session_storage.delete_session(session_cookie)
               raise Errors::SessionStorageError,
                 "OAuth Session could not be deleted. Please check your session storage functionality."
@@ -92,7 +98,7 @@ module ShopifyAPI
           else
             cookie = SessionCookie.new(
               value: new_session.id,
-              expires: new_session.is_online ? new_session.expires : nil
+              expires: new_session.online? ? new_session.expires : nil
             )
           end
 
@@ -119,14 +125,14 @@ module ShopifyAPI
           id = current_session.id
           scope = session_params[:scope].split(",")
 
-          if current_session.is_online
+          if current_session.online?
             associated_user = AssociatedUser.new(session_params[:associated_user].map { |k, v| [k.to_sym, v] }.to_h)
             expires = Time.now + session_params[:expires_in].to_i
             associated_user_scope = session_params[:associated_user_scope].split(",")
-            id = "#{current_session.shop}_#{associated_user.id}" if Context.is_embedded
+            id = "#{current_session.shop}_#{associated_user.id}" if Context.embedded?
           end
 
-          id = "offline_#{current_session.shop}" if Context.is_embedded && !current_session.is_online
+          id = "offline_#{current_session.shop}" if Context.embedded? && !current_session.online?
 
           Session.new(
             id: id,

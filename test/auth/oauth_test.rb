@@ -78,6 +78,14 @@ class OauthTest < Test::Unit::TestCase
     verify_oauth_begin(auth_route: result[:auth_route], cookie: result[:cookie], is_online: true)
   end
 
+  def test_begin_auth_context_not_setup
+    modify_context(api_key: "", api_secret_key: "", host_name: "")
+
+    assert_raises(ShopifyAPI::Errors::ContextNotSetupError) do
+      ShopifyAPI::Auth::Oauth.begin_auth(shop: @shop, redirect_path: "/redirect")
+    end
+  end
+
   def test_begin_auth_private_app
     modify_context(is_private: true)
 
@@ -191,6 +199,14 @@ class OauthTest < Test::Unit::TestCase
 
     assert_raises(ShopifyAPI::Errors::InvalidOauthError) do
       ShopifyAPI::Auth::Oauth.validate_auth_callback(cookies: @cookies, auth_query: auth_query)
+    end
+  end
+
+  def test_validate_auth_context_not_setup
+    modify_context(api_key: "", api_secret_key: "", host_name: "")
+
+    assert_raises(ShopifyAPI::Errors::ContextNotSetupError) do
+      ShopifyAPI::Auth::Oauth.validate_auth_callback(cookies: @cookies, auth_query: @auth_query)
     end
   end
 

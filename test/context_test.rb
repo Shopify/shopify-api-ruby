@@ -4,7 +4,21 @@
 require_relative "./test_helper"
 
 class ContextTest < Minitest::Test
-  def test_setup_properly_initializes_variables
+  def test_not_setup
+    ShopifyAPI::Context.setup(
+      api_key: "",
+      api_secret_key: "",
+      host_name: "",
+      scope: [],
+      is_private: false,
+      is_embedded: true,
+      session_storage: ShopifyAPI::Auth::FileSessionStorage.new
+    )
+
+    refute(ShopifyAPI::Context.setup?)
+  end
+
+  def test_setup
     ShopifyAPI::Context.setup(
       api_key: "key",
       api_secret_key: "secret",
@@ -15,12 +29,13 @@ class ContextTest < Minitest::Test
       session_storage: ShopifyAPI::Auth::FileSessionStorage.new
     )
 
+    assert(ShopifyAPI::Context.setup?)
     assert_equal(ShopifyAPI::Context.api_key, "key")
     assert_equal(ShopifyAPI::Context.api_secret_key, "secret")
     assert_equal(ShopifyAPI::Context.host_name, "host")
     assert_equal(["scope1", "scope2"], ShopifyAPI::Context.scope)
-    assert(ShopifyAPI::Context.is_private)
-    assert(ShopifyAPI::Context.is_embedded)
+    assert(ShopifyAPI::Context.private?)
+    assert(ShopifyAPI::Context.private?)
     assert_equal(ShopifyAPI::Context.session_storage, ShopifyAPI::Auth::FileSessionStorage.new)
   end
 end

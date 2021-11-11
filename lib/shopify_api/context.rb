@@ -48,7 +48,19 @@ module ShopifyAPI
       attr_reader :session_storage
 
       sig { returns(T::Boolean) }
-      attr_reader :is_private, :is_embedded
+      def private?
+        @is_private
+      end
+
+      sig { returns(T::Boolean) }
+      def embedded?
+        @is_embedded
+      end
+
+      sig { returns(T::Boolean) }
+      def setup?
+        !(api_key.empty? || api_secret_key.empty? || host_name.empty?)
+      end
     end
   end
 end

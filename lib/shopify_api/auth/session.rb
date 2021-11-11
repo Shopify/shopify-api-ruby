@@ -1,4 +1,4 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -28,7 +28,9 @@ module ShopifyAPI
       attr_accessor :associated_user
 
       sig { returns(T::Boolean) }
-      attr_accessor :is_online
+      def online?
+        @is_online
+      end
 
       sig do
         params(
@@ -45,7 +47,7 @@ module ShopifyAPI
       end
       def initialize(shop:, id: nil, state: nil, access_token: "",
         scope: [], associated_user_scope: nil, expires: nil, is_online: nil, associated_user: nil)
-        @id = id || SecureRandom.uuid
+        @id = T.let(id || SecureRandom.uuid, String)
         @shop = shop
         @state = state
         @access_token = access_token
@@ -53,7 +55,7 @@ module ShopifyAPI
         @associated_user_scope = associated_user_scope
         @expires = expires
         @associated_user = associated_user
-        @is_online = is_online || !associated_user.nil?
+        @is_online = T.let(is_online || !associated_user.nil?, T::Boolean)
       end
 
       alias_method :eql?, :==
@@ -67,7 +69,7 @@ module ShopifyAPI
             scope == other.scope &&
             associated_user_scope == other.associated_user_scope &&
             (!(expires.nil? ^ other.expires.nil?) && (expires.nil? || expires.to_i == other.expires.to_i)) &&
-            is_online == other.is_online &&
+            online? == other.online? &&
             associated_user == other.associated_user
           )
         else
