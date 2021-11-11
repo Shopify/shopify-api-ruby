@@ -26,4 +26,5 @@ group :test do
   gem "minitest"
   gem "fakefs", require: false
   gem "webmock"
+  gem "mocha"
 end

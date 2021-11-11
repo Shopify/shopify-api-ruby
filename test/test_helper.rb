@@ -6,6 +6,8 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
 
 require "minitest/autorun"
 require "webmock/minitest"
+require "mocha"
+require "mocha/minitest"
 
 require "shopify_api"
 
