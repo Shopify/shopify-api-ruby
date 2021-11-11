@@ -50,7 +50,7 @@ An example is shown below in a Rails app but these steps could be applied in any
 def callback
   begin
     auth_result = ShopifyAPI::Auth::Oauth.validate_auth_callback(
-      cookies: cookies,
+      cookies: cookies.to_h.symbolize_keys,
       auth_query: ShopifyAPI::Auth::Oauth::AuthQuery.new(request.parameters.symbolize_keys.except(:controller, :action))
     )
 
