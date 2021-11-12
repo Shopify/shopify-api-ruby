@@ -71,14 +71,15 @@ You can use the OAuth methods to create both offline and online sessions. Once t
 - To load current session, you can use the following method:
 
 ```ruby
-ShopifyAPI::Auth::SessionUtils.load_current_session(headers, cookies, is_online)
+ShopifyAPI::Auth::SessionUtils.load_current_session(auth_header: <auth-header>, cookies: <cookies>, is_online: <true|false>)
 ```
+
 Accepted arguments:
 | Parameter   | Type                      | Notes                                                                                                                                                                     |
 | ----------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `headers`   | `Hash(Symbol, String)`    | The headers from the HTTP request. JWT token from `headers` is used to load session for embedded apps. If JWT token is not provided this methods will try with `cookies`. |
-| `cookies`   | `Hash(Symbol, String)`    | The cookies from the HTTP request. A session cookie named `shopify_app_session` is used to load session for non-embedded apps.                                            |
-| `is_online` | `Boolean`                 | Whether to load online or offline sessions                                                                                                                                |
+| `auth_header`   | `String`    | JWT token will be extracted from `auth_header` to load session for embedded apps. If JWT token is not provided this methods will try with `cookies`. Only required if trying to load, an embedded session. |
+| `cookies`   | `Hash(String, String)`    | The cookies from the HTTP request. A session cookie named `shopify_app_session` is used to load session for non-embedded apps. Can be omitted if loading and embedded session without falling back on cookies |
+| `is_online` | `Boolean`                 | Whether to load online or offline sessions. Defaults to `false` |
 
 This method will return a `ShopifyAPI::Auth::Session`  if a session exists. Either a proper token or a proper cookie must be present.
 
@@ -87,6 +88,7 @@ This method will return a `ShopifyAPI::Auth::Session`  if a session exists. Eith
 ```ruby
 ShopifyAPI::Auth::SessionUtils.load_offline_session(shop)
 ```
+
 Accepted arguments:
 | Parameter           | Type      | Notes                                                                                                                                                                     |
 | ------------------- | --------- | --------------------------------------------- |

@@ -11,26 +11,26 @@ module ShopifyAPI
 
         sig do
           params(
-            headers: T::Hash[Symbol, String],
+            auth_header: T.nilable(String),
             cookies: T.nilable(T::Hash[String, String]),
             online: T::Boolean
           ).returns(T.nilable(Session))
         end
-        def load_current_session(headers:, cookies:, online:)
-          session_id = current_seesion_id(headers, cookies, online)
+        def load_current_session(auth_header: nil, cookies: nil, online: false)
+          session_id = current_session_id(auth_header, cookies, online)
           return nil unless session_id
           Context.session_storage.load_session(session_id)
         end
 
         sig do
           params(
-            headers: T::Hash[Symbol, String],
+            auth_header: T.nilable(String),
             cookies: T.nilable(T::Hash[String, String]),
             online: T::Boolean
           ).returns(T::Boolean)
         end
-        def delete_current_session(headers:, cookies:, online:)
-          session_id = current_seesion_id(headers, cookies, online)
+        def delete_current_session(auth_header: nil, cookies: nil, online: false)
+          session_id = current_session_id(auth_header, cookies, online)
           return false unless session_id
           Context.session_storage.delete_session(session_id)
         end
@@ -62,15 +62,15 @@ module ShopifyAPI
 
         sig do
           params(
-            headers: T::Hash[Symbol, String],
+            auth_header: T.nilable(String),
             cookies: T.nilable(T::Hash[String, String]),
             online: T::Boolean
           ).returns(T.nilable(String))
         end
-        def current_seesion_id(headers, cookies, online)
+        def current_session_id(auth_header, cookies, online)
           if Context.embedded?
-            if headers[:authorization]
-              matches = T.must(headers[:authorization]).match(/^Bearer (.+)$/)
+            if auth_header
+              matches = auth_header.match(/^Bearer (.+)$/)
               raise ShopifyAPI::Errors::MissingJwtTokenError,
                 "Missing Bearer token in authorization header" unless matches
 
