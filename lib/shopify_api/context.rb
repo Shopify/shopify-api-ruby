@@ -9,7 +9,7 @@ module ShopifyAPI
     @api_secret_key = T.let("", String)
     @api_version = T.let("2021-01", String)
     @host_name = T.let("", String)
-    @scope = T.let([], T::Array[String])
+    @scope = T.let(Auth::AuthScopes.new, Auth::AuthScopes)
     @is_embedded = T.let(false, T::Boolean)
     @session_storage = T.let(ShopifyAPI::Auth::FileSessionStorage.new, ShopifyAPI::Auth::SessionStorage)
     @is_private = T.let(false, T::Boolean)
@@ -24,7 +24,7 @@ module ShopifyAPI
           api_secret_key: String,
           api_version: String,
           host_name: String,
-          scope: T::Array[String],
+          scope: T.any(T::Array[String], String),
           is_private: T::Boolean,
           is_embedded: T::Boolean,
           session_storage: ShopifyAPI::Auth::SessionStorage
@@ -37,7 +37,7 @@ module ShopifyAPI
         @api_version = api_version
         @host_name = host_name
         @is_private = is_private
-        @scope = scope
+        @scope = Auth::AuthScopes.new(scope)
         @is_embedded = is_embedded
         @session_storage = session_storage
       end
@@ -45,7 +45,7 @@ module ShopifyAPI
       sig { returns(String) }
       attr_reader :api_key, :api_secret_key, :api_version, :host_name
 
-      sig { returns(T::Array[String]) }
+      sig { returns(Auth::AuthScopes) }
       attr_reader :scope
 
       sig { returns(ShopifyAPI::Auth::SessionStorage) }

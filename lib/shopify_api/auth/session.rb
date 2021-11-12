@@ -15,10 +15,10 @@ module ShopifyAPI
       sig { returns(String) }
       attr_accessor :shop
 
-      sig { returns(T::Array[String]) }
+      sig { returns(AuthScopes) }
       attr_accessor :scope
 
-      sig { returns(T.nilable(T::Array[String])) }
+      sig { returns(T.nilable(AuthScopes)) }
       attr_accessor :associated_user_scope
 
       sig { returns(T.nilable(Time)) }
@@ -38,8 +38,8 @@ module ShopifyAPI
           id: T.nilable(String),
           state: T.nilable(String),
           access_token: T.nilable(String),
-          scope: T::Array[String],
-          associated_user_scope: T.nilable(T::Array[String]),
+          scope: T.any(T::Array[String], String),
+          associated_user_scope: T.nilable(T.any(T::Array[String], String)),
           expires: T.nilable(Time),
           is_online: T.nilable(T::Boolean),
           associated_user: T.nilable(AssociatedUser)
@@ -51,8 +51,10 @@ module ShopifyAPI
         @shop = shop
         @state = state
         @access_token = access_token
-        @scope = scope
-        @associated_user_scope = associated_user_scope
+        @scope = T.let(AuthScopes.new(scope), AuthScopes)
+        @associated_user_scope = T.let(
+          associated_user_scope.nil? ? nil : AuthScopes.new(associated_user_scope), T.nilable(AuthScopes)
+        )
         @expires = expires
         @associated_user = associated_user
         @is_online = T.let(is_online || !associated_user.nil?, T::Boolean)

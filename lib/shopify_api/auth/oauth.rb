@@ -33,7 +33,7 @@ module ShopifyAPI
 
           query = {
             client_id: ShopifyAPI::Context.api_key,
-            scope: ShopifyAPI::Context.scope.join(","),
+            scope: ShopifyAPI::Context.scope.to_s,
             redirect_uri: "https://#{ShopifyAPI::Context.host_name}#{redirect_path}",
             state: state,
             "grant_options[]": is_online ? "per-user" : "",
@@ -123,12 +123,12 @@ module ShopifyAPI
           session_params = session_params.map { |k, v| [k.to_sym, v] }.to_h
 
           id = current_session.id
-          scope = session_params[:scope].split(",")
+          scope = session_params[:scope]
 
           if current_session.online?
             associated_user = AssociatedUser.new(session_params[:associated_user].map { |k, v| [k.to_sym, v] }.to_h)
             expires = Time.now + session_params[:expires_in].to_i
-            associated_user_scope = session_params[:associated_user_scope].split(",")
+            associated_user_scope = session_params[:associated_user_scope]
             id = "#{current_session.shop}_#{associated_user.id}" if Context.embedded?
           end
 

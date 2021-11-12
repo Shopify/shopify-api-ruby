@@ -38,7 +38,7 @@ module Test
           api_secret_key: T.nilable(String),
           api_version: T.nilable(String),
           host_name: T.nilable(String),
-          scope: T.nilable(T::Array[String]),
+          scope: T.nilable(T.any(T::Array[String], String)),
           is_private: T.nilable(T::Boolean),
           is_embedded: T.nilable(T::Boolean),
           session_storage: T.nilable(ShopifyAPI::Auth::SessionStorage)
@@ -59,7 +59,7 @@ module Test
           api_secret_key: api_secret_key ? api_secret_key : ShopifyAPI::Context.api_secret_key,
           api_version: api_version ? api_version : ShopifyAPI::Context.api_version,
           host_name: host_name ? host_name : ShopifyAPI::Context.host_name,
-          scope: scope ? scope : ShopifyAPI::Context.scope,
+          scope: scope ? scope : ShopifyAPI::Context.scope.to_s,
           is_private: !is_private.nil? ? is_private : ShopifyAPI::Context.private?,
           is_embedded: !is_embedded.nil? ? is_embedded : ShopifyAPI::Context.embedded?,
           session_storage: session_storage ? session_storage : ShopifyAPI::Context.session_storage

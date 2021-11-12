@@ -107,8 +107,12 @@ class OauthTest < Test::Unit::TestCase
       .with(body: @access_token_request)
       .to_return(body: @offline_token_response.to_json, headers: { content_type: "application/json" })
 
-    expected_session = ShopifyAPI::Auth::Session.new(id: @session_cookie, shop: @shop,
-      access_token: @offline_token_response[:access_token], scope: @offline_token_response[:scope].split(","))
+    expected_session = ShopifyAPI::Auth::Session.new(
+      id: @session_cookie,
+      shop: @shop,
+      access_token: @offline_token_response[:access_token],
+      scope: @offline_token_response[:scope]
+    )
     expected_cookie = ShopifyAPI::Auth::Oauth::SessionCookie.new(value: @session_cookie, expires: nil)
 
     ShopifyAPI::Context.session_storage.store_session(ShopifyAPI::Auth::Session.new(shop: @shop, id: @session_cookie,
@@ -123,8 +127,12 @@ class OauthTest < Test::Unit::TestCase
       .with(body: @access_token_request)
       .to_return(body: @offline_token_response.to_json, headers: { content_type: "application/json" })
 
-    expected_session = ShopifyAPI::Auth::Session.new(id: "offline_#{@shop}", shop: @shop,
-      access_token: @offline_token_response[:access_token], scope: @offline_token_response[:scope].split(","))
+    expected_session = ShopifyAPI::Auth::Session.new(
+      id: "offline_#{@shop}",
+      shop: @shop,
+      access_token: @offline_token_response[:access_token],
+      scope: @offline_token_response[:scope]
+    )
     expected_cookie = ShopifyAPI::Auth::Oauth::SessionCookie.new(value: "", expires: @stubbed_time_now)
 
     modify_context(is_embedded: true)
@@ -147,8 +155,8 @@ class OauthTest < Test::Unit::TestCase
       id: @session_cookie,
       shop: @shop,
       access_token: @online_token_response[:access_token],
-      scope: @online_token_response[:scope].split(","),
-      associated_user_scope: @online_token_response[:associated_user_scope].split(","),
+      scope: @online_token_response[:scope],
+      associated_user_scope: @online_token_response[:associated_user_scope],
       expires: @stubbed_time_now + @online_token_response[:expires_in].to_i,
       associated_user: @expected_associated_user
     )
@@ -173,8 +181,8 @@ class OauthTest < Test::Unit::TestCase
       id: "#{@shop}_#{@expected_associated_user.id}",
       shop: @shop,
       access_token: @online_token_response[:access_token],
-      scope: @online_token_response[:scope].split(","),
-      associated_user_scope: @online_token_response[:associated_user_scope].split(","),
+      scope: @online_token_response[:scope],
+      associated_user_scope: @online_token_response[:associated_user_scope],
       expires: @stubbed_time_now + @online_token_response[:expires_in].to_i,
       associated_user: @expected_associated_user
     )
@@ -280,7 +288,7 @@ class OauthTest < Test::Unit::TestCase
   def verify_oauth_begin(auth_route:, cookie:, is_online:)
     expected_query_params = {
       client_id: ShopifyAPI::Context.api_key,
-      scope: ShopifyAPI::Context.scope.join(","),
+      scope: ShopifyAPI::Context.scope.to_s,
       redirect_uri: "https://#{ShopifyAPI::Context.host_name}/redirect",
       "grant_options[]": is_online ? "per-user" : "",
     }
