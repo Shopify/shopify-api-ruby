@@ -8,6 +8,7 @@ class ContextTest < Minitest::Test
     ShopifyAPI::Context.setup(
       api_key: "",
       api_secret_key: "",
+      api_version: "",
       host_name: "",
       scope: [],
       is_private: false,
