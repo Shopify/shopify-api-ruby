@@ -24,7 +24,7 @@ class SessionUtilsTest < Test::Unit::TestCase
 
   def test_gets_the_current_session_from_cookies_for_non_embedded_apps
     cookie_id = "1234-this-is-a-cookie-session-id"
-    cookies = { ShopifyAPI::Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME.to_sym => cookie_id }
+    cookies = { ShopifyAPI::Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME => cookie_id }
     session = ShopifyAPI::Auth::Session.new(id: cookie_id, shop: @shop, is_online: true)
     ShopifyAPI::Context.session_storage.store_session(session)
     another_session = ShopifyAPI::Auth::Session.new(id: "some-random-id", shop: @shop, is_online: true)
@@ -35,7 +35,7 @@ class SessionUtilsTest < Test::Unit::TestCase
 
   def test_returns_nil_if_there_is_no_session_for_non_embedded_apps
     cookie_id = "1234-this-is-a-cookie-session-id"
-    cookies = { ShopifyAPI::Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME.to_sym => cookie_id }
+    cookies = { ShopifyAPI::Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME => cookie_id }
     assert_nil(ShopifyAPI::Auth::SessionUtils.load_current_session(
       headers: @jwt_headers,
       cookies: cookies,
@@ -97,7 +97,7 @@ class SessionUtilsTest < Test::Unit::TestCase
   def test_falls_back_to_the_cookie_session_for_embedded_apps
     modify_context(is_embedded: true)
     cookie_id = "1234-this-is-a-cookie-session-id"
-    cookies = { ShopifyAPI::Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME.to_sym => cookie_id }
+    cookies = { ShopifyAPI::Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME => cookie_id }
     session = ShopifyAPI::Auth::Session.new(id: cookie_id, shop: @shop, is_online: true)
     ShopifyAPI::Context.session_storage.store_session(session)
     loaded_session = ShopifyAPI::Auth::SessionUtils.load_current_session(headers: {}, cookies: cookies, online: true)
@@ -106,7 +106,7 @@ class SessionUtilsTest < Test::Unit::TestCase
 
   def test_loads_offline_sessions_from_cookies
     cookie_id = "offline_#{@shop}"
-    cookies = { ShopifyAPI::Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME.to_sym => cookie_id }
+    cookies = { ShopifyAPI::Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME => cookie_id }
     session = ShopifyAPI::Auth::Session.new(id: cookie_id, shop: @shop, is_online: false)
     ShopifyAPI::Context.session_storage.store_session(session)
     loaded_session = ShopifyAPI::Auth::SessionUtils.load_current_session(headers: {}, cookies: cookies, online: false)
@@ -154,7 +154,7 @@ class SessionUtilsTest < Test::Unit::TestCase
 
   def test_deletes_the_current_session_when_using_cookies
     cookie_id = "1234-this-is-a-cookie-session-id"
-    cookies = { ShopifyAPI::Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME.to_sym => cookie_id }
+    cookies = { ShopifyAPI::Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME => cookie_id }
     session = ShopifyAPI::Auth::Session.new(id: cookie_id, shop: @shop, is_online: true)
     ShopifyAPI::Context.session_storage.store_session(session)
     another_session = ShopifyAPI::Auth::Session.new(id: "some-random-id", shop: @shop, is_online: true)
@@ -178,7 +178,7 @@ class SessionUtilsTest < Test::Unit::TestCase
 
   def test_deletes_the_current_offline_session_when_using_cookies
     offline_session_id = "offline_#{@shop}"
-    cookies = { ShopifyAPI::Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME.to_sym => offline_session_id }
+    cookies = { ShopifyAPI::Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME => offline_session_id }
     offline_session = ShopifyAPI::Auth::Session.new(id: offline_session_id, shop: @shop, is_online: false)
     ShopifyAPI::Context.session_storage.store_session(offline_session)
     another_session = ShopifyAPI::Auth::Session.new(id: "offline_some-random-id", shop: @shop, is_online: false)

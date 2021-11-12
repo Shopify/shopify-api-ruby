@@ -12,7 +12,7 @@ module ShopifyAPI
         sig do
           params(
             headers: T::Hash[Symbol, String],
-            cookies: T.nilable(T::Hash[Symbol, String]),
+            cookies: T.nilable(T::Hash[String, String]),
             online: T::Boolean
           ).returns(T.nilable(Session))
         end
@@ -25,7 +25,7 @@ module ShopifyAPI
         sig do
           params(
             headers: T::Hash[Symbol, String],
-            cookies: T.nilable(T::Hash[Symbol, String]),
+            cookies: T.nilable(T::Hash[String, String]),
             online: T::Boolean
           ).returns(T::Boolean)
         end
@@ -63,7 +63,7 @@ module ShopifyAPI
         sig do
           params(
             headers: T::Hash[Symbol, String],
-            cookies: T.nilable(T::Hash[Symbol, String]),
+            cookies: T.nilable(T::Hash[String, String]),
             online: T::Boolean
           ).returns(T.nilable(String))
         end
@@ -85,12 +85,12 @@ module ShopifyAPI
             else
               # falling back to session cookie
               raise ShopifyAPI::Errors::CookieNotFoundError, "JWT token or Session cookie not found for app" unless
-                cookies && cookies[ShopifyAPI::Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME.to_sym]
+                cookies && cookies[ShopifyAPI::Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME]
               cookie_session_id(cookies)
             end
           else
             raise ShopifyAPI::Errors::CookieNotFoundError, "Session cookie not found for app" unless
-              cookies && cookies[ShopifyAPI::Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME.to_sym]
+              cookies && cookies[ShopifyAPI::Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME]
             cookie_session_id(cookies)
           end
         end
@@ -105,9 +105,9 @@ module ShopifyAPI
           "offline_#{shop}"
         end
 
-        sig { params(cookies: T::Hash[Symbol, String]).returns(T.nilable(String)) }
+        sig { params(cookies: T::Hash[String, String]).returns(T.nilable(String)) }
         def cookie_session_id(cookies)
-          cookies[ShopifyAPI::Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME.to_sym]
+          cookies[ShopifyAPI::Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME]
         end
       end
     end

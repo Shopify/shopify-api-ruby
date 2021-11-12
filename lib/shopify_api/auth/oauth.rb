@@ -47,7 +47,7 @@ module ShopifyAPI
 
         sig do
           params(
-            cookies: T::Hash[Symbol, String],
+            cookies: T::Hash[String, String],
             auth_query: AuthQuery
           ).returns(T::Hash[Symbol, T.any(Session, T.nilable(SessionCookie))])
         end
@@ -58,7 +58,7 @@ module ShopifyAPI
           raise Errors::InvalidOauthError, "Invalid OAuth callback." unless Utils::HmacValidator.validate(auth_query)
           raise Errors::UnsupportedOauthError, "Cannot perform OAuth for private apps." if Context.private?
 
-          session_cookie = cookies[SessionCookie::SESSION_COOKIE_NAME.to_sym]
+          session_cookie = cookies[SessionCookie::SESSION_COOKIE_NAME]
           raise Errors::NoSessionCookieError unless session_cookie
 
           session_storage = ShopifyAPI::Context.session_storage
