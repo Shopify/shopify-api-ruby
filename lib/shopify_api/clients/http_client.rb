@@ -45,6 +45,11 @@ module ShopifyAPI
           body = res.body.empty? ? {} : JSON.parse(res.body)
           response = HttpResponse.new(code: res.code.to_i, headers: res.headers.to_h, body: body)
 
+          if response.headers["x-shopify-api-deprecated-reason"]
+            reason = T.must(response.headers["x-shopify-api-deprecated-reason"])[0]
+            warn("Deprecated request to Shopify API at #{request.path}, received reason: #{reason}")
+          end
+
           break if response.ok?
 
           error_messages = []
