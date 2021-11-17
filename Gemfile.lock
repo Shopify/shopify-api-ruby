@@ -41,7 +41,7 @@ GEM
       unparser
     regexp_parser (2.1.1)
     rexml (3.2.5)
-    rubocop (1.22.3)
+    rubocop (1.23.0)
       parallel (~> 1.10)
       parser (>= 3.0.0.0)
       rainbow (>= 2.2.2, < 4.0)
@@ -62,6 +62,7 @@ GEM
       sorbet-static (= 0.5.9307)
     sorbet-runtime (0.5.9307)
     sorbet-static (0.5.9307-universal-darwin-20)
+    sorbet-static (0.5.9307-x86_64-linux)
     spoom (1.1.5)
       sorbet (>= 0.5.9204)
       sorbet-runtime (>= 0.5.9204)
@@ -92,6 +93,7 @@ GEM
 
 PLATFORMS
   x86_64-darwin-20
+  x86_64-linux
 
 DEPENDENCIES
   fakefs
