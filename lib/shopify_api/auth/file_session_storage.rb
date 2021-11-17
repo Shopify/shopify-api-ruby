@@ -22,7 +22,7 @@ module ShopifyAPI
           .returns(T::Boolean)
       end
       def store_session(session)
-        File.write(session_file_path(session.id), Oj.dump(session)) > 0
+        File.write(session_file_path(session.id), session.serialize) > 0
       end
 
       sig do
@@ -32,7 +32,7 @@ module ShopifyAPI
       def load_session(id)
         session_path = session_file_path(id)
         if File.exist?(session_path)
-          Oj.load(File.read(session_path))
+          ShopifyAPI::Auth::Session.deserialize(File.read(session_path))
         end
       end
 

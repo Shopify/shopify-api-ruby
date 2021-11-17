@@ -60,6 +60,16 @@ module ShopifyAPI
         @is_online = T.let(is_online || !associated_user.nil?, T::Boolean)
       end
 
+      sig { returns(String) }
+      def serialize
+        Oj.dump(self)
+      end
+
+      sig { params(str: String).returns(Session) }
+      def self.deserialize(str)
+        Oj.load(str)
+      end
+
       alias_method :eql?, :==
       sig { params(other: T.nilable(Session)).returns(T::Boolean) }
       def ==(other)
