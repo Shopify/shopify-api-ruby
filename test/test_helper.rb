@@ -41,7 +41,8 @@ module Test
           scope: T.nilable(T.any(T::Array[String], String)),
           is_private: T.nilable(T::Boolean),
           is_embedded: T.nilable(T::Boolean),
-          session_storage: T.nilable(ShopifyAPI::Auth::SessionStorage)
+          session_storage: T.nilable(ShopifyAPI::Auth::SessionStorage),
+          logger: T.nilable(Logger)
         ).void
       end
       def modify_context(
@@ -52,7 +53,8 @@ module Test
         scope: nil,
         is_private: nil,
         is_embedded: nil,
-        session_storage: nil
+        session_storage: nil,
+        logger: nil
       )
         ShopifyAPI::Context.setup(
           api_key: api_key ? api_key : ShopifyAPI::Context.api_key,
@@ -62,7 +64,8 @@ module Test
           scope: scope ? scope : ShopifyAPI::Context.scope.to_s,
           is_private: !is_private.nil? ? is_private : ShopifyAPI::Context.private?,
           is_embedded: !is_embedded.nil? ? is_embedded : ShopifyAPI::Context.embedded?,
-          session_storage: session_storage ? session_storage : ShopifyAPI::Context.session_storage
+          session_storage: session_storage ? session_storage : ShopifyAPI::Context.session_storage,
+          logger: logger ? logger : ShopifyAPI::Context.logger
         )
       end
     end

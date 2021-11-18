@@ -47,7 +47,7 @@ module ShopifyAPI
 
           if response.headers["x-shopify-api-deprecated-reason"]
             reason = T.must(response.headers["x-shopify-api-deprecated-reason"])[0]
-            warn("Deprecated request to Shopify API at #{request.path}, received reason: #{reason}")
+            Context.logger.warn("Deprecated request to Shopify API at #{request.path}, received reason: #{reason}")
           end
 
           break if response.ok?

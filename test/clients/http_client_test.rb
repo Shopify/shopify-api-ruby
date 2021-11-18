@@ -163,14 +163,16 @@ class HttpClientTest < Test::Unit::TestCase
   end
 
   def test_warns_on_deprecation_header
+    reader, writer = IO.pipe
+    modify_context(logger: Logger.new(writer))
     deprecate_reason = "https://help.shopify.com/tutorials#foobar-endpoint-is-removed"
     stub_request(@request.http_method, "https://#{@shop}#{@base_path}/#{@request.path}")
       .with(body: @request.body.to_json, query: @request.query, headers: @expected_headers)
       .to_return(body: @success_body.to_json,
         headers: @response_headers.merge("X-Shopify-API-Deprecated-Reason" => deprecate_reason))
 
-    @client.expects(:warn).with(regexp_matches(/#{@request.path}.*#{deprecate_reason}/)).times(1)
     @client.request(@request)
+    assert_match(/#{@request.path}.*#{deprecate_reason}/, reader.gets)
   end
 
   private

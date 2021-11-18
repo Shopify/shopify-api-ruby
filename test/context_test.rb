@@ -20,6 +20,7 @@ class ContextTest < Minitest::Test
   end
 
   def test_setup
+    reader, writer = IO.pipe
     ShopifyAPI::Context.setup(
       api_key: "key",
       api_secret_key: "secret",
@@ -28,7 +29,8 @@ class ContextTest < Minitest::Test
       scope: ["scope1", "scope2"],
       is_private: true,
       is_embedded: true,
-      session_storage: ShopifyAPI::Auth::FileSessionStorage.new
+      session_storage: ShopifyAPI::Auth::FileSessionStorage.new,
+      logger: Logger.new(writer)
     )
 
     assert(ShopifyAPI::Context.setup?)
@@ -40,5 +42,7 @@ class ContextTest < Minitest::Test
     assert(ShopifyAPI::Context.private?)
     assert(ShopifyAPI::Context.private?)
     assert_equal(ShopifyAPI::Context.session_storage, ShopifyAPI::Auth::FileSessionStorage.new)
+    ShopifyAPI::Context.logger.info("test log")
+    assert_match(/test log/, reader.gets)
   end
 end
