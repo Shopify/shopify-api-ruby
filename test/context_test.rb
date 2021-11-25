@@ -30,19 +30,20 @@ class ContextTest < Minitest::Test
       is_private: true,
       is_embedded: true,
       session_storage: ShopifyAPI::Auth::FileSessionStorage.new,
-      logger: Logger.new(writer)
+      logger: Logger.new(writer),
+      private_shop: "privateshop.myshopify.com"
     )
 
     assert(ShopifyAPI::Context.setup?)
-    assert_equal(ShopifyAPI::Context.api_key, "key")
-    assert_equal(ShopifyAPI::Context.api_secret_key, "secret")
-    assert_equal(ShopifyAPI::Context.api_version, "version")
-    assert_equal(ShopifyAPI::Context.host_name, "host")
+    assert_equal("key", ShopifyAPI::Context.api_key)
+    assert_equal("secret", ShopifyAPI::Context.api_secret_key)
+    assert_equal("version", ShopifyAPI::Context.api_version,)
+    assert_equal("host", ShopifyAPI::Context.host_name)
     assert_equal(ShopifyAPI::Auth::AuthScopes.new(["scope1", "scope2"]), ShopifyAPI::Context.scope)
     assert(ShopifyAPI::Context.private?)
-    assert(ShopifyAPI::Context.private?)
-    assert_equal(ShopifyAPI::Context.session_storage, ShopifyAPI::Auth::FileSessionStorage.new)
+    assert_equal(ShopifyAPI::Auth::FileSessionStorage.new, ShopifyAPI::Context.session_storage)
     ShopifyAPI::Context.logger.info("test log")
     assert_match(/test log/, reader.gets)
+    assert_equal("privateshop.myshopify.com", ShopifyAPI::Context.private_shop)
   end
 end

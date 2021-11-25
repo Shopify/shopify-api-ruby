@@ -13,6 +13,7 @@ module ShopifyAPI
     @is_embedded = T.let(false, T::Boolean)
     @session_storage = T.let(ShopifyAPI::Auth::FileSessionStorage.new, ShopifyAPI::Auth::SessionStorage)
     @is_private = T.let(false, T::Boolean)
+    @private_shop = T.let(nil, T.nilable(String))
     @is_embedded = T.let(true, T::Boolean)
     @logger = T.let(Logger.new(STDOUT), Logger)
 
@@ -29,11 +30,12 @@ module ShopifyAPI
           is_private: T::Boolean,
           is_embedded: T::Boolean,
           session_storage: ShopifyAPI::Auth::SessionStorage,
-          logger: Logger
+          logger: Logger,
+          private_shop: T.nilable(String)
         ).void
       end
       def setup(api_key:, api_secret_key:, api_version:,
-        host_name:, scope:, is_private:, is_embedded:, session_storage:, logger: Logger.new(STDOUT))
+        host_name:, scope:, is_private:, is_embedded:, session_storage:, logger: Logger.new(STDOUT), private_shop: nil)
         @api_key = api_key
         @api_secret_key = api_secret_key
         @api_version = api_version
@@ -43,6 +45,7 @@ module ShopifyAPI
         @is_embedded = is_embedded
         @session_storage = session_storage
         @logger = logger
+        @private_shop = private_shop
       end
 
       sig { returns(String) }
@@ -61,6 +64,9 @@ module ShopifyAPI
       def private?
         @is_private
       end
+
+      sig { returns(T.nilable(String)) }
+      attr_reader :private_shop
 
       sig { returns(T::Boolean) }
       def embedded?

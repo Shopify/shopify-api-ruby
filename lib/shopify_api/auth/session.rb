@@ -70,15 +70,6 @@ module ShopifyAPI
         Oj.load(str)
       end
 
-      sig do
-        params(
-          shop: String
-        ).returns(Auth::Session)
-      end
-      def self.create_for_private_app(shop:)
-        Session.new(shop: shop, access_token: Context.api_secret_key, scope: Context.scope.to_a)
-      end
-
       alias_method :eql?, :==
       sig { params(other: T.nilable(Session)).returns(T::Boolean) }
       def ==(other)

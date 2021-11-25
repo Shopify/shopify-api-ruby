@@ -71,7 +71,7 @@ You can use the OAuth methods to create both offline and online sessions. Once t
 - To load current session, you can use the following method:
 
 ```ruby
-ShopifyAPI::Auth::SessionUtils.load_current_session(auth_header: <auth-header>, cookies: <cookies>, is_online: <true|false>)
+ShopifyAPI::Utils::SessionUtils.load_current_session(auth_header: <auth-header>, cookies: <cookies>, is_online: <true|false>)
 ```
 
 Accepted arguments:
@@ -86,7 +86,7 @@ This method will return a `ShopifyAPI::Auth::Session`  if a session exists. Eith
 - To load offline session, you can use the following method:
 
 ```ruby
-ShopifyAPI::Auth::SessionUtils.load_offline_session(shop)
+ShopifyAPI::Utils::SessionUtils.load_offline_session(shop)
 ```
 
 Accepted arguments:

@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 module ShopifyAPI
-  module Auth
+  module Utils
     class SessionUtils
       extend T::Sig
 
@@ -14,9 +14,11 @@ module ShopifyAPI
             auth_header: T.nilable(String),
             cookies: T.nilable(T::Hash[String, String]),
             online: T::Boolean
-          ).returns(T.nilable(Session))
+          ).returns(T.nilable(Auth::Session))
         end
         def load_current_session(auth_header: nil, cookies: nil, online: false)
+          return load_private_session if Context.private?
+
           session_id = current_session_id(auth_header, cookies, online)
           return nil unless session_id
           Context.session_storage.load_session(session_id)
@@ -39,7 +41,7 @@ module ShopifyAPI
           params(
             shop: String,
             include_expired: T::Boolean,
-          ).returns(T.nilable(Session))
+          ).returns(T.nilable(Auth::Session))
         end
         def load_offline_session(shop:, include_expired: false)
           session_id = offline_session_id(shop)
@@ -60,6 +62,19 @@ module ShopifyAPI
 
         private
 
+        sig { returns(Auth::Session) }
+        def load_private_session
+          unless Context.private_shop
+            raise Errors::SessionNotFoundError, "Could not load private shop, Context.private_shop is nil."
+          end
+
+          Auth::Session.new(
+            shop: T.must(Context.private_shop),
+            access_token: Context.api_secret_key,
+            scope: Context.scope.to_a
+          )
+        end
+
         sig do
           params(
             auth_header: T.nilable(String),
@@ -71,10 +86,10 @@ module ShopifyAPI
           if Context.embedded?
             if auth_header
               matches = auth_header.match(/^Bearer (.+)$/)
-              raise ShopifyAPI::Errors::MissingJwtTokenError,
+              raise Errors::MissingJwtTokenError,
                 "Missing Bearer token in authorization header" unless matches
 
-              jwt_payload = ShopifyAPI::Auth::JwtPayload.new(T.must(matches[1]))
+              jwt_payload = Auth::JwtPayload.new(T.must(matches[1]))
               shop = jwt_payload.shop
 
               if online
@@ -84,13 +99,13 @@ module ShopifyAPI
               end
             else
               # falling back to session cookie
-              raise ShopifyAPI::Errors::CookieNotFoundError, "JWT token or Session cookie not found for app" unless
-                cookies && cookies[ShopifyAPI::Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME]
+              raise Errors::CookieNotFoundError, "JWT token or Session cookie not found for app" unless
+                cookies && cookies[Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME]
               cookie_session_id(cookies)
             end
           else
-            raise ShopifyAPI::Errors::CookieNotFoundError, "Session cookie not found for app" unless
-              cookies && cookies[ShopifyAPI::Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME]
+            raise Errors::CookieNotFoundError, "Session cookie not found for app" unless
+              cookies && cookies[Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME]
             cookie_session_id(cookies)
           end
         end
@@ -107,7 +122,7 @@ module ShopifyAPI
 
         sig { params(cookies: T::Hash[String, String]).returns(T.nilable(String)) }
         def cookie_session_id(cookies)
-          cookies[ShopifyAPI::Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME]
+          cookies[Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME]
         end
       end
     end

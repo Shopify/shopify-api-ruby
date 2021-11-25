@@ -31,10 +31,4 @@ class SessionTest < Test::Unit::TestCase
     session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop", associated_user: user)
     assert(session.online?)
   end
-
-  def test_create_session_for_private_app
-    session = ShopifyAPI::Auth::Session.create_for_private_app(shop: "test-shop")
-    assert_equal(ShopifyAPI::Context.api_secret_key, session.access_token)
-    assert_equal(ShopifyAPI::Context.scope, session.scope)
-  end
 end
