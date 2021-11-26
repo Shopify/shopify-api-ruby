@@ -23,7 +23,7 @@ Start by initializing the `ShopifyAPI::Context` with the parameters of your app 
 ```ruby
 ShopifyAPI::Context.setup(
   api_key: "<api-key>",
-  api_secret_key: "<api-secret-key>", 
+  api_secret_key: "<api-secret-key>",
   host_name: "<application-host-name>",
   scope: "read_orders,read_products,etc",
   session_storage: ShopifyAPI::Auth::FileSessionStorage.new, # This is only to be used for testing, more information in session docs
@@ -50,4 +50,4 @@ If you intend to use webhooks in your application follow the steps in the [Webho
 
 ### Start Making Authenticated Shopify Requests
 
-You can now start making authenticated Shopify API calls using the Admin [REST](usage/rest.md) or [GraphQL](usage/graphql.md) Clients or the [Storefront GraphQL Client](usage/storefront.md).
+You can now start making authenticated Shopify API calls using the Admin [REST](usage/rest.md) or [GraphQL](usage/graphql.md) Clients or the [Storefront GraphQL Client](usage/graphql_storefront.md).

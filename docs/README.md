@@ -8,6 +8,6 @@ You can follow our getting started guide to learn how to use this library.
 - [Performing OAuth](usage/oauth.md)
 - [REST Admin API](usage/rest.md)
 - [Make a GraphQL API call](usage/graphql.md)
-- [Make a Storefront API call](usage/storefront.md)
+- [Make a Storefront API call](usage/graphql_storefront.md)
 - [Webhooks](usage/webhooks.md)
 - [Known issues and caveats](issues.md)
