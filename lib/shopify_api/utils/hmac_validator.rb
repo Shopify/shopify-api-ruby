@@ -14,18 +14,18 @@ module ShopifyAPI
           return false unless verifiable_query.hmac
 
           received_signature = verifiable_query.hmac
-          computed_signature = compute_signature(verifiable_query.to_signable_hash)
+          computed_signature = compute_signature(verifiable_query.to_signable_string)
           OpenSSL.secure_compare(computed_signature, received_signature)
         end
 
         private
 
-        sig { params(params: T::Hash[Symbol, String]).returns(String) }
-        def compute_signature(params)
+        sig { params(signable_string: String).returns(String) }
+        def compute_signature(signable_string)
           OpenSSL::HMAC.hexdigest(
             OpenSSL::Digest.new("sha256"),
             ShopifyAPI::Context.api_secret_key,
-            URI.encode_www_form(params)
+            signable_string,
           )
         end
       end

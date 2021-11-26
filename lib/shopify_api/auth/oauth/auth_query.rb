@@ -30,15 +30,16 @@ module ShopifyAPI
           @hmac = hmac
         end
 
-        sig { override.returns(T::Hash[Symbol, String]) }
-        def to_signable_hash
-          {
+        sig { override.returns(String) }
+        def to_signable_string
+          params = {
             code: code,
             host: host,
             shop: shop,
             state: state,
             timestamp: timestamp,
           }
+          URI.encode_www_form(params)
         end
       end
     end

@@ -9,10 +9,10 @@ module ShopifyAPI
       interface!
 
       sig { abstract.returns(T.nilable(String)) }
-      def hmac(); end
+      def hmac; end
 
-      sig { abstract.returns(T::Hash[Symbol, String]) }
-      def to_signable_hash(); end
+      sig { abstract.returns(String) }
+      def to_signable_string; end
     end
   end
 end

@@ -25,14 +25,22 @@ module ShopifyAPI
           end
         end
 
-        sig { params(topic: String).returns(T.nilable(Handler)) }
-        def handler(topic)
-          @registry[topic].nil? ? nil : T.must(@registry[topic]).handler
-        end
-
         sig { void }
         def register_all
           # TODO: make registration calls using graphQL client
+        end
+
+        sig { params(request: Request).void }
+        def process(request)
+          raise Errors::InvalidWebhookError, "Invalid webhook HMAC." unless Utils::HmacValidator.validate(request)
+
+          handler = @registry[request.topic]&.handler
+
+          unless handler
+            raise Errors::NoWebhookHandler, "No webhook handler found for topic: #{request.topic}."
+          end
+
+          handler.handle(topic: request.topic, shop: request.shop, body: request.parsed_body)
         end
       end
     end

@@ -1,16 +1,16 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module TestHelpers
-  module FakeWebhookHandler
-    extend ShopifyAPI::Webhooks::Handler
+  class FakeWebhookHandler
+    include ShopifyAPI::Webhooks::Handler
 
-    class << self
-      extend T::Sig
+    def initialize(handler)
+      @handler = handler
+    end
 
-      sig { override.params(topic: String, shop: String, body: T::Hash[String, T.untyped]).void }
-      def handle(topic:, shop:, body:)
-      end
+    def handle(topic:, shop:, body:)
+      @handler.call(topic, shop, body)
     end
   end
 end
