@@ -61,8 +61,9 @@ GEM
     sorbet (0.5.9368)
       sorbet-static (= 0.5.9368)
     sorbet-runtime (0.5.9363)
-    sorbet-static (0.5.9368-universal-darwin-20)
-    sorbet-static (0.5.9368-x86_64-linux)
+    sorbet-static (0.5.9363-universal-darwin-19)
+    sorbet-static (0.5.9363-universal-darwin-20)
+    sorbet-static (0.5.9363-x86_64-linux)
     spoom (1.1.5)
       sorbet (>= 0.5.9204)
       sorbet-runtime (>= 0.5.9204)
@@ -92,6 +93,7 @@ GEM
     zeitwerk (2.5.1)
 
 PLATFORMS
+  x86_64-darwin-19
   x86_64-darwin-20
   x86_64-linux
 
