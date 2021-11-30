@@ -4,15 +4,19 @@
 require_relative "../test_helper"
 require "fakefs/safe"
 
-class FileSessionStorageTest < Test::Unit::TestCase
-  include TestHelpers::SessionStorage
+module ShopifyAPITest
+  module Auth
+    class FileSessionStorageTest < Test::Unit::TestCase
+      include TestHelpers::SessionStorage
 
-  def setup
-    ::FakeFS.activate!
-    @storage = ShopifyAPI::Auth::FileSessionStorage.new
-  end
+      def setup
+        ::FakeFS.activate!
+        @storage = ShopifyAPI::Auth::FileSessionStorage.new
+      end
 
-  def teardown
-    ::FakeFS.deactivate!
+      def teardown
+        ::FakeFS.deactivate!
+      end
+    end
   end
 end
