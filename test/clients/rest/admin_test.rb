@@ -34,13 +34,9 @@ class RestClientTest < Test::Unit::TestCase
       headers: { extra: "header" },
     }
 
-    expected_headers = {
-      "Accept-Encoding": "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
-      "User-Agent": "Shopify API Library v#{ShopifyAPI::VERSION} | Ruby #{RUBY_VERSION}",
-      "Content-Type": "application/json",
-      "Accept": "application/json",
+    expected_headers = TestHelpers::Constants::DEFAULT_CLIENT_HEADERS.merge({
       "X-Shopify-Access-Token": session.access_token,
-    }.merge(request[:headers])
+    }).merge(request[:headers])
 
     success_body = { "success" => true }
     response_headers = { "content-type" => "application/json" }

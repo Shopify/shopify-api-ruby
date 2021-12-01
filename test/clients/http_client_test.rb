@@ -23,12 +23,9 @@ module ShopifyAPITest
         )
 
         @expected_headers = {
-          "Accept-Encoding": "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
-          "User-Agent": "Shopify API Library v#{ShopifyAPI::VERSION} | Ruby #{RUBY_VERSION}",
-          "Content-Type": "application/json",
-          "Accept": "application/json",
           "X-Shopify-Access-Token": @token,
         }.merge(@request.extra_headers)
+          .merge(TestHelpers::Constants::DEFAULT_CLIENT_HEADERS)
 
         @success_body = { "success" => true }
         @response_headers = { "content-type" => "application/json", "x-request-id" => "123" }
