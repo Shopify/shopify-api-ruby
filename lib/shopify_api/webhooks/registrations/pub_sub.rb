@@ -7,9 +7,15 @@ module ShopifyAPI
       class PubSub < Registration
         extend T::Sig
 
-        sig { override.params(path: String).returns(String) }
-        def callback_address(path)
-          path
+        sig { override.returns(String) }
+        def callback_address
+          @path
+        end
+
+        sig { override.returns(String) }
+        def subscription_args
+          project_topic_pair = callback_address.gsub(%r{^pubsub://}, "").split(":")
+          "{pubSubProject: \"#{project_topic_pair[0]}\", pubSubTopic:\"#{project_topic_pair[1]}\"}"
         end
 
         sig { override.params(webhook_id: T.nilable(String)).returns(String) }
@@ -17,11 +23,11 @@ module ShopifyAPI
           webhook_id ? "pubSubWebhookSubscriptionUpdate" : "pubSubWebhookSubscriptionCreate"
         end
 
-        sig { override.params(topic: String).returns(String) }
-        def build_check_query(topic)
+        sig { override.returns(String) }
+        def build_check_query
           <<~QUERY
             {
-              webhookSubscriptions(first: 1, topics: #{topic}) {
+              webhookSubscriptions(first: 1, topics: #{@topic}) {
                 edges {
                   node {
                     id
@@ -37,6 +43,19 @@ module ShopifyAPI
               }
             }
           QUERY
+        end
+
+        sig { override.params(body: T::Hash[String, T.untyped]).returns(T::Hash[Symbol, String]) }
+        def parse_check_result(body)
+          edges = body.dig("data", "webhookSubscriptions", "edges") || {}
+          webhook_id = nil
+          current_address = nil
+          unless edges.empty?
+            node = edges[0]["node"]
+            webhook_id = node["id"].to_s
+            current_address = "pubsub://#{node["endpoint"]["pubSubProject"]}:#{node["endpoint"]["pubSubTopic"]}"
+          end
+          { webhook_id: webhook_id, current_address: current_address }
         end
       end
     end

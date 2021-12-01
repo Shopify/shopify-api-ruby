@@ -21,19 +21,24 @@ module ShopifyAPI
         @handler = handler
       end
 
-      sig { abstract.params(path: String).returns(String) }
-      def callback_address(path); end
+      sig { abstract.returns(String) }
+      def callback_address; end
+
+      sig { abstract.returns(String) }
+      def subscription_args; end
 
       sig { abstract.params(webhook_id: T.nilable(String)).returns(String) }
       def mutation_name(webhook_id); end
 
-      sig { abstract.params(topic: String).returns(String) }
-      def build_check_query(topic); end
+      sig { abstract.returns(String) }
+      def build_check_query; end
 
-      sig { params(topic: String, callback_address: String, webhook_id: T.nilable(String)).returns(String) }
-      def build_register_query(topic:, callback_address:, webhook_id: nil)
+      sig { abstract.params(body: T::Hash[String, T.untyped]).returns(T::Hash[Symbol, String]) }
+      def parse_check_result(body); end
+
+      sig { params(topic: String, webhook_id: T.nilable(String)).returns(String) }
+      def build_register_query(topic:, webhook_id: nil)
         identifier = webhook_id ? "id: \"#{webhook_id}\"" : "topic: #{topic}"
-        subscription_args = "{callbackUrl: \"#{callback_address}\"}"
 
         <<~QUERY
           mutation webhookSubscription {

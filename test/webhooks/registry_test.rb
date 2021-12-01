@@ -2,11 +2,14 @@
 # frozen_string_literal: true
 
 require_relative "../test_helper.rb"
+require_relative "./webhook_registration_queries.rb"
 
 module ShopifyAPITest
   module Webhooks
     class RegistryTest < Test::Unit::TestCase
+      include RegistryTestQueries
       def setup
+        super
         @topic = "some_topic"
         @shop = "shop.myshopify.com"
 
@@ -23,6 +26,8 @@ module ShopifyAPITest
         }
 
         @webhook_request = ShopifyAPI::Webhooks::Request.new(raw_body: "{}", headers: @headers)
+        @session = ShopifyAPI::Auth::Session.new(shop: ShopifyAPI::Context.host_name, access_token: "access_token")
+        @url = "https://#{ShopifyAPI::Context.host_name}/admin/api/#{ShopifyAPI::Context.api_version}/graphql.json"
       end
 
       def test_add_http_registration_without_handler
@@ -71,6 +76,109 @@ module ShopifyAPITest
           ShopifyAPI::Webhooks::Registry.process(ShopifyAPI::Webhooks::Request.new(raw_body: "{}",
             headers: @headers))
         end
+      end
+
+      def do_registration_test(delivery_method, path)
+        ShopifyAPI::Webhooks::Registry.clear
+
+        check_query_body = { query: queries[delivery_method][:check_query], variables: nil }
+
+        stub_request(:post, @url)
+          .with(body: JSON.dump(check_query_body))
+          .to_return({ status: 200, body: JSON.dump(queries[delivery_method][:check_empty_response]) })
+
+        stub_request(:post, @url)
+          .with(body: JSON.dump({ query: queries[delivery_method][:register_add_query], variables: nil }))
+          .to_return({ status: 200, body: JSON.dump(queries[delivery_method][:register_add_response]) })
+
+        ShopifyAPI::Webhooks::Registry.add_registration(
+          topic: @topic,
+          delivery_method: delivery_method,
+          path: path,
+          handler: TestHelpers::FakeWebhookHandler.new(
+            lambda do |topic, shop, body|
+            end
+          )
+        )
+        registration_response = ShopifyAPI::Webhooks::Registry.register_all(
+          session: @session
+        )[0]
+
+        assert(registration_response.success)
+        assert_equal(queries[delivery_method][:register_add_response], registration_response.body)
+
+        stub_request(:post, @url)
+          .with(body: JSON.dump(check_query_body))
+          .to_return({ status: 200, body: JSON.dump(queries[delivery_method][:check_existing_response]) })
+
+        stub_request(:post, @url)
+          .with(body: JSON.dump({ query: queries[delivery_method][:register_update_query], variables: nil }))
+          .to_return({ status: 200, body: JSON.dump(queries[delivery_method][:register_update_response]) })
+
+        ShopifyAPI::Webhooks::Registry.add_registration(
+          topic: @topic,
+          delivery_method: delivery_method,
+          path: "#{path}-updated",
+          handler: TestHelpers::FakeWebhookHandler.new(
+            lambda do |topic, shop, body|
+            end
+          )
+        )
+        update_registration_response = ShopifyAPI::Webhooks::Registry.register_all(
+          session: @session
+        )[0]
+
+        assert(update_registration_response.success)
+        assert_equal(queries[delivery_method][:register_update_response], update_registration_response.body)
+      end
+
+      def do_registration_check_error_test(delivery_method, path)
+        ShopifyAPI::Webhooks::Registry.clear
+        body = { query: queries[delivery_method][:check_query], variables: nil }
+
+        stub_request(:post, @url)
+          .with(body: JSON.dump(body))
+          .to_return(status: 304)
+
+        ShopifyAPI::Webhooks::Registry.add_registration(
+          topic: @topic,
+          delivery_method: delivery_method,
+          path: path,
+          handler: TestHelpers::FakeWebhookHandler.new(
+            lambda do |topic, shop, body|
+            end
+          )
+        )
+
+        assert_raises(StandardError) do
+          ShopifyAPI::Webhooks::Registry.register_all(
+          session: @session
+        )
+        end
+      end
+
+      def test_http_registration_add_and_update
+        do_registration_test(:http, "test-webhooks")
+      end
+
+      def test_raises_on_http_registration_check_error
+        do_registration_check_error_test(:http, "test-webhooks")
+      end
+
+      def test_pubsub_registration_add_and_update
+        do_registration_test(:pub_sub, "pubsub://my-project-id:my-topic-id")
+      end
+
+      def test_raises_on_pubsub_registration_check_error
+        do_registration_check_error_test(:pub_sub, "pubsub://my-project-id:my-topic-id")
+      end
+
+      def test_eventbridge_registration_add_and_update
+        do_registration_test(:event_bridge, "test-webhooks")
+      end
+
+      def test_raises_on_eventbridge_registration_check_error
+        do_registration_check_error_test(:event_bridge, "test-webhooks")
       end
     end
   end
