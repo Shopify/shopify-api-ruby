@@ -33,6 +33,40 @@ module ShopifyAPI
 
         sig do
           params(
+            topic: String,
+            session: Auth::Session
+          ).returns(RegisterResult)
+        end
+        def register(topic:, session:)
+          registration = @registry[topic]
+
+          unless registration
+            raise Errors::InvalidWebhookRegistrationError, "Webhook topic #{topic} has not been added to the registry."
+          end
+
+          client = Clients::Graphql::Admin.new(session)
+          register_check_result = webhook_registration_needed?(client, registration)
+
+          registered = true
+          register_body = nil
+
+          if register_check_result[:must_register]
+            register_body = send_register_request(
+              client,
+              registration,
+              register_check_result[:webhook_id]
+            )
+            registered = registration_sucessful?(
+              register_body,
+              registration.mutation_name(register_check_result[:webhook_id])
+            )
+          end
+
+          RegisterResult.new(topic: topic, success: registered, body: register_body)
+        end
+
+        sig do
+          params(
             session: Auth::Session
           ).returns(T::Array[RegisterResult])
         end
@@ -40,9 +74,8 @@ module ShopifyAPI
           topics = @registry.keys
           result = T.let([], T::Array[RegisterResult])
           topics.each do |topic|
-            registration = T.must(@registry[topic])
             register_response = register(
-              registration: registration,
+              topic: topic,
               session: session
             )
             result.push(register_response)
@@ -64,34 +97,6 @@ module ShopifyAPI
         end
 
         private
-
-        sig do
-          params(
-            registration: Registration,
-            session: Auth::Session
-          ).returns(RegisterResult)
-        end
-        def register(registration:, session:)
-          client = Clients::Graphql::Admin.new(session)
-          register_check_result = webhook_registration_needed?(client, registration)
-
-          registered = true
-          register_body = nil
-
-          if register_check_result[:must_register]
-            register_body = send_register_request(
-              client,
-              registration,
-              register_check_result[:webhook_id]
-            )
-            registered = registration_sucessful?(
-              register_body,
-              registration.mutation_name(register_check_result[:webhook_id])
-            )
-          end
-
-          RegisterResult.new(topic: registration.topic, success: registered, body: register_body)
-        end
 
         sig do
           params(

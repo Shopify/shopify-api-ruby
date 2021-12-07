@@ -78,6 +78,38 @@ module ShopifyAPITest
         end
       end
 
+      def test_http_registration_add_and_update
+        do_registration_test(:http, "test-webhooks")
+      end
+
+      def test_raises_on_http_registration_check_error
+        do_registration_check_error_test(:http, "test-webhooks")
+      end
+
+      def test_pubsub_registration_add_and_update
+        do_registration_test(:pub_sub, "pubsub://my-project-id:my-topic-id")
+      end
+
+      def test_raises_on_pubsub_registration_check_error
+        do_registration_check_error_test(:pub_sub, "pubsub://my-project-id:my-topic-id")
+      end
+
+      def test_eventbridge_registration_add_and_update
+        do_registration_test(:event_bridge, "test-webhooks")
+      end
+
+      def test_raises_on_eventbridge_registration_check_error
+        do_registration_check_error_test(:event_bridge, "test-webhooks")
+      end
+
+      def test_register_topic_not_not_registry
+        assert_raises(ShopifyAPI::Errors::InvalidWebhookRegistrationError) do
+          ShopifyAPI::Webhooks::Registry.register(topic: "not-registered", session: @session)
+        end
+      end
+
+      private
+
       def do_registration_test(delivery_method, path)
         ShopifyAPI::Webhooks::Registry.clear
 
@@ -155,30 +187,6 @@ module ShopifyAPITest
           session: @session
         )
         end
-      end
-
-      def test_http_registration_add_and_update
-        do_registration_test(:http, "test-webhooks")
-      end
-
-      def test_raises_on_http_registration_check_error
-        do_registration_check_error_test(:http, "test-webhooks")
-      end
-
-      def test_pubsub_registration_add_and_update
-        do_registration_test(:pub_sub, "pubsub://my-project-id:my-topic-id")
-      end
-
-      def test_raises_on_pubsub_registration_check_error
-        do_registration_check_error_test(:pub_sub, "pubsub://my-project-id:my-topic-id")
-      end
-
-      def test_eventbridge_registration_add_and_update
-        do_registration_test(:event_bridge, "test-webhooks")
-      end
-
-      def test_raises_on_eventbridge_registration_check_error
-        do_registration_check_error_test(:event_bridge, "test-webhooks")
       end
     end
   end
