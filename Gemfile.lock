@@ -16,9 +16,9 @@ GEM
     ipaddr (1.2.3)
     jwt (2.3.0)
     method_source (1.0.0)
-    mime-types (3.3.1)
+    mime-types (3.4.1)
       mime-types-data (~> 3.2015)
-    mime-types-data (3.2021.0901)
+    mime-types-data (3.2021.1115)
     minitest (5.14.4)
     mocha (1.13.0)
     multi_xml (0.6.0)
@@ -26,7 +26,7 @@ GEM
     openssl (2.2.1)
       ipaddr
     parallel (1.21.0)
-    parser (3.0.3.0)
+    parser (3.0.3.1)
       ast (~> 2.4.1)
     pry (0.14.1)
       coderay (~> 1.1)
@@ -34,12 +34,12 @@ GEM
     public_suffix (4.0.6)
     rainbow (3.0.0)
     rake (13.0.6)
-    rbi (0.0.8)
+    rbi (0.0.9)
       ast
       parser
       sorbet-runtime (>= 0.5.9204)
       unparser
-    regexp_parser (2.1.1)
+    regexp_parser (2.2.0)
     rexml (3.2.5)
     rubocop (1.23.0)
       parallel (~> 1.10)
@@ -50,20 +50,18 @@ GEM
       rubocop-ast (>= 1.12.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
-    rubocop-ast (1.13.0)
+    rubocop-ast (1.14.0)
       parser (>= 3.0.1.1)
     rubocop-shopify (2.3.0)
       rubocop (~> 1.22)
-    rubocop-sorbet (0.6.2)
-      rubocop
+    rubocop-sorbet (0.6.3)
+      rubocop (>= 0.90.0)
     ruby-progressbar (1.11.0)
     securerandom (0.1.1)
-    sorbet (0.5.9368)
-      sorbet-static (= 0.5.9368)
-    sorbet-runtime (0.5.9363)
-    sorbet-static (0.5.9363-universal-darwin-19)
-    sorbet-static (0.5.9363-universal-darwin-20)
-    sorbet-static (0.5.9363-x86_64-linux)
+    sorbet (0.5.9396)
+      sorbet-static (= 0.5.9396)
+    sorbet-runtime (0.5.9396)
+    sorbet-static (0.5.9396-universal-darwin-20)
     spoom (1.1.5)
       sorbet (>= 0.5.9204)
       sorbet-runtime (>= 0.5.9204)
@@ -86,16 +84,16 @@ GEM
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
-    yard (0.9.26)
+    webrick (1.7.0)
+    yard (0.9.27)
+      webrick (~> 1.7.0)
     yard-sorbet (0.6.1)
       sorbet-runtime (>= 0.5)
       yard (>= 0.9)
     zeitwerk (2.5.1)
 
 PLATFORMS
-  x86_64-darwin-19
   x86_64-darwin-20
-  x86_64-linux
 
 DEPENDENCIES
   fakefs
@@ -117,4 +115,4 @@ DEPENDENCIES
   zeitwerk (~> 2.5)
 
 BUNDLED WITH
-   2.2.22
+   2.2.32

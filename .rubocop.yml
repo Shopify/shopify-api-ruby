@@ -40,8 +40,6 @@ Sorbet/CheckedTrueInSignature:
   Enabled: true
 Sorbet/KeywordArgumentOrdering:
   Enabled: true
-Sorbet/ParametersOrderingInSignature:
-  Enabled: true
 Sorbet/SignatureBuildOrder:
   Enabled: true
 Sorbet/BindingConstantWithoutTypeAlias:
