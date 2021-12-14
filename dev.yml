@@ -3,7 +3,7 @@ name: shopify-api
 type: ruby
 
 up:
-  - ruby: 2.7.1
+  - ruby: 2.7.5
   - bundler
 
 commands:
