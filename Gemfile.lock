@@ -13,7 +13,6 @@ GEM
     httparty (0.20.0)
       mime-types (~> 3.0)
       multi_xml (>= 0.5.2)
-    ipaddr (1.2.3)
     jwt (2.3.0)
     method_source (1.0.0)
     mime-types (3.4.1)
@@ -23,8 +22,7 @@ GEM
     mocha (1.13.0)
     multi_xml (0.6.0)
     oj (3.13.10)
-    openssl (2.2.1)
-      ipaddr
+    openssl (3.0.0)
     parallel (1.21.0)
     parser (3.1.0.0)
       ast (~> 2.4.1)
