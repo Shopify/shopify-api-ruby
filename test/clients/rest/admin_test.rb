@@ -49,6 +49,6 @@ class RestClientTest < Test::Unit::TestCase
       path: request[:path], body: request[:body], query: request[:query], headers: request[:headers])
 
     assert_equal(success_body, response.body)
-    assert_equal(response_headers.map { |k, v| [k, [v]] }.to_h, response.headers)
+    assert_equal(response_headers.to_h { |k, v| [k, [v]] }, response.headers)
   end
 end

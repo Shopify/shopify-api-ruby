@@ -326,7 +326,7 @@ module ShopifyAPITest
         }
 
         result_uri = URI.parse(auth_route)
-        result_query_params = CGI.parse(result_uri.query).map { |k, v| [k.to_sym, v.first] }.to_h
+        result_query_params = CGI.parse(result_uri.query).to_h { |k, v| [k.to_sym, v.first] }
         result_state = result_query_params.delete(:state)
 
         assert_equal(15, result_state.length)

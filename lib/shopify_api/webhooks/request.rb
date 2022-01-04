@@ -35,7 +35,7 @@ module ShopifyAPI
       sig { params(raw_body: String, headers: T::Hash[String, T.untyped]).void }
       def initialize(raw_body:, headers:)
         # normalize the headers by forcing lowercase, removing any prepended "http"s, and changing underscores to dashes
-        headers = headers.map { |k, v| [k.downcase.sub("http_", "").gsub("_", "-"), v] }.to_h
+        headers = headers.to_h { |k, v| [k.downcase.sub("http_", "").gsub("_", "-"), v] }
 
         missing_headers = []
         [

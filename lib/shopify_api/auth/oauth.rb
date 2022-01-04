@@ -120,13 +120,13 @@ module ShopifyAPI
 
         sig { params(session_params: T::Hash[String, T.untyped], current_session: Session).returns(Session) }
         def create_new_session(session_params, current_session)
-          session_params = session_params.map { |k, v| [k.to_sym, v] }.to_h
+          session_params = session_params.to_h { |k, v| [k.to_sym, v] }
 
           id = current_session.id
           scope = session_params[:scope]
 
           if current_session.online?
-            associated_user = AssociatedUser.new(session_params[:associated_user].map { |k, v| [k.to_sym, v] }.to_h)
+            associated_user = AssociatedUser.new(session_params[:associated_user].to_h { |k, v| [k.to_sym, v] })
             expires = Time.now + session_params[:expires_in].to_i
             associated_user_scope = session_params[:associated_user_scope]
             id = "#{current_session.shop}_#{associated_user.id}" if Context.embedded?

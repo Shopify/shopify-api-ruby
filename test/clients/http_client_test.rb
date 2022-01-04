@@ -193,7 +193,7 @@ module ShopifyAPITest
 
         assert(response.ok?)
         assert_equal(@success_body, response.body)
-        assert_equal(@response_headers.map { |k, v| [k, [v]] }.to_h, response.headers)
+        assert_equal(@response_headers.to_h { |k, v| [k, [v]] }, response.headers)
       end
     end
   end

@@ -9,7 +9,7 @@ module ShopifyAPI
 
         sig { params(headers: T::Hash[String, T.untyped]).returns(T::Hash[String, T.untyped]) }
         def normalize_headers(headers)
-          headers.map { |k, v| [k.downcase.sub("http_", "").gsub("_", "-"), v] }.to_h
+          headers.to_h { |k, v| [k.downcase.sub("http_", "").gsub("_", "-"), v] }
         end
       end
     end
