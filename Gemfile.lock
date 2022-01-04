@@ -19,7 +19,7 @@ GEM
     mime-types (3.4.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2021.1115)
-    minitest (5.14.4)
+    minitest (5.15.0)
     mocha (1.13.0)
     multi_xml (0.6.0)
     oj (3.13.10)
