@@ -9,7 +9,7 @@ module ShopifyAPITest
       ShopifyAPI::Context.setup(
         api_key: "",
         api_secret_key: "",
-        api_version: "",
+        api_version: "unstable",
         host_name: "",
         scope: [],
         is_private: false,
@@ -25,7 +25,7 @@ module ShopifyAPITest
       ShopifyAPI::Context.setup(
         api_key: "key",
         api_secret_key: "secret",
-        api_version: "version",
+        api_version: "unstable",
         host_name: "host",
         scope: ["scope1", "scope2"],
         is_private: true,
@@ -38,7 +38,7 @@ module ShopifyAPITest
       assert(ShopifyAPI::Context.setup?)
       assert_equal("key", ShopifyAPI::Context.api_key)
       assert_equal("secret", ShopifyAPI::Context.api_secret_key)
-      assert_equal("version", ShopifyAPI::Context.api_version,)
+      assert_equal("unstable", ShopifyAPI::Context.api_version,)
       assert_equal("host", ShopifyAPI::Context.host_name)
       assert_equal(ShopifyAPI::Auth::AuthScopes.new(["scope1", "scope2"]), ShopifyAPI::Context.scope)
       assert(ShopifyAPI::Context.private?)

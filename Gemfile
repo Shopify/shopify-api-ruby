@@ -20,6 +20,7 @@ group :development do
   gem "rubocop", require: false
   gem "rubocop-shopify", require: false
   gem "rubocop-sorbet", require: false
+  gem "activesupport"
 end
 
 group :test do

@@ -25,7 +25,7 @@ module Test
         ShopifyAPI::Context.setup(
           api_key: "API_KEY",
           api_secret_key: "API_SECRET_KEY",
-          api_version: "version",
+          api_version: "unstable",
           host_name: "app-address.com",
           scope: ["scope1", "scope2"],
           is_private: false,

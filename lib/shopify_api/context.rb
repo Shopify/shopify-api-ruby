@@ -16,6 +16,9 @@ module ShopifyAPI
     @private_shop = T.let(nil, T.nilable(String))
     @is_embedded = T.let(true, T::Boolean)
     @logger = T.let(Logger.new(STDOUT), Logger)
+    @notified_missing_resources_folder = T.let({}, T::Hash[String, T::Boolean])
+
+    @rest_wrapper_loader = T.let(nil, T.nilable(Zeitwerk::Loader))
 
     class << self
       extend T::Sig
@@ -34,8 +37,18 @@ module ShopifyAPI
           private_shop: T.nilable(String)
         ).void
       end
-      def setup(api_key:, api_secret_key:, api_version:,
-        host_name:, scope:, is_private:, is_embedded:, session_storage:, logger: Logger.new(STDOUT), private_shop: nil)
+      def setup(
+        api_key:,
+        api_secret_key:,
+        api_version:,
+        host_name:,
+        scope:,
+        is_private:,
+        is_embedded:,
+        session_storage:,
+        logger: Logger.new(STDOUT),
+        private_shop: nil
+      )
         @api_key = api_key
         @api_secret_key = api_secret_key
         @api_version = api_version
@@ -46,6 +59,33 @@ module ShopifyAPI
         @session_storage = session_storage
         @logger = logger
         @private_shop = private_shop
+
+        load_rest_wrappers(api_version: api_version)
+      end
+
+      sig { params(api_version: String).void }
+      def load_rest_wrappers(api_version:)
+        version_folder_name = api_version.gsub("-", "_")
+        path = "lib/shopify_api/rest_wrappers/resources/#{version_folder_name}"
+
+        unless Dir.exist?(path)
+          unless @notified_missing_resources_folder.key?(api_version)
+            @logger.warn("Cannot autoload REST resources for API version '#{version_folder_name}', folder is missing")
+            @notified_missing_resources_folder[api_version] = true
+          end
+
+          return
+        end
+
+        # Unload any previous instances - mostly useful for tests where we need to reset the version
+        @rest_wrapper_loader&.unload
+
+        @rest_wrapper_loader = T.let(Zeitwerk::Loader.new, T.nilable(Zeitwerk::Loader))
+        T.must(@rest_wrapper_loader).enable_reloading
+        T.must(@rest_wrapper_loader).ignore("#{__dir__}/rest_wrappers/resources")
+        T.must(@rest_wrapper_loader).setup
+        T.must(@rest_wrapper_loader).push_dir(path, namespace: ShopifyAPI)
+        T.must(@rest_wrapper_loader).reload
       end
 
       sig { returns(String) }
