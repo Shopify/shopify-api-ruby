@@ -35,19 +35,18 @@ module ShopifyAPI
 
         sig do
           params(
-            id: T.nilable(T.any(Integer, String)),
             session: T.nilable(Auth::Session),
             ids: T::Hash[Symbol, String],
             params: T::Hash[Symbol, T.untyped],
           ).returns(T::Array[Base])
         end
-        def base_find(id: nil, session: nil, ids: {}, params: {})
+        def base_find(session: nil, ids: {}, params: {})
           session = Utils::SessionUtils.load_current_session if !session && Context.private?
           raise Errors::SessionNotFoundError, "No provided session for non-private app." unless session
 
           client = ShopifyAPI::Clients::Rest::Admin.new(session)
 
-          path = get_path(operation: :get, ids: id ? { id: id } : ids)
+          path = get_path(operation: :get, ids: ids)
           response = client.get(path: path, query: params.compact)
 
           create_instances_from_response(response: response, session: session)

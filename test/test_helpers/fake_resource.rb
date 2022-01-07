@@ -56,12 +56,12 @@ module TestHelpers
         params(id: T.any(Integer, String), session: ShopifyAPI::Auth::Session, param: T.untyped).returns(FakeResource)
       end
       def find(id:, session:, param: nil)
-        T.cast(base_find(id: id, params: { param: param }, session: session)[0], FakeResource)
+        T.cast(base_find(params: { param: param }, session: session, ids: { id: id })[0], FakeResource)
       end
 
       sig { params(session: ShopifyAPI::Auth::Session).returns(T::Array[FakeResource]) }
       def all(session:)
-        T.cast(base_find(id: nil, session: session), T::Array[FakeResource])
+        T.cast(base_find(session: session), T::Array[FakeResource])
       end
     end
   end
