@@ -8,8 +8,10 @@ AllCops:
   TargetRubyVersion: 2.6
   NewCops: enable
   Exclude:
-    - 'sorbet/**/*'
-    - 'bin/**/*'
+    - "sorbet/**/*"
+    - "bin/**/*"
+    - "lib/shopify_api/rest_wrappers/resources/**/*"
+    - "test/rest_wrappers/**/*"
 
 Sorbet:
   Enabled: true
@@ -21,15 +23,15 @@ Sorbet/StrictSigil:
   Enabled: true
   Exclude:
     - Gemfile*
-    - 'lib/shopify_api/auth/session.rb'
+    - "lib/shopify_api/auth/session.rb"
     - Rakefile
-    - 'test/**/*'
+    - "test/**/*"
 Sorbet/TrueSigil:
   Enabled: true
   Exclude:
     - Gemfile*
     - Rakefile
-    - 'test/**/*'
+    - "test/**/*"
 Sorbet/ValidSigil:
   Enabled: true
 Sorbet/EnforceSigilOrder:

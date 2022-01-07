@@ -76,6 +76,25 @@ module ShopifyAPI
         end
         def get_path(operation:, entity: nil, ids: {}); end
 
+        sig do
+          params(
+            operation: T.any(String, Symbol),
+            session: T.nilable(Auth::Session),
+            path_ids: T::Hash[Symbol, String],
+            params: T::Hash[Symbol, T.untyped],
+          ).returns(T.untyped)
+        end
+        def get(operation:, session:, path_ids: {}, params: {})
+          session = Utils::SessionUtils.load_current_session if !session && Context.private?
+          raise Errors::SessionNotFoundError, "No provided session for non-private app." unless session
+
+          client = ShopifyAPI::Clients::Rest::Admin.new(session)
+
+          path = get_path(operation: operation.to_sym, ids: path_ids)
+
+          client.get(path: path, query: params.compact)
+        end
+
         sig { params(response: Clients::HttpResponse, session: Auth::Session).returns(T::Array[Base]) }
         def create_instances_from_response(response:, session:)
           objects = []
