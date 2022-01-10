@@ -47,7 +47,7 @@ module ShopifyAPI
           client = ShopifyAPI::Clients::Rest::Admin.new(session)
 
           path = get_path(operation: :get, ids: ids)
-          response = client.get(path: path, query: params.compact)
+          response = client.get(path: path, query: params.to_h { |k, v| [k, v.is_a?(Array) ? v.join(",") : v] }.compact)
 
           create_instances_from_response(response: response, session: session)
         end
