@@ -17,15 +17,27 @@ jobs:
           - "2.6"
           - "2.7"
           - "3.0"
+          - "3.1"
         gemfile:
           - Gemfile_ar41
           - Gemfile_ar50
           - Gemfile_ar51
-          - Gemfile_ar_master
+          - Gemfile_ar60
+          - Gemfile_ar_main
         exclude:
+          - version: "2.4"
+            gemfile: Gemfile_ar60
+          - version: "2.5"
+            gemfile: Gemfile_ar60
+          - version: "2.4"
+            gemfile: Gemfile_ar_main
+          - version: "2.5"
+            gemfile: Gemfile_ar_main
           - version: "2.7"
             gemfile: Gemfile_ar41
           - version: "3.0"
+            gemfile: Gemfile_ar41
+          - version: "3.1"
             gemfile: Gemfile_ar41
     steps:
       - uses: actions/checkout@v2
