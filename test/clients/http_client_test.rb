@@ -163,7 +163,7 @@ module ShopifyAPITest
 
       def test_warns_on_deprecation_header
         reader, writer = IO.pipe
-        modify_context(logger: Logger.new(writer))
+        modify_context(logger: Logger.new(writer), api_version: "unstable")
         deprecate_reason = "https://help.shopify.com/tutorials#foobar-endpoint-is-removed"
         stub_request(@request.http_method, "https://#{@shop}#{@base_path}/#{@request.path}")
           .with(body: @request.body.to_json, query: @request.query, headers: @expected_headers)
