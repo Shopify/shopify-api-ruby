@@ -12,6 +12,10 @@ require 'active_resource/json_errors'
 require 'shopify_api/paginated_collection'
 require 'shopify_api/disable_prefix_check'
 
+if Gem::Version.new(RUBY_VERSION) < Gem::Version.new("2.6")
+  puts("\nshopify_api: NOTE: Support for Ruby #{RUBY_VERSION} will be dropped in the next major release. Please update to Ruby 2.6 or newer before updating this gem.\n\n")
+end
+
 module ShopifyAPI
   include Limits
 end

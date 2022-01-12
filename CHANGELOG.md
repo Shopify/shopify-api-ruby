@@ -1,3 +1,7 @@
+## Unreleased
+
+- [#891](https://github.com/Shopify/shopify_api/pull/891) Removed the upper bound on the `activeresource` dependency to allow apps to use the latest version
+
 ## Version 9.5
 
 * [#883](https://github.com/Shopify/shopify_api/pull/883) Add support for Ruby 3.0
