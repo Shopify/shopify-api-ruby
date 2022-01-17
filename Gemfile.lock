@@ -66,7 +66,7 @@ GEM
     securerandom (0.1.1)
     sorbet (0.5.9531)
       sorbet-static (= 0.5.9531)
-    sorbet-runtime (0.5.9494)
+    sorbet-runtime (0.5.9531)
     sorbet-static (0.5.9531-universal-darwin-14)
     sorbet-static (0.5.9531-universal-darwin-15)
     sorbet-static (0.5.9531-universal-darwin-16)
