@@ -13,6 +13,16 @@ module TestHelpers
       has_many_attribute: FakeResource,
     }, T::Hash[Symbol, Class])
 
+    @paths = T.let([
+      { http_method: :get, operation: :get, ids: [], path: "fake_resources.json" },
+      { http_method: :post, operation: :post, ids: [], path: "fake_resources.json" },
+      { http_method: :get, operation: :get, ids: [:id], path: "fake_resources/<id>.json" },
+      { http_method: :put, operation: :put, ids: [:id], path: "fake_resources/<id>.json" },
+      { http_method: :delete, operation: :delete, ids: [:id], path: "fake_resources/<id>.json" },
+      { http_method: :get, operation: :custom, ids: [],
+        path: "other_resources/<other_resource_id>/fake_resources/<id>/custom.json", },
+    ], T::Array[T::Hash[String, T.any(T::Array[T.untyped], String, Symbol)]])
+
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
     def initialize(session: nil)
       super(session: session)
@@ -36,23 +46,6 @@ module TestHelpers
 
     class << self
       sig do
-        override.params(operation: Symbol, entity: T.nilable(ShopifyAPI::RestWrappers::Base),
-          ids: T::Hash[Symbol, T.any(Integer, String)]).returns(String)
-      end
-      def get_path(operation:, entity: nil, ids: {})
-        entity = T.cast(entity, T.nilable(FakeResource))
-
-        key = "#{operation} #{ids.keys.sort!.join(" ")}".rstrip
-        {
-          "get" => "fake_resources.json",
-          "post" => "fake_resources.json",
-          "get id" => "fake_resources/#{ids[:id]}.json",
-          "put" => "fake_resources/#{entity&.id}.json",
-          "delete" => "fake_resources/#{entity&.id}.json",
-        }[key]
-      end
-
-      sig do
         params(id: T.any(Integer, String), session: ShopifyAPI::Auth::Session, param: T.untyped).returns(FakeResource)
       end
       def find(id:, session:, param: nil)
@@ -62,6 +55,17 @@ module TestHelpers
       sig { params(session: ShopifyAPI::Auth::Session).returns(T::Array[FakeResource]) }
       def all(session:)
         T.cast(base_find(session: session), T::Array[FakeResource])
+      end
+
+      sig do
+        params(
+          session: ShopifyAPI::Auth::Session,
+          id: Integer,
+          other_resource_id: T.nilable(Integer),
+        ).returns(T.untyped)
+      end
+      def custom(session:, id:, other_resource_id: nil)
+        get(operation: :custom, session: session, path_ids: { id: id, other_resource_id: other_resource_id })
       end
     end
   end

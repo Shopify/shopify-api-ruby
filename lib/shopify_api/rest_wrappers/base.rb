@@ -13,6 +13,7 @@ module ShopifyAPI
 
       @has_one = T.let({}, T::Hash[Symbol, Class])
       @has_many = T.let({}, T::Hash[Symbol, Class])
+      @paths = T.let([], T::Array[T::Hash[Symbol, T.any(T::Array[Symbol], String, Symbol)]])
 
       sig { returns(T::Hash[Symbol, T.untyped]) }
       attr_reader :original_state
@@ -46,7 +47,7 @@ module ShopifyAPI
 
           client = ShopifyAPI::Clients::Rest::Admin.new(session)
 
-          path = get_path(operation: :get, ids: ids)
+          path = T.must(get_path(http_method: :get, operation: :get, ids: ids))
           response = client.get(path: path, query: params.to_h { |k, v| [k, v.is_a?(Array) ? v.join(",") : v] }.compact)
 
           create_instances_from_response(response: response, session: session)
@@ -68,13 +69,40 @@ module ShopifyAPI
         end
 
         sig do
-          abstract.params(
+          params(
+            http_method: Symbol,
             operation: Symbol,
             entity: T.nilable(Base),
             ids: T::Hash[Symbol, T.any(Integer, String)]
-          ).returns(String)
+          ).returns(T.nilable(String))
         end
-        def get_path(operation:, entity: nil, ids: {}); end
+        def get_path(http_method:, operation:, entity: nil, ids: {})
+          match = T.let(nil, T.nilable(String))
+          max_ids = T.let(-1, Integer)
+          @paths.each do |path|
+            next if http_method != path[:http_method] || operation != path[:operation]
+            path_ids = T.cast(path[:ids], T::Array[Symbol])
+
+            url_ids = ids.transform_keys(&:to_sym)
+            path_ids.each do |id|
+              if url_ids[id].nil? && (entity_id = entity&.public_send(id))
+                url_ids[id] = entity_id
+              end
+            end
+
+            url_ids.compact!
+
+            # We haven't found all the required ids or we have a more specific match
+            next if !(path_ids - url_ids.keys).empty? || path_ids.length <= max_ids
+
+            max_ids = path_ids.length
+            match = T.cast(path[:path], String).gsub(/(<([^>]+)>)/) do
+              url_ids[T.unsafe(Regexp.last_match)[2].to_sym]
+            end
+          end
+
+          match
+        end
 
         sig do
           params(
@@ -90,9 +118,9 @@ module ShopifyAPI
 
           client = ShopifyAPI::Clients::Rest::Admin.new(session)
 
-          path = get_path(operation: operation.to_sym, ids: path_ids)
+          path = get_path(http_method: :get, operation: operation.to_sym, ids: path_ids)
 
-          client.get(path: path, query: params.compact)
+          client.get(path: T.must(path), query: params.compact)
         end
 
         sig { params(response: Clients::HttpResponse, session: Auth::Session).returns(T::Array[Base]) }
@@ -145,7 +173,9 @@ module ShopifyAPI
 
       sig { void }
       def delete
-        @client.delete(path: self.class.get_path(operation: :delete, entity: self))
+        @client.delete(
+          path: T.must(self.class.get_path(http_method: :delete, operation: :delete, entity: self))
+        )
       end
 
       sig { void }
@@ -160,7 +190,7 @@ module ShopifyAPI
 
         response = @client.public_send(method,
           body: { self.class.class_name.downcase => hash },
-          path: self.class.get_path(operation: method, entity: self))
+          path: T.must(self.class.get_path(http_method: method, operation: method, entity: self)))
 
         if update_object
           self.class.create_instance(
