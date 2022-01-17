@@ -162,6 +162,15 @@ module ShopifyAPITest
 
         assert_raises(ShopifyAPI::Errors::SessionNotFoundError) { TestHelpers::FakeResource.new }
       end
+
+      def test_makes_custom_request
+        stubbed_request = stub_request(:get, "#{@prefix}/other_resources/2/fake_resources/1/custom.json")
+          .to_return(status: 200, body: "test body".to_json)
+
+        response = TestHelpers::FakeResource.custom(session: @session, id: 1, other_resource_id: 2)
+        assert_requested(stubbed_request)
+        assert(response, "test body")
+      end
     end
   end
 end
