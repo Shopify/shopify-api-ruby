@@ -27,22 +27,22 @@ module TestHelpers
     def initialize(session: nil)
       super(session: session)
       @id = T.let(nil, T.nilable(Integer))
-      @attribute = T.let("", String)
+      @attribute = T.let(nil, T.nilable(String))
       @has_one_attribute = T.let(nil, T.nilable(FakeResource))
       @has_many_attribute = T.let(nil, T.nilable(T::Array[FakeResource]))
     end
 
     sig { returns(T.nilable(Integer)) }
-    attr_accessor :id
+    attr_reader :id
 
-    sig { returns(String) }
-    attr_accessor :attribute
+    sig { returns(T.nilable(String)) }
+    attr_reader :attribute
 
     sig { returns(T.nilable(FakeResource)) }
-    attr_accessor :has_one_attribute
+    attr_reader :has_one_attribute
 
     sig { returns(T.nilable(T::Array[FakeResource])) }
-    attr_accessor :has_many_attribute
+    attr_reader :has_many_attribute
 
     class << self
       sig do

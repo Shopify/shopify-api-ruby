@@ -15,6 +15,7 @@ GEM
       rexml
     diff-lcs (1.5.0)
     fakefs (1.4.0)
+    hash_diff (1.0.0)
     hashdiff (1.0.1)
     httparty (0.20.0)
       mime-types (~> 3.0)
@@ -67,15 +68,7 @@ GEM
     sorbet (0.5.9531)
       sorbet-static (= 0.5.9531)
     sorbet-runtime (0.5.9531)
-    sorbet-static (0.5.9531-universal-darwin-14)
-    sorbet-static (0.5.9531-universal-darwin-15)
-    sorbet-static (0.5.9531-universal-darwin-16)
-    sorbet-static (0.5.9531-universal-darwin-17)
-    sorbet-static (0.5.9531-universal-darwin-18)
-    sorbet-static (0.5.9531-universal-darwin-19)
-    sorbet-static (0.5.9531-universal-darwin-20)
     sorbet-static (0.5.9531-universal-darwin-21)
-    sorbet-static (0.5.9531-x86_64-linux)
     spoom (1.1.7)
       sorbet (>= 0.5.9204)
       sorbet-runtime (>= 0.5.9204)
@@ -110,12 +103,11 @@ GEM
 
 PLATFORMS
   arm64-darwin-21
-  ruby
-  x86_64-darwin-20
 
 DEPENDENCIES
   activesupport
   fakefs
+  hash_diff
   httparty
   jwt
   minitest

@@ -10,6 +10,7 @@ gem "jwt"
 gem "sorbet-runtime"
 gem "openssl"
 gem "zeitwerk", "~> 2.5"
+gem "hash_diff"
 
 group :development do
   gem "sorbet"

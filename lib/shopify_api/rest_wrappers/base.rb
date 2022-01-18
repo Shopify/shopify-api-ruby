@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 require "active_support/inflector"
-require "pry"
+require "hash_diff"
 
 module ShopifyAPI
   module RestWrappers
@@ -16,11 +16,12 @@ module ShopifyAPI
       @paths = T.let([], T::Array[T::Hash[Symbol, T.any(T::Array[Symbol], String, Symbol)]])
 
       sig { returns(T::Hash[Symbol, T.untyped]) }
-      attr_reader :original_state
+      attr_accessor :original_state
 
       sig { params(session: T.nilable(Auth::Session)).void }
       def initialize(session: nil)
         @original_state = T.let({}, T::Hash[Symbol, T.untyped])
+        @forced_nils = T.let({}, T::Hash[String, T::Boolean])
 
         session = Utils::SessionUtils.load_current_session if !session && Context.private?
         raise Errors::SessionNotFoundError, "No provided session for public app." unless session
@@ -56,6 +57,16 @@ module ShopifyAPI
         sig { returns(String) }
         def class_name
           T.must(name).demodulize.underscore
+        end
+
+        sig { returns(String) }
+        def primary_key
+          "id"
+        end
+
+        sig { returns(String) }
+        def json_body_name
+          class_name.underscore
         end
 
         sig { params(attribute: Symbol).returns(T::Boolean) }
@@ -145,6 +156,7 @@ module ShopifyAPI
         end
         def create_instance(data:, session:, instance: nil)
           instance ||= new(session: session)
+          instance.original_state = {}
 
           unless data.empty?
             # This retrieves all the setters on the resource and calls them with the data
@@ -171,6 +183,46 @@ module ShopifyAPI
         end
       end
 
+      sig { params(meth_id: Symbol, val: T.untyped).void }
+      def method_missing(meth_id, val = nil)
+        match = meth_id.id2name.match(/([^=]+)=/)
+
+        return super unless match
+
+        var = match[1]
+
+        instance_variable_set("@#{var}", val)
+        @forced_nils[T.must(var)] = val.nil?
+      end
+
+      sig { params(meth_id: Symbol, args: T.untyped).void }
+      def respond_to_missing?(meth_id, *args)
+        str = meth_id.id2name
+        match = str.match(/([^=]+)=/)
+
+        match.nil? ? true : super
+      end
+
+      sig { returns(T::Hash[String, T.untyped]) }
+      def to_hash
+        hash = {}
+        instance_variables.each do |var|
+          next if [:"@original_state", :"@session", :"@client", :"@forced_nils"].include?(var)
+
+          attribute = var.to_s.delete("@").to_sym
+          if self.class.has_many?(attribute)
+            hash[attribute.to_s] = instance_variable_get(var).map(&:to_hash).to_a if instance_variable_get(var)
+          elsif self.class.has_one?(attribute)
+            element_hash = instance_variable_get(var)&.to_hash
+            hash[attribute.to_s] = element_hash if element_hash || @forced_nils[attribute.to_s]
+          elsif !instance_variable_get(var).nil? || @forced_nils[attribute.to_s]
+            hash[attribute.to_s] =
+              instance_variable_get(var)
+          end
+        end
+        hash
+      end
+
       sig { void }
       def delete
         @client.delete(
@@ -185,12 +237,16 @@ module ShopifyAPI
 
       sig { params(update_object: T::Boolean).void }
       def save(update_object: false)
-        hash = generate_changed_hash
-        method = hash["id"] ? :put : :post
+        hash = HashDiff::Comparison.new(original_state, to_hash).left_diff
+        method = hash[self.class.primary_key] ? :put : :post
 
-        response = @client.public_send(method,
-          body: { self.class.class_name.downcase => hash },
-          path: T.must(self.class.get_path(http_method: method, operation: method, entity: self)))
+        path = self.class.get_path(http_method: method, operation: method, entity: self)
+        if path.nil?
+          method = method == :post ? :put : :post
+          path = self.class.get_path(http_method: method, operation: method, entity: self)
+        end
+
+        response = @client.public_send(method, body: { self.class.json_body_name => hash }, path: path)
 
         if update_object
           self.class.create_instance(
@@ -198,39 +254,6 @@ module ShopifyAPI
             session: @session, instance: self
           )
         end
-      end
-
-      sig { returns(T::Hash[String, T.untyped]) }
-      def generate_changed_hash
-        hash = {}
-
-        instance_variables.each do |var|
-          next if [:"@original_state", :"@session", :"@client"].include?(var)
-
-          attribute = var.to_s.delete("@").to_sym
-          if self.class.has_many?(attribute)
-            elements = []
-            element_changed = T.let(false, T::Boolean)
-            (instance_variable_get(var) || []).each do |element|
-              element_hash = element.generate_changed_hash
-              elements << element_hash if element_hash
-              if element_hash.keys != ["id"] && !element_hash.keys.empty?
-                element_changed = true
-              end
-            end
-
-            hash[attribute.to_s] = elements if element_changed
-          elsif self.class.has_one?(attribute)
-            element_hash = instance_variable_get(var)&.generate_changed_hash || {}
-            if element_hash.keys != ["id"] && !element_hash.keys.empty?
-              hash[attribute.to_s] = element_hash
-            end
-          elsif instance_variable_get(var) != original_state[attribute] || var == "@id".to_sym
-            hash[attribute.to_s] = instance_variable_get(var)
-          end
-        end
-
-        hash
       end
     end
   end

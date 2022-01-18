@@ -75,7 +75,7 @@ module ShopifyAPITest
       end
 
       def test_saves
-        request_body = { fake_resource: { id: nil, attribute: "attribute" } }.to_json
+        request_body = { fake_resource: { attribute: "attribute" } }.to_json
         response_body = { fake_resource: { id: 1, attribute: "attribute" } }.to_json
 
         stubbed_request = stub_request(:post, "#{@prefix}/fake_resources.json")
@@ -91,7 +91,7 @@ module ShopifyAPITest
       end
 
       def test_saves_and_updates
-        request_body = { fake_resource: { id: nil, attribute: "attribute" } }.to_json
+        request_body = { fake_resource: { attribute: "attribute" } }.to_json
         response_body = { fake_resource: { id: 1, attribute: "attribute" } }.to_json
 
         stub_request(:post, "#{@prefix}/fake_resources.json")
@@ -124,9 +124,8 @@ module ShopifyAPITest
       def test_saves_with_children
         body = { fake_resource: {
           id: 1,
-          attribute: "",
-          has_one_attribute: { id: nil, attribute: "attribute1" },
-          has_many_attribute: [{ id: nil, attribute: "attribute2" }],
+          has_one_attribute: { attribute: "attribute1" },
+          has_many_attribute: [{ attribute: "attribute2" }],
         } }.to_json
 
         stubbed_request = stub_request(:put, "#{@prefix}/fake_resources/1.json")
@@ -154,6 +153,35 @@ module ShopifyAPITest
         stubbed_request = stub_request(:delete, "#{@prefix}/fake_resources/1.json").to_return(status: 200)
 
         resource.delete
+        assert_requested(stubbed_request)
+      end
+
+      def test_save_with_unknown_attribute
+        request_body = { fake_resource: { unknown: "some-value" } }.to_json
+
+        stubbed_request = stub_request(:post, "#{@prefix}/fake_resources.json")
+          .with(body: request_body)
+          .to_return(status: 201, body: "{}")
+
+        resource = TestHelpers::FakeResource.new(session: @session)
+        resource.unknown = "some-value"
+
+        resource.save
+        assert_requested(stubbed_request)
+      end
+
+      def test_save_forcing_a_nil_attribute
+        request_body = { fake_resource: { id: 1, has_one_attribute: nil } }.to_json
+
+        stubbed_request = stub_request(:put, "#{@prefix}/fake_resources/1.json")
+          .with(body: request_body)
+          .to_return(status: 201, body: "{}")
+
+        resource = TestHelpers::FakeResource.new(session: @session)
+        resource.id = 1
+        resource.has_one_attribute = nil
+
+        resource.save
         assert_requested(stubbed_request)
       end
 
