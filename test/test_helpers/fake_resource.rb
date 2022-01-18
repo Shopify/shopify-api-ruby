@@ -71,7 +71,12 @@ module TestHelpers
         ).returns(T.untyped)
       end
       def custom(session:, id:, other_resource_id: nil)
-        get(operation: :custom, session: session, path_ids: { id: id, other_resource_id: other_resource_id })
+        request(
+          http_method: :get,
+          operation: :custom,
+          session: session,
+          path_ids: { id: id, other_resource_id: other_resource_id }
+        )
       end
     end
   end
