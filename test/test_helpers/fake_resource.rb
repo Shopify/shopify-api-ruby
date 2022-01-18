@@ -21,6 +21,8 @@ module TestHelpers
       { http_method: :delete, operation: :delete, ids: [:id], path: "fake_resources/<id>.json" },
       { http_method: :get, operation: :custom, ids: [],
         path: "other_resources/<other_resource_id>/fake_resources/<id>/custom.json", },
+      { http_method: :delete, operation: :delete, ids: [:other_resource_id, :id],
+        path: "other_resources/<other_resource_id>/fake_resources/<id>.json", },
     ], T::Array[T::Hash[String, T.any(T::Array[T.untyped], String, Symbol)]])
 
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
@@ -30,6 +32,7 @@ module TestHelpers
       @attribute = T.let(nil, T.nilable(String))
       @has_one_attribute = T.let(nil, T.nilable(FakeResource))
       @has_many_attribute = T.let(nil, T.nilable(T::Array[FakeResource]))
+      @other_resource_id = T.let(nil, T.nilable(Integer))
     end
 
     sig { returns(T.nilable(Integer)) }
@@ -43,6 +46,9 @@ module TestHelpers
 
     sig { returns(T.nilable(T::Array[FakeResource])) }
     attr_reader :has_many_attribute
+
+    sig { returns(T.nilable(Integer)) }
+    attr_reader :other_resource_id
 
     class << self
       sig do

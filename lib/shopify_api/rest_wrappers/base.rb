@@ -243,7 +243,7 @@ module ShopifyAPI
         end
         hash
       end
-      
+
       sig { params(params: T::Hash[T.untyped, T.untyped]).void }
       def delete(params: {})
         @client.delete(
