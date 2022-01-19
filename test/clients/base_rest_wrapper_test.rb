@@ -199,6 +199,29 @@ module ShopifyAPITest
         assert_requested(stubbed_request)
         assert(response, "test body")
       end
+
+      def test_delete_resource
+        stubbed_request = stub_request(:delete, "#{@prefix}/fake_resources/1.json")
+          .to_return(status: 200, body: "{}")
+
+        resource = TestHelpers::FakeResource.new(session: @session)
+        resource.id = 1
+        resource.delete
+
+        assert_requested(stubbed_request)
+      end
+
+      def test_delete_other_resource
+        stubbed_request = stub_request(:delete, "#{@prefix}/other_resources/2/fake_resources/1.json")
+          .to_return(status: 200, body: "{}")
+
+        resource = TestHelpers::FakeResource.new(session: @session)
+        resource.id = 1
+        resource.other_resource_id = 2
+        resource.delete
+
+        assert_requested(stubbed_request)
+      end
     end
   end
 end
