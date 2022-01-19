@@ -69,6 +69,7 @@ GEM
       sorbet-static (= 0.5.9531)
     sorbet-runtime (0.5.9531)
     sorbet-static (0.5.9531-universal-darwin-21)
+    sorbet-static (0.5.9531-x86_64-linux)
     spoom (1.1.7)
       sorbet (>= 0.5.9204)
       sorbet-runtime (>= 0.5.9204)
@@ -103,6 +104,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-21
+  x86_64-linux
 
 DEPENDENCIES
   activesupport
@@ -126,4 +128,4 @@ DEPENDENCIES
   zeitwerk (~> 2.5)
 
 BUNDLED WITH
-   2.2.32
+   2.3.4

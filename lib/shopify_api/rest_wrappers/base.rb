@@ -18,8 +18,13 @@ module ShopifyAPI
       sig { returns(T::Hash[Symbol, T.untyped]) }
       attr_accessor :original_state
 
-      sig { params(session: T.nilable(Auth::Session)).void }
-      def initialize(session: nil)
+      sig do
+        params(
+          session: T.nilable(Auth::Session),
+          from_hash: T.nilable(T::Hash[Symbol, T.untyped]),
+        ).void
+      end
+      def initialize(session: nil, from_hash: nil)
         @original_state = T.let({}, T::Hash[Symbol, T.untyped])
         @forced_nils = T.let({}, T::Hash[String, T::Boolean])
 
@@ -30,6 +35,10 @@ module ShopifyAPI
 
         @session = T.let(session, Auth::Session)
         @client = T.let(client, Clients::Rest::Admin)
+
+        from_hash&.each do |key, value|
+          instance_variable_set("@#{key}", value)
+        end
       end
 
       class << self
@@ -50,27 +59,6 @@ module ShopifyAPI
 
           path = T.must(get_path(http_method: :get, operation: :get, ids: ids))
           response = client.get(path: path, query: params.to_h { |k, v| [k, v.is_a?(Array) ? v.join(",") : v] }.compact)
-
-          create_instances_from_response(response: response, session: session)
-        end
-
-        sig do
-          params(
-            session: T.nilable(Auth::Session),
-            ids: T::Hash[Symbol, String],
-            params: T::Hash[Symbol, T.untyped],
-          ).returns(T::Array[Base])
-        end
-        def base_delete(session: nil, ids: {}, params: {})
-          session = Utils::SessionUtils.load_current_session if !session && Context.private?
-          raise Errors::SessionNotFoundError, "No provided session for non-private app." unless session
-
-          client = ShopifyAPI::Clients::Rest::Admin.new(session)
-
-          path = T.must(get_path(http_method: :delete, operation: :delete, ids: ids))
-          response = client.delete(path: path, query: params.to_h do |k, v|
-                                                        [k, v.is_a?(Array) ? v.join(",") : v]
-                                                      end.compact)
 
           create_instances_from_response(response: response, session: session)
         end
@@ -138,21 +126,33 @@ module ShopifyAPI
 
         sig do
           params(
+            http_method: Symbol,
             operation: T.any(String, Symbol),
             session: T.nilable(Auth::Session),
             path_ids: T::Hash[Symbol, String],
             params: T::Hash[Symbol, T.untyped],
+            body: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
+            entity: T.untyped,
           ).returns(T.untyped)
         end
-        def get(operation:, session:, path_ids: {}, params: {})
+        def request(http_method:, operation:, session:, path_ids: {}, params: {}, body: nil, entity: nil)
           session = Utils::SessionUtils.load_current_session if !session && Context.private?
           raise Errors::SessionNotFoundError, "No provided session for non-private app." unless session
 
           client = ShopifyAPI::Clients::Rest::Admin.new(session)
 
-          path = get_path(http_method: :get, operation: operation.to_sym, ids: path_ids)
+          path = get_path(http_method: http_method, operation: operation.to_sym, ids: path_ids)
 
-          client.get(path: T.must(path), query: params.compact)
+          case http_method
+          when :get
+            client.get(path: T.must(path), query: params.compact)
+          when :post
+            client.post(path: T.must(path), query: params.compact, body: body || {})
+          when :put
+            client.put(path: T.must(path), query: params.compact, body: body || {})
+          when :delete
+            client.delete(path: T.must(path), query: params.compact)
+          end
         end
 
         sig { params(response: Clients::HttpResponse, session: Auth::Session).returns(T::Array[Base]) }
