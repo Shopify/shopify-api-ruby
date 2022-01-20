@@ -11,7 +11,7 @@ module ShopifyAPI
       prop :body, T.nilable(T.any(T::Hash[T.any(Symbol, String), T.untyped], String))
       prop :body_type, T.nilable(String)
       prop :query, T.nilable(T::Hash[T.any(Symbol, String), T.untyped])
-      prop :extra_headers, T.nilable(T::Hash[T.any(Symbol, String), T.any(String, Integer, Float)])
+      prop :extra_headers, T.nilable(T::Hash[T.any(Symbol, String), T.untyped])
       prop :tries, Integer, default: 1
 
       sig { void }

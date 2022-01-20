@@ -16,7 +16,7 @@ module ShopifyAPI
           params(
             query: String,
             variables: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
-            headers: T.nilable(T::Hash[T.any(Symbol, String), T.any(String, Integer, Float)]),
+            headers: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             tries: Integer
           ).returns(HttpResponse)
         end

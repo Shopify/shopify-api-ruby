@@ -17,8 +17,8 @@ module ShopifyAPI
           params(
             path: String,
             body: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
-            query: T.nilable(T::Hash[T.any(Symbol, String), T.any(String, Integer, Float)]),
-            headers: T.nilable(T::Hash[T.any(Symbol, String), T.any(String, Integer, Float)]),
+            query: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
+            headers: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             tries: T.nilable(Integer)
           ).returns(HttpResponse)
         end
@@ -30,8 +30,8 @@ module ShopifyAPI
           params(
             path: String,
             body: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
-            query: T.nilable(T::Hash[T.any(Symbol, String), T.any(String, Integer, Float)]),
-            headers: T.nilable(T::Hash[T.any(Symbol, String), T.any(String, Integer, Float)]),
+            query: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
+            headers: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             tries: T.nilable(Integer)
           ).returns(HttpResponse)
         end
@@ -43,8 +43,8 @@ module ShopifyAPI
           params(
             path: String,
             body: T::Hash[T.any(Symbol, String), T.untyped],
-            query: T.nilable(T::Hash[T.any(Symbol, String), T.any(String, Integer, Float)]),
-            headers: T.nilable(T::Hash[T.any(Symbol, String), T.any(String, Integer, Float)]),
+            query: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
+            headers: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             tries: T.nilable(Integer)
           ).returns(HttpResponse)
         end
@@ -56,8 +56,8 @@ module ShopifyAPI
           params(
             path: String,
             body: T::Hash[T.any(Symbol, String), T.untyped],
-            query: T.nilable(T::Hash[T.any(Symbol, String), T.any(String, Integer, Float)]),
-            headers: T.nilable(T::Hash[T.any(Symbol, String), T.any(String, Integer, Float)]),
+            query: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
+            headers: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             tries: T.nilable(Integer)
           ).returns(HttpResponse)
         end
@@ -72,8 +72,8 @@ module ShopifyAPI
             http_method: Symbol,
             path: String,
             body: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
-            query: T.nilable(T::Hash[T.any(Symbol, String), T.any(String, Integer, Float)]),
-            headers: T.nilable(T::Hash[T.any(Symbol, String), T.any(String, Integer, Float)]),
+            query: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
+            headers: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             tries: Integer
           ).returns(HttpResponse)
         end

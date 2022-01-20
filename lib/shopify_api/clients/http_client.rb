@@ -15,7 +15,7 @@ module ShopifyAPI
         @headers = T.let({
           "User-Agent": "Shopify API Library v#{VERSION} | Ruby #{RUBY_VERSION}",
           "Accept": "application/json",
-        }, T::Hash[T.any(Symbol, String), T.any(String, Integer, Float)])
+        }, T::Hash[T.any(Symbol, String), T.untyped])
 
         unless session.access_token.nil? || T.must(session.access_token).empty?
           @headers["X-Shopify-Access-Token"] = T.cast(session.access_token, String)
