@@ -66,7 +66,7 @@ module ShopifyAPI
       sig { params(api_version: String).void }
       def load_rest_wrappers(api_version:)
         version_folder_name = api_version.gsub("-", "_")
-        path = "lib/shopify_api/rest_wrappers/resources/#{version_folder_name}"
+        path = "#{__dir__}/rest_wrappers/resources/#{version_folder_name}"
 
         unless Dir.exist?(path)
           unless @notified_missing_resources_folder.key?(api_version)
