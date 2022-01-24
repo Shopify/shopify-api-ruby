@@ -67,7 +67,7 @@ GEM
     securerandom (0.1.1)
     sorbet (0.5.9531)
       sorbet-static (= 0.5.9531)
-    sorbet-runtime (0.5.9531)
+    sorbet-runtime (0.5.9542)
     sorbet-static (0.5.9531-universal-darwin-21)
     sorbet-static (0.5.9531-x86_64-linux)
     spoom (1.1.8)
