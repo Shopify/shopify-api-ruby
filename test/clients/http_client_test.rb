@@ -53,6 +53,13 @@ module ShopifyAPITest
         simple_http_test(:get)
       end
 
+      def test_request_using_active_session
+        @session.temp do
+          @client = ShopifyAPI::Clients::HttpClient.new(base_path: @base_path)
+          simple_http_test(:get)
+        end
+      end
+
       def test_request_with_empty_response_body
         @success_body = {}
 

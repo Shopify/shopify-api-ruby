@@ -5,23 +5,8 @@ require_relative "./test_helper"
 
 module ShopifyAPITest
   class ContextTest < Minitest::Test
-    def test_not_setup
-      ShopifyAPI::Context.setup(
-        api_key: "",
-        api_secret_key: "",
-        api_version: "unstable",
-        host_name: "",
-        scope: [],
-        is_private: false,
-        is_embedded: true,
-        session_storage: ShopifyAPI::Auth::FileSessionStorage.new
-      )
-
-      refute(ShopifyAPI::Context.setup?)
-    end
-
-    def test_setup
-      reader, writer = IO.pipe
+    def setup
+      @reader, writer = IO.pipe
       ShopifyAPI::Context.setup(
         api_key: "key",
         api_secret_key: "secret",
@@ -34,7 +19,14 @@ module ShopifyAPITest
         logger: Logger.new(writer),
         private_shop: "privateshop.myshopify.com"
       )
+    end
 
+    def test_not_setup
+      clear_context
+      refute(ShopifyAPI::Context.setup?)
+    end
+
+    def test_setup
       assert(ShopifyAPI::Context.setup?)
       assert_equal("key", ShopifyAPI::Context.api_key)
       assert_equal("secret", ShopifyAPI::Context.api_secret_key)
@@ -44,8 +36,78 @@ module ShopifyAPITest
       assert(ShopifyAPI::Context.private?)
       assert_equal(ShopifyAPI::Auth::FileSessionStorage.new, ShopifyAPI::Context.session_storage)
       ShopifyAPI::Context.logger.info("test log")
-      assert_match(/test log/, reader.gets)
+      assert_match(/test log/, @reader.gets)
       assert_equal("privateshop.myshopify.com", ShopifyAPI::Context.private_shop)
+    end
+
+    def test_active_session_is_thread_safe
+      session1 = ShopifyAPI::Auth::Session.new(shop: "test-shop2.myshopify.com", access_token: "token1")
+      session2 = ShopifyAPI::Auth::Session.new(shop: "test-shop2.myshopify.com", access_token: "token2")
+
+      session1_set = T.let(false, T::Boolean)
+      session2_set = T.let(false, T::Boolean)
+
+      threads = []
+
+      threads << Thread.new do
+        ShopifyAPI::Context.activate_session(session1)
+        session1_set = true
+
+        sleep(0.1) until session2_set
+
+        assert_equal(session1, ShopifyAPI::Context.active_session)
+      end
+
+      threads << Thread.new do
+        ShopifyAPI::Context.activate_session(session2)
+        session2_set = true
+
+        sleep(0.1) until session1_set
+
+        assert_equal(session2, ShopifyAPI::Context.active_session)
+      end
+
+      threads.each(&:join)
+    end
+
+    def test_active_session_defaults_to_private_session
+      assert_equal("privateshop.myshopify.com", T.must(ShopifyAPI::Context.active_session).shop)
+      assert_equal("secret", T.must(ShopifyAPI::Context.active_session).access_token)
+    end
+
+    def test_active_session_defaults_to_nil
+      clear_context
+      assert_nil(ShopifyAPI::Context.active_session)
+    end
+
+    def test_deactivate_session
+      clear_context
+      session = ShopifyAPI::Auth::Session.new(shop: "test-shop.myshopify.com", access_token: "token")
+
+      ShopifyAPI::Context.activate_session(session)
+      assert_instance_of(ShopifyAPI::Auth::Session, ShopifyAPI::Context.active_session)
+
+      ShopifyAPI::Context.deactivate_session
+      assert_nil(ShopifyAPI::Context.active_session)
+    end
+
+    def teardown
+      ShopifyAPI::Context.deactivate_session
+    end
+
+    private
+
+    def clear_context
+      ShopifyAPI::Context.setup(
+        api_key: "",
+        api_secret_key: "",
+        api_version: "unstable",
+        host_name: "",
+        scope: [],
+        is_private: false,
+        is_embedded: true,
+        session_storage: ShopifyAPI::Auth::FileSessionStorage.new
+      )
     end
   end
 end

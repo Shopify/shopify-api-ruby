@@ -12,6 +12,7 @@ require "openssl"
 require "httparty"
 require "zeitwerk"
 require "jwt"
+require "concurrent"
 
 require_relative "shopify_api/inflector"
 

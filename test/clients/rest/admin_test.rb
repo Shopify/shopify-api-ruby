@@ -3,7 +3,7 @@
 
 require_relative "../../test_helper.rb"
 
-class RestClientTest < Test::Unit::TestCase
+class AdminTest < Test::Unit::TestCase
   def test_get
     run_test(:get)
   end
@@ -25,7 +25,7 @@ class RestClientTest < Test::Unit::TestCase
   def run_test(http_method)
     session = ShopifyAPI::Auth::Session.new(shop: "test-shop.myshopify.com",
       access_token: SecureRandom.alphanumeric(10))
-    client = ShopifyAPI::Clients::Rest::Admin.new(session)
+    client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
 
     request = {
       path: "some-path",

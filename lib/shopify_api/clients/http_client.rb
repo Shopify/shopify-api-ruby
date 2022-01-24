@@ -8,8 +8,11 @@ module ShopifyAPI
 
       RETRY_WAIT_TIME = 1
 
-      sig { params(session: Auth::Session, base_path: String).void }
-      def initialize(session:, base_path:)
+      sig { params(base_path: String, session: T.nilable(Auth::Session)).void }
+      def initialize(base_path:, session: nil)
+        session ||= Context.active_session
+        raise Errors::NoActiveSessionError, "No passed or active session" unless session
+
         @base_uri = T.let("https://#{session.shop}#{base_path}", String)
 
         @headers = T.let({

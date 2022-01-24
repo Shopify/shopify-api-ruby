@@ -70,6 +70,18 @@ module ShopifyAPI
         Oj.load(str)
       end
 
+      sig { params(_blk: T.proc.returns(T.untyped)).returns(T.untyped) }
+      def temp(&_blk)
+        original_session = Context.active_session
+
+        begin
+          Context.activate_session(self)
+          yield
+        ensure
+          Context.activate_session(original_session)
+        end
+      end
+
       alias_method :eql?, :==
       sig { params(other: T.nilable(Session)).returns(T::Boolean) }
       def ==(other)

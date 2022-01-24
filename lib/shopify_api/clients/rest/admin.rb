@@ -7,8 +7,8 @@ module ShopifyAPI
       class Admin
         extend T::Sig
 
-        sig { params(session: Auth::Session).void }
-        def initialize(session)
+        sig { params(session: T.nilable(Auth::Session)).void }
+        def initialize(session: nil)
           @http_client = T.let(HttpClient.new(session: session, base_path: "/admin/api/#{Context.api_version}"),
             HttpClient)
         end

@@ -108,6 +108,7 @@ PLATFORMS
 
 DEPENDENCIES
   activesupport
+  concurrent-ruby
   fakefs
   hash_diff
   httparty

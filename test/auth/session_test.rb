@@ -33,6 +33,20 @@ module ShopifyAPITest
         session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop", associated_user: user)
         assert(session.online?)
       end
+
+      def test_temp
+        session1 = ShopifyAPI::Auth::Session.new(id: "id1", shop: "test-shop")
+        session2 = ShopifyAPI::Auth::Session.new(id: "id2", shop: "test-shop")
+
+        ShopifyAPI::Context.activate_session(session1)
+
+        session2.temp { assert_equal(session2, ShopifyAPI::Context.active_session) }
+        assert_equal(session1, ShopifyAPI::Context.active_session)
+      end
+
+      def teardown
+        ShopifyAPI::Context.deactivate_session
+      end
     end
   end
 end

@@ -17,6 +17,7 @@ module ShopifyAPI
     @is_embedded = T.let(true, T::Boolean)
     @logger = T.let(Logger.new(STDOUT), Logger)
     @notified_missing_resources_folder = T.let({}, T::Hash[String, T::Boolean])
+    @active_session = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
     @rest_wrapper_loader = T.let(nil, T.nilable(Zeitwerk::Loader))
 
@@ -116,6 +117,22 @@ module ShopifyAPI
       sig { returns(T::Boolean) }
       def setup?
         !(api_key.empty? || api_secret_key.empty? || host_name.empty?)
+      end
+
+      sig { returns(T.nilable(Auth::Session)) }
+      def active_session
+        return @active_session.value unless @active_session.value.nil?
+        private? ? Utils::SessionUtils.load_current_session : nil
+      end
+
+      sig { params(session: T.nilable(Auth::Session)).void }
+      def activate_session(session)
+        @active_session.value = session
+      end
+
+      sig { void }
+      def deactivate_session
+        @active_session.value = nil
       end
     end
   end

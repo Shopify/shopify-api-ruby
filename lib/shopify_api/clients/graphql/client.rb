@@ -7,7 +7,7 @@ module ShopifyAPI
       class Client
         extend T::Sig
 
-        sig { params(session: Auth::Session, base_path: String).void }
+        sig { params(session: T.nilable(Auth::Session), base_path: String).void }
         def initialize(session:, base_path:)
           @http_client = T.let(HttpClient.new(session: session, base_path: base_path), HttpClient)
         end

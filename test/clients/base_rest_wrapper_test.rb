@@ -188,7 +188,7 @@ module ShopifyAPITest
       def test_create_resource_without_session
         modify_context(is_private: false)
 
-        assert_raises(ShopifyAPI::Errors::SessionNotFoundError) { TestHelpers::FakeResource.new }
+        assert_raises(ShopifyAPI::Errors::NoActiveSessionError) { TestHelpers::FakeResource.new }
       end
 
       def test_makes_custom_request

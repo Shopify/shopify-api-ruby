@@ -28,12 +28,11 @@ module ShopifyAPI
         @original_state = T.let({}, T::Hash[Symbol, T.untyped])
         @forced_nils = T.let({}, T::Hash[String, T::Boolean])
 
-        session = Utils::SessionUtils.load_current_session if !session && Context.private?
-        raise Errors::SessionNotFoundError, "No provided session for public app." unless session
+        session ||= ShopifyAPI::Context.active_session
 
-        client = ShopifyAPI::Clients::Rest::Admin.new(session)
+        client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
 
-        @session = T.let(session, Auth::Session)
+        @session = T.let(T.must(session), Auth::Session)
         @client = T.let(client, Clients::Rest::Admin)
 
         from_hash&.each do |key, value|
@@ -52,15 +51,14 @@ module ShopifyAPI
           ).returns(T::Array[Base])
         end
         def base_find(session: nil, ids: {}, params: {})
-          session = Utils::SessionUtils.load_current_session if !session && Context.private?
-          raise Errors::SessionNotFoundError, "No provided session for non-private app." unless session
+          session ||= ShopifyAPI::Context.active_session
 
-          client = ShopifyAPI::Clients::Rest::Admin.new(session)
+          client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
 
           path = T.must(get_path(http_method: :get, operation: :get, ids: ids))
           response = client.get(path: path, query: params.to_h { |k, v| [k, v.is_a?(Array) ? v.join(",") : v] }.compact)
 
-          create_instances_from_response(response: response, session: session)
+          create_instances_from_response(response: response, session: T.must(session))
         end
 
         sig { returns(String) }
@@ -136,10 +134,7 @@ module ShopifyAPI
           ).returns(T.untyped)
         end
         def request(http_method:, operation:, session:, path_ids: {}, params: {}, body: nil, entity: nil)
-          session = Utils::SessionUtils.load_current_session if !session && Context.private?
-          raise Errors::SessionNotFoundError, "No provided session for non-private app." unless session
-
-          client = ShopifyAPI::Clients::Rest::Admin.new(session)
+          client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
 
           path = get_path(http_method: http_method, operation: operation.to_sym, ids: path_ids)
 
