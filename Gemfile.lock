@@ -1,3 +1,17 @@
+PATH
+  remote: .
+  specs:
+    shopify_api (0.0.1)
+      concurrent-ruby
+      hash_diff
+      httparty
+      jwt
+      oj
+      openssl
+      securerandom
+      sorbet-runtime
+      zeitwerk (~> 2.5)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -26,7 +40,7 @@ GEM
     method_source (1.0.0)
     mime-types (3.4.1)
       mime-types-data (~> 3.2015)
-    mime-types-data (3.2021.1115)
+    mime-types-data (3.2022.0105)
     minitest (5.15.0)
     mocha (1.13.0)
     multi_xml (0.6.0)
@@ -108,25 +122,17 @@ PLATFORMS
 
 DEPENDENCIES
   activesupport
-  concurrent-ruby
   fakefs
-  hash_diff
-  httparty
-  jwt
   minitest
   mocha
-  oj
-  openssl
   rake
   rubocop
   rubocop-shopify
   rubocop-sorbet
-  securerandom
+  shopify_api!
   sorbet
-  sorbet-runtime
   tapioca
   webmock
-  zeitwerk (~> 2.5)
 
 BUNDLED WITH
    2.3.4
