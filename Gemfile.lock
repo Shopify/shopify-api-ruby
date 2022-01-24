@@ -14,7 +14,7 @@ GEM
     crack (0.4.5)
       rexml
     diff-lcs (1.5.0)
-    fakefs (1.4.0)
+    fakefs (1.4.1)
     hash_diff (1.0.0)
     hashdiff (1.0.1)
     httparty (0.20.0)
