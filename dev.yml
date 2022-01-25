@@ -23,6 +23,10 @@ commands:
   sanity:
     desc: 'run all static checks against the codebase'
     run: bundle exec rubocop && bundle exec srb tc && bundle exec rake test
+    subcommands:
+      all:
+        desc: 'run all checks regardless of the success states of previous checks'
+        run: bundle exec rubocop; bundle exec srb tc; bundle exec rake test
   rbi:
     desc: 'generate .rbi files for specified gem to the project'
     run: bin/tapioca gem
