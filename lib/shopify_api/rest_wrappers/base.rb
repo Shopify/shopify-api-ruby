@@ -131,7 +131,7 @@ module ShopifyAPI
             params: T::Hash[Symbol, T.untyped],
             body: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             entity: T.untyped,
-          ).returns(T.untyped)
+          ).returns(Clients::HttpResponse)
         end
         def request(http_method:, operation:, session:, path_ids: {}, params: {}, body: nil, entity: nil)
           client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
@@ -147,6 +147,8 @@ module ShopifyAPI
             client.put(path: T.must(path), query: params.compact, body: body || {})
           when :delete
             client.delete(path: T.must(path), query: params.compact)
+          else
+            raise Errors::InvalidHttpRequestError, "Invalid HTTP method: #{http_method}"
           end
         end
 
