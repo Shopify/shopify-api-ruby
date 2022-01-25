@@ -58,6 +58,9 @@ module ShopifyAPI
           path = T.must(get_path(http_method: :get, operation: :get, ids: ids))
           response = client.get(path: path, query: params.to_h { |k, v| [k, v.is_a?(Array) ? v.join(",") : v] }.compact)
 
+          instance_variable_get(:"@prev_page_info").value = response.prev_page_info
+          instance_variable_get(:"@next_page_info").value = response.next_page_info
+
           create_instances_from_response(response: response, session: T.must(session))
         end
 
@@ -74,6 +77,26 @@ module ShopifyAPI
         sig { returns(String) }
         def json_body_name
           class_name.underscore
+        end
+
+        sig { returns(T.nilable(String)) }
+        def prev_page_info
+          instance_variable_get(:"@prev_page_info").value
+        end
+
+        sig { returns(T.nilable(String)) }
+        def next_page_info
+          instance_variable_get(:"@next_page_info").value
+        end
+
+        sig { returns(T::Boolean) }
+        def prev_page?
+          !instance_variable_get(:"@prev_page_info").value.nil?
+        end
+
+        sig { returns(T::Boolean) }
+        def next_page?
+          !instance_variable_get(:"@next_page_info").value.nil?
         end
 
         sig { params(attribute: Symbol).returns(T::Boolean) }

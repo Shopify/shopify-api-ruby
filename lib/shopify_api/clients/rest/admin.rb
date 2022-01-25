@@ -4,13 +4,12 @@
 module ShopifyAPI
   module Clients
     module Rest
-      class Admin
+      class Admin < HttpClient
         extend T::Sig
 
         sig { params(session: T.nilable(Auth::Session)).void }
         def initialize(session: nil)
-          @http_client = T.let(HttpClient.new(session: session, base_path: "/admin/api/#{Context.api_version}"),
-            HttpClient)
+          super(session: session, base_path: "/admin/api/#{Context.api_version}")
         end
 
         sig do
@@ -23,7 +22,10 @@ module ShopifyAPI
           ).returns(HttpResponse)
         end
         def get(path:, body: nil, query: nil, headers: nil, tries: 1)
-          request(http_method: :get, path: path, body: body, query: query, headers: headers, tries: T.must(tries))
+          request(
+            make_request(http_method: :get, path: path, body: body, query: query, headers: headers,
+              tries: T.must(tries))
+          )
         end
 
         sig do
@@ -36,7 +38,10 @@ module ShopifyAPI
           ).returns(HttpResponse)
         end
         def delete(path:, body: nil, query: nil, headers: nil, tries: 1)
-          request(http_method: :delete, path: path, body: body, query: query, headers: headers, tries: T.must(tries))
+          request(
+            make_request(http_method: :delete, path: path, body: body, query: query, headers: headers,
+              tries: T.must(tries))
+          )
         end
 
         sig do
@@ -49,7 +54,10 @@ module ShopifyAPI
           ).returns(HttpResponse)
         end
         def put(path:, body:, query: nil, headers: nil, tries: 1)
-          request(http_method: :put, path: path, body: body, query: query, headers: headers, tries: T.must(tries))
+          request(
+            make_request(http_method: :put, path: path, body: body, query: query, headers: headers,
+              tries: T.must(tries))
+          )
         end
 
         sig do
@@ -62,7 +70,10 @@ module ShopifyAPI
           ).returns(HttpResponse)
         end
         def post(path:, body:, query: nil, headers: nil, tries: 1)
-          request(http_method: :post, path: path, body: body, query: query, headers: headers, tries: T.must(tries))
+          request(
+            make_request(http_method: :post, path: path, body: body, query: query, headers: headers,
+              tries: T.must(tries))
+          )
         end
 
         private
@@ -75,10 +86,10 @@ module ShopifyAPI
             query: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             headers: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             tries: Integer
-          ).returns(HttpResponse)
+          ).returns(HttpRequest)
         end
-        def request(http_method:, path:, body:, query:, headers:, tries:)
-          @http_client.request(HttpRequest.new(
+        def make_request(http_method:, path:, body:, query:, headers:, tries:)
+          HttpRequest.new(
             http_method: http_method,
             path: path,
             body: body,
@@ -86,7 +97,7 @@ module ShopifyAPI
             extra_headers: headers,
             body_type: body.nil? ? nil : "application/json",
             tries: tries
-          ))
+          )
         end
       end
     end

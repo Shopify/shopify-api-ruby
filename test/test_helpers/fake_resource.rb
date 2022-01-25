@@ -13,6 +13,9 @@ module TestHelpers
       has_many_attribute: FakeResource,
     }, T::Hash[Symbol, Class])
 
+    @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+    @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
     @paths = T.let([
       { http_method: :get, operation: :get, ids: [], path: "fake_resources.json" },
       { http_method: :post, operation: :post, ids: [], path: "fake_resources.json" },
@@ -52,15 +55,16 @@ module TestHelpers
 
     class << self
       sig do
-        params(id: T.any(Integer, String), session: ShopifyAPI::Auth::Session, param: T.untyped).returns(FakeResource)
+        params(id: T.any(Integer, String), session: ShopifyAPI::Auth::Session, param: T.untyped,
+          kwargs: T.untyped).returns(FakeResource)
       end
-      def find(id:, session:, param: nil)
-        T.cast(base_find(params: { param: param }, session: session, ids: { id: id })[0], FakeResource)
+      def find(id:, session:, param: nil, **kwargs)
+        T.cast(base_find(params: { param: param }.merge(kwargs), session: session, ids: { id: id })[0], FakeResource)
       end
 
-      sig { params(session: ShopifyAPI::Auth::Session).returns(T::Array[FakeResource]) }
-      def all(session:)
-        T.cast(base_find(session: session), T::Array[FakeResource])
+      sig { params(session: ShopifyAPI::Auth::Session, kwargs: T.untyped).returns(T::Array[FakeResource]) }
+      def all(session:, **kwargs)
+        T.cast(base_find(session: session, params: kwargs), T::Array[FakeResource])
       end
 
       sig do

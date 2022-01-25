@@ -222,6 +222,63 @@ module ShopifyAPITest
 
         assert_requested(stubbed_request)
       end
+
+      def test_pagination
+        body = { fake_resources: [] }.to_json
+
+        stub_request(:get, "#{@prefix}/fake_resources.json")
+          .to_return(body: body, headers: {
+            "link" => "<#{@prefix}/fake_resources.json?page_info=page-info>; rel=\"next\"",
+          })
+
+        next_stub = stub_request(:get, "#{@prefix}/fake_resources.json?page_info=page-info")
+          .to_return(body: body, headers: {
+            "link" => "<#{@prefix}/fake_resources.json?page_info=page-info2>; rel=\"previous\"",
+          })
+
+        prev_stub = stub_request(:get, "#{@prefix}/fake_resources.json?page_info=page-info2").to_return(body: body)
+
+        TestHelpers::FakeResource.all(session: @session)
+        assert(TestHelpers::FakeResource.next_page?)
+        refute(TestHelpers::FakeResource.prev_page?)
+
+        TestHelpers::FakeResource.all(session: @session, page_info: TestHelpers::FakeResource.next_page_info)
+        assert_requested(next_stub)
+        assert(TestHelpers::FakeResource.prev_page?)
+        refute(TestHelpers::FakeResource.next_page?)
+
+        TestHelpers::FakeResource.all(session: @session, page_info: TestHelpers::FakeResource.prev_page_info)
+        assert_requested(prev_stub)
+        refute(TestHelpers::FakeResource.prev_page?)
+        refute(TestHelpers::FakeResource.next_page?)
+      end
+
+      def test_pagination_is_thread_safe
+        response_body = { fake_resources: [] }.to_json
+        request_made = false
+
+        stub_request(:get, "#{@prefix}/fake_resources.json")
+          .to_return(body: response_body, headers: {
+            "link" => "<#{@prefix}/fake_resources.json?page_info=page-info>; rel=\"next\"",
+          })
+
+        threads = []
+
+        threads << Thread.new do
+          sleep(0.1) until request_made
+
+          refute(TestHelpers::FakeResource.next_page?)
+        end
+
+        threads << Thread.new do
+          TestHelpers::FakeResource.all(session: @session)
+          request_made = true
+
+          assert(TestHelpers::FakeResource.next_page?)
+        end
+
+        threads.each(&:join)
+      end
     end
   end
 end
