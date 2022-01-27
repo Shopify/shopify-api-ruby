@@ -1,0 +1,79 @@
+# typed: strict
+# frozen_string_literal: true
+
+module ShopifyAPI
+  class AssignedFulfillmentOrder < ShopifyAPI::RestWrappers::Base
+    extend T::Sig
+
+    @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+    @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    @has_one = T.let({}, T::Hash[Symbol, Class])
+    @has_many = T.let({}, T::Hash[Symbol, Class])
+    @paths = T.let([
+      {http_method: :get, operation: :get, ids: [], path: "assigned_fulfillment_orders.json"}
+    ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
+
+    sig { returns(T.nilable(Integer)) }
+    attr_reader :assigned_location_id
+    sig { returns(T.nilable(Hash)) }
+    attr_reader :destination
+    sig { returns(T.nilable(Integer)) }
+    attr_reader :id
+    sig { returns(T.nilable(T::Array[Hash])) }
+    attr_reader :line_items
+    sig { returns(T.nilable(Integer)) }
+    attr_reader :order_id
+    sig { returns(T.nilable(String)) }
+    attr_reader :request_status
+    sig { returns(T.nilable(Integer)) }
+    attr_reader :shop_id
+    sig { returns(T.nilable(String)) }
+    attr_reader :status
+
+    class << self
+      sig do
+        params(
+          session: Auth::Session
+        ).returns(T.untyped)
+      end
+      def delete(session:)
+        request(
+          http_method: :delete,
+          operation: :delete,
+          session: session,
+          path_ids: {},
+          params: {},
+        )
+      end
+
+      sig do
+        params(
+          session: Auth::Session,
+          assignment_status: T.untyped,
+          location_ids: T.nilable(T.any(Array, Integer, String)),
+          kwargs: T.untyped
+        ).returns(T::Array[AssignedFulfillmentOrder])
+      end
+      def all(
+        session:,
+        assignment_status: nil,
+        location_ids: nil,
+        **kwargs
+      )
+        response = request(
+          http_method: :get,
+          operation: :get,
+          session: session,
+          path_ids: {},
+          params: {assignment_status: assignment_status, location_ids: location_ids}.merge(kwargs).compact,
+        )
+
+        result = create_instances_from_response(response: response, session: session)
+        T.cast(result, T::Array[AssignedFulfillmentOrder])
+      end
+
+    end
+
+  end
+end

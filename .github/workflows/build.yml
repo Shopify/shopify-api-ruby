@@ -33,6 +33,9 @@ jobs:
       - name: Run Typecheck
         run: |
           bundle exec srb tc
-      - name: Run Tests
+      - name: Run tests
         run: |
-          bundle exec rake test
+          bundle exec rake test:library
+      - name: Run REST wrapper tests
+        run: |
+          bundle exec rake test:rest_wrappers

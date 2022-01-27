@@ -1,0 +1,239 @@
+# typed: strict
+# frozen_string_literal: true
+
+module ShopifyAPI
+  class Article < ShopifyAPI::RestWrappers::Base
+    extend T::Sig
+
+    @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+    @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    @has_one = T.let({}, T::Hash[Symbol, Class])
+    @has_many = T.let({
+      metafields: Metafield
+    }, T::Hash[Symbol, Class])
+    @paths = T.let([
+      {http_method: :get, operation: :get, ids: [:blog_id], path: "blogs/<blog_id>/articles.json"},
+      {http_method: :post, operation: :post, ids: [:blog_id], path: "blogs/<blog_id>/articles.json"},
+      {http_method: :get, operation: :count, ids: [:blog_id], path: "blogs/<blog_id>/articles/count.json"},
+      {http_method: :get, operation: :get, ids: [:blog_id, :id], path: "blogs/<blog_id>/articles/<id>.json"},
+      {http_method: :put, operation: :put, ids: [:blog_id, :id], path: "blogs/<blog_id>/articles/<id>.json"},
+      {http_method: :delete, operation: :delete, ids: [:blog_id, :id], path: "blogs/<blog_id>/articles/<id>.json"},
+      {http_method: :get, operation: :authors, ids: [], path: "articles/authors.json"},
+      {http_method: :get, operation: :tags, ids: [], path: "articles/tags.json"},
+      {http_method: :get, operation: :tags, ids: [:blog_id], path: "blogs/<blog_id>/articles/tags.json"}
+    ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
+
+    sig { returns(T.nilable(String)) }
+    attr_reader :author
+    sig { returns(T.nilable(Integer)) }
+    attr_reader :blog_id
+    sig { returns(T.nilable(String)) }
+    attr_reader :body_html
+    sig { returns(T.nilable(String)) }
+    attr_reader :created_at
+    sig { returns(T.nilable(String)) }
+    attr_reader :handle
+    sig { returns(T.nilable(Integer)) }
+    attr_reader :id
+    sig { returns(T.nilable(T::Array[String, Hash])) }
+    attr_reader :image
+    sig { returns(T.nilable(T::Array[Metafield])) }
+    attr_reader :metafields
+    sig { returns(T.nilable(T::Boolean)) }
+    attr_reader :published
+    sig { returns(T.nilable(String)) }
+    attr_reader :published_at
+    sig { returns(T.nilable(String)) }
+    attr_reader :summary_html
+    sig { returns(T.nilable(String)) }
+    attr_reader :tags
+    sig { returns(T.nilable(String)) }
+    attr_reader :template_suffix
+    sig { returns(T.nilable(String)) }
+    attr_reader :title
+    sig { returns(T.nilable(String)) }
+    attr_reader :updated_at
+    sig { returns(T.nilable(Integer)) }
+    attr_reader :user_id
+
+    class << self
+      sig do
+        params(
+          session: Auth::Session,
+          id: T.any(Integer, String),
+          blog_id: T.nilable(T.any(Integer, String)),
+          fields: T.untyped
+        ).returns(T.nilable(Article))
+      end
+      def find(
+        session:,
+        id:,
+        blog_id: nil,
+        fields: nil
+      )
+        result = base_find(
+          ids: {blog_id: blog_id, id: id},
+          params: {fields: fields},
+          session: session,
+        )
+        T.cast(result[0], T.nilable(Article))
+      end
+
+      sig do
+        params(
+          session: Auth::Session,
+          id: T.any(Integer, String),
+          blog_id: T.nilable(T.any(Integer, String))
+        ).returns(T.untyped)
+      end
+      def delete(
+        session:,
+        id:,
+        blog_id: nil
+      )
+        request(
+          http_method: :delete,
+          operation: :delete,
+          session: session,
+          path_ids: {blog_id: blog_id, id: id},
+          params: {},
+        )
+      end
+
+      sig do
+        params(
+          session: Auth::Session,
+          blog_id: T.nilable(T.any(Integer, String)),
+          limit: T.untyped,
+          since_id: T.untyped,
+          created_at_min: T.untyped,
+          created_at_max: T.untyped,
+          updated_at_min: T.untyped,
+          updated_at_max: T.untyped,
+          published_at_min: T.untyped,
+          published_at_max: T.untyped,
+          published_status: T.untyped,
+          handle: T.untyped,
+          tag: T.untyped,
+          author: T.untyped,
+          fields: T.untyped,
+          kwargs: T.untyped
+        ).returns(T::Array[Article])
+      end
+      def all(
+        session:,
+        blog_id: nil,
+        limit: nil,
+        since_id: nil,
+        created_at_min: nil,
+        created_at_max: nil,
+        updated_at_min: nil,
+        updated_at_max: nil,
+        published_at_min: nil,
+        published_at_max: nil,
+        published_status: nil,
+        handle: nil,
+        tag: nil,
+        author: nil,
+        fields: nil,
+        **kwargs
+      )
+        response = request(
+          http_method: :get,
+          operation: :get,
+          session: session,
+          path_ids: {blog_id: blog_id},
+          params: {limit: limit, since_id: since_id, created_at_min: created_at_min, created_at_max: created_at_max, updated_at_min: updated_at_min, updated_at_max: updated_at_max, published_at_min: published_at_min, published_at_max: published_at_max, published_status: published_status, handle: handle, tag: tag, author: author, fields: fields}.merge(kwargs).compact,
+        )
+
+        result = create_instances_from_response(response: response, session: session)
+        T.cast(result, T::Array[Article])
+      end
+
+      sig do
+        params(
+          session: Auth::Session,
+          blog_id: T.nilable(T.any(Integer, String)),
+          created_at_min: T.untyped,
+          created_at_max: T.untyped,
+          updated_at_min: T.untyped,
+          updated_at_max: T.untyped,
+          published_at_min: T.untyped,
+          published_at_max: T.untyped,
+          published_status: T.untyped,
+          kwargs: T.untyped
+        ).returns(T.untyped)
+      end
+      def count(
+        session:,
+        blog_id: nil,
+        created_at_min: nil,
+        created_at_max: nil,
+        updated_at_min: nil,
+        updated_at_max: nil,
+        published_at_min: nil,
+        published_at_max: nil,
+        published_status: nil,
+        **kwargs
+      )
+        request(
+          http_method: :get,
+          operation: :count,
+          session: session,
+          path_ids: {blog_id: blog_id},
+          params: {created_at_min: created_at_min, created_at_max: created_at_max, updated_at_min: updated_at_min, updated_at_max: updated_at_max, published_at_min: published_at_min, published_at_max: published_at_max, published_status: published_status}.merge(kwargs).compact,
+          entity: nil,
+        )
+      end
+
+      sig do
+        params(
+          session: Auth::Session,
+          kwargs: T.untyped
+        ).returns(T.untyped)
+      end
+      def authors(
+        session:,
+        **kwargs
+      )
+        request(
+          http_method: :get,
+          operation: :authors,
+          session: session,
+          path_ids: {},
+          params: {}.merge(kwargs).compact,
+          entity: nil,
+        )
+      end
+
+      sig do
+        params(
+          session: Auth::Session,
+          blog_id: T.nilable(T.any(Integer, String)),
+          limit: T.untyped,
+          popular: T.untyped,
+          kwargs: T.untyped
+        ).returns(T.untyped)
+      end
+      def tags(
+        session:,
+        blog_id: nil,
+        limit: nil,
+        popular: nil,
+        **kwargs
+      )
+        request(
+          http_method: :get,
+          operation: :tags,
+          session: session,
+          path_ids: {blog_id: blog_id},
+          params: {limit: limit, popular: popular}.merge(kwargs).compact,
+          entity: nil,
+        )
+      end
+
+    end
+
+  end
+end
