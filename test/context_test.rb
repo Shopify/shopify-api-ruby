@@ -93,6 +93,22 @@ module ShopifyAPITest
       assert_nil(ShopifyAPI::Context.active_session)
     end
 
+    def test_unsupported_api_version
+      assert_raises(ShopifyAPI::Errors::UnsupportedVersionError) do
+        ShopifyAPI::Context.setup(
+          api_key: "key",
+          api_secret_key: "secret",
+          api_version: "unsupported",
+          host_name: "host",
+          scope: ["scope1", "scope2"],
+          is_private: false,
+          is_embedded: true,
+          session_storage: ShopifyAPI::Auth::FileSessionStorage.new,
+          logger: Logger.new(STDOUT),
+        )
+      end
+    end
+
     def teardown
       ShopifyAPI::Context.deactivate_session
     end

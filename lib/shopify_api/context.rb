@@ -7,7 +7,7 @@ module ShopifyAPI
 
     @api_key = T.let("", String)
     @api_secret_key = T.let("", String)
-    @api_version = T.let("2021-01", String)
+    @api_version = T.let(LATEST_SUPPORTED_ADMIN_VERSION, String)
     @host_name = T.let("", String)
     @scope = T.let(Auth::AuthScopes.new, Auth::AuthScopes)
     @is_embedded = T.let(false, T::Boolean)
@@ -53,6 +53,11 @@ module ShopifyAPI
         private_shop: nil,
         user_agent_prefix: nil
       )
+        unless SUPPORTED_ADMIN_VERSIONS.include?(api_version)
+          raise Errors::UnsupportedVersionError,
+            "Invalid vession #{api_version}, supported versions: #{SUPPORTED_ADMIN_VERSIONS}"
+        end
+
         @api_key = api_key
         @api_secret_key = api_secret_key
         @api_version = api_version
