@@ -15,8 +15,10 @@ module ShopifyAPI
 
         @base_uri = T.let("https://#{session.shop}#{base_path}", String)
 
+        user_agent_prefix = Context.user_agent_prefix.nil? ? "" : "#{Context.user_agent_prefix} | "
+
         @headers = T.let({
-          "User-Agent": "Shopify API Library v#{VERSION} | Ruby #{RUBY_VERSION}",
+          "User-Agent": "#{user_agent_prefix}Shopify API Library v#{VERSION} | Ruby #{RUBY_VERSION}",
           "Accept": "application/json",
         }, T::Hash[T.any(Symbol, String), T.untyped])
 

@@ -10,6 +10,7 @@ module ShopifyAPI
         include TestHelpers::GraphQLClient
 
         def setup
+          super
           @session = ShopifyAPI::Auth::Session.new(shop: "test-shop.myshopify.com",
             access_token: SecureRandom.alphanumeric(10))
           @client = ShopifyAPI::Clients::Graphql::Admin.new(@session)

@@ -31,6 +31,7 @@ module Test
           is_private: false,
           is_embedded: false,
           session_storage: TestHelpers::FakeSessionStorage.new,
+          user_agent_prefix: nil
         )
       end
 
@@ -45,7 +46,8 @@ module Test
           is_embedded: T.nilable(T::Boolean),
           session_storage: T.nilable(ShopifyAPI::Auth::SessionStorage),
           logger: T.nilable(Logger),
-          private_shop: T.nilable(String)
+          private_shop: T.nilable(String),
+          user_agent_prefix: T.nilable(String)
         ).void
       end
       def modify_context(
@@ -58,7 +60,8 @@ module Test
         is_embedded: nil,
         session_storage: nil,
         logger: nil,
-        private_shop: "do-not-set"
+        private_shop: "do-not-set",
+        user_agent_prefix: nil
       )
         ShopifyAPI::Context.setup(
           api_key: api_key ? api_key : ShopifyAPI::Context.api_key,
@@ -70,7 +73,8 @@ module Test
           is_embedded: !is_embedded.nil? ? is_embedded : ShopifyAPI::Context.embedded?,
           session_storage: session_storage ? session_storage : ShopifyAPI::Context.session_storage,
           logger: logger ? logger : ShopifyAPI::Context.logger,
-          private_shop: private_shop != "do-not-set" ? private_shop : ShopifyAPI::Context.private_shop
+          private_shop: private_shop != "do-not-set" ? private_shop : ShopifyAPI::Context.private_shop,
+          user_agent_prefix: user_agent_prefix ? user_agent_prefix : ShopifyAPI::Context.user_agent_prefix
         )
       end
     end

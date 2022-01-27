@@ -7,6 +7,7 @@ module ShopifyAPITest
   module Clients
     class HttpClientTest < Test::Unit::TestCase
       def setup
+        super
         @shop = "test-shop.myshopify.com"
         @token = SecureRandom.alphanumeric(10)
         @base_path = "/base_path"
@@ -75,6 +76,16 @@ module ShopifyAPITest
         @client = ShopifyAPI::Clients::HttpClient.new(session: @session, base_path: @base_path)
 
         @expected_headers.delete(:"X-Shopify-Access-Token")
+
+        apply_simple_http_stub
+        verify_http_request
+      end
+
+      def test_request_with_user_agent_prefix
+        @expected_headers[:"User-Agent"] = "some_prefix | " + @expected_headers[:"User-Agent"]
+
+        modify_context(user_agent_prefix: "some_prefix")
+        @client = ShopifyAPI::Clients::HttpClient.new(session: @session, base_path: @base_path)
 
         apply_simple_http_stub
         verify_http_request

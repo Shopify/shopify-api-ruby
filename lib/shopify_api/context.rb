@@ -18,6 +18,7 @@ module ShopifyAPI
     @logger = T.let(Logger.new(STDOUT), Logger)
     @notified_missing_resources_folder = T.let({}, T::Hash[String, T::Boolean])
     @active_session = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+    @user_agent_prefix = T.let(nil, T.nilable(String))
 
     @rest_wrapper_loader = T.let(nil, T.nilable(Zeitwerk::Loader))
 
@@ -35,7 +36,8 @@ module ShopifyAPI
           is_embedded: T::Boolean,
           session_storage: ShopifyAPI::Auth::SessionStorage,
           logger: Logger,
-          private_shop: T.nilable(String)
+          private_shop: T.nilable(String),
+          user_agent_prefix: T.nilable(String),
         ).void
       end
       def setup(
@@ -48,7 +50,8 @@ module ShopifyAPI
         is_embedded:,
         session_storage:,
         logger: Logger.new(STDOUT),
-        private_shop: nil
+        private_shop: nil,
+        user_agent_prefix: nil
       )
         @api_key = api_key
         @api_secret_key = api_secret_key
@@ -60,6 +63,7 @@ module ShopifyAPI
         @session_storage = session_storage
         @logger = logger
         @private_shop = private_shop
+        @user_agent_prefix = user_agent_prefix
 
         load_rest_wrappers(api_version: api_version)
       end
@@ -107,7 +111,7 @@ module ShopifyAPI
       end
 
       sig { returns(T.nilable(String)) }
-      attr_reader :private_shop
+      attr_reader :private_shop, :user_agent_prefix
 
       sig { returns(T::Boolean) }
       def embedded?

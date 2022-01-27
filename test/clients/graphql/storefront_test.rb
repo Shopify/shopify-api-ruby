@@ -10,6 +10,7 @@ module ShopifyAPITest
         include TestHelpers::GraphQLClient
 
         def setup
+          super
           @shop = "test-shop.myshopify.com"
           @storefront_access_token = SecureRandom.alphanumeric(10)
           @client = ShopifyAPI::Clients::Graphql::Storefront.new(@shop, @storefront_access_token)
