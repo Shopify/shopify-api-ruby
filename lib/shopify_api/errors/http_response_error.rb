@@ -6,6 +6,9 @@ module ShopifyAPI
     class HttpResponseError < StandardError
       extend T::Sig
 
+      sig { returns(Integer) }
+      attr_reader :code
+
       sig { params(code: Integer).void }
       def initialize(code:)
         super
