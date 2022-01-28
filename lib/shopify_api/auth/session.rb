@@ -60,6 +60,23 @@ module ShopifyAPI
         @is_online = T.let(is_online || !associated_user.nil?, T::Boolean)
       end
 
+      class << self
+        extend T::Sig
+
+        sig { params(shop: String, access_token: String, blk: T.proc.returns(T.untyped)).returns(T.untyped) }
+        def temp(shop:, access_token:, &blk)
+          original_session = Context.active_session
+          temp_session = Session.new(shop: shop, access_token: access_token)
+
+          begin
+            Context.activate_session(temp_session)
+            yield
+          ensure
+            Context.activate_session(original_session)
+          end
+        end
+      end
+
       sig { returns(String) }
       def serialize
         Oj.dump(self)
@@ -68,18 +85,6 @@ module ShopifyAPI
       sig { params(str: String).returns(Session) }
       def self.deserialize(str)
         Oj.load(str)
-      end
-
-      sig { params(_blk: T.proc.returns(T.untyped)).returns(T.untyped) }
-      def temp(&_blk)
-        original_session = Context.active_session
-
-        begin
-          Context.activate_session(self)
-          yield
-        ensure
-          Context.activate_session(original_session)
-        end
       end
 
       alias_method :eql?, :==

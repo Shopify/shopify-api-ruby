@@ -35,13 +35,16 @@ module ShopifyAPITest
       end
 
       def test_temp
-        session1 = ShopifyAPI::Auth::Session.new(id: "id1", shop: "test-shop")
-        session2 = ShopifyAPI::Auth::Session.new(id: "id2", shop: "test-shop")
+        session = ShopifyAPI::Auth::Session.new(shop: "test-shop1", access_token: "token1")
 
-        ShopifyAPI::Context.activate_session(session1)
+        ShopifyAPI::Context.activate_session(session)
 
-        session2.temp { assert_equal(session2, ShopifyAPI::Context.active_session) }
-        assert_equal(session1, ShopifyAPI::Context.active_session)
+        ShopifyAPI::Auth::Session.temp(shop: "test_shop2", access_token: "token2") do
+          assert_equal("test_shop2", ShopifyAPI::Context.active_session.shop)
+          assert_equal("token2", ShopifyAPI::Context.active_session.access_token)
+        end
+
+        assert_equal(session, ShopifyAPI::Context.active_session)
       end
 
       def teardown
