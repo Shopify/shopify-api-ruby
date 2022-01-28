@@ -55,10 +55,10 @@ module ShopifyAPITest
       end
 
       def test_request_using_active_session
-        @session.temp do
-          @client = ShopifyAPI::Clients::HttpClient.new(base_path: @base_path)
-          simple_http_test(:get)
-        end
+        ShopifyAPI::Context.activate_session(@session)
+        @client = ShopifyAPI::Clients::HttpClient.new(base_path: @base_path)
+        simple_http_test(:get)
+        ShopifyAPI::Context.deactivate_session
       end
 
       def test_request_with_empty_response_body
