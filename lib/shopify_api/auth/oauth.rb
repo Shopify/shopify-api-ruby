@@ -25,11 +25,8 @@ module ShopifyAPI
           raise Errors::UnsupportedOauthError, "Cannot perform OAuth for private apps." if Context.private?
 
           state = SecureRandom.alphanumeric(NONCE_LENGTH)
-          session = Session.new(shop: shop, state: state, is_online: is_online)
 
-          store_session(session)
-
-          cookie = SessionCookie.new(value: session.id, expires: Time.now + 60)
+          cookie = SessionCookie.new(value: state, expires: Time.now + 60)
 
           query = {
             client_id: ShopifyAPI::Context.api_key,
@@ -58,20 +55,11 @@ module ShopifyAPI
           raise Errors::InvalidOauthError, "Invalid OAuth callback." unless Utils::HmacValidator.validate(auth_query)
           raise Errors::UnsupportedOauthError, "Cannot perform OAuth for private apps." if Context.private?
 
-          session_cookie = cookies[SessionCookie::SESSION_COOKIE_NAME]
-          raise Errors::NoSessionCookieError unless session_cookie
-
-          session_storage = ShopifyAPI::Context.session_storage
-
-          current_session = session_storage.load_session(session_cookie)
-
-          unless current_session
-            raise Errors::SessionNotFoundError,
-              "Cannot complete OAuth process. No session found for the specified shop url: #{auth_query.shop}"
-          end
+          state = cookies[SessionCookie::SESSION_COOKIE_NAME]
+          raise Errors::NoSessionCookieError unless state
 
           raise Errors::InvalidOauthError,
-            "Invalid state in OAuth callback." unless current_session.state == auth_query.state
+            "Invalid state in OAuth callback." unless state == auth_query.state
 
           # TODO: replace this call with the HTTP client once it is built
           body = { client_id: Context.api_key, client_secret: Context.api_secret_key, code: auth_query.code }
@@ -82,63 +70,53 @@ module ShopifyAPI
           end
           session_params = response.to_h
 
-          new_session = create_new_session(session_params, current_session)
+          session = create_new_session(session_params, auth_query.shop)
 
-          cookie = nil
-          if Context.embedded?
-            unless session_storage.delete_session(session_cookie)
-              raise Errors::SessionStorageError,
-                "OAuth Session could not be deleted. Please check your session storage functionality."
-            end
-
-            cookie = SessionCookie.new(
+          cookie = if Context.embedded?
+            SessionCookie.new(
               value: "",
               expires: Time.now
             )
           else
-            cookie = SessionCookie.new(
-              value: new_session.id,
-              expires: new_session.online? ? new_session.expires : nil
+            SessionCookie.new(
+              value: session.id,
+              expires: session.online? ? session.expires : nil
             )
           end
 
-          store_session(new_session)
+          unless Context.session_storage.store_session(session)
+            raise Errors::SessionStorageError,
+              "Session could not be saved. Please check your session storage implementation."
+          end
 
-          { session: new_session, cookie: cookie }
+          { session: session, cookie: cookie }
         end
 
         private
 
-        sig { params(session: Session).void }
-        def store_session(session)
-          session_stored = Context.session_storage.store_session(session)
-          unless session_stored
-            raise Errors::SessionStorageError,
-              "Session could not be saved. Please check your session storage implementation."
-          end
-        end
-
-        sig { params(session_params: T::Hash[String, T.untyped], current_session: Session).returns(Session) }
-        def create_new_session(session_params, current_session)
+        sig { params(session_params: T::Hash[String, T.untyped], shop: String).returns(Session) }
+        def create_new_session(session_params, shop)
           session_params = session_params.to_h { |k, v| [k.to_sym, v] }
 
-          id = current_session.id
           scope = session_params[:scope]
 
-          if current_session.online?
+          is_online = !session_params[:associated_user].nil?
+
+          if is_online
             associated_user = AssociatedUser.new(session_params[:associated_user].to_h { |k, v| [k.to_sym, v] })
             expires = Time.now + session_params[:expires_in].to_i
             associated_user_scope = session_params[:associated_user_scope]
-            id = "#{current_session.shop}_#{associated_user.id}" if Context.embedded?
+            id = "#{shop}_#{associated_user.id}"
+          else
+            id = "offline_#{shop}"
           end
-
-          id = "offline_#{current_session.shop}" if Context.embedded? && !current_session.online?
 
           Session.new(
             id: id,
-            shop: current_session.shop,
+            shop: shop,
             access_token: session_params[:access_token],
             scope: scope,
+            is_online: is_online,
             associated_user_scope: associated_user_scope,
             associated_user: associated_user,
             expires: expires
