@@ -12,9 +12,9 @@ module ShopifyAPI
           "https://#{Context.host_name}/#{@path}"
         end
 
-        sig { override.returns(String) }
+        sig { override.returns(T::Hash[Symbol, String]) }
         def subscription_args
-          "{callbackUrl: \"#{callback_address}\"}"
+          { callbackUrl: callback_address, includeFields: fields }.compact
         end
 
         sig { override.params(webhook_id: T.nilable(String)).returns(String) }

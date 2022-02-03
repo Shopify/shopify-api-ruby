@@ -12,10 +12,12 @@ module ShopifyAPI
           @path
         end
 
-        sig { override.returns(String) }
+        sig { override.returns(T::Hash[Symbol, String]) }
         def subscription_args
           project_topic_pair = callback_address.gsub(%r{^pubsub://}, "").split(":")
-          "{pubSubProject: \"#{project_topic_pair[0]}\", pubSubTopic:\"#{project_topic_pair[1]}\"}"
+          project = project_topic_pair[0]
+          topic = project_topic_pair[1]
+          { pubSubProject: project, pubSubTopic: topic, includeFields: fields }.compact
         end
 
         sig { override.params(webhook_id: T.nilable(String)).returns(String) }

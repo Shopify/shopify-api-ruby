@@ -8,18 +8,24 @@ module ShopifyAPI
 
       class << self
         extend T::Sig
-        sig { params(topic: String, delivery_method: Symbol, path: String, handler: T.nilable(Handler)).void }
-        def add_registration(topic:, delivery_method:, path:, handler: nil)
+        sig do
+          params(topic: String,
+            delivery_method: Symbol,
+            path: String,
+            handler: T.nilable(Handler),
+            fields: T.nilable(String)).void
+        end
+        def add_registration(topic:, delivery_method:, path:, handler: nil, fields: nil)
           @registry[topic] = case delivery_method
           when :pub_sub
-            Registrations::PubSub.new(topic: topic, path: path)
+            Registrations::PubSub.new(topic: topic, path: path, fields: fields)
           when :event_bridge
-            Registrations::EventBridge.new(topic: topic, path: path)
+            Registrations::EventBridge.new(topic: topic, path: path, fields: fields)
           when :http
             unless handler
               raise Errors::InvalidWebhookRegistrationError, "Cannot create an Http registration without a handler."
             end
-            Registrations::Http.new(topic: topic, path: path, handler: handler)
+            Registrations::Http.new(topic: topic, path: path, handler: handler, fields: fields)
           else
             raise Errors::InvalidWebhookRegistrationError,
               "Unsupported delivery method #{delivery_method}. Allowed values: {:http, :pub_sub, :event_bridge}."
@@ -122,12 +128,8 @@ module ShopifyAPI
           ).returns(T::Hash[String, T.untyped])
         end
         def send_register_request(client, registration, webhook_id)
-          register_response = client.query(
-            query: registration.build_register_query(
-              topic: registration.topic,
-              webhook_id: webhook_id
-            )
-          )
+          register_response = client.query(query: registration.build_register_query(webhook_id: webhook_id))
+
           raise Errors::WebhookRegistrationError, "Failed to register webhook with Shopify" unless register_response.ok?
           T.cast(register_response.body, T::Hash[String, T.untyped])
         end

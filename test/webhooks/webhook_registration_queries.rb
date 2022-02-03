@@ -47,12 +47,38 @@ module ShopifyAPITest
                   }
                 }
               QUERY
+            register_add_query_with_fields:
+              <<~QUERY,
+                mutation webhookSubscription {
+                  webhookSubscriptionCreate(topic: some_topic, webhookSubscription: {callbackUrl: "https://app-address.com/test-webhooks", includeFields: ["field1", "field2"]}) {
+                    userErrors {
+                      field
+                      message
+                    }
+                    webhookSubscription {
+                      id
+                      includeFields
+                    }
+                  }
+                }
+              QUERY
 
             register_add_response: {
               "data" => {
                 "webhookSubscriptionCreate" => {
                   "userErrors" => [],
                   "webhookSubscription" => { "id" => "gid://shopify/WebhookSubscription/12345" },
+                },
+              },
+            },
+            register_add_with_fields_response: {
+              "data" => {
+                "webhookSubscriptionCreate" => {
+                  "userErrors" => [],
+                  "webhookSubscription" => {
+                    "id" => "gid://shopify/WebhookSubscription/12345",
+                    "includeFields" => ["field1", "field2"],
+                  },
                 },
               },
             },
@@ -134,11 +160,37 @@ module ShopifyAPITest
                   }
                 }
               QUERY
+            register_add_query_with_fields:
+              <<~QUERY,
+                mutation webhookSubscription {
+                  eventBridgeWebhookSubscriptionCreate(topic: some_topic, webhookSubscription: {arn: "test-webhooks", includeFields: ["field1", "field2"]}) {
+                    userErrors {
+                      field
+                      message
+                    }
+                    webhookSubscription {
+                      id
+                      includeFields
+                    }
+                  }
+                }
+              QUERY
             register_add_response: {
               "data" => {
                 "eventBridgeWebhookSubscriptionCreate" => {
                   "userErrors" => [],
                   "webhookSubscription" => { "id" => "gid://shopify/WebhookSubscription/12345" },
+                },
+              },
+            },
+            register_add_with_fields_response: {
+              "data" => {
+                "eventBridgeWebhookSubscriptionCreate" => {
+                  "userErrors" => [],
+                  "webhookSubscription" => {
+                    "id" => "gid://shopify/WebhookSubscription/12345",
+                    "includeFields" => ["field1", "field2"],
+                  },
                 },
               },
             },
@@ -210,7 +262,7 @@ module ShopifyAPITest
             register_add_query:
               <<~QUERY,
                 mutation webhookSubscription {
-                  pubSubWebhookSubscriptionCreate(topic: some_topic, webhookSubscription: {pubSubProject: "my-project-id", pubSubTopic:"my-topic-id"}) {
+                  pubSubWebhookSubscriptionCreate(topic: some_topic, webhookSubscription: {pubSubProject: "my-project-id", pubSubTopic: "my-topic-id"}) {
                     userErrors {
                       field
                       message
@@ -221,11 +273,37 @@ module ShopifyAPITest
                   }
                 }
               QUERY
+            register_add_query_with_fields:
+                <<~QUERY,
+                  mutation webhookSubscription {
+                    pubSubWebhookSubscriptionCreate(topic: some_topic, webhookSubscription: {pubSubProject: "my-project-id", pubSubTopic: "my-topic-id", includeFields: ["field1", "field2"]}) {
+                      userErrors {
+                        field
+                        message
+                      }
+                      webhookSubscription {
+                        id
+                        includeFields
+                      }
+                    }
+                  }
+                QUERY
             register_add_response: {
               "data" => {
                 "pubSubWebhookSubscriptionCreate" => {
                   "userErrors" => [],
                   "webhookSubscription" => { "id" => "gid://shopify/WebhookSubscription/12345" },
+                },
+              },
+            },
+            register_add_with_fields_response: {
+              "data" => {
+                "pubSubWebhookSubscriptionCreate" => {
+                  "userErrors" => [],
+                  "webhookSubscription" => {
+                    "id" => "gid://shopify/WebhookSubscription/12345",
+                    "includeFields" => ["field1", "field2"],
+                  },
                 },
               },
             },
@@ -248,7 +326,7 @@ module ShopifyAPITest
             register_update_query:
               <<~QUERY,
                 mutation webhookSubscription {
-                  pubSubWebhookSubscriptionUpdate(id: "gid://shopify/WebhookSubscription/12345", webhookSubscription: {pubSubProject: "my-project-id", pubSubTopic:"my-topic-id-updated"}) {
+                  pubSubWebhookSubscriptionUpdate(id: "gid://shopify/WebhookSubscription/12345", webhookSubscription: {pubSubProject: "my-project-id", pubSubTopic: "my-topic-id-updated"}) {
                     userErrors {
                       field
                       message

@@ -27,6 +27,16 @@ The next step is to add all the webhooks you would like to subscribe to for any 
 ```ruby
 registration = ShopifyAPI::Webhooks::Registry.add_registration(topic: "orders/create", delivery_method: :http, handler: WebhookHandler) 
 ```
+If you are only interested in particular fields, you can optionally filter the data sent by Shopify by specifying the `fields` parameter. Note that you will still receive a webhook request from Shopify every time the resource is updated, but only the specified fields will be sent:
+
+```ruby
+registration = ShopifyAPI::Webhooks::Registry.add_registration(
+  topic: "orders/create", 
+  delivery_method: :http, 
+  handler: WebhookHandler, 
+  fields: ["number","note"] # this can also be a single comma separated string
+) 
+```
 
 **Note**: The webhooks you register with Shopify are saved in the Shopify platform, but the local `ShopifyAPI::Webhooks::Registry` needs to be reloaded whenever your server restarts.
 

@@ -82,6 +82,10 @@ module ShopifyAPITest
         do_registration_test(:http, "test-webhooks")
       end
 
+      def test_http_registration_with_fields_add_and_update
+        do_registration_test(:http, "test-webhooks", fields: "field1, field2")
+      end
+
       def test_raises_on_http_registration_check_error
         do_registration_check_error_test(:http, "test-webhooks")
       end
@@ -90,12 +94,20 @@ module ShopifyAPITest
         do_registration_test(:pub_sub, "pubsub://my-project-id:my-topic-id")
       end
 
+      def test_pubsub_registration_with_fields_add_and_update
+        do_registration_test(:pub_sub, "pubsub://my-project-id:my-topic-id", fields: "field1, field2")
+      end
+
       def test_raises_on_pubsub_registration_check_error
         do_registration_check_error_test(:pub_sub, "pubsub://my-project-id:my-topic-id")
       end
 
       def test_eventbridge_registration_add_and_update
         do_registration_test(:event_bridge, "test-webhooks")
+      end
+
+      def test_eventbridge_registration_with_fields_add_and_update
+        do_registration_test(:event_bridge, "test-webhooks", fields: "field1, field2")
       end
 
       def test_raises_on_eventbridge_registration_check_error
@@ -110,7 +122,7 @@ module ShopifyAPITest
 
       private
 
-      def do_registration_test(delivery_method, path)
+      def do_registration_test(delivery_method, path, fields: nil)
         ShopifyAPI::Webhooks::Registry.clear
 
         check_query_body = { query: queries[delivery_method][:check_query], variables: nil }
@@ -119,9 +131,11 @@ module ShopifyAPITest
           .with(body: JSON.dump(check_query_body))
           .to_return({ status: 200, body: JSON.dump(queries[delivery_method][:check_empty_response]) })
 
+        add_query_type = fields.nil? ? :register_add_query : :register_add_query_with_fields
+        add_response_type = fields.nil? ? :register_add_response : :register_add_with_fields_response
         stub_request(:post, @url)
-          .with(body: JSON.dump({ query: queries[delivery_method][:register_add_query], variables: nil }))
-          .to_return({ status: 200, body: JSON.dump(queries[delivery_method][:register_add_response]) })
+          .with(body: JSON.dump({ query: queries[delivery_method][add_query_type], variables: nil }))
+          .to_return({ status: 200, body: JSON.dump(queries[delivery_method][add_response_type]) })
 
         ShopifyAPI::Webhooks::Registry.add_registration(
           topic: @topic,
@@ -130,14 +144,15 @@ module ShopifyAPITest
           handler: TestHelpers::FakeWebhookHandler.new(
             lambda do |topic, shop, body|
             end
-          )
+          ),
+          fields: fields
         )
         registration_response = ShopifyAPI::Webhooks::Registry.register_all(
           session: @session
         )[0]
 
         assert(registration_response.success)
-        assert_equal(queries[delivery_method][:register_add_response], registration_response.body)
+        assert_equal(queries[delivery_method][add_response_type], registration_response.body)
 
         stub_request(:post, @url)
           .with(body: JSON.dump(check_query_body))
