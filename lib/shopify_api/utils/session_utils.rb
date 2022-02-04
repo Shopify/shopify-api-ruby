@@ -13,13 +13,13 @@ module ShopifyAPI
           params(
             auth_header: T.nilable(String),
             cookies: T.nilable(T::Hash[String, String]),
-            online: T::Boolean
+            is_online: T::Boolean
           ).returns(T.nilable(Auth::Session))
         end
-        def load_current_session(auth_header: nil, cookies: nil, online: false)
+        def load_current_session(auth_header: nil, cookies: nil, is_online: false)
           return load_private_session if Context.private?
 
-          session_id = current_session_id(auth_header, cookies, online)
+          session_id = current_session_id(auth_header, cookies, is_online)
           return nil unless session_id
           Context.session_storage.load_session(session_id)
         end
@@ -28,11 +28,11 @@ module ShopifyAPI
           params(
             auth_header: T.nilable(String),
             cookies: T.nilable(T::Hash[String, String]),
-            online: T::Boolean
+            is_online: T::Boolean
           ).returns(T::Boolean)
         end
-        def delete_current_session(auth_header: nil, cookies: nil, online: false)
-          session_id = current_session_id(auth_header, cookies, online)
+        def delete_current_session(auth_header: nil, cookies: nil, is_online: false)
+          session_id = current_session_id(auth_header, cookies, is_online)
           return false unless session_id
           Context.session_storage.delete_session(session_id)
         end

@@ -21,7 +21,7 @@ module ShopifyAPI
           normalized_headers = HttpUtils.normalize_headers(headers)
 
           session = Utils::SessionUtils.load_current_session(
-            auth_header: normalized_headers["authorization"], cookies: cookies, online: true
+            auth_header: normalized_headers["authorization"], cookies: cookies, is_online: true
           )
 
           if session.nil? || !session.online?

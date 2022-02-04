@@ -44,7 +44,7 @@ module ShopifyAPITest
 
       def test_gets_the_current_session_from_cookies_for_non_embedded_apps
         add_session(is_online: true)
-        loaded_session = ShopifyAPI::Utils::SessionUtils.load_current_session(cookies: @cookies, online: true)
+        loaded_session = ShopifyAPI::Utils::SessionUtils.load_current_session(cookies: @cookies, is_online: true)
         assert_equal(@online_session, loaded_session)
       end
 
@@ -53,59 +53,60 @@ module ShopifyAPITest
         assert_nil(ShopifyAPI::Utils::SessionUtils.load_current_session(
           auth_header: @jwt_header,
           cookies: @cookies,
-          online: true
+          is_online: true
         ))
       end
 
       def test_gets_the_current_session_from_auth_header_for_embedded_apps
         modify_context(is_embedded: true)
         add_session(is_online: true)
-        loaded_session = ShopifyAPI::Utils::SessionUtils.load_current_session(auth_header: @jwt_header, online: true)
+        loaded_session = ShopifyAPI::Utils::SessionUtils.load_current_session(auth_header: @jwt_header, is_online: true)
         assert_equal(@online_embedded_session, loaded_session)
       end
 
       def test_loads_nothing_if_there_is_no_session_for_embedded_apps
         modify_context(is_embedded: true, session_storage: TestHelpers::FakeSessionStorage.new)
-        loaded_session = ShopifyAPI::Utils::SessionUtils.load_current_session(auth_header: @jwt_header, online: true)
+        loaded_session = ShopifyAPI::Utils::SessionUtils.load_current_session(auth_header: @jwt_header, is_online: true)
         assert_nil(loaded_session)
       end
 
       def test_fails_if_no_authorization_header_or_session_cookie_is_present
         modify_context(is_embedded: true)
         assert_raises(ShopifyAPI::Errors::CookieNotFoundError) do
-          ShopifyAPI::Utils::SessionUtils.load_current_session(online: true)
+          ShopifyAPI::Utils::SessionUtils.load_current_session(is_online: true)
         end
       end
 
       def test_fails_if_authorization_header_bearer_token_is_invalid
         modify_context(is_embedded: true)
         assert_raises(ShopifyAPI::Errors::InvalidJwtTokenError) do
-          ShopifyAPI::Utils::SessionUtils.load_current_session(auth_header: "Bearer invalid", online: true)
+          ShopifyAPI::Utils::SessionUtils.load_current_session(auth_header: "Bearer invalid", is_online: true)
         end
       end
 
       def test_fails_if_authorization_header_is_not_a_bearer_token
         modify_context(is_embedded: true)
         assert_raises(ShopifyAPI::Errors::MissingJwtTokenError) do
-          ShopifyAPI::Utils::SessionUtils.load_current_session(auth_header: "Not a Bearer token", online: true)
+          ShopifyAPI::Utils::SessionUtils.load_current_session(auth_header: "Not a Bearer token", is_online: true)
         end
       end
 
       def test_falls_back_to_the_cookie_session_for_embedded_apps
         modify_context(is_embedded: true)
-        loaded_session = ShopifyAPI::Utils::SessionUtils.load_current_session(cookies: @cookies, online: true)
+        loaded_session = ShopifyAPI::Utils::SessionUtils.load_current_session(cookies: @cookies, is_online: true)
         assert_equal(@online_session, loaded_session)
       end
 
       def test_loads_offline_sessions_from_cookies
-        loaded_session = ShopifyAPI::Utils::SessionUtils.load_current_session(cookies: @offline_cookies, online: false)
+        loaded_session = ShopifyAPI::Utils::SessionUtils.load_current_session(cookies: @offline_cookies,
+          is_online: false)
         assert_equal(@offline_session, loaded_session)
       end
 
       def test_loads_offline_sessions_from_jwt_token
         modify_context(is_embedded: true)
         loaded_session = ShopifyAPI::Utils::SessionUtils.load_current_session(auth_header: @jwt_header, cookies: {},
-          online: false)
+          is_online: false)
         assert_equal(@offline_embedded_session, loaded_session)
       end
 
@@ -137,49 +138,50 @@ module ShopifyAPITest
 
       def test_deletes_the_current_session_when_using_cookies
         add_session(is_online: true)
-        assert(ShopifyAPI::Utils::SessionUtils.delete_current_session(cookies: @cookies, online: true))
-        assert_nil(ShopifyAPI::Utils::SessionUtils.load_current_session(cookies: @cookies, online: true))
+        assert(ShopifyAPI::Utils::SessionUtils.delete_current_session(cookies: @cookies, is_online: true))
+        assert_nil(ShopifyAPI::Utils::SessionUtils.load_current_session(cookies: @cookies, is_online: true))
       end
 
       def test_deletes_the_current_session_when_using_jwt
         modify_context(is_embedded: true)
         add_session(is_online: true)
-        assert(ShopifyAPI::Utils::SessionUtils.delete_current_session(auth_header: @jwt_header, online: true))
-        assert_nil(ShopifyAPI::Utils::SessionUtils.load_current_session(auth_header: @jwt_header, online: true))
+        assert(ShopifyAPI::Utils::SessionUtils.delete_current_session(auth_header: @jwt_header, is_online: true))
+        assert_nil(ShopifyAPI::Utils::SessionUtils.load_current_session(auth_header: @jwt_header, is_online: true))
       end
 
       def test_deletes_the_current_offline_session_when_using_cookies
         add_session(is_online: false)
-        assert(ShopifyAPI::Utils::SessionUtils.delete_current_session(cookies: @offline_cookies, online: false))
-        assert_nil(ShopifyAPI::Utils::SessionUtils.load_current_session(cookies: @offline_cookies, online: false))
+        assert(ShopifyAPI::Utils::SessionUtils.delete_current_session(cookies: @offline_cookies, is_online: false))
+        assert_nil(ShopifyAPI::Utils::SessionUtils.load_current_session(cookies: @offline_cookies, is_online: false))
       end
 
       def test_deletes_the_current_offline_session_when_using_jwt
         modify_context(is_embedded: true)
         add_session(is_online: false)
-        assert(ShopifyAPI::Utils::SessionUtils.delete_current_session(auth_header: @jwt_header, online: false))
-        assert_nil(ShopifyAPI::Utils::SessionUtils.load_current_session(auth_header: @jwt_header, online: false))
+        assert(ShopifyAPI::Utils::SessionUtils.delete_current_session(auth_header: @jwt_header, is_online: false))
+        assert_nil(ShopifyAPI::Utils::SessionUtils.load_current_session(auth_header: @jwt_header, is_online: false))
       end
 
       def test_raises_an_error_when_no_session_is_found_to_delete
         assert_raises(ShopifyAPI::Errors::CookieNotFoundError) do
-          ShopifyAPI::Utils::SessionUtils.delete_current_session(auth_header: @jwt_header, cookies: {}, online: true)
+          ShopifyAPI::Utils::SessionUtils.delete_current_session(auth_header: @jwt_header, cookies: {}, is_online: true)
         end
         assert_raises(ShopifyAPI::Errors::CookieNotFoundError) do
-          ShopifyAPI::Utils::SessionUtils.delete_current_session(auth_header: @jwt_header, cookies: {}, online: false)
+          ShopifyAPI::Utils::SessionUtils.delete_current_session(auth_header: @jwt_header, cookies: {},
+            is_online: false)
         end
         assert_raises(ShopifyAPI::Errors::CookieNotFoundError) do
-          ShopifyAPI::Utils::SessionUtils.delete_current_session(auth_header: @jwt_header, online: true)
+          ShopifyAPI::Utils::SessionUtils.delete_current_session(auth_header: @jwt_header, is_online: true)
         end
         assert_raises(ShopifyAPI::Errors::CookieNotFoundError) do
-          ShopifyAPI::Utils::SessionUtils.delete_current_session(auth_header: @jwt_header, online: false)
+          ShopifyAPI::Utils::SessionUtils.delete_current_session(auth_header: @jwt_header, is_online: false)
         end
       end
 
       def test_raises_an_error_when_deleting_with_authorization_header
         modify_context(is_embedded: true)
         assert_raises(ShopifyAPI::Errors::InvalidJwtTokenError) do
-          ShopifyAPI::Utils::SessionUtils.delete_current_session(auth_header: "Bearer invalid", online: true)
+          ShopifyAPI::Utils::SessionUtils.delete_current_session(auth_header: "Bearer invalid", is_online: true)
         end
       end
 
