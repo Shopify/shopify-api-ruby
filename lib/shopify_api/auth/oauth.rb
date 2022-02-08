@@ -46,7 +46,7 @@ module ShopifyAPI
           params(
             cookies: T::Hash[String, String],
             auth_query: AuthQuery
-          ).returns(T::Hash[Symbol, T.any(Session, T.nilable(SessionCookie))])
+          ).returns(T::Hash[Symbol, T.any(Session, SessionCookie)])
         end
         def validate_auth_callback(cookies:, auth_query:)
           unless Context.setup?
