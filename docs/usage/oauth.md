@@ -4,7 +4,7 @@ Once the library is set up for your project, you'll be able to use it to start a
 
 To do this, you can follow the steps below.
 
-**Note:** You do not need to go through the Oauth process if you are creating a private app. In this case you can simply set your `<key+password>` as the access_token in `ShopifyAPI::Context.setup`. For more information on authenticating a Shopify app please see the [Types of Authentication](https://shopify.dev/apps/auth#types-of-authentication) page.
+**Note:** You do not need to go through the OAuth process if you are creating a private app. In this case you can simply set your `<key+password>` as the `api_secret_key` in `ShopifyAPI::Context.setup`. For more information on authenticating a Shopify app please see the [Types of Authentication](https://shopify.dev/apps/auth#types-of-authentication) page.
 
 ## Add a route to start OAuth
 
