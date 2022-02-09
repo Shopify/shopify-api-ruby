@@ -20,6 +20,27 @@ class AdminTest < Test::Unit::TestCase
     run_test(:post)
   end
 
+  def test_path_starting_at_admin_overrides_default
+    session = ShopifyAPI::Auth::Session.new(
+      shop: "test-shop.myshopify.com",
+      access_token: SecureRandom.alphanumeric(10)
+    )
+    client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
+
+    request_path = "/admin/some-custom-path"
+
+    success_body = { "success" => true }
+    response_headers = { "content-type" => "application/json" }
+
+    stub_request(:get, "https://#{session.shop}#{request_path}")
+      .to_return(body: success_body.to_json, headers: response_headers)
+
+    response = client.send(:get, path: request_path)
+
+    assert_equal(success_body, response.body)
+    assert_equal(response_headers.to_h { |k, v| [k, [v]] }, response.headers)
+  end
+
   private
 
   def run_test(http_method)

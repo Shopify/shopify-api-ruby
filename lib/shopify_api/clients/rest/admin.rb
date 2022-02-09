@@ -76,6 +76,17 @@ module ShopifyAPI
           )
         end
 
+        protected
+
+        sig { params(request: HttpRequest).returns(String) }
+        def request_url(request)
+          if request.path.start_with?("/admin")
+            "#{@base_uri}#{request.path}"
+          else
+            "#{@base_uri_and_path}/#{request.path}"
+          end
+        end
+
         private
 
         sig do
