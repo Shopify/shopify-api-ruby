@@ -19,6 +19,9 @@ module ShopifyAPI
       sig { returns(T::Hash[Symbol, T.untyped]) }
       attr_accessor :original_state
 
+      sig { returns(RestWrappers::BaseErrors) }
+      attr_reader :errors
+
       sig do
         params(
           session: T.nilable(Auth::Session),
@@ -36,6 +39,7 @@ module ShopifyAPI
 
         @session = T.let(T.must(session), Auth::Session)
         @client = T.let(client, Clients::Rest::Admin)
+        @errors = T.let(RestWrappers::BaseErrors.new, RestWrappers::BaseErrors)
 
         from_hash&.each do |key, value|
           instance_variable_set("@#{key}", value)
@@ -253,7 +257,7 @@ module ShopifyAPI
       def to_hash
         hash = {}
         instance_variables.each do |var|
-          next if [:"@original_state", :"@session", :"@client", :"@forced_nils"].include?(var)
+          next if [:"@original_state", :"@session", :"@client", :"@forced_nils", :"@errors"].include?(var)
 
           attribute = var.to_s.delete("@").to_sym
           if self.class.has_many?(attribute)
@@ -275,6 +279,9 @@ module ShopifyAPI
           path: T.must(self.class.get_path(http_method: :delete, operation: :delete, entity: self)),
           query: params.compact
         )
+      rescue ShopifyAPI::Errors::HttpResponseError => e
+        @errors.errors << e
+        raise
       end
 
       sig { void }
@@ -301,6 +308,9 @@ module ShopifyAPI
             session: @session, instance: self
           )
         end
+      rescue ShopifyAPI::Errors::HttpResponseError => e
+        @errors.errors << e
+        raise
       end
     end
   end
