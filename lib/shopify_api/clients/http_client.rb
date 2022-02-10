@@ -13,7 +13,8 @@ module ShopifyAPI
         session ||= Context.active_session
         raise Errors::NoActiveSessionError, "No passed or active session" unless session
 
-        @base_uri = T.let("https://#{session.shop}#{base_path}", String)
+        @base_uri = T.let("https://#{session.shop}", String)
+        @base_uri_and_path = T.let("#{@base_uri}#{base_path}", String)
 
         user_agent_prefix = Context.user_agent_prefix.nil? ? "" : "#{Context.user_agent_prefix} | "
 
@@ -41,7 +42,7 @@ module ShopifyAPI
           tries += 1
           res = T.cast(HTTParty.send(
             request.http_method,
-            "#{@base_uri}/#{request.path}",
+            request_url(request),
             headers: headers,
             query: request.query,
             body: request.body.class == Hash ? T.unsafe(request.body).to_json : request.body
@@ -85,6 +86,13 @@ module ShopifyAPI
         end
 
         response
+      end
+
+      protected
+
+      sig { params(request: HttpRequest).returns(String) }
+      def request_url(request)
+        "#{@base_uri_and_path}/#{request.path}"
       end
     end
   end
