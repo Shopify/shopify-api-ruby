@@ -24,7 +24,7 @@ module ShopifyAPI
           fields: T.nilable(T.any(String, T::Array[String]))).void
       end
       def initialize(topic:, path:, handler: nil, fields: nil)
-        @topic = topic
+        @topic = T.let(topic.gsub("/", "_").upcase, String)
         @path = path
         @handler = handler
         fields_array = fields.is_a?(String) ? fields.split(FIELDS_DELIMITER) : fields
@@ -48,7 +48,7 @@ module ShopifyAPI
 
       sig { params(webhook_id: T.nilable(String)).returns(String) }
       def build_register_query(webhook_id: nil)
-        identifier = webhook_id ? "id: \"#{webhook_id}\"" : "topic: #{topic}"
+        identifier = webhook_id ? "id: \"#{webhook_id}\"" : "topic: #{@topic}"
 
         subscription_args_string = subscription_args.map do |k, v|
           "#{k}: #{k == :includeFields ? v : '"' + v + '"'}"

@@ -10,7 +10,7 @@ module ShopifyAPITest
             check_query:
               <<~QUERY,
                 {
-                  webhookSubscriptions(first: 1, topics: some_topic) {
+                  webhookSubscriptions(first: 1, topics: SOME_TOPIC) {
                     edges {
                       node {
                         id
@@ -36,7 +36,7 @@ module ShopifyAPITest
             register_add_query:
               <<~QUERY,
                 mutation webhookSubscription {
-                  webhookSubscriptionCreate(topic: some_topic, webhookSubscription: {callbackUrl: "https://app-address.com/test-webhooks"}) {
+                  webhookSubscriptionCreate(topic: SOME_TOPIC, webhookSubscription: {callbackUrl: "https://app-address.com/test-webhooks"}) {
                     userErrors {
                       field
                       message
@@ -50,7 +50,7 @@ module ShopifyAPITest
             register_add_query_with_fields:
               <<~QUERY,
                 mutation webhookSubscription {
-                  webhookSubscriptionCreate(topic: some_topic, webhookSubscription: {callbackUrl: "https://app-address.com/test-webhooks", includeFields: ["field1", "field2"]}) {
+                  webhookSubscriptionCreate(topic: SOME_TOPIC, webhookSubscription: {callbackUrl: "https://app-address.com/test-webhooks", includeFields: ["field1", "field2"]}) {
                     userErrors {
                       field
                       message
@@ -124,7 +124,7 @@ module ShopifyAPITest
             check_query:
               <<~QUERY,
                 {
-                  webhookSubscriptions(first: 1, topics: some_topic) {
+                  webhookSubscriptions(first: 1, topics: SOME_TOPIC) {
                     edges {
                       node {
                         id
@@ -149,7 +149,7 @@ module ShopifyAPITest
             register_add_query:
               <<~QUERY,
                 mutation webhookSubscription {
-                  eventBridgeWebhookSubscriptionCreate(topic: some_topic, webhookSubscription: {arn: "test-webhooks"}) {
+                  eventBridgeWebhookSubscriptionCreate(topic: SOME_TOPIC, webhookSubscription: {arn: "test-webhooks"}) {
                     userErrors {
                       field
                       message
@@ -163,7 +163,7 @@ module ShopifyAPITest
             register_add_query_with_fields:
               <<~QUERY,
                 mutation webhookSubscription {
-                  eventBridgeWebhookSubscriptionCreate(topic: some_topic, webhookSubscription: {arn: "test-webhooks", includeFields: ["field1", "field2"]}) {
+                  eventBridgeWebhookSubscriptionCreate(topic: SOME_TOPIC, webhookSubscription: {arn: "test-webhooks", includeFields: ["field1", "field2"]}) {
                     userErrors {
                       field
                       message
@@ -236,7 +236,7 @@ module ShopifyAPITest
             check_query:
               <<~QUERY,
                 {
-                  webhookSubscriptions(first: 1, topics: some_topic) {
+                  webhookSubscriptions(first: 1, topics: SOME_TOPIC) {
                     edges {
                       node {
                         id
@@ -262,7 +262,7 @@ module ShopifyAPITest
             register_add_query:
               <<~QUERY,
                 mutation webhookSubscription {
-                  pubSubWebhookSubscriptionCreate(topic: some_topic, webhookSubscription: {pubSubProject: "my-project-id", pubSubTopic: "my-topic-id"}) {
+                  pubSubWebhookSubscriptionCreate(topic: SOME_TOPIC, webhookSubscription: {pubSubProject: "my-project-id", pubSubTopic: "my-topic-id"}) {
                     userErrors {
                       field
                       message
@@ -276,7 +276,7 @@ module ShopifyAPITest
             register_add_query_with_fields:
                 <<~QUERY,
                   mutation webhookSubscription {
-                    pubSubWebhookSubscriptionCreate(topic: some_topic, webhookSubscription: {pubSubProject: "my-project-id", pubSubTopic: "my-topic-id", includeFields: ["field1", "field2"]}) {
+                    pubSubWebhookSubscriptionCreate(topic: SOME_TOPIC, webhookSubscription: {pubSubProject: "my-project-id", pubSubTopic: "my-topic-id", includeFields: ["field1", "field2"]}) {
                       userErrors {
                         field
                         message

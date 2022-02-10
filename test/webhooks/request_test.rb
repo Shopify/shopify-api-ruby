@@ -8,7 +8,7 @@ module ShopifyAPITest
     class WebhookRequestTest < Minitest::Test
       def test_create_webhook_request
         headers = {
-          "HTTP_X_SHOPIFY_TOPIC" => "some_topic",
+          "HTTP_X_SHOPIFY_TOPIC" => "some/topic",
           "HTTP_X_SHOPIFY_HMAC_SHA256" => "some_hmac",
           "HTTP_X_SHOPIFY_SHOP_DOMAIN" => "shop.myshopify.com",
         }

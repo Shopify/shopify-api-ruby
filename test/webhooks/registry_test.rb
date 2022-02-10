@@ -10,7 +10,7 @@ module ShopifyAPITest
       include RegistryTestQueries
       def setup
         super
-        @topic = "some_topic"
+        @topic = "some/topic"
         @shop = "shop.myshopify.com"
 
         hmac = OpenSSL::HMAC.digest(
@@ -32,7 +32,7 @@ module ShopifyAPITest
 
       def test_add_http_registration_without_handler
         assert_raises(ShopifyAPI::Errors::InvalidWebhookRegistrationError) do
-          ShopifyAPI::Webhooks::Registry.add_registration(topic: "some_topic", path: "path", delivery_method: :http)
+          ShopifyAPI::Webhooks::Registry.add_registration(topic: @topic, path: "path", delivery_method: :http)
         end
       end
 
@@ -59,7 +59,7 @@ module ShopifyAPITest
 
       def test_process_hmac_validation_fails
         headers = {
-          "x-shopify-topic" => "some_topic",
+          "x-shopify-topic" => "some/topic",
           "x-shopify-hmac-sha256" => "invalid",
           "x-shopify-shop-domain" => "shop.myshopify.com",
         }
