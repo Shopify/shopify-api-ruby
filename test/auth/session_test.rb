@@ -47,6 +47,20 @@ module ShopifyAPITest
         assert_equal(session, ShopifyAPI::Context.active_session)
       end
 
+      def test_temp_with_block_var
+        session = ShopifyAPI::Auth::Session.new(shop: "test-shop1", access_token: "token1")
+
+        ShopifyAPI::Context.activate_session(session)
+
+        ShopifyAPI::Auth::Session.temp(shop: "test_shop2", access_token: "token2") do |temp_session|
+          assert_equal("test_shop2", temp_session.shop)
+          assert_equal("token2", temp_session.access_token)
+          assert_equal(temp_session, ShopifyAPI::Context.active_session)
+        end
+
+        assert_equal(session, ShopifyAPI::Context.active_session)
+      end
+
       def teardown
         ShopifyAPI::Context.deactivate_session
       end
