@@ -20,6 +20,10 @@ class AdminTest < Test::Unit::TestCase
     run_test(:post)
   end
 
+  def test_does_not_append_json_if_present
+    run_test(:get, "other-path.json", "other-path.json")
+  end
+
   def test_path_starting_at_admin_overrides_default
     session = ShopifyAPI::Auth::Session.new(
       shop: "test-shop.myshopify.com",
@@ -32,7 +36,7 @@ class AdminTest < Test::Unit::TestCase
     success_body = { "success" => true }
     response_headers = { "content-type" => "application/json" }
 
-    stub_request(:get, "https://#{session.shop}#{request_path}")
+    stub_request(:get, "https://#{session.shop}#{request_path}.json")
       .to_return(body: success_body.to_json, headers: response_headers)
 
     response = client.send(:get, path: request_path)
@@ -43,13 +47,13 @@ class AdminTest < Test::Unit::TestCase
 
   private
 
-  def run_test(http_method)
+  def run_test(http_method, path = "/some-path", expected_path = "some-path.json")
     session = ShopifyAPI::Auth::Session.new(shop: "test-shop.myshopify.com",
       access_token: SecureRandom.alphanumeric(10))
     client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
 
     request = {
-      path: "some-path",
+      path: path,
       body: { foo: "bar" },
       query: { id: 1234 },
       headers: { extra: "header" },
@@ -62,7 +66,10 @@ class AdminTest < Test::Unit::TestCase
     success_body = { "success" => true }
     response_headers = { "content-type" => "application/json" }
 
-    stub_request(http_method, "https://#{session.shop}/admin/api/#{ShopifyAPI::Context.api_version}/#{request[:path]}")
+    stub_request(
+      http_method,
+      "https://#{session.shop}/admin/api/#{ShopifyAPI::Context.api_version}/#{expected_path}"
+    )
       .with(body: request[:body].to_json, query: request[:query], headers: expected_headers)
       .to_return(body: success_body.to_json, headers: response_headers)
 

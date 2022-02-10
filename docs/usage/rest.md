@@ -8,7 +8,7 @@ The Rest Admin client offers the 4 core request methods: `get`, `delete`, `post`
 
 | Parameter | Type | Required in Methods | Default Value | Notes |
 | -------------- | ----------------------------------- | :-------: | :-----------: | ---------------------------------------------------------------------------------------- |
-| `path` | `String` | all | none | The requested API endpoint path. Do not prepend with `/`. |
+| `path` | `String` | all | none | The requested API endpoint path. This can be one of two formats:<ul><li>The path starting after the `/admin/api/{version}/` prefix, such as `products`, which executes `/admin/api/{version}/products.json`</li><li>The full path, such as `/admin/oauth/access_scopes.json`</li></ul> |
 | `body` | `Hash(any(Symbol, String), untyped)` | `put`, `post` | none | The body of the request |
 | `query` | `Hash(any(Symbol, String), any(String, Integer, Float))` | none | none | An optional query object to be appended to the request url as a query string |
 | `extraHeaders` | `Hash(any(Symbol, String), any(String, Integer, Float))` | none | none | Any additional headers you want to send with your request |
@@ -44,12 +44,12 @@ session = ShopifyAPI::Auth::SessionLoader.load_current_session(headers, cookies,
 client = ShopifyAPI::Clients::Rest::Admin.new(session)
 
 # Build your post request body.
-body = { 
-  product: { 
-    title: "Burton Custom Freestyle 151", 
+body = {
+  product: {
+    title: "Burton Custom Freestyle 151",
     body_html: "\u003cstrong\u003eGood snowboard!\u003c\/strong\u003e",
     vendor: "Burton",
-    product_type: "Snowboard", 
+    product_type: "Snowboard",
   }
 }
 
@@ -79,7 +79,7 @@ response = client.get(path: "products", query: { limit: 10 })
 loop do
   some_function(response.body)
   break unless response.next_page_info
-  response =  client.get(path: "products", query: { limit: 10, page_info: response.next_page_info }) 
+  response =  client.get(path: "products", query: { limit: 10, page_info: response.next_page_info })
 end
 ```
 
@@ -111,7 +111,7 @@ response = client.get(path: "products", query: { limit: 10 })
 next_page_info = response.next_page_info
 
 if next_page_info
-  next_page_response =client.get(path: "products", query: { limit: 10, page_info: next_page_info }) 
+  next_page_response =client.get(path: "products", query: { limit: 10, page_info: next_page_info })
   some_function(next_page_response)
 end
 ```

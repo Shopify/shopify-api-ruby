@@ -80,10 +80,12 @@ module ShopifyAPI
 
         sig { params(request: HttpRequest).returns(String) }
         def request_url(request)
-          if request.path.start_with?("/admin")
-            "#{@base_uri}#{request.path}"
+          request_path = request.path.sub(%r/\A\//, "").sub(/\.json\z/, "") + ".json"
+
+          if request_path.start_with?("admin/")
+            "#{@base_uri}/#{request_path}"
           else
-            "#{@base_uri_and_path}/#{request.path}"
+            "#{@base_uri_and_path}/#{request_path}"
           end
         end
 
