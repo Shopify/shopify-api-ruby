@@ -120,6 +120,59 @@ module ShopifyAPITest
         end
       end
 
+      def test_unregister_success
+        stub_request(:post, @url)
+          .with(body: JSON.dump({ query: queries[:fetch_id_query], variables: nil }))
+          .to_return({ status: 200, body: JSON.dump(queries[:fetch_id_response]) })
+
+        stub_request(:post, @url)
+          .with(body: JSON.dump({ query: queries[:delete_query], variables: nil }))
+          .to_return({ status: 200, body: JSON.dump(queries[:delete_response]) })
+
+        delete_response = ShopifyAPI::Webhooks::Registry.unregister(
+          topic: "some/topic",
+          session: @session
+        )
+
+        assert_equal(queries[:delete_response], delete_response)
+      end
+
+      def test_unregister_fail_with_errors
+        stub_request(:post, @url)
+          .with(body: JSON.dump({ query: queries[:fetch_id_query], variables: nil }))
+          .to_return({ status: 200, body: JSON.dump(queries[:fetch_id_response]) })
+
+        stub_request(:post, @url)
+          .with(body: JSON.dump({ query: queries[:delete_query], variables: nil }))
+          .to_return({ status: 200, body: JSON.dump(queries[:delete_response_with_errors]) })
+
+        exception = assert_raises(ShopifyAPI::Errors::WebhookRegistrationError) do
+          ShopifyAPI::Webhooks::Registry.unregister(
+            topic: "some/topic",
+            session: @session
+          )
+        end
+        assert_equal("Failed to delete webhook from Shopify: some error", exception.message)
+      end
+
+      def test_unregister_fail_with_user_errors
+        stub_request(:post, @url)
+          .with(body: JSON.dump({ query: queries[:fetch_id_query], variables: nil }))
+          .to_return({ status: 200, body: JSON.dump(queries[:fetch_id_response]) })
+
+        stub_request(:post, @url)
+          .with(body: JSON.dump({ query: queries[:delete_query], variables: nil }))
+          .to_return({ status: 200, body: JSON.dump(queries[:delete_response_with_user_errors]) })
+
+        exception = assert_raises(ShopifyAPI::Errors::WebhookRegistrationError) do
+          ShopifyAPI::Webhooks::Registry.unregister(
+            topic: "some/topic",
+            session: @session
+          )
+        end
+        assert_equal("Failed to delete webhook from Shopify: some error", exception.message)
+      end
+
       private
 
       def do_registration_test(delivery_method, path, fields: nil)

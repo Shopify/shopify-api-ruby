@@ -346,6 +346,63 @@ module ShopifyAPITest
               },
             },
           },
+          fetch_id_query:
+            <<~QUERY,
+              {
+                webhookSubscriptions(first: 1, topics: SOME_TOPIC) {
+                  edges {
+                    node {
+                      id
+                      }
+                    }
+                  }
+                }
+              }
+            QUERY
+          fetch_id_response: {
+            "data" => {
+              "webhookSubscriptions" => {
+                "edges" => [
+                  "node" => {
+                    "id" => "gid://shopify/WebhookSubscription/12345",
+                  },
+                ],
+              },
+            },
+          },
+          delete_query:
+              <<~QUERY,
+                mutation webhookSubscription {
+                  webhookSubscriptionDelete(id: "gid://shopify/WebhookSubscription/12345") {
+                    userErrors {
+                      field
+                      message
+                    }
+                    deletedWebhookSubscriptionId
+                  }
+                }
+              QUERY
+          delete_response: {
+            "data" => {
+              "webhookSubscriptionDelete" => {
+                "userErrors" => [],
+                "deletedWebhookSubscriptionId" => "gid://shopify/WebhookSubscription/12345",
+              },
+            },
+          },
+          delete_response_with_errors: {
+            "errors" => [
+              "message" => "some error",
+            ],
+          },
+          delete_response_with_user_errors: {
+            "data" => {
+              "webhookSubscriptionDelete" => {
+                "userErrors" => [{ "message" => "some error" }],
+                "deletedWebhookSubscriptionId" => nil,
+              },
+            },
+          },
         }
       end
     end

@@ -75,6 +75,13 @@ ShopifyAPI::Webhooks::Registry.register(topic: "<specific-topic>", session: shop
 
 This will return a single `ShopifyAPI::Webhooks::RegisterResult`.
 
+## Unregister a Webhook 
+
+To unregister a topic from a shop you can simply call:
+```ruby
+ShopifyAPI::Webhooks::Registry.unregister(topic: "orders/create", session: shop_session)
+```
+
 ## Process a Webhook
 
 To process an http webhook, you need to listen on the route(s) you provided during the Webhook registration process, then when the route is hit construct a `ShopifyAPI::Webhooks::Request` and call `ShopifyAPI::Webhooks::Registry.process`. This will verify the request did indeed come from Shopify and then call the specified handler for that webhook. An example in Rails is shown below:

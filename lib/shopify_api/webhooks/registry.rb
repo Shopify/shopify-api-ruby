@@ -89,6 +89,76 @@ module ShopifyAPI
           result
         end
 
+        sig do
+          params(
+            topic: String,
+            session: T.nilable(Auth::Session)
+          ).returns(T::Hash[String, T.untyped])
+        end
+        def unregister(topic:, session:)
+          client = Clients::Graphql::Admin.new(session)
+
+          webhook_id = get_webhook_id(topic: topic, client: client)
+          return {} if webhook_id.nil?
+
+          delete_mutation = <<~MUTATION
+            mutation webhookSubscription {
+              webhookSubscriptionDelete(id: "#{webhook_id}") {
+                userErrors {
+                  field
+                  message
+                }
+                deletedWebhookSubscriptionId
+              }
+            }
+          MUTATION
+
+          delete_response = client.query(query: delete_mutation)
+          raise Errors::WebhookRegistrationError,
+            "Failed to delete webhook from Shopify" unless delete_response.ok?
+          result = T.cast(delete_response.body, T::Hash[String, T.untyped])
+          errors = result["errors"] || {}
+          raise Errors::WebhookRegistrationError,
+            "Failed to delete webhook from Shopify: #{errors[0]["message"]}" unless errors.empty?
+          user_errors = result.dig("data", "webhookSubscriptionDelete", "userErrors") || {}
+          raise Errors::WebhookRegistrationError,
+            "Failed to delete webhook from Shopify: #{user_errors[0]["message"]}" unless user_errors.empty?
+          result
+        end
+
+        sig do
+          params(
+            topic: String,
+            client: Clients::Graphql::Admin
+          ).returns(T.nilable(String))
+        end
+        def get_webhook_id(topic:, client:)
+          fetch_id_query = <<~QUERY
+            {
+              webhookSubscriptions(first: 1, topics: #{topic.gsub("/", "_").upcase}) {
+                edges {
+                  node {
+                    id
+                    }
+                  }
+                }
+              }
+            }
+          QUERY
+
+          fetch_id_response = client.query(query: fetch_id_query)
+          raise Errors::WebhookRegistrationError,
+            "Failed to fetch webhook from Shopify" unless fetch_id_response.ok?
+          body = T.cast(fetch_id_response.body, T::Hash[String, T.untyped])
+          errors = body["errors"] || {}
+          raise Errors::WebhookRegistrationError,
+            "Failed to fetch webhook from Shopify: #{errors[0]["message"]}" unless errors.empty?
+
+          edges = body.dig("data", "webhookSubscriptions", "edges") || {}
+          return nil if edges.empty?
+
+          edges[0]["node"]["id"].to_s
+        end
         sig { params(request: Request).void }
         def process(request)
           raise Errors::InvalidWebhookError, "Invalid webhook HMAC." unless Utils::HmacValidator.validate(request)
