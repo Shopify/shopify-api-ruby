@@ -19,7 +19,7 @@ module ShopifyAPI
       sig { returns(T::Hash[Symbol, T.untyped]) }
       attr_accessor :original_state
 
-      sig { returns(RestWrappers::BaseErrors) }
+      sig { returns(Rest::BaseErrors) }
       attr_reader :errors
 
       sig do
@@ -39,7 +39,7 @@ module ShopifyAPI
 
         @session = T.let(T.must(session), Auth::Session)
         @client = T.let(client, Clients::Rest::Admin)
-        @errors = T.let(RestWrappers::BaseErrors.new, RestWrappers::BaseErrors)
+        @errors = T.let(Rest::BaseErrors.new, Rest::BaseErrors)
 
         from_hash&.each do |key, value|
           instance_variable_set("@#{key}", value)

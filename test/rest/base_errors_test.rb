@@ -6,7 +6,7 @@ module ShopifyAPITest
   class BaseErrorsTest < Minitest::Test
 
     def test_outputs_error_message
-      errors = ShopifyAPI::RestWrappers::BaseErrors.new
+      errors = ShopifyAPI::Rest::BaseErrors.new
       errors.errors << StandardError.new("Something went wrong")
       errors.errors << StandardError.new("Another thing went wrong")
 

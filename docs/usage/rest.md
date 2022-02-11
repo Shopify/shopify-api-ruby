@@ -6,15 +6,15 @@ Once OAuth is complete, we can use the `ShopifyAPI::Clients::Rest::Admin` client
 
 The Rest Admin client offers the 4 core request methods: `get`, `delete`, `post`, and `put`. These methods each take the parameters outlined in the table below. If the request is successful these methods will all return a `ShopifyAPI::Clients::HttpResponse` object, which has properties `code`, `headers`, and `body` otherwise an error will be raised describing what went wrong.
 
-| Parameter | Type | Required in Methods | Default Value | Notes |
-| -------------- | ----------------------------------- | :-------: | :-----------: | ---------------------------------------------------------------------------------------- |
-| `path` | `String` | all | none | The requested API endpoint path. This can be one of two formats:<ul><li>The path starting after the `/admin/api/{version}/` prefix, such as `products`, which executes `/admin/api/{version}/products.json`</li><li>The full path, such as `/admin/oauth/access_scopes.json`</li></ul> |
-| `body` | `Hash(any(Symbol, String), untyped)` | `put`, `post` | none | The body of the request |
-| `query` | `Hash(any(Symbol, String), any(String, Integer, Float))` | none | none | An optional query object to be appended to the request url as a query string |
-| `extraHeaders` | `Hash(any(Symbol, String), any(String, Integer, Float))` | none | none | Any additional headers you want to send with your request |
-| `tries` | `Integer` | None | `1` | The maximum number of times to try the request _(must be >= 0)_ |
+| Parameter      | Type                                                     | Required in Methods | Default Value | Notes                                                                                                                                                                                                                                                                                  |
+| -------------- | -------------------------------------------------------- | :-----------------: | :-----------: | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `path`         | `String`                                                 |         all         |     none      | The requested API endpoint path. This can be one of two formats:<ul><li>The path starting after the `/admin/api/{version}/` prefix, such as `products`, which executes `/admin/api/{version}/products.json`</li><li>The full path, such as `/admin/oauth/access_scopes.json`</li></ul> |
+| `body`         | `Hash(any(Symbol, String), untyped)`                     |    `put`, `post`    |     none      | The body of the request                                                                                                                                                                                                                                                                |
+| `query`        | `Hash(any(Symbol, String), any(String, Integer, Float))` |        none         |     none      | An optional query object to be appended to the request url as a query string                                                                                                                                                                                                           |
+| `extraHeaders` | `Hash(any(Symbol, String), any(String, Integer, Float))` |        none         |     none      | Any additional headers you want to send with your request                                                                                                                                                                                                                              |
+| `tries`        | `Integer`                                                |        None         |      `1`      | The maximum number of times to try the request _(must be >= 0)_                                                                                                                                                                                                                        |
 
-**Note:** *These paramaters can still be used in all methods regardless of if they are required.*
+**Note:** _These paramaters can still be used in all methods regardless of if they are required._
 
 ## Usage Examples:
 
@@ -114,6 +114,24 @@ if next_page_info
   next_page_response =client.get(path: "products", query: { limit: 10, page_info: next_page_info })
   some_function(next_page_response)
 end
+```
+
+### Error Messages
+
+You can rescue `ShopifyAPI::Errors::HttpResponseError` and output error messages with `errors.full_messages`
+
+See example:
+
+```ruby
+ fulfillment = ShopifyAPI::Fulfillment.new(session: @session)
+  fulfillment.order_id = 2776493818000
+  ...
+  fulfillment.tracking_company = "Jack Black's Pack, Stack and Track"
+  fulfillment.save()
+rescue ShopifyAPI::Errors::HttpResponseError => e
+  puts fulfillment.errors.full_messages
+  # {"base"=>["Line items are already fulfilled"]}
+  # If you report this error, please include this id: e712dde0-1270-4258-8cdb-d198792c917e.
 ```
 
 [Back to guide index](../README.md)

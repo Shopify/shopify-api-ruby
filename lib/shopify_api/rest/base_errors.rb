@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 module ShopifyAPI
-  module RestWrappers
+  module Rest
     class BaseErrors
       extend T::Sig
 
@@ -11,7 +11,7 @@ module ShopifyAPI
 
       sig { void }
       def initialize
-        @errors = T.let([], T::Array[RestWrappers::BaseErrors])
+        @errors = T.let([], T::Array[Rest::BaseErrors])
       end
 
       sig { returns(String) }
