@@ -14,6 +14,7 @@ module ShopifyAPI
       @has_one = T.let({}, T::Hash[Symbol, Class])
       @has_many = T.let({}, T::Hash[Symbol, Class])
       @paths = T.let([], T::Array[T::Hash[Symbol, T.any(T::Array[Symbol], String, Symbol)]])
+      @custom_prefix = T.let(nil, T.nilable(String))
 
       sig { returns(T::Hash[Symbol, T.untyped]) }
       attr_accessor :original_state
@@ -26,6 +27,7 @@ module ShopifyAPI
       end
       def initialize(session: nil, from_hash: nil)
         @original_state = T.let({}, T::Hash[Symbol, T.untyped])
+        @custom_prefix = T.let(nil, T.nilable(String))
         @forced_nils = T.let({}, T::Hash[String, T::Boolean])
 
         session ||= ShopifyAPI::Context.active_session
@@ -43,6 +45,9 @@ module ShopifyAPI
       class << self
         extend T::Sig
 
+        sig { returns(T.nilable(String)) }
+        attr_reader :custom_prefix
+
         sig do
           params(
             session: T.nilable(Auth::Session),
@@ -56,7 +61,7 @@ module ShopifyAPI
           client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
 
           path = T.must(get_path(http_method: :get, operation: :get, ids: ids))
-          response = client.get(path: path, query: params.to_h { |k, v| [k, v.is_a?(Array) ? v.join(",") : v] }.compact)
+          response = client.get(path: path, query: params.compact)
 
           instance_variable_get(:"@prev_page_info").value = response.prev_page_info
           instance_variable_get(:"@next_page_info").value = response.next_page_info
@@ -142,7 +147,7 @@ module ShopifyAPI
             end
           end
 
-          match
+          custom_prefix ? "#{T.must(custom_prefix).sub(%r{\A/}, "")}/#{match}" : match
         end
 
         sig do
@@ -150,16 +155,16 @@ module ShopifyAPI
             http_method: Symbol,
             operation: T.any(String, Symbol),
             session: T.nilable(Auth::Session),
-            path_ids: T::Hash[Symbol, String],
+            ids: T::Hash[Symbol, String],
             params: T::Hash[Symbol, T.untyped],
             body: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             entity: T.untyped,
           ).returns(Clients::HttpResponse)
         end
-        def request(http_method:, operation:, session:, path_ids: {}, params: {}, body: nil, entity: nil)
+        def request(http_method:, operation:, session:, ids: {}, params: {}, body: nil, entity: nil)
           client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
 
-          path = get_path(http_method: http_method, operation: operation.to_sym, ids: path_ids)
+          path = get_path(http_method: http_method, operation: operation.to_sym, ids: ids)
 
           case http_method
           when :get

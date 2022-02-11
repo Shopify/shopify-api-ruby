@@ -106,7 +106,7 @@ module ShopifyAPITest
       end
 
       def test_saves_existing_resource
-        request_body = { fake_resource: { id: 1, attribute: "attribute" } }.to_json
+        request_body = { fake_resource: { id: 1, attribute: "attribute" } }
         response_body = { fake_resource: { id: 1, attribute: "attribute" } }.to_json
 
         stubbed_request = stub_request(:put, "#{@prefix}/fake_resources/1.json")
@@ -278,6 +278,17 @@ module ShopifyAPITest
         end
 
         threads.each(&:join)
+      end
+
+      def test_allows_custom_prefixes
+        body = { fake_resource_with_custom_prefix: { id: 1, attribute: "attribute" } }.to_json
+
+        prefix = "https://#{@session.shop}/admin/custom_prefix"
+        stub_request(:get, "#{prefix}/fake_resource_with_custom_prefix/1.json").to_return(body: body)
+
+        got = TestHelpers::FakeResourceWithCustomPrefix.find(id: 1, session: @session)
+
+        assert_equal([1, "attribute"], [got.id, got.attribute])
       end
     end
   end
