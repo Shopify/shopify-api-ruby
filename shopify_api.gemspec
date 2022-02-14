@@ -23,7 +23,6 @@ Gem::Specification.new do |s|
     "README.md",
   ]
   s.files         = %x(git ls-files).split("\n")
-  s.test_files    = %x(git ls-files -- {test}/*).split("\n")
 
   s.rdoc_options = ["--charset=UTF-8"]
 
