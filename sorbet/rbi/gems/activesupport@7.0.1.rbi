@@ -286,6 +286,7 @@ end
 class Array
   include ::Enumerable
   include ::JSON::Ext::Generator::GeneratorMethods::Array
+  include ::Mocha::Inspect::ArrayMethods
 
   def as_json(options = T.unsafe(nil)); end
 end
@@ -301,6 +302,7 @@ BigDecimal::VERSION = T.let(T.unsafe(nil), String)
 
 class Date
   include ::Comparable
+  include ::Mocha::Inspect::DateMethods
   include ::DateAndTime::Zones
 
   def as_json(options = T.unsafe(nil)); end
@@ -408,6 +410,7 @@ end
 class Hash
   include ::Enumerable
   include ::JSON::Ext::Generator::GeneratorMethods::Hash
+  include ::Mocha::Inspect::HashMethods
 
   def as_json(options = T.unsafe(nil)); end
   def deep_merge(other_hash, &block); end
@@ -504,6 +507,10 @@ class Object < ::BasicObject
   include ::Kernel
   include ::JSON::Ext::Generator::GeneratorMethods::Object
   include ::PP::ObjectMixin
+  include ::Minitest::Expectations
+  include ::Mocha::ParameterMatchers::InstanceMethods
+  include ::Mocha::Inspect::ObjectMethods
+  include ::Mocha::ObjectMethods
 
   def as_json(options = T.unsafe(nil)); end
   def blank?; end
@@ -621,6 +628,7 @@ end
 
 class Time
   include ::Comparable
+  include ::Mocha::Inspect::TimeMethods
 
   def as_json(options = T.unsafe(nil)); end
   def blank?; end

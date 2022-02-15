@@ -7,6 +7,7 @@
 class Array
   include ::Enumerable
   include ::JSON::Ext::Generator::GeneratorMethods::Array
+  include ::Mocha::Inspect::ArrayMethods
 
   def place(*values); end
 end

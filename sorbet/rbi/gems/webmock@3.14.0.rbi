@@ -8,7 +8,7 @@ module Net::WebMockHTTPResponse
   def read_body(dest = T.unsafe(nil), &block); end
 end
 
-class Net::WebMockNetBufferedIO < ::Net::BufferedIO
+class Net::WebMockNetBufferedIO
   def initialize(io, *args, **kwargs); end
 
   def rbuf_fill; end
@@ -246,8 +246,8 @@ class WebMock::HttpLibAdapters::NetHttpAdapter < ::WebMock::HttpLibAdapter
   end
 end
 
-WebMock::HttpLibAdapters::NetHttpAdapter::OriginalNetBufferedIO = Net::BufferedIO
-WebMock::HttpLibAdapters::NetHttpAdapter::OriginalNetHTTP = Net::HTTP
+WebMock::HttpLibAdapters::NetHttpAdapter::OriginalNetBufferedIO = Class.new
+WebMock::HttpLibAdapters::NetHttpAdapter::OriginalNetHTTP = Class.new
 module WebMock::Matchers; end
 
 class WebMock::Matchers::AnyArgMatcher
