@@ -292,6 +292,7 @@ class Minitest::Test < ::Minitest::Runnable
   def capture_exceptions; end
   def class_name; end
   def run; end
+  def sanitize_exception(e); end
   def with_info_handler(&block); end
 
   class << self

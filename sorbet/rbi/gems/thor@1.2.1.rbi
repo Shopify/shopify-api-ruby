@@ -388,6 +388,7 @@ class Thor::CoreExt::HashWithIndifferentAccess < ::Hash
   def [](key); end
   def []=(key, value); end
   def delete(key); end
+  def except(*keys); end
   def fetch(key, *args); end
   def key?(key); end
   def merge(other); end
@@ -600,6 +601,8 @@ class Thor::Options < ::Thor::Arguments
   def parse(args); end
   def peek; end
   def remaining; end
+  def shift; end
+  def unshift(arg, is_value: T.unsafe(nil)); end
 
   protected
 
@@ -652,6 +655,7 @@ module Thor::Shell
   def print_table(*args, &block); end
   def print_wrapped(*args, &block); end
   def say(*args, &block); end
+  def say_error(*args, &block); end
   def say_status(*args, &block); end
   def set_color(*args, &block); end
   def shell; end
@@ -683,6 +687,7 @@ class Thor::Shell::Basic
   def print_table(array, options = T.unsafe(nil)); end
   def print_wrapped(message, options = T.unsafe(nil)); end
   def say(message = T.unsafe(nil), color = T.unsafe(nil), force_new_line = T.unsafe(nil)); end
+  def say_error(message = T.unsafe(nil), color = T.unsafe(nil), force_new_line = T.unsafe(nil)); end
   def say_status(status, message, log_status = T.unsafe(nil)); end
   def set_color(string, *_arg1); end
   def terminal_width; end

@@ -269,3 +269,6 @@ class String
     def json_create(obj); end
   end
 end
+
+String::BLANK_RE = T.let(T.unsafe(nil), Regexp)
+String::ENCODED_BLANKS = T.let(T.unsafe(nil), Concurrent::Map)

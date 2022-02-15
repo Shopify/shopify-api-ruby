@@ -8,6 +8,22 @@
 
 module ActiveSupport
   extend ::ActiveSupport::LazyLoadHooks
+
+  def parse_json_times; end
+  def parse_json_times=(val); end
+
+  class << self
+    def escape_html_entities_in_json(*_arg0, &_arg1); end
+    def escape_html_entities_in_json=(arg); end
+    def json_encoder(*_arg0, &_arg1); end
+    def json_encoder=(arg); end
+    def parse_json_times; end
+    def parse_json_times=(val); end
+    def time_precision(*_arg0, &_arg1); end
+    def time_precision=(arg); end
+    def use_standard_json_time_format(*_arg0, &_arg1); end
+    def use_standard_json_time_format=(arg); end
+  end
 end
 
 module ActiveSupport::BigDecimalWithDefaultFormat
@@ -71,6 +87,7 @@ class ActiveSupport::Inflector::Inflections
 
   class << self
     def instance(locale = T.unsafe(nil)); end
+    def instance_or_fallback(locale); end
   end
 end
 
@@ -195,8 +212,6 @@ module ActiveSupport::Multibyte::Unicode
 
   def compose(codepoints); end
   def decompose(type, codepoints); end
-  def default_normalization_form; end
-  def default_normalization_form=(_); end
   def tidy_bytes(string, force = T.unsafe(nil)); end
 
   private
@@ -292,12 +307,13 @@ class Date
   def inspect; end
   def readable_inspect; end
   def to_formatted_s(format = T.unsafe(nil)); end
-  def to_s(format = T.unsafe(nil)); end
+  def to_fs(format = T.unsafe(nil)); end
   def to_time(form = T.unsafe(nil)); end
   def xmlschema; end
 end
 
 Date::DATE_FORMATS = T.let(T.unsafe(nil), Hash)
+Date::VERSION = T.let(T.unsafe(nil), String)
 module DateAndTime; end
 
 module DateAndTime::Zones
@@ -350,8 +366,8 @@ class DateTime < ::Date
   def subsec; end
   def to_f; end
   def to_formatted_s(format = T.unsafe(nil)); end
+  def to_fs(format = T.unsafe(nil)); end
   def to_i; end
-  def to_s(format = T.unsafe(nil)); end
   def usec; end
   def utc; end
   def utc?; end
@@ -409,6 +425,16 @@ class IO
   def as_json(options = T.unsafe(nil)); end
 end
 
+class IO::ConsoleMode
+  def echo=(_arg0); end
+  def raw(*_arg0); end
+  def raw!(*_arg0); end
+
+  private
+
+  def initialize_copy(_arg0); end
+end
+
 class IO::EAGAINWaitReadable < ::Errno::EAGAIN
   include ::IO::WaitReadable
 end
@@ -435,6 +461,7 @@ class IPAddr
 end
 
 class Module
+  def as_json(options = T.unsafe(nil)); end
   def cattr_accessor(*syms, instance_reader: T.unsafe(nil), instance_writer: T.unsafe(nil), instance_accessor: T.unsafe(nil), default: T.unsafe(nil), &blk); end
   def cattr_reader(*syms, instance_reader: T.unsafe(nil), instance_accessor: T.unsafe(nil), default: T.unsafe(nil), location: T.unsafe(nil)); end
   def cattr_writer(*syms, instance_writer: T.unsafe(nil), instance_accessor: T.unsafe(nil), default: T.unsafe(nil), location: T.unsafe(nil)); end
@@ -504,6 +531,40 @@ class Regexp
   def as_json(options = T.unsafe(nil)); end
 end
 
+Regexp::TOKEN_KEYS = T.let(T.unsafe(nil), Array)
+
+class Regexp::Token < ::Struct
+  def conditional_level; end
+  def conditional_level=(_); end
+  def length; end
+  def level; end
+  def level=(_); end
+  def next; end
+  def next=(_arg0); end
+  def offset; end
+  def previous; end
+  def previous=(_arg0); end
+  def set_level; end
+  def set_level=(_); end
+  def te; end
+  def te=(_); end
+  def text; end
+  def text=(_); end
+  def token; end
+  def token=(_); end
+  def ts; end
+  def ts=(_); end
+  def type; end
+  def type=(_); end
+
+  class << self
+    def [](*_arg0); end
+    def inspect; end
+    def members; end
+    def new(*_arg0); end
+  end
+end
+
 class String
   include ::Comparable
   include ::JSON::Ext::Generator::GeneratorMethods::String
@@ -565,7 +626,7 @@ class Time
   def blank?; end
   def formatted_offset(colon = T.unsafe(nil), alternate_utc_string = T.unsafe(nil)); end
   def to_formatted_s(format = T.unsafe(nil)); end
-  def to_s(format = T.unsafe(nil)); end
+  def to_fs(format = T.unsafe(nil)); end
 end
 
 Time::DATE_FORMATS = T.let(T.unsafe(nil), Hash)

@@ -23,10 +23,6 @@ end
 File::RELATIVE_PARENTDIR = T.let(T.unsafe(nil), String)
 File::RELATIVE_SAMEDIR = T.let(T.unsafe(nil), String)
 
-class File::Stat
-  include ::Comparable
-end
-
 module Gem
   class << self
     def source_index; end
@@ -47,6 +43,30 @@ class Gem::List
 end
 
 Gem::RbConfigPriorities = T.let(T.unsafe(nil), Array)
+
+class Gem::RequestSet
+  include ::TSort
+end
+
+class Gem::Resolver
+  include ::Gem::Resolver::Molinillo::UI
+  include ::Gem::Resolver::Molinillo::SpecificationProvider
+end
+
+class Gem::Resolver::CurrentSet < ::Gem::Resolver::Set
+  def find_all(req); end
+end
+
+class Gem::Resolver::LocalSpecification < ::Gem::Resolver::SpecSpecification
+  def installable_platform?; end
+  def local?; end
+  def pretty_print(q); end
+end
+
+class Gem::Resolver::RequirementList
+  include ::Enumerable
+end
+
 Gem::RubyGemsVersion = T.let(T.unsafe(nil), String)
 
 class Gem::RuntimeRequirementNotMetError < ::Gem::InstallError
@@ -98,15 +118,6 @@ class Gem::SourceIndex
     def load_specification(file_name); end
   end
 end
-
-class Gem::Specification < ::Gem::BasicSpecification
-  include ::Bundler::GemHelpers
-  include ::Bundler::MatchPlatform
-  extend ::Gem::Deprecate
-  extend ::Enumerable
-end
-
-Gem::Specification::REMOVED_METHODS = T.let(T.unsafe(nil), Array)
 
 class Gem::SpecificationPolicy
   include ::Gem::Text
@@ -237,6 +248,37 @@ end
 
 Gem::Version::Requirement = Gem::Requirement
 
+class IRB::SLex
+  def initialize; end
+
+  def create(token, preproc = T.unsafe(nil), postproc = T.unsafe(nil)); end
+  def def_rule(token, preproc = T.unsafe(nil), postproc = T.unsafe(nil), &block); end
+  def def_rules(*tokens, &block); end
+  def inspect; end
+  def match(token); end
+  def postproc(token); end
+  def preproc(token, proc); end
+  def search(token); end
+end
+
+IRB::SLex::DOUT = T.let(T.unsafe(nil), IRB::Notifier::CompositeNotifier)
+IRB::SLex::D_DEBUG = T.let(T.unsafe(nil), IRB::Notifier::LeveledNotifier)
+IRB::SLex::D_DETAIL = T.let(T.unsafe(nil), IRB::Notifier::LeveledNotifier)
+IRB::SLex::D_WARN = T.let(T.unsafe(nil), IRB::Notifier::LeveledNotifier)
+
+class IRB::SLex::Node
+  def initialize(preproc = T.unsafe(nil), postproc = T.unsafe(nil)); end
+
+  def create_subnode(chrs, preproc = T.unsafe(nil), postproc = T.unsafe(nil)); end
+  def match(chrs, op = T.unsafe(nil)); end
+  def match_io(io, op = T.unsafe(nil)); end
+  def postproc; end
+  def postproc=(_arg0); end
+  def preproc; end
+  def preproc=(_arg0); end
+  def search(chrs, opt = T.unsafe(nil)); end
+end
+
 class Insertion
   def initialize(list, value); end
 
@@ -254,7 +296,33 @@ class Module
   def class_name; end
 end
 
+Module::DELEGATION_RESERVED_KEYWORDS = T.let(T.unsafe(nil), Array)
+Module::DELEGATION_RESERVED_METHOD_NAMES = T.let(T.unsafe(nil), Set)
+Module::RUBY_RESERVED_KEYWORDS = T.let(T.unsafe(nil), Array)
 RUBY19 = T.let(T.unsafe(nil), TrueClass)
+
+class Rack::Request
+  include ::Rack::Request::Env
+  include ::Rack::Request::Helpers
+
+  def initialize(env); end
+
+  def delete_param(k); end
+  def params; end
+  def query; end
+  def update_param(k, v); end
+  def version_supplied; end
+  def version_supplied=(_arg0); end
+  def xhr?; end
+
+  class << self
+    def ip_filter; end
+    def ip_filter=(_arg0); end
+  end
+end
+
+Rack::Request::ALLOWED_SCHEMES = T.let(T.unsafe(nil), Array)
+Rack::Request::SCHEME_WHITELIST = T.let(T.unsafe(nil), Array)
 
 class String
   include ::Comparable
@@ -263,6 +331,9 @@ class String
 
   def shell_split; end
 end
+
+String::BLANK_RE = T.let(T.unsafe(nil), Regexp)
+String::ENCODED_BLANKS = T.let(T.unsafe(nil), Concurrent::Map)
 
 class SymbolHash < ::Hash
   def initialize(symbolize_value = T.unsafe(nil)); end
@@ -281,6 +352,14 @@ class SymbolHash < ::Hash
   end
 end
 
+class WEBrick::HTTPRequest
+  def version_supplied; end
+  def version_supplied=(_arg0); end
+  def xhr?; end
+end
+
+WEBrick::HTTPRequest::MAX_HEADER_LENGTH = T.let(T.unsafe(nil), Integer)
+
 module YARD
   class << self
     def load_plugins; end
@@ -289,6 +368,7 @@ module YARD
     def ruby18?; end
     def ruby19?; end
     def ruby2?; end
+    def ruby3?; end
     def windows?; end
   end
 end
@@ -1504,7 +1584,12 @@ class YARD::Handlers::Ruby::MixinHandler < ::YARD::Handlers::Ruby::Base
   def recipient(mixin); end
 end
 
-class YARD::Handlers::Ruby::ModuleFunctionHandler < ::YARD::Handlers::Ruby::Base; end
+class YARD::Handlers::Ruby::ModuleFunctionHandler < ::YARD::Handlers::Ruby::Base
+  include ::YARD::Handlers::Ruby::DecoratorHandlerMethods
+
+  def make_module_function(instance_method, namespace); end
+end
+
 class YARD::Handlers::Ruby::ModuleHandler < ::YARD::Handlers::Ruby::Base; end
 
 class YARD::Handlers::Ruby::PrivateClassMethodHandler < ::YARD::Handlers::Ruby::Base
@@ -2825,7 +2910,7 @@ class YARD::Parser::UndocumentableError < ::RuntimeError; end
 YARD::ROOT = T.let(T.unsafe(nil), String)
 module YARD::Rake; end
 
-class YARD::Rake::YardocTask < Rake::Task
+class YARD::Rake::YardocTask < ::Rake::TaskLib
   def initialize(name = T.unsafe(nil)); end
 
   def after; end
@@ -3308,6 +3393,23 @@ end
 
 class YARD::Server::NotFoundError < ::RuntimeError; end
 
+class YARD::Server::RackAdapter < ::YARD::Server::Adapter
+  include ::WEBrick::HTTPUtils
+
+  def call(env); end
+  def start; end
+
+  private
+
+  def print_start_message(server); end
+end
+
+class YARD::Server::RackMiddleware
+  def initialize(app, opts = T.unsafe(nil)); end
+
+  def call(env); end
+end
+
 class YARD::Server::Router
   include ::YARD::Server::StaticCaching
   include ::YARD::Server::Commands
@@ -3425,6 +3527,7 @@ class YARD::Tags::Directive
 
   protected
 
+  def inside_directive?; end
   def parser; end
 end
 
