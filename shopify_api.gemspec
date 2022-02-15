@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
     "LICENSE",
     "README.md",
   ]
-  s.files = Dir["CHANGELOG.md", "LICENSE", "README.md", "docs/**/*", "lib/**/*"]
+  s.files = %x(git ls-files).split("\n")
 
   s.rdoc_options = ["--charset=UTF-8"]
 
