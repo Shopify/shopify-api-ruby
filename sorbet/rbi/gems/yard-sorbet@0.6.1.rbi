@@ -49,6 +49,11 @@ end
 class YARDSorbet::Handlers::MixesInClassMethodsHandler < ::YARD::Handlers::Ruby::Base
   sig { void }
   def process; end
+
+  class << self
+    sig { params(code_obj: String).returns(T.nilable(String)) }
+    def mixed_in_class_methods(code_obj); end
+  end
 end
 
 class YARDSorbet::Handlers::SigHandler < ::YARD::Handlers::Ruby::Base

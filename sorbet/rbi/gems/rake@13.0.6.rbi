@@ -29,6 +29,10 @@ class Module
   def rake_extension(method); end
 end
 
+Module::DELEGATION_RESERVED_KEYWORDS = T.let(T.unsafe(nil), Array)
+Module::DELEGATION_RESERVED_METHOD_NAMES = T.let(T.unsafe(nil), Set)
+Module::RUBY_RESERVED_KEYWORDS = T.let(T.unsafe(nil), Array)
+
 module Rake
   extend ::FileUtils::StreamUtils_
   extend ::FileUtils
@@ -338,6 +342,7 @@ class Rake::FileList
   def tally(*args, &block); end
   def to_a; end
   def to_ary; end
+  def to_csv(*args, &block); end
   def to_h(*args, &block); end
   def to_s; end
   def to_set(*args, &block); end
@@ -565,6 +570,8 @@ class Rake::PseudoStatus
   def to_i; end
 end
 
+Rake::RDocTask = RDoc::Task
+
 class Rake::RuleRecursionOverflowError < ::StandardError
   def initialize(*args); end
 
@@ -683,6 +690,14 @@ class Rake::TaskArguments
   def lookup(name); end
 end
 
+class Rake::TaskLib
+  include ::Rake::Cloneable
+  include ::FileUtils::StreamUtils_
+  include ::FileUtils
+  include ::Rake::FileUtilsExt
+  include ::Rake::DSL
+end
+
 module Rake::TaskManager
   def initialize; end
 
@@ -794,3 +809,6 @@ class String
   def pathmap_partial(n); end
   def pathmap_replace(patterns, &block); end
 end
+
+String::BLANK_RE = T.let(T.unsafe(nil), Regexp)
+String::ENCODED_BLANKS = T.let(T.unsafe(nil), Concurrent::Map)

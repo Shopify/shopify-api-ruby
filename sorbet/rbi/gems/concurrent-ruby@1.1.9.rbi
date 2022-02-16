@@ -257,12 +257,12 @@ class Concurrent::Atom < ::Concurrent::Synchronization::Object
   end
 end
 
-class Concurrent::AtomicBoolean < ::Concurrent::CAtomicBoolean
+class Concurrent::AtomicBoolean < ::Concurrent::MutexAtomicBoolean
   def inspect; end
   def to_s; end
 end
 
-Concurrent::AtomicBooleanImplementation = Concurrent::CAtomicBoolean
+Concurrent::AtomicBooleanImplementation = Concurrent::MutexAtomicBoolean
 
 module Concurrent::AtomicDirectUpdate
   def try_update; end
@@ -270,12 +270,12 @@ module Concurrent::AtomicDirectUpdate
   def update; end
 end
 
-class Concurrent::AtomicFixnum < ::Concurrent::CAtomicFixnum
+class Concurrent::AtomicFixnum < ::Concurrent::MutexAtomicFixnum
   def inspect; end
   def to_s; end
 end
 
-Concurrent::AtomicFixnumImplementation = Concurrent::CAtomicFixnum
+Concurrent::AtomicFixnumImplementation = Concurrent::MutexAtomicFixnum
 
 class Concurrent::AtomicMarkableReference < ::Concurrent::Synchronization::Object
   def initialize(value = T.unsafe(nil), mark = T.unsafe(nil)); end
@@ -310,55 +310,12 @@ module Concurrent::AtomicNumericCompareAndSetWrapper
   def compare_and_set(old_value, new_value); end
 end
 
-class Concurrent::AtomicReference < ::Concurrent::CAtomicReference
+class Concurrent::AtomicReference < ::Concurrent::MutexAtomicReference
   def inspect; end
   def to_s; end
 end
 
-Concurrent::AtomicReferenceImplementation = Concurrent::CAtomicReference
-
-class Concurrent::CAtomicBoolean
-  def initialize(*_arg0); end
-
-  def false?; end
-  def make_false; end
-  def make_true; end
-  def true?; end
-  def value; end
-  def value=(_arg0); end
-end
-
-class Concurrent::CAtomicFixnum
-  def initialize(*_arg0); end
-
-  def compare_and_set(_arg0, _arg1); end
-  def decrement(*_arg0); end
-  def down(*_arg0); end
-  def increment(*_arg0); end
-  def up(*_arg0); end
-  def update; end
-  def value; end
-  def value=(_arg0); end
-end
-
-Concurrent::CAtomicFixnum::MAX_VALUE = T.let(T.unsafe(nil), Integer)
-Concurrent::CAtomicFixnum::MIN_VALUE = T.let(T.unsafe(nil), Integer)
-
-class Concurrent::CAtomicReference
-  include ::Concurrent::AtomicDirectUpdate
-  include ::Concurrent::AtomicNumericCompareAndSetWrapper
-
-  def initialize(*_arg0); end
-
-  def _compare_and_set(_arg0, _arg1); end
-  def compare_and_swap(old_value, new_value); end
-  def get; end
-  def get_and_set(_arg0); end
-  def set(_arg0); end
-  def swap(_arg0); end
-  def value; end
-  def value=(_arg0); end
-end
+Concurrent::AtomicReferenceImplementation = Concurrent::MutexAtomicReference
 
 class Concurrent::CRubySet < ::Set
   def initialize(*args, &block); end
