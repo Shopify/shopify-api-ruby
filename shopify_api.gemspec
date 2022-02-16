@@ -22,8 +22,9 @@ Gem::Specification.new do |s|
     "LICENSE",
     "README.md",
   ]
-  s.files         = %x(git ls-files).split("\n")
-  s.test_files    = %x(git ls-files -- {test}/*).split("\n")
+  s.files = Dir.chdir(File.expand_path("..", __FILE__)) do
+    %x(git ls-files -z).split("\x0").reject { |f| f.match(%r{^(test)/}) }
+  end
 
   s.rdoc_options = ["--charset=UTF-8"]
 
