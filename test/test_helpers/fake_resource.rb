@@ -79,7 +79,7 @@ module TestHelpers
           http_method: :get,
           operation: :custom,
           session: session,
-          path_ids: { id: id, other_resource_id: other_resource_id }
+          ids: { id: id, other_resource_id: other_resource_id }
         )
       end
     end
