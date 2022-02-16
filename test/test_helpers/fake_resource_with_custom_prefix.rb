@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 module TestHelpers
-  class FakeResourceWithCustomPrefix < ShopifyAPI::RestWrappers::Base
+  class FakeResourceWithCustomPrefix < ShopifyAPI::Rest::Base
     extend T::Sig
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)

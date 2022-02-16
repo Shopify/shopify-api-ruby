@@ -20,7 +20,7 @@ module ShopifyAPI
     @active_session = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @user_agent_prefix = T.let(nil, T.nilable(String))
 
-    @rest_wrapper_loader = T.let(nil, T.nilable(Zeitwerk::Loader))
+    @rest_resource_loader = T.let(nil, T.nilable(Zeitwerk::Loader))
 
     class << self
       extend T::Sig
@@ -70,13 +70,13 @@ module ShopifyAPI
         @private_shop = private_shop
         @user_agent_prefix = user_agent_prefix
 
-        load_rest_wrappers(api_version: api_version)
+        load_rest_resources(api_version: api_version)
       end
 
       sig { params(api_version: String).void }
-      def load_rest_wrappers(api_version:)
+      def load_rest_resources(api_version:)
         version_folder_name = api_version.gsub("-", "_")
-        path = "#{__dir__}/rest_wrappers/resources/#{version_folder_name}"
+        path = "#{__dir__}/rest/resources/#{version_folder_name}"
 
         unless Dir.exist?(path)
           unless @notified_missing_resources_folder.key?(api_version)
@@ -88,14 +88,14 @@ module ShopifyAPI
         end
 
         # Unload any previous instances - mostly useful for tests where we need to reset the version
-        @rest_wrapper_loader&.unload
+        @rest_resource_loader&.unload
 
-        @rest_wrapper_loader = T.let(Zeitwerk::Loader.new, T.nilable(Zeitwerk::Loader))
-        T.must(@rest_wrapper_loader).enable_reloading
-        T.must(@rest_wrapper_loader).ignore("#{__dir__}/rest_wrappers/resources")
-        T.must(@rest_wrapper_loader).setup
-        T.must(@rest_wrapper_loader).push_dir(path, namespace: ShopifyAPI)
-        T.must(@rest_wrapper_loader).reload
+        @rest_resource_loader = T.let(Zeitwerk::Loader.new, T.nilable(Zeitwerk::Loader))
+        T.must(@rest_resource_loader).enable_reloading
+        T.must(@rest_resource_loader).ignore("#{__dir__}/rest/resources")
+        T.must(@rest_resource_loader).setup
+        T.must(@rest_resource_loader).push_dir(path, namespace: ShopifyAPI)
+        T.must(@rest_resource_loader).reload
       end
 
       sig { returns(String) }

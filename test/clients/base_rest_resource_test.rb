@@ -4,7 +4,7 @@
 require_relative "../test_helper"
 
 module ShopifyAPITest
-  module RestWrappers
+  module Rest
     class BaseTest < Test::Unit::TestCase
       def setup
         @session = ShopifyAPI::Auth::Session.new(shop: "test-shop.myshopify.com",

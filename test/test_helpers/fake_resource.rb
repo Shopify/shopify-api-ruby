@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 module TestHelpers
-  class FakeResource < ShopifyAPI::RestWrappers::Base
+  class FakeResource < ShopifyAPI::Rest::Base
     extend T::Sig
 
     @has_one = T.let({

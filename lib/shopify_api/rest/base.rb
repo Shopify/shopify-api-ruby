@@ -5,7 +5,7 @@ require "active_support/inflector"
 require "hash_diff"
 
 module ShopifyAPI
-  module RestWrappers
+  module Rest
     class Base
       extend T::Sig
       extend T::Helpers

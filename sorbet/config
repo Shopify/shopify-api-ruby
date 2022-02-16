@@ -1,4 +1,4 @@
 --dir
 .
---ignore=lib/shopify_api/rest_wrappers/resources
---ignore=test/rest_wrappers
+--ignore=lib/shopify_api/rest/resources
+--ignore=test/rest

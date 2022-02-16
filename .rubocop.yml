@@ -10,8 +10,8 @@ AllCops:
   Exclude:
     - "sorbet/**/*"
     - "bin/**/*"
-    - "lib/shopify_api/rest_wrappers/resources/**/*"
-    - "test/rest_wrappers/**/*"
+    - "lib/shopify_api/rest/resources/**/*"
+    - "test/rest/**/*"
 
 Sorbet:
   Enabled: true

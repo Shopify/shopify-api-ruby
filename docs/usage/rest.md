@@ -83,7 +83,7 @@ loop do
 end
 ```
 
-Similarly, when using REST wrappers the `next_page_info` and `prev_page_info` can be found on the Resource class and passed as the page_info query param in other requests.
+Similarly, when using REST resources the `next_page_info` and `prev_page_info` can be found on the Resource class and passed as the page_info query param in other requests.
 
 An example of this is shown below:
 
