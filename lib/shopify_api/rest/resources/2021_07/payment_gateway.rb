@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,29 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @attachment = T.let(nil, T.nilable(String))
+      @created_at = T.let(nil, T.nilable(String))
+      @credential1 = T.let(nil, T.nilable(String))
+      @credential2 = T.let(nil, T.nilable(String))
+      @credential3 = T.let(nil, T.nilable(String))
+      @credential4 = T.let(nil, T.nilable(String))
+      @disabled = T.let(nil, T.nilable(T::Boolean))
+      @enabled_card_brands = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @id = T.let(nil, T.nilable(Integer))
+      @name = T.let(nil, T.nilable(String))
+      @processing_method = T.let(nil, T.nilable(String))
+      @provider_id = T.let(nil, T.nilable(Integer))
+      @sandbox = T.let(nil, T.nilable(T::Boolean))
+      @service_name = T.let(nil, T.nilable(String))
+      @supports_network_tokenization = T.let(nil, T.nilable(T::Boolean))
+      @type = T.let(nil, T.nilable(String))
+      @updated_at = T.let(nil, T.nilable(String))
+    end
 
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])

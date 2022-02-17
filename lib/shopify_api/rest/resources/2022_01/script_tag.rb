@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,19 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @event = T.let(nil, T.nilable(String))
+      @src = T.let(nil, T.nilable(String))
+      @cache = T.let(nil, T.nilable(T::Boolean))
+      @created_at = T.let(nil, T.nilable(String))
+      @display_scope = T.let(nil, T.nilable(String))
+      @id = T.let(nil, T.nilable(Integer))
+      @updated_at = T.let(nil, T.nilable(String))
+    end
 
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
@@ -19,9 +32,9 @@ module ShopifyAPI
       {http_method: :delete, operation: :delete, ids: [:id], path: "script_tags/<id>.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
-    sig { returns(String) }
+    sig { returns(T.nilable(String)) }
     attr_reader :event
-    sig { returns(String) }
+    sig { returns(T.nilable(String)) }
     attr_reader :src
     sig { returns(T.nilable(T::Boolean)) }
     attr_reader :cache

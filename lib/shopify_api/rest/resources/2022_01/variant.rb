@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,38 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @barcode = T.let(nil, T.nilable(String))
+      @compare_at_price = T.let(nil, T.nilable(String))
+      @created_at = T.let(nil, T.nilable(String))
+      @fulfillment_service = T.let(nil, T.nilable(String))
+      @grams = T.let(nil, T.nilable(Integer))
+      @id = T.let(nil, T.nilable(Integer))
+      @image_id = T.let(nil, T.nilable(Integer))
+      @inventory_item_id = T.let(nil, T.nilable(Integer))
+      @inventory_management = T.let(nil, T.nilable(String))
+      @inventory_policy = T.let(nil, T.nilable(String))
+      @inventory_quantity = T.let(nil, T.nilable(Integer))
+      @inventory_quantity_adjustment = T.let(nil, T.nilable(Integer))
+      @old_inventory_quantity = T.let(nil, T.nilable(Integer))
+      @option = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @position = T.let(nil, T.nilable(Integer))
+      @presentment_prices = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @price = T.let(nil, T.nilable(String))
+      @product_id = T.let(nil, T.nilable(Integer))
+      @requires_shipping = T.let(nil, T.nilable(T::Boolean))
+      @sku = T.let(nil, T.nilable(String))
+      @tax_code = T.let(nil, T.nilable(String))
+      @taxable = T.let(nil, T.nilable(T::Boolean))
+      @title = T.let(nil, T.nilable(String))
+      @updated_at = T.let(nil, T.nilable(String))
+      @weight = T.let(nil, T.nilable(Integer))
+      @weight_unit = T.let(nil, T.nilable(String))
+    end
 
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
@@ -45,11 +77,11 @@ module ShopifyAPI
     attr_reader :inventory_quantity_adjustment
     sig { returns(T.nilable(Integer)) }
     attr_reader :old_inventory_quantity
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :option
     sig { returns(T.nilable(Integer)) }
     attr_reader :position
-    sig { returns(T.nilable(T::Array[Hash])) }
+    sig { returns(T.nilable(T::Array[T::Hash[T.untyped, T.untyped]])) }
     attr_reader :presentment_prices
     sig { returns(T.nilable(String)) }
     attr_reader :price

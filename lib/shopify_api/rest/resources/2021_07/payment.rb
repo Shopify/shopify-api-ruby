@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,19 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @checkout = T.let(nil, T.nilable(Checkout))
+      @credit_card = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @id = T.let(nil, T.nilable(Integer))
+      @next_action = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @payment_processing_error_message = T.let(nil, T.nilable(String))
+      @transaction = T.let(nil, T.nilable(Transaction))
+      @unique_token = T.let(nil, T.nilable(String))
+    end
 
     @has_one = T.let({
       transaction: Transaction,
@@ -22,11 +35,11 @@ module ShopifyAPI
 
     sig { returns(T.nilable(Checkout)) }
     attr_reader :checkout
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :credit_card
     sig { returns(T.nilable(Integer)) }
     attr_reader :id
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :next_action
     sig { returns(T.nilable(String)) }
     attr_reader :payment_processing_error_message
@@ -116,7 +129,7 @@ module ShopifyAPI
     end
     def checkout_id=(val)
       @checkout = @checkout || Checkout.new(session: @session)
-      @checkout.token = val
+      T.unsafe(@checkout).token = val
     end
 
   end

@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,25 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @article_id = T.let(nil, T.nilable(Integer))
+      @author = T.let(nil, T.nilable(String))
+      @blog_id = T.let(nil, T.nilable(Integer))
+      @body = T.let(nil, T.nilable(String))
+      @body_html = T.let(nil, T.nilable(String))
+      @created_at = T.let(nil, T.nilable(String))
+      @email = T.let(nil, T.nilable(String))
+      @id = T.let(nil, T.nilable(Integer))
+      @ip = T.let(nil, T.nilable(String))
+      @published_at = T.let(nil, T.nilable(String))
+      @status = T.let(nil, T.nilable(String))
+      @updated_at = T.let(nil, T.nilable(String))
+      @user_agent = T.let(nil, T.nilable(String))
+    end
 
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
@@ -153,7 +172,7 @@ module ShopifyAPI
 
     sig do
       params(
-        body: T.nilable(T.untyped),
+        body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end
@@ -174,7 +193,7 @@ module ShopifyAPI
 
     sig do
       params(
-        body: T.nilable(T.untyped),
+        body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end
@@ -195,7 +214,7 @@ module ShopifyAPI
 
     sig do
       params(
-        body: T.nilable(T.untyped),
+        body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end
@@ -216,7 +235,7 @@ module ShopifyAPI
 
     sig do
       params(
-        body: T.nilable(T.untyped),
+        body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end
@@ -237,7 +256,7 @@ module ShopifyAPI
 
     sig do
       params(
-        body: T.nilable(T.untyped),
+        body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end

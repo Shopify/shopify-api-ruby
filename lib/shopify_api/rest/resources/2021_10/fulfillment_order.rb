@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,27 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @assigned_location = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @assigned_location_id = T.let(nil, T.nilable(Integer))
+      @delivery_method = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @destination = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @fulfill_at = T.let(nil, T.nilable(String))
+      @fulfillment_holds = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @id = T.let(nil, T.nilable(Integer))
+      @international_duties = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @line_items = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @merchant_requests = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @order_id = T.let(nil, T.nilable(Integer))
+      @request_status = T.let(nil, T.nilable(String))
+      @shop_id = T.let(nil, T.nilable(Integer))
+      @status = T.let(nil, T.nilable(String))
+      @supported_actions = T.let(nil, T.nilable(T::Array[T.untyped]))
+    end
 
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
@@ -22,25 +43,25 @@ module ShopifyAPI
       {http_method: :post, operation: :release_hold, ids: [:id], path: "fulfillment_orders/<id>/release_hold.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :assigned_location
     sig { returns(T.nilable(Integer)) }
     attr_reader :assigned_location_id
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :delivery_method
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :destination
     sig { returns(T.nilable(String)) }
     attr_reader :fulfill_at
-    sig { returns(T.nilable(T::Array[Hash])) }
+    sig { returns(T.nilable(T::Array[T::Hash[T.untyped, T.untyped]])) }
     attr_reader :fulfillment_holds
     sig { returns(T.nilable(Integer)) }
     attr_reader :id
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :international_duties
-    sig { returns(T.nilable(T::Array[Hash])) }
+    sig { returns(T.nilable(T::Array[T::Hash[T.untyped, T.untyped]])) }
     attr_reader :line_items
-    sig { returns(T.nilable(T::Array[Hash])) }
+    sig { returns(T.nilable(T::Array[T::Hash[T.untyped, T.untyped]])) }
     attr_reader :merchant_requests
     sig { returns(T.nilable(Integer)) }
     attr_reader :order_id
@@ -97,7 +118,7 @@ module ShopifyAPI
 
     sig do
       params(
-        body: T.nilable(T.untyped),
+        body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end
@@ -119,7 +140,7 @@ module ShopifyAPI
     sig do
       params(
         message: T.untyped,
-        body: T.nilable(T.untyped),
+        body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end
@@ -142,7 +163,7 @@ module ShopifyAPI
     sig do
       params(
         new_location_id: T.untyped,
-        body: T.nilable(T.untyped),
+        body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end
@@ -164,7 +185,7 @@ module ShopifyAPI
 
     sig do
       params(
-        body: T.nilable(T.untyped),
+        body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end
@@ -185,7 +206,7 @@ module ShopifyAPI
 
     sig do
       params(
-        body: T.nilable(T.untyped),
+        body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end
@@ -209,7 +230,7 @@ module ShopifyAPI
         reason: T.untyped,
         reason_notes: T.untyped,
         notify_merchant: T.untyped,
-        body: T.nilable(T.untyped),
+        body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end
@@ -233,7 +254,7 @@ module ShopifyAPI
 
     sig do
       params(
-        body: T.nilable(T.untyped),
+        body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end

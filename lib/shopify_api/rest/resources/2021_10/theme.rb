@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,20 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @created_at = T.let(nil, T.nilable(String))
+      @id = T.let(nil, T.nilable(Integer))
+      @name = T.let(nil, T.nilable(String))
+      @previewable = T.let(nil, T.nilable(T::Boolean))
+      @processing = T.let(nil, T.nilable(T::Boolean))
+      @role = T.let(nil, T.nilable(String))
+      @theme_store_id = T.let(nil, T.nilable(Integer))
+      @updated_at = T.let(nil, T.nilable(String))
+    end
 
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])

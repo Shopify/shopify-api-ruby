@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,22 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @address = T.let(nil, T.nilable(String))
+      @topic = T.let(nil, T.nilable(String))
+      @api_version = T.let(nil, T.nilable(String))
+      @created_at = T.let(nil, T.nilable(String))
+      @fields = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @format = T.let(nil, T.nilable(String))
+      @id = T.let(nil, T.nilable(Integer))
+      @metafield_namespaces = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @private_metafield_namespaces = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @updated_at = T.let(nil, T.nilable(String))
+    end
 
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
@@ -19,9 +35,9 @@ module ShopifyAPI
       {http_method: :delete, operation: :delete, ids: [:id], path: "webhooks/<id>.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
-    sig { returns(String) }
+    sig { returns(T.nilable(String)) }
     attr_reader :address
-    sig { returns(String) }
+    sig { returns(T.nilable(String)) }
     attr_reader :topic
     sig { returns(T.nilable(String)) }
     attr_reader :api_version

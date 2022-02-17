@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,28 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @address1 = T.let(nil, T.nilable(String))
+      @address2 = T.let(nil, T.nilable(String))
+      @city = T.let(nil, T.nilable(String))
+      @company = T.let(nil, T.nilable(String))
+      @country = T.let(nil, T.nilable(String))
+      @country_code = T.let(nil, T.nilable(String))
+      @country_name = T.let(nil, T.nilable(String))
+      @customer_id = T.let(nil, T.nilable(Integer))
+      @first_name = T.let(nil, T.nilable(String))
+      @id = T.let(nil, T.nilable(Integer))
+      @last_name = T.let(nil, T.nilable(String))
+      @name = T.let(nil, T.nilable(String))
+      @phone = T.let(nil, T.nilable(String))
+      @province = T.let(nil, T.nilable(String))
+      @province_code = T.let(nil, T.nilable(String))
+      @zip = T.let(nil, T.nilable(String))
+    end
 
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
@@ -127,9 +149,9 @@ module ShopifyAPI
 
     sig do
       params(
-        address_ids: T.nilable(T.any(Array, Integer, String)),
+        address_ids: T.nilable(T.any(T::Array[T.untyped], Integer, String)),
         operation: T.untyped,
-        body: T.nilable(T.untyped),
+        body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end
@@ -152,7 +174,7 @@ module ShopifyAPI
 
     sig do
       params(
-        body: T.nilable(T.untyped),
+        body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end

@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,25 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @body_html = T.let(nil, T.nilable(String))
+      @created_at = T.let(nil, T.nilable(String))
+      @handle = T.let(nil, T.nilable(String))
+      @images = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @options = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @product_id = T.let(nil, T.nilable(Integer))
+      @product_type = T.let(nil, T.nilable(String))
+      @published_at = T.let(nil, T.nilable(String))
+      @tags = T.let(nil, T.nilable(String))
+      @title = T.let(nil, T.nilable(String))
+      @updated_at = T.let(nil, T.nilable(String))
+      @variants = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @vendor = T.let(nil, T.nilable(String))
+    end
 
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({
@@ -30,7 +49,7 @@ module ShopifyAPI
     attr_reader :handle
     sig { returns(T.nilable(T::Array[Image])) }
     attr_reader :images
-    sig { returns(T.nilable(T::Array[Hash])) }
+    sig { returns(T.nilable(T::Array[T::Hash[T.untyped, T.untyped]])) }
     attr_reader :options
     sig { returns(T.nilable(Integer)) }
     attr_reader :product_id

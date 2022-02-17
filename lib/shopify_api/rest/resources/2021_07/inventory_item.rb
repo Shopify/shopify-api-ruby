@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,23 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @cost = T.let(nil, T.nilable(String))
+      @country_code_of_origin = T.let(nil, T.nilable(String))
+      @country_harmonized_system_codes = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @created_at = T.let(nil, T.nilable(String))
+      @harmonized_system_code = T.let(nil, T.nilable(Integer))
+      @id = T.let(nil, T.nilable(Integer))
+      @province_code_of_origin = T.let(nil, T.nilable(String))
+      @requires_shipping = T.let(nil, T.nilable(T::Boolean))
+      @sku = T.let(nil, T.nilable(String))
+      @tracked = T.let(nil, T.nilable(T::Boolean))
+      @updated_at = T.let(nil, T.nilable(String))
+    end
 
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
@@ -20,7 +37,7 @@ module ShopifyAPI
     attr_reader :cost
     sig { returns(T.nilable(String)) }
     attr_reader :country_code_of_origin
-    sig { returns(T.nilable(T::Array[Hash])) }
+    sig { returns(T.nilable(T::Array[T::Hash[T.untyped, T.untyped]])) }
     attr_reader :country_harmonized_system_codes
     sig { returns(T.nilable(String)) }
     attr_reader :created_at

@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,29 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @api_client_id = T.let(nil, T.nilable(Integer))
+      @balance = T.let(nil, T.nilable(Balance))
+      @code = T.let(nil, T.nilable(String))
+      @created_at = T.let(nil, T.nilable(String))
+      @currency = T.let(nil, T.nilable(Currency))
+      @customer_id = T.let(nil, T.nilable(Integer))
+      @disabled_at = T.let(nil, T.nilable(String))
+      @expires_on = T.let(nil, T.nilable(String))
+      @id = T.let(nil, T.nilable(Integer))
+      @initial_value = T.let(nil, T.nilable(Float))
+      @last_characters = T.let(nil, T.nilable(String))
+      @line_item_id = T.let(nil, T.nilable(Integer))
+      @note = T.let(nil, T.nilable(String))
+      @order_id = T.let(nil, T.nilable(Integer))
+      @template_suffix = T.let(nil, T.nilable(String))
+      @updated_at = T.let(nil, T.nilable(String))
+      @user_id = T.let(nil, T.nilable(Integer))
+    end
 
     @has_one = T.let({
       balance: Balance,
@@ -160,7 +183,7 @@ module ShopifyAPI
 
     sig do
       params(
-        body: T.nilable(T.untyped),
+        body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end

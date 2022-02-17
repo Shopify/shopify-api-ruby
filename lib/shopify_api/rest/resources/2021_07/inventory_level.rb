@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,16 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @available = T.let(nil, T.nilable(Integer))
+      @inventory_item_id = T.let(nil, T.nilable(Integer))
+      @location_id = T.let(nil, T.nilable(Integer))
+      @updated_at = T.let(nil, T.nilable(String))
+    end
 
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
@@ -83,7 +93,7 @@ module ShopifyAPI
         inventory_item_id: T.untyped,
         location_id: T.untyped,
         available_adjustment: T.untyped,
-        body: T.nilable(T.untyped),
+        body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end
@@ -110,7 +120,7 @@ module ShopifyAPI
         inventory_item_id: T.untyped,
         location_id: T.untyped,
         relocate_if_necessary: T.untyped,
-        body: T.nilable(T.untyped),
+        body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end
@@ -138,7 +148,7 @@ module ShopifyAPI
         location_id: T.untyped,
         available: T.untyped,
         disconnect_if_necessary: T.untyped,
-        body: T.nilable(T.untyped),
+        body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end

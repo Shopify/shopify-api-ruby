@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,29 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @address1 = T.let(nil, T.nilable(String))
+      @city = T.let(nil, T.nilable(String))
+      @country = T.let(nil, T.nilable(Country))
+      @created_at = T.let(nil, T.nilable(String))
+      @estimated_delivery_at = T.let(nil, T.nilable(String))
+      @fulfillment_id = T.let(nil, T.nilable(Integer))
+      @happened_at = T.let(nil, T.nilable(String))
+      @id = T.let(nil, T.nilable(Integer))
+      @latitude = T.let(nil, T.nilable(Float))
+      @longitude = T.let(nil, T.nilable(Float))
+      @message = T.let(nil, T.nilable(String))
+      @order_id = T.let(nil, T.nilable(Integer))
+      @province = T.let(nil, T.nilable(Province))
+      @shop_id = T.let(nil, T.nilable(Integer))
+      @status = T.let(nil, T.nilable(String))
+      @updated_at = T.let(nil, T.nilable(String))
+      @zip = T.let(nil, T.nilable(String))
+    end
 
     @has_one = T.let({
       country: Country,

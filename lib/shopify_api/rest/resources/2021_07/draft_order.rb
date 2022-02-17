@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,39 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @applied_discount = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @billing_address = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @completed_at = T.let(nil, T.nilable(String))
+      @created_at = T.let(nil, T.nilable(String))
+      @currency = T.let(nil, T.nilable(Currency))
+      @customer = T.let(nil, T.nilable(Customer))
+      @email = T.let(nil, T.nilable(String))
+      @id = T.let(nil, T.nilable(Integer))
+      @invoice_sent_at = T.let(nil, T.nilable(String))
+      @invoice_url = T.let(nil, T.nilable(String))
+      @line_items = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @name = T.let(nil, T.nilable(String))
+      @note = T.let(nil, T.nilable(String))
+      @note_attributes = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @order_id = T.let(nil, T.nilable(Integer))
+      @shipping_address = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @shipping_line = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @status = T.let(nil, T.nilable(String))
+      @subtotal_price = T.let(nil, T.nilable(Float))
+      @tags = T.let(nil, T.nilable(String))
+      @tax_exempt = T.let(nil, T.nilable(T::Boolean))
+      @tax_exemptions = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @tax_lines = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @taxes_included = T.let(nil, T.nilable(T::Boolean))
+      @total_price = T.let(nil, T.nilable(String))
+      @total_tax = T.let(nil, T.nilable(String))
+      @updated_at = T.let(nil, T.nilable(String))
+    end
 
     @has_one = T.let({
       customer: Customer,
@@ -24,9 +57,9 @@ module ShopifyAPI
       {http_method: :put, operation: :complete, ids: [:id], path: "draft_orders/<id>/complete.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :applied_discount
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :billing_address
     sig { returns(T.nilable(String)) }
     attr_reader :completed_at
@@ -44,19 +77,19 @@ module ShopifyAPI
     attr_reader :invoice_sent_at
     sig { returns(T.nilable(String)) }
     attr_reader :invoice_url
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :line_items
     sig { returns(T.nilable(String)) }
     attr_reader :name
     sig { returns(T.nilable(String)) }
     attr_reader :note
-    sig { returns(T.nilable(T::Array[Hash])) }
+    sig { returns(T.nilable(T::Array[T::Hash[T.untyped, T.untyped]])) }
     attr_reader :note_attributes
     sig { returns(T.nilable(Integer)) }
     attr_reader :order_id
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :shipping_address
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :shipping_line
     sig { returns(T.nilable(String)) }
     attr_reader :status
@@ -68,7 +101,7 @@ module ShopifyAPI
     attr_reader :tax_exempt
     sig { returns(T.nilable(T::Array[String])) }
     attr_reader :tax_exemptions
-    sig { returns(T.nilable(T::Array[Hash])) }
+    sig { returns(T.nilable(T::Array[T::Hash[T.untyped, T.untyped]])) }
     attr_reader :tax_lines
     sig { returns(T.nilable(T::Boolean)) }
     attr_reader :taxes_included
@@ -185,7 +218,7 @@ module ShopifyAPI
 
     sig do
       params(
-        body: T.nilable(T.untyped),
+        body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end
@@ -207,7 +240,7 @@ module ShopifyAPI
     sig do
       params(
         payment_pending: T.untyped,
-        body: T.nilable(T.untyped),
+        body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end

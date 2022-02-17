@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,22 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @attachment = T.let(nil, T.nilable(String))
+      @checksum = T.let(nil, T.nilable(String))
+      @content_type = T.let(nil, T.nilable(String))
+      @created_at = T.let(nil, T.nilable(String))
+      @key = T.let(nil, T.nilable(String))
+      @public_url = T.let(nil, T.nilable(String))
+      @size = T.let(nil, T.nilable(Integer))
+      @theme_id = T.let(nil, T.nilable(Integer))
+      @updated_at = T.let(nil, T.nilable(String))
+      @value = T.let(nil, T.nilable(String))
+    end
 
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
@@ -50,7 +66,7 @@ module ShopifyAPI
         params(
           session: Auth::Session,
           theme_id: T.nilable(T.any(Integer, String)),
-          asset: T.nilable(Hash)
+          asset: T.nilable(T::Hash[T.untyped, T.untyped])
         ).returns(T.untyped)
       end
       def delete(
@@ -72,7 +88,7 @@ module ShopifyAPI
           session: Auth::Session,
           theme_id: T.nilable(T.any(Integer, String)),
           fields: T.untyped,
-          asset: T.nilable(Hash),
+          asset: T.nilable(T::Hash[T.untyped, T.untyped]),
           kwargs: T.untyped
         ).returns(T::Array[Asset])
       end

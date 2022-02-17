@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,29 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @event_type = T.let(nil, T.nilable(String))
+      @marketing_channel = T.let(nil, T.nilable(String))
+      @paid = T.let(nil, T.nilable(T::Boolean))
+      @started_at = T.let(nil, T.nilable(String))
+      @UTM_parameters = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @budget = T.let(nil, T.nilable(String))
+      @budget_type = T.let(nil, T.nilable(String))
+      @currency = T.let(nil, T.nilable(String))
+      @description = T.let(nil, T.nilable(String))
+      @ended_at = T.let(nil, T.nilable(String))
+      @id = T.let(nil, T.nilable(Integer))
+      @manage_url = T.let(nil, T.nilable(String))
+      @marketed_resources = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @preview_url = T.let(nil, T.nilable(String))
+      @referring_domain = T.let(nil, T.nilable(String))
+      @remote_id = T.let(nil, T.nilable(String))
+      @scheduled_to_end_at = T.let(nil, T.nilable(String))
+    end
 
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
@@ -20,15 +43,15 @@ module ShopifyAPI
       {http_method: :post, operation: :engagements, ids: [:id], path: "marketing_events/<id>/engagements.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
-    sig { returns(String) }
+    sig { returns(T.nilable(String)) }
     attr_reader :event_type
-    sig { returns(String) }
+    sig { returns(T.nilable(String)) }
     attr_reader :marketing_channel
-    sig { returns(T::Boolean) }
+    sig { returns(T.nilable(T::Boolean)) }
     attr_reader :paid
-    sig { returns(String) }
+    sig { returns(T.nilable(String)) }
     attr_reader :started_at
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :UTM_parameters
     sig { returns(T.nilable(String)) }
     attr_reader :budget
@@ -44,7 +67,7 @@ module ShopifyAPI
     attr_reader :id
     sig { returns(T.nilable(String)) }
     attr_reader :manage_url
-    sig { returns(T.nilable(T::Array[Hash])) }
+    sig { returns(T.nilable(T::Array[T::Hash[T.untyped, T.untyped]])) }
     attr_reader :marketed_resources
     sig { returns(T.nilable(String)) }
     attr_reader :preview_url
@@ -150,7 +173,7 @@ module ShopifyAPI
         comments_count: T.untyped,
         ad_spend: T.untyped,
         is_cumulative: T.untyped,
-        body: T.nilable(T.untyped),
+        body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end

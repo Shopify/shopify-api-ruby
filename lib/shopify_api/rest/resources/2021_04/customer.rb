@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,37 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @accepts_marketing = T.let(nil, T.nilable(T::Boolean))
+      @accepts_marketing_updated_at = T.let(nil, T.nilable(String))
+      @addresses = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @created_at = T.let(nil, T.nilable(String))
+      @currency = T.let(nil, T.nilable(Currency))
+      @default_address = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @email = T.let(nil, T.nilable(String))
+      @first_name = T.let(nil, T.nilable(String))
+      @id = T.let(nil, T.nilable(Integer))
+      @last_name = T.let(nil, T.nilable(String))
+      @last_order_id = T.let(nil, T.nilable(Integer))
+      @last_order_name = T.let(nil, T.nilable(String))
+      @marketing_opt_in_level = T.let(nil, T.nilable(String))
+      @metafield = T.let(nil, T.nilable(Metafield))
+      @multipass_identifier = T.let(nil, T.nilable(String))
+      @note = T.let(nil, T.nilable(String))
+      @orders_count = T.let(nil, T.nilable(Integer))
+      @phone = T.let(nil, T.nilable(String))
+      @state = T.let(nil, T.nilable(String))
+      @tags = T.let(nil, T.nilable(String))
+      @tax_exempt = T.let(nil, T.nilable(T::Boolean))
+      @tax_exemptions = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @total_spent = T.let(nil, T.nilable(String))
+      @updated_at = T.let(nil, T.nilable(String))
+      @verified_email = T.let(nil, T.nilable(T::Boolean))
+    end
 
     @has_one = T.let({
       currency: Currency,
@@ -30,13 +61,13 @@ module ShopifyAPI
     attr_reader :accepts_marketing
     sig { returns(T.nilable(String)) }
     attr_reader :accepts_marketing_updated_at
-    sig { returns(T.nilable(T::Array[Hash])) }
+    sig { returns(T.nilable(T::Array[T::Hash[T.untyped, T.untyped]])) }
     attr_reader :addresses
     sig { returns(T.nilable(String)) }
     attr_reader :created_at
     sig { returns(T.nilable(Currency)) }
     attr_reader :currency
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :default_address
     sig { returns(T.nilable(String)) }
     attr_reader :email
@@ -229,7 +260,7 @@ module ShopifyAPI
 
     sig do
       params(
-        body: T.nilable(T.untyped),
+        body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end
@@ -250,7 +281,7 @@ module ShopifyAPI
 
     sig do
       params(
-        body: T.nilable(T.untyped),
+        body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end

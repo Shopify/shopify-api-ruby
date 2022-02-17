@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,35 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @kind = T.let(nil, T.nilable(String))
+      @amount = T.let(nil, T.nilable(String))
+      @authorization = T.let(nil, T.nilable(String))
+      @authorization_expires_at = T.let(nil, T.nilable(String))
+      @created_at = T.let(nil, T.nilable(String))
+      @currency = T.let(nil, T.nilable(String))
+      @currency_exchange_adjustment = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @device_id = T.let(nil, T.nilable(Integer))
+      @error_code = T.let(nil, T.nilable(String))
+      @extended_authorization_attributes = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @gateway = T.let(nil, T.nilable(String))
+      @id = T.let(nil, T.nilable(Integer))
+      @location_id = T.let(nil, T.nilable(Integer))
+      @message = T.let(nil, T.nilable(String))
+      @order_id = T.let(nil, T.nilable(Integer))
+      @parent_id = T.let(nil, T.nilable(Integer))
+      @payment_details = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @processed_at = T.let(nil, T.nilable(String))
+      @receipt = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @source_name = T.let(nil, T.nilable(String))
+      @status = T.let(nil, T.nilable(String))
+      @test = T.let(nil, T.nilable(T::Boolean))
+      @user_id = T.let(nil, T.nilable(Integer))
+    end
 
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
@@ -17,7 +46,7 @@ module ShopifyAPI
       {http_method: :get, operation: :get, ids: [:order_id, :id], path: "orders/<order_id>/transactions/<id>.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
-    sig { returns(String) }
+    sig { returns(T.nilable(String)) }
     attr_reader :kind
     sig { returns(T.nilable(String)) }
     attr_reader :amount
@@ -29,13 +58,13 @@ module ShopifyAPI
     attr_reader :created_at
     sig { returns(T.nilable(String)) }
     attr_reader :currency
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :currency_exchange_adjustment
     sig { returns(T.nilable(Integer)) }
     attr_reader :device_id
     sig { returns(T.nilable(String)) }
     attr_reader :error_code
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :extended_authorization_attributes
     sig { returns(T.nilable(String)) }
     attr_reader :gateway
@@ -49,11 +78,11 @@ module ShopifyAPI
     attr_reader :order_id
     sig { returns(T.nilable(Integer)) }
     attr_reader :parent_id
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :payment_details
     sig { returns(T.nilable(String)) }
     attr_reader :processed_at
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :receipt
     sig { returns(T.nilable(String)) }
     attr_reader :source_name
