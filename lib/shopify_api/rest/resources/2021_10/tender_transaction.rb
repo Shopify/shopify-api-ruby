@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,22 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @amount = T.let(nil, T.nilable(String))
+      @currency = T.let(nil, T.nilable(Currency))
+      @id = T.let(nil, T.nilable(Integer))
+      @order_id = T.let(nil, T.nilable(Integer))
+      @payment_details = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @payment_method = T.let(nil, T.nilable(String))
+      @processed_at = T.let(nil, T.nilable(String))
+      @remote_reference = T.let(nil, T.nilable(String))
+      @test = T.let(nil, T.nilable(T::Boolean))
+      @user_id = T.let(nil, T.nilable(Integer))
+    end
 
     @has_one = T.let({
       currency: Currency
@@ -24,7 +40,7 @@ module ShopifyAPI
     attr_reader :id
     sig { returns(T.nilable(Integer)) }
     attr_reader :order_id
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :payment_details
     sig { returns(T.nilable(String)) }
     attr_reader :payment_method

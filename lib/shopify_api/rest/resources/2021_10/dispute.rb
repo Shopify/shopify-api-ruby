@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,23 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @amount = T.let(nil, T.nilable(String))
+      @currency = T.let(nil, T.nilable(Currency))
+      @evidence_due_by = T.let(nil, T.nilable(String))
+      @evidence_sent_on = T.let(nil, T.nilable(String))
+      @finalized_on = T.let(nil, T.nilable(String))
+      @id = T.let(nil, T.nilable(Integer))
+      @network_reason_code = T.let(nil, T.nilable(Integer))
+      @order_id = T.let(nil, T.nilable(Integer))
+      @reason = T.let(nil, T.nilable(String))
+      @status = T.let(nil, T.nilable(String))
+      @type = T.let(nil, T.nilable(String))
+    end
 
     @has_one = T.let({
       currency: Currency

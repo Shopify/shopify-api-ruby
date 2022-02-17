@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -8,6 +8,14 @@ module ShopifyAPI
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @data_updated_at = T.let(nil, T.nilable(String))
+      @deprecated_api_calls = T.let(nil, T.nilable(T::Array[T.untyped]))
+    end
+
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
     @paths = T.let([
@@ -16,7 +24,7 @@ module ShopifyAPI
 
     sig { returns(T.nilable(String)) }
     attr_reader :data_updated_at
-    sig { returns(T.nilable(T::Array[Hash])) }
+    sig { returns(T.nilable(T::Array[T::Hash[T.untyped, T.untyped]])) }
     attr_reader :deprecated_api_calls
 
     class << self

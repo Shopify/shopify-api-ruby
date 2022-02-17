@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,28 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @created_at = T.let(nil, T.nilable(String))
+      @id = T.let(nil, T.nilable(Integer))
+      @line_items = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @location_id = T.let(nil, T.nilable(Integer))
+      @name = T.let(nil, T.nilable(String))
+      @notify_customer = T.let(nil, T.nilable(T::Boolean))
+      @order_id = T.let(nil, T.nilable(Integer))
+      @receipt = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @service = T.let(nil, T.nilable(String))
+      @shipment_status = T.let(nil, T.nilable(String))
+      @status = T.let(nil, T.nilable(String))
+      @tracking_company = T.let(nil, T.nilable(String))
+      @tracking_numbers = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @tracking_urls = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @updated_at = T.let(nil, T.nilable(String))
+      @variant_inventory_management = T.let(nil, T.nilable(String))
+    end
 
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
@@ -29,7 +51,7 @@ module ShopifyAPI
     attr_reader :created_at
     sig { returns(T.nilable(Integer)) }
     attr_reader :id
-    sig { returns(T.nilable(T::Array[Hash])) }
+    sig { returns(T.nilable(T::Array[T::Hash[T.untyped, T.untyped]])) }
     attr_reader :line_items
     sig { returns(T.nilable(Integer)) }
     attr_reader :location_id
@@ -39,7 +61,7 @@ module ShopifyAPI
     attr_reader :notify_customer
     sig { returns(T.nilable(Integer)) }
     attr_reader :order_id
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :receipt
     sig { returns(T.nilable(String)) }
     attr_reader :service
@@ -153,7 +175,7 @@ module ShopifyAPI
 
     sig do
       params(
-        body: T.nilable(T.untyped),
+        body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end
@@ -174,7 +196,7 @@ module ShopifyAPI
 
     sig do
       params(
-        body: T.nilable(T.untyped),
+        body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end
@@ -195,7 +217,7 @@ module ShopifyAPI
 
     sig do
       params(
-        body: T.nilable(T.untyped),
+        body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end
@@ -216,7 +238,7 @@ module ShopifyAPI
 
     sig do
       params(
-        body: T.nilable(T.untyped),
+        body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end

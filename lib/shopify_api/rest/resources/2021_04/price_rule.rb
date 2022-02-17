@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,41 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @allocation_limit = T.let(nil, T.nilable(Integer))
+      @allocation_method = T.let(nil, T.nilable(String))
+      @created_at = T.let(nil, T.nilable(String))
+      @customer_selection = T.let(nil, T.nilable(String))
+      @ends_at = T.let(nil, T.nilable(String))
+      @entitled_collection_ids = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @entitled_country_ids = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @entitled_product_ids = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @entitled_variant_ids = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @id = T.let(nil, T.nilable(Integer))
+      @once_per_customer = T.let(nil, T.nilable(T::Boolean))
+      @prerequisite_collection_ids = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @prerequisite_customer_ids = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @prerequisite_product_ids = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @prerequisite_quantity_range = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @prerequisite_saved_search_ids = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @prerequisite_shipping_price_range = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @prerequisite_subtotal_range = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @prerequisite_to_entitlement_purchase = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @prerequisite_to_entitlement_quantity_ratio = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @prerequisite_variant_ids = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @starts_at = T.let(nil, T.nilable(String))
+      @target_selection = T.let(nil, T.nilable(String))
+      @target_type = T.let(nil, T.nilable(String))
+      @title = T.let(nil, T.nilable(String))
+      @updated_at = T.let(nil, T.nilable(String))
+      @usage_limit = T.let(nil, T.nilable(Integer))
+      @value = T.let(nil, T.nilable(String))
+      @value_type = T.let(nil, T.nilable(String))
+    end
 
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
@@ -47,17 +82,17 @@ module ShopifyAPI
     attr_reader :prerequisite_customer_ids
     sig { returns(T.nilable(T::Array[Integer])) }
     attr_reader :prerequisite_product_ids
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :prerequisite_quantity_range
     sig { returns(T.nilable(T::Array[Integer])) }
     attr_reader :prerequisite_saved_search_ids
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :prerequisite_shipping_price_range
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :prerequisite_subtotal_range
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :prerequisite_to_entitlement_purchase
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :prerequisite_to_entitlement_quantity_ratio
     sig { returns(T.nilable(T::Array[Integer])) }
     attr_reader :prerequisite_variant_ids

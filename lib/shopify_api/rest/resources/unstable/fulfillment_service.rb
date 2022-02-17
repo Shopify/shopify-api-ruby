@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,25 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @admin_graphql_api_id = T.let(nil, T.nilable(String))
+      @callback_url = T.let(nil, T.nilable(String))
+      @format = T.let(nil, T.nilable(String))
+      @fulfillment_orders_opt_in = T.let(nil, T.nilable(T::Boolean))
+      @handle = T.let(nil, T.nilable(String))
+      @id = T.let(nil, T.nilable(Integer))
+      @inventory_management = T.let(nil, T.nilable(T::Boolean))
+      @location_id = T.let(nil, T.nilable(Integer))
+      @name = T.let(nil, T.nilable(String))
+      @permits_sku_sharing = T.let(nil, T.nilable(T::Boolean))
+      @provider_id = T.let(nil, T.nilable(String))
+      @requires_shipping_method = T.let(nil, T.nilable(T::Boolean))
+      @tracking_support = T.let(nil, T.nilable(T::Boolean))
+    end
 
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])

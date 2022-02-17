@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,24 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @admin_graphql_api_id = T.let(nil, T.nilable(String))
+      @author = T.let(nil, T.nilable(String))
+      @body_html = T.let(nil, T.nilable(String))
+      @created_at = T.let(nil, T.nilable(String))
+      @handle = T.let(nil, T.nilable(String))
+      @id = T.let(nil, T.nilable(Integer))
+      @metafield = T.let(nil, T.nilable(Metafield))
+      @published_at = T.let(nil, T.nilable(String))
+      @shop_id = T.let(nil, T.nilable(Integer))
+      @template_suffix = T.let(nil, T.nilable(String))
+      @title = T.let(nil, T.nilable(String))
+      @updated_at = T.let(nil, T.nilable(String))
+    end
 
     @has_one = T.let({
       metafield: Metafield

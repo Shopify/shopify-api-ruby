@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,51 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @abandoned_checkout_url = T.let(nil, T.nilable(String))
+      @billing_address = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @buyer_accepts_marketing = T.let(nil, T.nilable(T::Boolean))
+      @buyer_accepts_sms_marketing = T.let(nil, T.nilable(T::Boolean))
+      @cart_token = T.let(nil, T.nilable(String))
+      @closed_at = T.let(nil, T.nilable(String))
+      @completed_at = T.let(nil, T.nilable(String))
+      @created_at = T.let(nil, T.nilable(String))
+      @currency = T.let(nil, T.nilable(Currency))
+      @customer = T.let(nil, T.nilable(Customer))
+      @customer_locale = T.let(nil, T.nilable(String))
+      @device_id = T.let(nil, T.nilable(Integer))
+      @discount_codes = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @email = T.let(nil, T.nilable(String))
+      @gateway = T.let(nil, T.nilable(String))
+      @id = T.let(nil, T.nilable(Integer))
+      @landing_site = T.let(nil, T.nilable(String))
+      @line_items = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @location_id = T.let(nil, T.nilable(Integer))
+      @note = T.let(nil, T.nilable(String))
+      @phone = T.let(nil, T.nilable(String))
+      @presentment_currency = T.let(nil, T.nilable(String))
+      @referring_site = T.let(nil, T.nilable(String))
+      @shipping_address = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @shipping_lines = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @sms_marketing_phone = T.let(nil, T.nilable(String))
+      @source_name = T.let(nil, T.nilable(String))
+      @subtotal_price = T.let(nil, T.nilable(String))
+      @tax_lines = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @taxes_included = T.let(nil, T.nilable(T::Boolean))
+      @token = T.let(nil, T.nilable(String))
+      @total_discounts = T.let(nil, T.nilable(String))
+      @total_duties = T.let(nil, T.nilable(String))
+      @total_line_items_price = T.let(nil, T.nilable(String))
+      @total_price = T.let(nil, T.nilable(String))
+      @total_tax = T.let(nil, T.nilable(String))
+      @total_weight = T.let(nil, T.nilable(Integer))
+      @updated_at = T.let(nil, T.nilable(String))
+      @user_id = T.let(nil, T.nilable(Integer))
+    end
 
     @has_one = T.let({
       currency: Currency,
@@ -22,7 +67,7 @@ module ShopifyAPI
 
     sig { returns(T.nilable(String)) }
     attr_reader :abandoned_checkout_url
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :billing_address
     sig { returns(T.nilable(T::Boolean)) }
     attr_reader :buyer_accepts_marketing
@@ -54,7 +99,7 @@ module ShopifyAPI
     attr_reader :id
     sig { returns(T.nilable(String)) }
     attr_reader :landing_site
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :line_items
     sig { returns(T.nilable(Integer)) }
     attr_reader :location_id
@@ -66,9 +111,9 @@ module ShopifyAPI
     attr_reader :presentment_currency
     sig { returns(T.nilable(String)) }
     attr_reader :referring_site
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :shipping_address
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :shipping_lines
     sig { returns(T.nilable(String)) }
     attr_reader :sms_marketing_phone
@@ -76,7 +121,7 @@ module ShopifyAPI
     attr_reader :source_name
     sig { returns(T.nilable(String)) }
     attr_reader :subtotal_price
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :tax_lines
     sig { returns(T.nilable(T::Boolean)) }
     attr_reader :taxes_included

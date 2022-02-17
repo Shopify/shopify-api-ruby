@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,66 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @address1 = T.let(nil, T.nilable(String))
+      @address2 = T.let(nil, T.nilable(String))
+      @checkout_api_supported = T.let(nil, T.nilable(T::Boolean))
+      @city = T.let(nil, T.nilable(String))
+      @cookie_consent_level = T.let(nil, T.nilable(String))
+      @country = T.let(nil, T.nilable(Country))
+      @country_code = T.let(nil, T.nilable(String))
+      @country_name = T.let(nil, T.nilable(String))
+      @county_taxes = T.let(nil, T.nilable(String))
+      @created_at = T.let(nil, T.nilable(String))
+      @currency = T.let(nil, T.nilable(Currency))
+      @customer_email = T.let(nil, T.nilable(String))
+      @domain = T.let(nil, T.nilable(String))
+      @eligible_for_card_reader_giveaway = T.let(nil, T.nilable(T::Boolean))
+      @eligible_for_payments = T.let(nil, T.nilable(T::Boolean))
+      @email = T.let(nil, T.nilable(String))
+      @enabled_presentment_currencies = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @finances = T.let(nil, T.nilable(T::Boolean))
+      @force_ssl = T.let(nil, T.nilable(T::Boolean))
+      @google_apps_domain = T.let(nil, T.nilable(String))
+      @google_apps_login_enabled = T.let(nil, T.nilable(String))
+      @has_discounts = T.let(nil, T.nilable(T::Boolean))
+      @has_gift_cards = T.let(nil, T.nilable(T::Boolean))
+      @has_storefront = T.let(nil, T.nilable(T::Boolean))
+      @iana_timezone = T.let(nil, T.nilable(String))
+      @id = T.let(nil, T.nilable(Integer))
+      @latitude = T.let(nil, T.nilable(Float))
+      @longitude = T.let(nil, T.nilable(Float))
+      @money_format = T.let(nil, T.nilable(String))
+      @money_in_emails_format = T.let(nil, T.nilable(String))
+      @money_with_currency_format = T.let(nil, T.nilable(String))
+      @money_with_currency_in_emails_format = T.let(nil, T.nilable(String))
+      @multi_location_enabled = T.let(nil, T.nilable(T::Boolean))
+      @myshopify_domain = T.let(nil, T.nilable(String))
+      @name = T.let(nil, T.nilable(String))
+      @password_enabled = T.let(nil, T.nilable(T::Boolean))
+      @phone = T.let(nil, T.nilable(String))
+      @plan_display_name = T.let(nil, T.nilable(String))
+      @plan_name = T.let(nil, T.nilable(String))
+      @pre_launch_enabled = T.let(nil, T.nilable(T::Boolean))
+      @primary_locale = T.let(nil, T.nilable(String))
+      @primary_location_id = T.let(nil, T.nilable(Integer))
+      @province = T.let(nil, T.nilable(Province))
+      @province_code = T.let(nil, T.nilable(String))
+      @requires_extra_payments_agreement = T.let(nil, T.nilable(T::Boolean))
+      @setup_required = T.let(nil, T.nilable(T::Boolean))
+      @shop_owner = T.let(nil, T.nilable(String))
+      @source = T.let(nil, T.nilable(String))
+      @tax_shipping = T.let(nil, T.nilable(String))
+      @taxes_included = T.let(nil, T.nilable(String))
+      @timezone = T.let(nil, T.nilable(String))
+      @updated_at = T.let(nil, T.nilable(String))
+      @weight_unit = T.let(nil, T.nilable(String))
+      @zip = T.let(nil, T.nilable(String))
+    end
 
     @has_one = T.let({
       country: Country,

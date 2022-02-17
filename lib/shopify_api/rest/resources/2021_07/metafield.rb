@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,23 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @key = T.let(nil, T.nilable(String))
+      @namespace = T.let(nil, T.nilable(String))
+      @value = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @created_at = T.let(nil, T.nilable(String))
+      @description = T.let(nil, T.nilable(String))
+      @id = T.let(nil, T.nilable(Integer))
+      @owner_id = T.let(nil, T.nilable(Integer))
+      @owner_resource = T.let(nil, T.nilable(String))
+      @type = T.let(nil, T.nilable(String))
+      @updated_at = T.let(nil, T.nilable(String))
+      @value_type = T.let(nil, T.nilable(String))
+    end
 
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
@@ -20,11 +37,11 @@ module ShopifyAPI
       {http_method: :delete, operation: :delete, ids: [:id], path: "metafields/<id>.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
-    sig { returns(String) }
+    sig { returns(T.nilable(String)) }
     attr_reader :key
-    sig { returns(String) }
+    sig { returns(T.nilable(String)) }
     attr_reader :namespace
-    sig { returns(T::Array[String, Integer, Float]) }
+    sig { returns(T.nilable(T::Array[T.any(String, Integer, Float)])) }
     attr_reader :value
     sig { returns(T.nilable(String)) }
     attr_reader :created_at
@@ -97,7 +114,7 @@ module ShopifyAPI
           type: T.untyped,
           value_type: T.untyped,
           fields: T.untyped,
-          metafield: T.nilable(Hash),
+          metafield: T.nilable(T::Hash[T.untyped, T.untyped]),
           kwargs: T.untyped
         ).returns(T::Array[Metafield])
       end

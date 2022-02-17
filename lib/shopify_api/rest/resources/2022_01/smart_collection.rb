@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,24 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @rules = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @title = T.let(nil, T.nilable(String))
+      @body_html = T.let(nil, T.nilable(String))
+      @disjunctive = T.let(nil, T.nilable(T::Boolean))
+      @handle = T.let(nil, T.nilable(String))
+      @id = T.let(nil, T.nilable(Integer))
+      @image = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @published_at = T.let(nil, T.nilable(String))
+      @published_scope = T.let(nil, T.nilable(String))
+      @sort_order = T.let(nil, T.nilable(String))
+      @template_suffix = T.let(nil, T.nilable(String))
+      @updated_at = T.let(nil, T.nilable(String))
+    end
 
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
@@ -20,9 +38,9 @@ module ShopifyAPI
       {http_method: :put, operation: :order, ids: [:id], path: "smart_collections/<id>/order.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
-    sig { returns(Hash) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :rules
-    sig { returns(String) }
+    sig { returns(T.nilable(String)) }
     attr_reader :title
     sig { returns(T.nilable(String)) }
     attr_reader :body_html
@@ -32,7 +50,7 @@ module ShopifyAPI
     attr_reader :handle
     sig { returns(T.nilable(Integer)) }
     attr_reader :id
-    sig { returns(T.nilable(T::Array[String, Hash])) }
+    sig { returns(T.nilable(T::Array[T.any(String, T::Hash[T.untyped, T.untyped])])) }
     attr_reader :image
     sig { returns(T.nilable(String)) }
     attr_reader :published_at
@@ -169,7 +187,7 @@ module ShopifyAPI
       params(
         products: T.untyped,
         sort_order: T.untyped,
-        body: T.nilable(T.untyped),
+        body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end

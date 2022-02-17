@@ -1,4 +1,3 @@
 --dir
 .
---ignore=lib/shopify_api/rest/resources
 --ignore=test/rest

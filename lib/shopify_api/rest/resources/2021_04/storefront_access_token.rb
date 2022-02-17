@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,17 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @title = T.let(nil, T.nilable(String))
+      @access_scope = T.let(nil, T.nilable(AccessScope))
+      @access_token = T.let(nil, T.nilable(String))
+      @created_at = T.let(nil, T.nilable(String))
+      @id = T.let(nil, T.nilable(Integer))
+    end
 
     @has_one = T.let({
       access_scope: AccessScope
@@ -18,7 +29,7 @@ module ShopifyAPI
       {http_method: :delete, operation: :delete, ids: [:id], path: "storefront_access_tokens/<id>.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
-    sig { returns(String) }
+    sig { returns(T.nilable(String)) }
     attr_reader :title
     sig { returns(T.nilable(AccessScope)) }
     attr_reader :access_scope

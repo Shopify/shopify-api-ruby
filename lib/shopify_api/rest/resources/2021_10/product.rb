@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,28 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @title = T.let(nil, T.nilable(String))
+      @body_html = T.let(nil, T.nilable(String))
+      @created_at = T.let(nil, T.nilable(String))
+      @handle = T.let(nil, T.nilable(String))
+      @id = T.let(nil, T.nilable(Integer))
+      @images = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @options = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @product_type = T.let(nil, T.nilable(String))
+      @published_at = T.let(nil, T.nilable(String))
+      @published_scope = T.let(nil, T.nilable(String))
+      @status = T.let(nil, T.nilable(String))
+      @tags = T.let(nil, T.nilable(String))
+      @template_suffix = T.let(nil, T.nilable(String))
+      @updated_at = T.let(nil, T.nilable(String))
+      @variants = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @vendor = T.let(nil, T.nilable(String))
+    end
 
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({
@@ -22,7 +44,7 @@ module ShopifyAPI
       {http_method: :delete, operation: :delete, ids: [:id], path: "products/<id>.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
-    sig { returns(String) }
+    sig { returns(T.nilable(String)) }
     attr_reader :title
     sig { returns(T.nilable(String)) }
     attr_reader :body_html
@@ -34,7 +56,7 @@ module ShopifyAPI
     attr_reader :id
     sig { returns(T.nilable(T::Array[Image])) }
     attr_reader :images
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :options
     sig { returns(T.nilable(String)) }
     attr_reader :product_type

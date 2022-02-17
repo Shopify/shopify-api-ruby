@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,13 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @fulfillment_order_id = T.let(nil, T.nilable(Integer))
+    end
 
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
@@ -25,7 +32,7 @@ module ShopifyAPI
     sig do
       params(
         message: T.untyped,
-        body: T.nilable(T.untyped),
+        body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end
@@ -48,7 +55,7 @@ module ShopifyAPI
     sig do
       params(
         message: T.untyped,
-        body: T.nilable(T.untyped),
+        body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end

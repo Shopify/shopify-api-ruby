@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,18 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @application_id = T.let(nil, T.nilable(String))
+      @enabled_shared_webcredentials = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @enabled_universal_or_app_links = T.let(nil, T.nilable(T::Boolean))
+      @id = T.let(nil, T.nilable(Integer))
+      @platform = T.let(nil, T.nilable(String))
+      @sha256_cert_fingerprints = T.let(nil, T.nilable(T::Array[T.untyped]))
+    end
 
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
@@ -20,7 +32,7 @@ module ShopifyAPI
 
     sig { returns(T.nilable(String)) }
     attr_reader :application_id
-    sig { returns(T.nilable(Hash)) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :enabled_shared_webcredentials
     sig { returns(T.nilable(T::Boolean)) }
     attr_reader :enabled_universal_or_app_links

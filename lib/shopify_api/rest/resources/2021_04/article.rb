@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,28 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @author = T.let(nil, T.nilable(String))
+      @blog_id = T.let(nil, T.nilable(Integer))
+      @body_html = T.let(nil, T.nilable(String))
+      @created_at = T.let(nil, T.nilable(String))
+      @handle = T.let(nil, T.nilable(String))
+      @id = T.let(nil, T.nilable(Integer))
+      @image = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @metafields = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @published = T.let(nil, T.nilable(T::Boolean))
+      @published_at = T.let(nil, T.nilable(String))
+      @summary_html = T.let(nil, T.nilable(String))
+      @tags = T.let(nil, T.nilable(String))
+      @template_suffix = T.let(nil, T.nilable(String))
+      @title = T.let(nil, T.nilable(String))
+      @updated_at = T.let(nil, T.nilable(String))
+      @user_id = T.let(nil, T.nilable(Integer))
+    end
 
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({
@@ -36,7 +58,7 @@ module ShopifyAPI
     attr_reader :handle
     sig { returns(T.nilable(Integer)) }
     attr_reader :id
-    sig { returns(T.nilable(T::Array[String, Hash])) }
+    sig { returns(T.nilable(T::Array[T.any(String, T::Hash[T.untyped, T.untyped])])) }
     attr_reader :image
     sig { returns(T.nilable(T::Array[Metafield])) }
     attr_reader :metafields

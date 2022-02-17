@@ -1,4 +1,4 @@
-# typed: strict
+# typed: false
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -7,6 +7,21 @@ module ShopifyAPI
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: nil)
+      super(session: session)
+
+      @body_html = T.let(nil, T.nilable(String))
+      @collection_id = T.let(nil, T.nilable(Integer))
+      @default_product_image = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @handle = T.let(nil, T.nilable(String))
+      @image = T.let(nil, T.nilable(Image))
+      @published_at = T.let(nil, T.nilable(String))
+      @sort_order = T.let(nil, T.nilable(String))
+      @title = T.let(nil, T.nilable(String))
+      @updated_at = T.let(nil, T.nilable(String))
+    end
 
     @has_one = T.let({
       image: Image
@@ -24,7 +39,7 @@ module ShopifyAPI
     attr_reader :body_html
     sig { returns(T.nilable(Integer)) }
     attr_reader :collection_id
-    sig { returns(T.nilable(T::Array[Hash])) }
+    sig { returns(T.nilable(T::Array[T::Hash[T.untyped, T.untyped]])) }
     attr_reader :default_product_image
     sig { returns(T.nilable(String)) }
     attr_reader :handle
