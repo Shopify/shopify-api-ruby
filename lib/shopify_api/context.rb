@@ -10,7 +10,6 @@ module ShopifyAPI
     @api_version = T.let(LATEST_SUPPORTED_ADMIN_VERSION, String)
     @host_name = T.let("", String)
     @scope = T.let(Auth::AuthScopes.new, Auth::AuthScopes)
-    @is_embedded = T.let(false, T::Boolean)
     @session_storage = T.let(ShopifyAPI::Auth::FileSessionStorage.new, ShopifyAPI::Auth::SessionStorage)
     @is_private = T.let(false, T::Boolean)
     @private_shop = T.let(nil, T.nilable(String))
