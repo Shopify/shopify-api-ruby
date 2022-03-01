@@ -14,8 +14,15 @@ class CarrierServiceUnstableTest < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "unstable")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,7 +36,7 @@ class CarrierServiceUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    carrier_service = ShopifyAPI::CarrierService.new(session: @test_session)
+    carrier_service = ShopifyAPI::CarrierService.new
     carrier_service.name = "Shipping Rate Provider"
     carrier_service.callback_url = "http://shippingrateprovider.com"
     carrier_service.service_discovery = true
@@ -49,9 +56,7 @@ class CarrierServiceUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::CarrierService.all(
-      session: @test_session,
-    )
+    ShopifyAPI::CarrierService.all()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/unstable/carrier_services.json")
   end
@@ -67,7 +72,7 @@ class CarrierServiceUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    carrier_service = ShopifyAPI::CarrierService.new(session: @test_session)
+    carrier_service = ShopifyAPI::CarrierService.new
     carrier_service.id = 1036894964
     carrier_service.name = "Some new name"
     carrier_service.active = false
@@ -88,7 +93,6 @@ class CarrierServiceUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::CarrierService.find(
-      session: @test_session,
       id: 1036894966,
     )
 
@@ -107,7 +111,6 @@ class CarrierServiceUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::CarrierService.delete(
-      session: @test_session,
       id: 1036894967,
     )
 

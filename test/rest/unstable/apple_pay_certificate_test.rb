@@ -14,8 +14,15 @@ class ApplePayCertificateUnstableTest < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "unstable")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,7 +36,7 @@ class ApplePayCertificateUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    apple_pay_certificate = ShopifyAPI::ApplePayCertificate.new(session: @test_session)
+    apple_pay_certificate = ShopifyAPI::ApplePayCertificate.new
 
     apple_pay_certificate.save()
 
@@ -48,7 +55,6 @@ class ApplePayCertificateUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::ApplePayCertificate.find(
-      session: @test_session,
       id: 1068938280,
     )
 
@@ -66,7 +72,7 @@ class ApplePayCertificateUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    apple_pay_certificate = ShopifyAPI::ApplePayCertificate.new(session: @test_session)
+    apple_pay_certificate = ShopifyAPI::ApplePayCertificate.new
     apple_pay_certificate.id = 1068938282
     apple_pay_certificate.status = "completed"
     apple_pay_certificate.merchant_id = "merchant.something"
@@ -88,7 +94,6 @@ class ApplePayCertificateUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::ApplePayCertificate.delete(
-      session: @test_session,
       id: 1068938283,
     )
 
@@ -107,7 +112,6 @@ class ApplePayCertificateUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::ApplePayCertificate.csr(
-      session: @test_session,
       id: 1068938281,
     )
 

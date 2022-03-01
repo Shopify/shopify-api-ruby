@@ -14,8 +14,15 @@ class CollectionListing202104Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2021-04")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,9 +36,7 @@ class CollectionListing202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::CollectionListing.all(
-      session: @test_session,
-    )
+    ShopifyAPI::CollectionListing.all()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-04/collection_listings.json")
   end
@@ -48,7 +53,6 @@ class CollectionListing202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::CollectionListing.product_ids(
-      session: @test_session,
       collection_id: 841564295,
     )
 
@@ -67,7 +71,6 @@ class CollectionListing202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::CollectionListing.find(
-      session: @test_session,
       collection_id: 482865238,
     )
 
@@ -85,7 +88,7 @@ class CollectionListing202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    collection_listing = ShopifyAPI::CollectionListing.new(session: @test_session)
+    collection_listing = ShopifyAPI::CollectionListing.new
     collection_listing.collection_id = 482865238
     collection_listing.save()
 
@@ -104,7 +107,6 @@ class CollectionListing202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::CollectionListing.delete(
-      session: @test_session,
       collection_id: 482865238,
     )
 

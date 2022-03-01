@@ -14,8 +14,15 @@ class PageUnstableTest < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "unstable")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,9 +36,7 @@ class PageUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Page.all(
-      session: @test_session,
-    )
+    ShopifyAPI::Page.all()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/unstable/pages.json")
   end
@@ -48,7 +53,6 @@ class PageUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Page.all(
-      session: @test_session,
       since_id: "108828309",
     )
 
@@ -66,7 +70,7 @@ class PageUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    page = ShopifyAPI::Page.new(session: @test_session)
+    page = ShopifyAPI::Page.new
     page.title = "Warranty information"
     page.body_html = "<h2>Warranty</h2>\n<p>Returns accepted if we receive items <strong>30 days after purchase</strong>.</p>"
     page.save()
@@ -85,7 +89,7 @@ class PageUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    page = ShopifyAPI::Page.new(session: @test_session)
+    page = ShopifyAPI::Page.new
     page.title = "Warranty information"
     page.body_html = "<h2>Warranty</h2>\n<p>Returns accepted if we receive items <strong>30 days after purchase</strong>.</p>"
     page.published = false
@@ -105,7 +109,7 @@ class PageUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    page = ShopifyAPI::Page.new(session: @test_session)
+    page = ShopifyAPI::Page.new
     page.title = "Warranty information"
     page.body_html = "<h2>Warranty</h2>\n<p>Returns accepted if we receive items <strong>30 days after purchase</strong>.</p>"
     page.metafields = [
@@ -132,9 +136,7 @@ class PageUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Page.count(
-      session: @test_session,
-    )
+    ShopifyAPI::Page.count()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/unstable/pages/count.json")
   end
@@ -151,7 +153,6 @@ class PageUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Page.find(
-      session: @test_session,
       id: 131092082,
     )
 
@@ -169,7 +170,7 @@ class PageUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    page = ShopifyAPI::Page.new(session: @test_session)
+    page = ShopifyAPI::Page.new
     page.id = 131092082
     page.body_html = "<p>Returns accepted if we receive the items 14 days after purchase.</p>"
     page.save()
@@ -188,7 +189,7 @@ class PageUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    page = ShopifyAPI::Page.new(session: @test_session)
+    page = ShopifyAPI::Page.new
     page.id = 131092082
     page.body_html = "<p>Returns accepted if we receive the items <strong>14 days</strong> after purchase.</p>"
     page.author = "Christopher Gorski"
@@ -210,7 +211,7 @@ class PageUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    page = ShopifyAPI::Page.new(session: @test_session)
+    page = ShopifyAPI::Page.new
     page.id = 131092082
     page.published = true
     page.save()
@@ -229,7 +230,7 @@ class PageUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    page = ShopifyAPI::Page.new(session: @test_session)
+    page = ShopifyAPI::Page.new
     page.id = 131092082
     page.published = false
     page.save()
@@ -248,7 +249,7 @@ class PageUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    page = ShopifyAPI::Page.new(session: @test_session)
+    page = ShopifyAPI::Page.new
     page.id = 131092082
     page.metafields = [
       {
@@ -275,7 +276,6 @@ class PageUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Page.delete(
-      session: @test_session,
       id: 131092082,
     )
 

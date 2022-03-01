@@ -9,7 +9,7 @@ module ShopifyAPI
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: nil)
+    def initialize(session: ShopifyAPI::Context.active_session)
       super(session: session)
 
       @id = T.let(nil, T.nilable(Integer))
@@ -38,15 +38,15 @@ module ShopifyAPI
     class << self
       sig do
         params(
-          session: Auth::Session,
           id: T.any(Integer, String),
-          fields: T.untyped
+          fields: T.untyped,
+          session: Auth::Session
         ).returns(T.nilable(Redirect))
       end
       def find(
-        session:,
         id:,
-        fields: nil
+        fields: nil,
+        session: ShopifyAPI::Context.active_session
       )
         result = base_find(
           session: session,
@@ -58,13 +58,13 @@ module ShopifyAPI
 
       sig do
         params(
-          session: Auth::Session,
-          id: T.any(Integer, String)
+          id: T.any(Integer, String),
+          session: Auth::Session
         ).returns(T.untyped)
       end
       def delete(
-        session:,
-        id:
+        id:,
+        session: ShopifyAPI::Context.active_session
       )
         request(
           http_method: :delete,
@@ -77,22 +77,22 @@ module ShopifyAPI
 
       sig do
         params(
-          session: Auth::Session,
           limit: T.untyped,
           since_id: T.untyped,
           path: T.untyped,
           target: T.untyped,
           fields: T.untyped,
+          session: Auth::Session,
           kwargs: T.untyped
         ).returns(T::Array[Redirect])
       end
       def all(
-        session:,
         limit: nil,
         since_id: nil,
         path: nil,
         target: nil,
         fields: nil,
+        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         response = base_find(
@@ -106,16 +106,16 @@ module ShopifyAPI
 
       sig do
         params(
-          session: Auth::Session,
           path: T.untyped,
           target: T.untyped,
+          session: Auth::Session,
           kwargs: T.untyped
         ).returns(T.untyped)
       end
       def count(
-        session:,
         path: nil,
         target: nil,
+        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         request(

@@ -14,8 +14,15 @@ class CustomerSavedSearch202110Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2021-10")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,9 +36,7 @@ class CustomerSavedSearch202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::CustomerSavedSearch.all(
-      session: @test_session,
-    )
+    ShopifyAPI::CustomerSavedSearch.all()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-10/customer_saved_searches.json")
   end
@@ -48,7 +53,6 @@ class CustomerSavedSearch202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::CustomerSavedSearch.all(
-      session: @test_session,
       since_id: "20610973",
     )
 
@@ -66,7 +70,7 @@ class CustomerSavedSearch202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    customer_saved_search = ShopifyAPI::CustomerSavedSearch.new(session: @test_session)
+    customer_saved_search = ShopifyAPI::CustomerSavedSearch.new
     customer_saved_search.name = "Spent more than $50"
     customer_saved_search.query = "total_spent:>50"
     customer_saved_search.save()
@@ -85,7 +89,7 @@ class CustomerSavedSearch202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    customer_saved_search = ShopifyAPI::CustomerSavedSearch.new(session: @test_session)
+    customer_saved_search = ShopifyAPI::CustomerSavedSearch.new
     customer_saved_search.name = "Spent more than $50 and after 2013"
     customer_saved_search.query = "total_spent:>50 order_date:>=2013-01-01"
     customer_saved_search.save()
@@ -104,9 +108,7 @@ class CustomerSavedSearch202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::CustomerSavedSearch.count(
-      session: @test_session,
-    )
+    ShopifyAPI::CustomerSavedSearch.count()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-10/customer_saved_searches/count.json")
   end
@@ -123,7 +125,6 @@ class CustomerSavedSearch202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::CustomerSavedSearch.count(
-      session: @test_session,
       since_id: "20610973",
     )
 
@@ -142,7 +143,6 @@ class CustomerSavedSearch202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::CustomerSavedSearch.find(
-      session: @test_session,
       id: 789629109,
     )
 
@@ -160,7 +160,7 @@ class CustomerSavedSearch202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    customer_saved_search = ShopifyAPI::CustomerSavedSearch.new(session: @test_session)
+    customer_saved_search = ShopifyAPI::CustomerSavedSearch.new
     customer_saved_search.id = 789629109
     customer_saved_search.name = "This Name Has Been Changed"
     customer_saved_search.save()
@@ -180,7 +180,6 @@ class CustomerSavedSearch202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::CustomerSavedSearch.delete(
-      session: @test_session,
       id: 789629109,
     )
 
@@ -199,7 +198,6 @@ class CustomerSavedSearch202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::CustomerSavedSearch.customers(
-      session: @test_session,
       id: 789629109,
     )
 

@@ -14,8 +14,15 @@ class Order202107Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2021-07")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -30,7 +37,6 @@ class Order202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Order.all(
-      session: @test_session,
       status: "any",
     )
 
@@ -49,7 +55,6 @@ class Order202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Order.all(
-      session: @test_session,
       ids: "1073459980",
     )
 
@@ -68,7 +73,6 @@ class Order202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Order.all(
-      session: @test_session,
       financial_status: "authorized",
     )
 
@@ -87,7 +91,6 @@ class Order202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Order.all(
-      session: @test_session,
       updated_at_min: "2005-07-31T15:57:11-04:00",
     )
 
@@ -106,7 +109,6 @@ class Order202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Order.all(
-      session: @test_session,
       fields: "created_at,id,name,total-price",
     )
 
@@ -125,7 +127,6 @@ class Order202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Order.all(
-      session: @test_session,
       since_id: "123",
     )
 
@@ -144,7 +145,6 @@ class Order202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Order.find(
-      session: @test_session,
       id: 450789469,
     )
 
@@ -163,7 +163,6 @@ class Order202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Order.find(
-      session: @test_session,
       id: 450789469,
       fields: "id,line_items,name,total_price",
     )
@@ -182,7 +181,7 @@ class Order202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new(session: @test_session)
+    order = ShopifyAPI::Order.new
     order.id = 450789469
     order.note = "Customer contacted us about a custom engraving on this iPod"
     order.save()
@@ -201,7 +200,7 @@ class Order202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new(session: @test_session)
+    order = ShopifyAPI::Order.new
     order.id = 450789469
     order.note_attributes = [
       {
@@ -225,7 +224,7 @@ class Order202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new(session: @test_session)
+    order = ShopifyAPI::Order.new
     order.id = 450789469
     order.email = "a-different@email.com"
     order.save()
@@ -244,7 +243,7 @@ class Order202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new(session: @test_session)
+    order = ShopifyAPI::Order.new
     order.id = 450789469
     order.phone = " 15145556677"
     order.save()
@@ -263,7 +262,7 @@ class Order202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new(session: @test_session)
+    order = ShopifyAPI::Order.new
     order.id = 450789469
     order.buyer_accepts_marketing = true
     order.save()
@@ -282,7 +281,7 @@ class Order202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new(session: @test_session)
+    order = ShopifyAPI::Order.new
     order.id = 450789469
     order.shipping_address = {
       address1: "123 Ship Street",
@@ -304,7 +303,7 @@ class Order202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new(session: @test_session)
+    order = ShopifyAPI::Order.new
     order.id = 450789469
     order.customer = nil
     order.save()
@@ -323,7 +322,7 @@ class Order202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new(session: @test_session)
+    order = ShopifyAPI::Order.new
     order.id = 450789469
     order.tags = "External, Inbound, Outbound"
     order.save()
@@ -342,7 +341,7 @@ class Order202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new(session: @test_session)
+    order = ShopifyAPI::Order.new
     order.id = 450789469
     order.metafields = [
       {
@@ -369,7 +368,6 @@ class Order202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Order.delete(
-      session: @test_session,
       id: 450789469,
     )
 
@@ -388,7 +386,6 @@ class Order202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Order.count(
-      session: @test_session,
       status: "any",
     )
 
@@ -407,7 +404,6 @@ class Order202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Order.count(
-      session: @test_session,
       financial_status: "authorized",
     )
 
@@ -425,7 +421,7 @@ class Order202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new(session: @test_session)
+    order = ShopifyAPI::Order.new
     order.id = 450789469
     order.close()
 
@@ -443,7 +439,7 @@ class Order202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new(session: @test_session)
+    order = ShopifyAPI::Order.new
     order.id = 450789469
     order.open()
 
@@ -461,7 +457,7 @@ class Order202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new(session: @test_session)
+    order = ShopifyAPI::Order.new
     order.id = 450789469
     order.cancel()
 
@@ -479,7 +475,7 @@ class Order202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new(session: @test_session)
+    order = ShopifyAPI::Order.new
     order.id = 450789469
     order.cancel(
       body: {amount: "10.00", currency: "USD"},
@@ -499,7 +495,7 @@ class Order202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new(session: @test_session)
+    order = ShopifyAPI::Order.new
     order.id = 450789469
     order.cancel(
       body: {refund: {note: "Customer made a mistake", shipping: {full_refund: true}, refund_line_items: [{line_item_id: 466157049, quantity: 1, restock_type: "cancel", location_id: 24826418}], transactions: [{parent_id: 1068278509, amount: "10.00", kind: "refund", gateway: "bogus"}, {parent_id: 1068278510, amount: "100.00", kind: "refund", gateway: "gift_card"}]}},
@@ -519,7 +515,7 @@ class Order202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new(session: @test_session)
+    order = ShopifyAPI::Order.new
     order.line_items = [
       {
         variant_id: 447654529,
@@ -542,7 +538,7 @@ class Order202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new(session: @test_session)
+    order = ShopifyAPI::Order.new
     order.email = "foo@example.com"
     order.fulfillment_status = "fulfilled"
     order.send_receipt = true
@@ -569,7 +565,7 @@ class Order202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new(session: @test_session)
+    order = ShopifyAPI::Order.new
     order.email = "foo@example.com"
     order.fulfillment_status = "fulfilled"
     order.line_items = [
@@ -594,7 +590,7 @@ class Order202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new(session: @test_session)
+    order = ShopifyAPI::Order.new
     order.email = "foo@example.com"
     order.fulfillment_status = "fulfilled"
     order.fulfillments = [
@@ -624,7 +620,7 @@ class Order202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new(session: @test_session)
+    order = ShopifyAPI::Order.new
     order.line_items = [
       {
         title: "Big Brown Bear Boots",
@@ -665,7 +661,7 @@ class Order202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new(session: @test_session)
+    order = ShopifyAPI::Order.new
     order.line_items = [
       {
         title: "Red Leather Coat",
@@ -716,7 +712,7 @@ class Order202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new(session: @test_session)
+    order = ShopifyAPI::Order.new
     order.line_items = [
       {
         variant_id: 447654529,
@@ -743,7 +739,7 @@ class Order202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new(session: @test_session)
+    order = ShopifyAPI::Order.new
     order.line_items = [
       {
         variant_id: 447654529,
@@ -800,7 +796,7 @@ class Order202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new(session: @test_session)
+    order = ShopifyAPI::Order.new
     order.line_items = [
       {
         variant_id: 447654529,

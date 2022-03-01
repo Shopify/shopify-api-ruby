@@ -14,8 +14,15 @@ class CancellationRequest202107Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2021-07")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,7 +36,7 @@ class CancellationRequest202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    cancellation_request = ShopifyAPI::CancellationRequest.new(session: @test_session)
+    cancellation_request = ShopifyAPI::CancellationRequest.new
     cancellation_request.fulfillment_order_id = 1046000837
     cancellation_request.message = "The customer changed his mind."
     cancellation_request.save()
@@ -48,7 +55,7 @@ class CancellationRequest202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    cancellation_request = ShopifyAPI::CancellationRequest.new(session: @test_session)
+    cancellation_request = ShopifyAPI::CancellationRequest.new
     cancellation_request.fulfillment_order_id = 1046000838
     cancellation_request.accept(
       body: {cancellation_request: {message: "We had not started any processing yet."}},
@@ -68,7 +75,7 @@ class CancellationRequest202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    cancellation_request = ShopifyAPI::CancellationRequest.new(session: @test_session)
+    cancellation_request = ShopifyAPI::CancellationRequest.new
     cancellation_request.fulfillment_order_id = 1046000839
     cancellation_request.reject(
       body: {cancellation_request: {message: "We have already send the shipment out."}},

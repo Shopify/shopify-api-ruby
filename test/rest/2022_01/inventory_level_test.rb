@@ -14,8 +14,15 @@ class InventoryLevel202201Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2022-01")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -30,7 +37,6 @@ class InventoryLevel202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::InventoryLevel.all(
-      session: @test_session,
       inventory_item_ids: "808950810,39072856",
       location_ids: "655441491,487838322",
     )
@@ -50,7 +56,6 @@ class InventoryLevel202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::InventoryLevel.all(
-      session: @test_session,
       inventory_item_ids: "808950810",
     )
 
@@ -69,7 +74,6 @@ class InventoryLevel202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::InventoryLevel.all(
-      session: @test_session,
       location_ids: "655441491",
     )
 
@@ -87,7 +91,7 @@ class InventoryLevel202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    inventory_level = ShopifyAPI::InventoryLevel.new(session: @test_session)
+    inventory_level = ShopifyAPI::InventoryLevel.new
 
     inventory_level.adjust(
       body: {location_id: 655441491, inventory_item_id: 808950810, available_adjustment: 5},
@@ -108,7 +112,6 @@ class InventoryLevel202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::InventoryLevel.delete(
-      session: @test_session,
       inventory_item_id: "808950810",
       location_id: "655441491",
     )
@@ -127,7 +130,7 @@ class InventoryLevel202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    inventory_level = ShopifyAPI::InventoryLevel.new(session: @test_session)
+    inventory_level = ShopifyAPI::InventoryLevel.new
 
     inventory_level.connect(
       body: {location_id: 844681632, inventory_item_id: 457924702},
@@ -147,7 +150,7 @@ class InventoryLevel202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    inventory_level = ShopifyAPI::InventoryLevel.new(session: @test_session)
+    inventory_level = ShopifyAPI::InventoryLevel.new
 
     inventory_level.set(
       body: {location_id: 655441491, inventory_item_id: 808950810, available: 42},

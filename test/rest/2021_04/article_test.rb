@@ -14,8 +14,15 @@ class Article202104Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2021-04")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -30,7 +37,6 @@ class Article202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Article.all(
-      session: @test_session,
       blog_id: 241253187,
     )
 
@@ -49,7 +55,6 @@ class Article202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Article.all(
-      session: @test_session,
       blog_id: 241253187,
       since_id: "134645308",
     )
@@ -68,7 +73,7 @@ class Article202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    article = ShopifyAPI::Article.new(session: @test_session)
+    article = ShopifyAPI::Article.new
     article.blog_id = 241253187
     article.title = "My new Article title"
     article.author = "John Smith"
@@ -91,7 +96,7 @@ class Article202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    article = ShopifyAPI::Article.new(session: @test_session)
+    article = ShopifyAPI::Article.new
     article.blog_id = 241253187
     article.title = "My new Article title"
     article.author = "John Smith"
@@ -114,7 +119,7 @@ class Article202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    article = ShopifyAPI::Article.new(session: @test_session)
+    article = ShopifyAPI::Article.new
     article.blog_id = 241253187
     article.title = "My new Article title"
     article.author = "John Smith"
@@ -140,7 +145,7 @@ class Article202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    article = ShopifyAPI::Article.new(session: @test_session)
+    article = ShopifyAPI::Article.new
     article.blog_id = 241253187
     article.title = "My new Article title"
     article.author = "John Smith"
@@ -167,7 +172,7 @@ class Article202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    article = ShopifyAPI::Article.new(session: @test_session)
+    article = ShopifyAPI::Article.new
     article.blog_id = 241253187
     article.title = "My new Article title"
     article.author = "John Smith"
@@ -199,7 +204,6 @@ class Article202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Article.count(
-      session: @test_session,
       blog_id: 241253187,
     )
 
@@ -218,7 +222,6 @@ class Article202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Article.find(
-      session: @test_session,
       blog_id: 241253187,
       id: 134645308,
     )
@@ -237,7 +240,7 @@ class Article202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    article = ShopifyAPI::Article.new(session: @test_session)
+    article = ShopifyAPI::Article.new
     article.blog_id = 241253187
     article.id = 134645308
     article.title = "My new Title"
@@ -261,7 +264,7 @@ class Article202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    article = ShopifyAPI::Article.new(session: @test_session)
+    article = ShopifyAPI::Article.new
     article.blog_id = 241253187
     article.id = 134645308
     article.published = true
@@ -281,7 +284,7 @@ class Article202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    article = ShopifyAPI::Article.new(session: @test_session)
+    article = ShopifyAPI::Article.new
     article.blog_id = 241253187
     article.id = 134645308
     article.published = false
@@ -301,7 +304,7 @@ class Article202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    article = ShopifyAPI::Article.new(session: @test_session)
+    article = ShopifyAPI::Article.new
     article.blog_id = 241253187
     article.id = 134645308
     article.title = "My new Title"
@@ -328,7 +331,7 @@ class Article202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    article = ShopifyAPI::Article.new(session: @test_session)
+    article = ShopifyAPI::Article.new
     article.blog_id = 241253187
     article.id = 134645308
     article.title = "My new Title"
@@ -355,7 +358,7 @@ class Article202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    article = ShopifyAPI::Article.new(session: @test_session)
+    article = ShopifyAPI::Article.new
     article.blog_id = 241253187
     article.id = 134645308
     article.image = ""
@@ -375,7 +378,7 @@ class Article202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    article = ShopifyAPI::Article.new(session: @test_session)
+    article = ShopifyAPI::Article.new
     article.blog_id = 241253187
     article.id = 134645308
     article.metafields = [
@@ -403,7 +406,6 @@ class Article202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Article.delete(
-      session: @test_session,
       blog_id: 241253187,
       id: 134645308,
     )
@@ -422,9 +424,7 @@ class Article202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Article.authors(
-      session: @test_session,
-    )
+    ShopifyAPI::Article.authors()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-04/articles/authors.json")
   end
@@ -441,7 +441,6 @@ class Article202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Article.tags(
-      session: @test_session,
       blog_id: 241253187,
       limit: "1",
       popular: "1",
@@ -461,9 +460,7 @@ class Article202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Article.tags(
-      session: @test_session,
-    )
+    ShopifyAPI::Article.tags()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-04/articles/tags.json")
   end
@@ -480,7 +477,6 @@ class Article202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Article.tags(
-      session: @test_session,
       blog_id: 241253187,
     )
 
@@ -499,7 +495,6 @@ class Article202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Article.tags(
-      session: @test_session,
       limit: "1",
       popular: "1",
     )

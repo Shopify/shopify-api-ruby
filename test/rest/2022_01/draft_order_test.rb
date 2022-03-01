@@ -14,8 +14,15 @@ class DraftOrder202201Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2022-01")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,7 +36,7 @@ class DraftOrder202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    draft_order = ShopifyAPI::DraftOrder.new(session: @test_session)
+    draft_order = ShopifyAPI::DraftOrder.new
     draft_order.line_items = [
       {
         variant_id: 447654529,
@@ -52,7 +59,7 @@ class DraftOrder202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    draft_order = ShopifyAPI::DraftOrder.new(session: @test_session)
+    draft_order = ShopifyAPI::DraftOrder.new
     draft_order.line_items = [
       {
         title: "Custom Tee",
@@ -87,7 +94,7 @@ class DraftOrder202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    draft_order = ShopifyAPI::DraftOrder.new(session: @test_session)
+    draft_order = ShopifyAPI::DraftOrder.new
     draft_order.line_items = [
       {
         title: "Custom Tee",
@@ -118,7 +125,7 @@ class DraftOrder202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    draft_order = ShopifyAPI::DraftOrder.new(session: @test_session)
+    draft_order = ShopifyAPI::DraftOrder.new
     draft_order.line_items = [
       {
         title: "Custom Tee",
@@ -149,7 +156,7 @@ class DraftOrder202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    draft_order = ShopifyAPI::DraftOrder.new(session: @test_session)
+    draft_order = ShopifyAPI::DraftOrder.new
     draft_order.line_items = [
       {
         title: "Custom Tee",
@@ -177,9 +184,7 @@ class DraftOrder202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::DraftOrder.all(
-      session: @test_session,
-    )
+    ShopifyAPI::DraftOrder.all()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-01/draft_orders.json")
   end
@@ -195,7 +200,7 @@ class DraftOrder202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    draft_order = ShopifyAPI::DraftOrder.new(session: @test_session)
+    draft_order = ShopifyAPI::DraftOrder.new
     draft_order.id = 994118539
     draft_order.note = "Customer contacted us about a custom engraving on this iPod"
     draft_order.save()
@@ -214,7 +219,7 @@ class DraftOrder202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    draft_order = ShopifyAPI::DraftOrder.new(session: @test_session)
+    draft_order = ShopifyAPI::DraftOrder.new
     draft_order.id = 994118539
     draft_order.applied_discount = {
       description: "Custom discount",
@@ -240,7 +245,6 @@ class DraftOrder202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::DraftOrder.find(
-      session: @test_session,
       id: 994118539,
     )
 
@@ -259,7 +263,6 @@ class DraftOrder202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::DraftOrder.delete(
-      session: @test_session,
       id: 994118539,
     )
 
@@ -277,9 +280,7 @@ class DraftOrder202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::DraftOrder.count(
-      session: @test_session,
-    )
+    ShopifyAPI::DraftOrder.count()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-01/draft_orders/count.json")
   end
@@ -295,7 +296,7 @@ class DraftOrder202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    draft_order = ShopifyAPI::DraftOrder.new(session: @test_session)
+    draft_order = ShopifyAPI::DraftOrder.new
     draft_order.id = 994118539
     draft_order.send_invoice(
       body: {draft_order_invoice: {to: "first@example.com", from: "j.smith@example.com", bcc: ["j.smith@example.com"], subject: "Apple Computer Invoice", custom_message: "Thank you for ordering!"}},
@@ -315,7 +316,7 @@ class DraftOrder202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    draft_order = ShopifyAPI::DraftOrder.new(session: @test_session)
+    draft_order = ShopifyAPI::DraftOrder.new
     draft_order.id = 994118539
     draft_order.send_invoice(
       body: {draft_order_invoice: {}},
@@ -335,7 +336,7 @@ class DraftOrder202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    draft_order = ShopifyAPI::DraftOrder.new(session: @test_session)
+    draft_order = ShopifyAPI::DraftOrder.new
     draft_order.id = 994118539
     draft_order.complete()
 
@@ -353,7 +354,7 @@ class DraftOrder202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    draft_order = ShopifyAPI::DraftOrder.new(session: @test_session)
+    draft_order = ShopifyAPI::DraftOrder.new
     draft_order.id = 994118539
     draft_order.complete(
       payment_pending: "true",

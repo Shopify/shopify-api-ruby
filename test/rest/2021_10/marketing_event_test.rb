@@ -14,8 +14,15 @@ class MarketingEvent202110Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2021-10")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,9 +36,7 @@ class MarketingEvent202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::MarketingEvent.all(
-      session: @test_session,
-    )
+    ShopifyAPI::MarketingEvent.all()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-10/marketing_events.json")
   end
@@ -47,7 +52,7 @@ class MarketingEvent202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    marketing_event = ShopifyAPI::MarketingEvent.new(session: @test_session)
+    marketing_event = ShopifyAPI::MarketingEvent.new
     marketing_event.started_at = "2022-12-15"
     marketing_event.utm_campaign = "Christmas2022"
     marketing_event.utm_source = "facebook"
@@ -72,9 +77,7 @@ class MarketingEvent202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::MarketingEvent.count(
-      session: @test_session,
-    )
+    ShopifyAPI::MarketingEvent.count()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-10/marketing_events/count.json")
   end
@@ -91,7 +94,6 @@ class MarketingEvent202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::MarketingEvent.find(
-      session: @test_session,
       id: 998730532,
     )
 
@@ -109,7 +111,7 @@ class MarketingEvent202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    marketing_event = ShopifyAPI::MarketingEvent.new(session: @test_session)
+    marketing_event = ShopifyAPI::MarketingEvent.new
     marketing_event.id = 998730532
     marketing_event.remote_id = "1000:2000"
     marketing_event.started_at = "2022-02-02T00:00  00:00"
@@ -140,7 +142,6 @@ class MarketingEvent202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::MarketingEvent.delete(
-      session: @test_session,
       id: 998730532,
     )
 
@@ -158,7 +159,7 @@ class MarketingEvent202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    marketing_event = ShopifyAPI::MarketingEvent.new(session: @test_session)
+    marketing_event = ShopifyAPI::MarketingEvent.new
     marketing_event.id = 998730532
     marketing_event.engagements(
       body: {engagements: [{occurred_on: "2022-01-15", views_count: 0, clicks_count: 0, favorites_count: 0, ad_spend: 10.0, is_cumulative: true}, {occurred_on: "2022-01-16", views_count: 100, clicks_count: 50, is_cumulative: true}, {occurred_on: "2022-01-17", views_count: 200, clicks_count: 100, is_cumulative: true}]},

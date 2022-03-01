@@ -9,7 +9,7 @@ module ShopifyAPI
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: nil)
+    def initialize(session: ShopifyAPI::Context.active_session)
       super(session: session)
 
       @amount = T.let(nil, T.nilable(String))
@@ -42,13 +42,13 @@ module ShopifyAPI
     class << self
       sig do
         params(
-          session: Auth::Session,
-          id: T.any(Integer, String)
+          id: T.any(Integer, String),
+          session: Auth::Session
         ).returns(T.nilable(Payout))
       end
       def find(
-        session:,
-        id:
+        id:,
+        session: ShopifyAPI::Context.active_session
       )
         result = base_find(
           session: session,
@@ -60,24 +60,24 @@ module ShopifyAPI
 
       sig do
         params(
-          session: Auth::Session,
           since_id: T.untyped,
           last_id: T.untyped,
           date_min: T.untyped,
           date_max: T.untyped,
           date: T.untyped,
           status: T.untyped,
+          session: Auth::Session,
           kwargs: T.untyped
         ).returns(T::Array[Payout])
       end
       def all(
-        session:,
         since_id: nil,
         last_id: nil,
         date_min: nil,
         date_max: nil,
         date: nil,
         status: nil,
+        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         response = base_find(

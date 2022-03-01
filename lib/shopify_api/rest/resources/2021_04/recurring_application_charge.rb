@@ -9,7 +9,7 @@ module ShopifyAPI
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: nil)
+    def initialize(session: ShopifyAPI::Context.active_session)
       super(session: session)
 
       @activated_on = T.let(nil, T.nilable(String))
@@ -76,15 +76,15 @@ module ShopifyAPI
     class << self
       sig do
         params(
-          session: Auth::Session,
           id: T.any(Integer, String),
-          fields: T.untyped
+          fields: T.untyped,
+          session: Auth::Session
         ).returns(T.nilable(RecurringApplicationCharge))
       end
       def find(
-        session:,
         id:,
-        fields: nil
+        fields: nil,
+        session: ShopifyAPI::Context.active_session
       )
         result = base_find(
           session: session,
@@ -96,13 +96,13 @@ module ShopifyAPI
 
       sig do
         params(
-          session: Auth::Session,
-          id: T.any(Integer, String)
+          id: T.any(Integer, String),
+          session: Auth::Session
         ).returns(T.untyped)
       end
       def delete(
-        session:,
-        id:
+        id:,
+        session: ShopifyAPI::Context.active_session
       )
         request(
           http_method: :delete,
@@ -115,16 +115,16 @@ module ShopifyAPI
 
       sig do
         params(
-          session: Auth::Session,
           since_id: T.untyped,
           fields: T.untyped,
+          session: Auth::Session,
           kwargs: T.untyped
         ).returns(T::Array[RecurringApplicationCharge])
       end
       def all(
-        session:,
         since_id: nil,
         fields: nil,
+        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         response = base_find(

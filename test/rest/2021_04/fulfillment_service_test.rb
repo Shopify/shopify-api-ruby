@@ -14,8 +14,15 @@ class FulfillmentService202104Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2021-04")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,9 +36,7 @@ class FulfillmentService202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::FulfillmentService.all(
-      session: @test_session,
-    )
+    ShopifyAPI::FulfillmentService.all()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-04/fulfillment_services.json")
   end
@@ -48,7 +53,6 @@ class FulfillmentService202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::FulfillmentService.all(
-      session: @test_session,
       scope: "all",
     )
 
@@ -66,7 +70,7 @@ class FulfillmentService202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment_service = ShopifyAPI::FulfillmentService.new(session: @test_session)
+    fulfillment_service = ShopifyAPI::FulfillmentService.new
     fulfillment_service.name = "Jupiter Fulfillment"
     fulfillment_service.callback_url = "http://google.com"
     fulfillment_service.inventory_management = true
@@ -90,7 +94,6 @@ class FulfillmentService202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::FulfillmentService.find(
-      session: @test_session,
       id: 755357713,
     )
 
@@ -108,7 +111,7 @@ class FulfillmentService202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment_service = ShopifyAPI::FulfillmentService.new(session: @test_session)
+    fulfillment_service = ShopifyAPI::FulfillmentService.new
     fulfillment_service.id = 755357713
     fulfillment_service.name = "New Fulfillment Service Name"
     fulfillment_service.save()
@@ -128,7 +131,6 @@ class FulfillmentService202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::FulfillmentService.delete(
-      session: @test_session,
       id: 755357713,
     )
 

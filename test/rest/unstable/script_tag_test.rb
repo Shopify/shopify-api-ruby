@@ -14,8 +14,15 @@ class ScriptTagUnstableTest < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "unstable")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,9 +36,7 @@ class ScriptTagUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::ScriptTag.all(
-      session: @test_session,
-    )
+    ShopifyAPI::ScriptTag.all()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/unstable/script_tags.json")
   end
@@ -48,7 +53,6 @@ class ScriptTagUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::ScriptTag.all(
-      session: @test_session,
       src: "https://js-aplenty.com/foo.js",
     )
 
@@ -67,7 +71,6 @@ class ScriptTagUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::ScriptTag.all(
-      session: @test_session,
       since_id: "421379493",
     )
 
@@ -85,7 +88,7 @@ class ScriptTagUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    script_tag = ShopifyAPI::ScriptTag.new(session: @test_session)
+    script_tag = ShopifyAPI::ScriptTag.new
     script_tag.event = "onload"
     script_tag.src = "https://djavaskripped.org/fancy.js"
     script_tag.save()
@@ -104,9 +107,7 @@ class ScriptTagUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::ScriptTag.count(
-      session: @test_session,
-    )
+    ShopifyAPI::ScriptTag.count()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/unstable/script_tags/count.json")
   end
@@ -123,7 +124,6 @@ class ScriptTagUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::ScriptTag.find(
-      session: @test_session,
       id: 596726825,
     )
 
@@ -141,7 +141,7 @@ class ScriptTagUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    script_tag = ShopifyAPI::ScriptTag.new(session: @test_session)
+    script_tag = ShopifyAPI::ScriptTag.new
     script_tag.id = 596726825
     script_tag.src = "https://somewhere-else.com/another.js"
     script_tag.save()
@@ -161,7 +161,6 @@ class ScriptTagUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::ScriptTag.delete(
-      session: @test_session,
       id: 596726825,
     )
 

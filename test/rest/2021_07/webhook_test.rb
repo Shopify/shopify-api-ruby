@@ -14,8 +14,15 @@ class Webhook202107Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2021-07")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,9 +36,7 @@ class Webhook202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Webhook.all(
-      session: @test_session,
-    )
+    ShopifyAPI::Webhook.all()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-07/webhooks.json")
   end
@@ -48,7 +53,6 @@ class Webhook202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Webhook.all(
-      session: @test_session,
       since_id: "901431826",
     )
 
@@ -66,7 +70,7 @@ class Webhook202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    webhook = ShopifyAPI::Webhook.new(session: @test_session)
+    webhook = ShopifyAPI::Webhook.new
     webhook.topic = "orders/create"
     webhook.address = "https://example.hostname.com/"
     webhook.format = "json"
@@ -90,7 +94,7 @@ class Webhook202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    webhook = ShopifyAPI::Webhook.new(session: @test_session)
+    webhook = ShopifyAPI::Webhook.new
     webhook.address = "arn:aws:events:us-east-1::event-source/aws.partner/shopify.com/755357713/example-event-source"
     webhook.topic = "customers/update"
     webhook.format = "json"
@@ -110,7 +114,7 @@ class Webhook202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    webhook = ShopifyAPI::Webhook.new(session: @test_session)
+    webhook = ShopifyAPI::Webhook.new
     webhook.address = "pubsub://projectName:topicName"
     webhook.topic = "customers/update"
     webhook.format = "json"
@@ -130,9 +134,7 @@ class Webhook202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Webhook.count(
-      session: @test_session,
-    )
+    ShopifyAPI::Webhook.count()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-07/webhooks/count.json")
   end
@@ -149,7 +151,6 @@ class Webhook202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Webhook.count(
-      session: @test_session,
       topic: "orders/create",
     )
 
@@ -168,7 +169,6 @@ class Webhook202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Webhook.find(
-      session: @test_session,
       id: 4759306,
     )
 
@@ -186,7 +186,7 @@ class Webhook202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    webhook = ShopifyAPI::Webhook.new(session: @test_session)
+    webhook = ShopifyAPI::Webhook.new
     webhook.id = 4759306
     webhook.address = "https://somewhere-else.com/"
     webhook.save()
@@ -206,7 +206,6 @@ class Webhook202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Webhook.delete(
-      session: @test_session,
       id: 4759306,
     )
 

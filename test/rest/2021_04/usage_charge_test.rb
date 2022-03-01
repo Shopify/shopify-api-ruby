@@ -14,8 +14,15 @@ class UsageCharge202104Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2021-04")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,7 +36,7 @@ class UsageCharge202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    usage_charge = ShopifyAPI::UsageCharge.new(session: @test_session)
+    usage_charge = ShopifyAPI::UsageCharge.new
     usage_charge.recurring_application_charge_id = 455696195
     usage_charge.description = "Super Mega Plan 1000 emails"
     usage_charge.price = 1.0
@@ -50,7 +57,6 @@ class UsageCharge202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::UsageCharge.all(
-      session: @test_session,
       recurring_application_charge_id: 455696195,
     )
 
@@ -69,7 +75,6 @@ class UsageCharge202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::UsageCharge.find(
-      session: @test_session,
       recurring_application_charge_id: 455696195,
       id: 1034618217,
     )
