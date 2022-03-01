@@ -9,7 +9,7 @@ module ShopifyAPI
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: nil)
+    def initialize(session: ShopifyAPI::Context.active_session)
       super(session: session)
 
       @currency = T.let(nil, T.nilable(String))
@@ -35,7 +35,7 @@ module ShopifyAPI
         ).returns(T::Array[Currency])
       end
       def all(
-        session:,
+        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         response = base_find(

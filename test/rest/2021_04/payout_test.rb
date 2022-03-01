@@ -14,8 +14,15 @@ class Payout202104Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2021-04")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,9 +36,7 @@ class Payout202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Payout.all(
-      session: @test_session,
-    )
+    ShopifyAPI::Payout.all()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-04/shopify_payments/payouts.json")
   end
@@ -48,7 +53,6 @@ class Payout202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Payout.all(
-      session: @test_session,
       date_max: "2012-11-12",
     )
 
@@ -67,7 +71,6 @@ class Payout202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Payout.find(
-      session: @test_session,
       id: 623721858,
     )
 

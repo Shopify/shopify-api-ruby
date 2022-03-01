@@ -14,8 +14,15 @@ class AbandonedCheckout202201Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2022-01")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,9 +36,7 @@ class AbandonedCheckout202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::AbandonedCheckout.checkouts(
-      session: @test_session,
-    )
+    ShopifyAPI::AbandonedCheckout.checkouts()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-01/checkouts.json")
   end
@@ -48,7 +53,6 @@ class AbandonedCheckout202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::AbandonedCheckout.checkouts(
-      session: @test_session,
       status: "closed",
     )
 
@@ -67,7 +71,6 @@ class AbandonedCheckout202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::AbandonedCheckout.checkouts(
-      session: @test_session,
       created_at_max: "2013-10-12T07:05:27-02:00",
     )
 
@@ -86,7 +89,6 @@ class AbandonedCheckout202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::AbandonedCheckout.checkouts(
-      session: @test_session,
       limit: "1",
     )
 
@@ -105,7 +107,6 @@ class AbandonedCheckout202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::AbandonedCheckout.checkouts(
-      session: @test_session,
       status: "closed",
     )
 
@@ -124,7 +125,6 @@ class AbandonedCheckout202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::AbandonedCheckout.checkouts(
-      session: @test_session,
       created_at_max: "2013-10-12T07:05:27-02:00",
     )
 
@@ -142,9 +142,7 @@ class AbandonedCheckout202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::AbandonedCheckout.checkouts(
-      session: @test_session,
-    )
+    ShopifyAPI::AbandonedCheckout.checkouts()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-01/checkouts.json")
   end

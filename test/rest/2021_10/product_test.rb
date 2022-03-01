@@ -14,8 +14,15 @@ class Product202110Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2021-10")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,9 +36,7 @@ class Product202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Product.all(
-      session: @test_session,
-    )
+    ShopifyAPI::Product.all()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-10/products.json")
   end
@@ -48,7 +53,6 @@ class Product202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Product.all(
-      session: @test_session,
       ids: "632910392,921728736",
     )
 
@@ -67,7 +71,6 @@ class Product202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Product.all(
-      session: @test_session,
       fields: "id,images,title",
     )
 
@@ -86,7 +89,6 @@ class Product202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Product.all(
-      session: @test_session,
       collection_id: "841564295",
     )
 
@@ -105,7 +107,6 @@ class Product202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Product.all(
-      session: @test_session,
       since_id: "632910392",
     )
 
@@ -124,7 +125,6 @@ class Product202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Product.all(
-      session: @test_session,
       presentment_currencies: "USD",
     )
 
@@ -142,7 +142,7 @@ class Product202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new(session: @test_session)
+    product = ShopifyAPI::Product.new
     product.title = "Burton Custom Freestyle 151"
     product.body_html = "<strong>Good snowboard!</strong>"
     product.vendor = "Burton"
@@ -168,7 +168,7 @@ class Product202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new(session: @test_session)
+    product = ShopifyAPI::Product.new
     product.title = "Burton Custom Freestyle 151"
     product.body_html = "<strong>Good snowboard!</strong>"
     product.vendor = "Burton"
@@ -190,7 +190,7 @@ class Product202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new(session: @test_session)
+    product = ShopifyAPI::Product.new
     product.title = "Burton Custom Freestyle 151"
     product.body_html = "<strong>Good snowboard!</strong>"
     product.vendor = "Burton"
@@ -212,7 +212,7 @@ class Product202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new(session: @test_session)
+    product = ShopifyAPI::Product.new
     product.title = "Burton Custom Freestyle 151"
     product.body_html = "<strong>Good snowboard!</strong>"
     product.vendor = "Burton"
@@ -245,7 +245,7 @@ class Product202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new(session: @test_session)
+    product = ShopifyAPI::Product.new
     product.title = "Burton Custom Freestyle 151"
     product.body_html = "<strong>Good snowboard!</strong>"
     product.vendor = "Burton"
@@ -292,7 +292,7 @@ class Product202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new(session: @test_session)
+    product = ShopifyAPI::Product.new
     product.title = "Burton Custom Freestyle 151"
     product.body_html = "<strong>Good snowboard!</strong>"
     product.vendor = "Burton"
@@ -318,7 +318,7 @@ class Product202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new(session: @test_session)
+    product = ShopifyAPI::Product.new
     product.title = "Burton Custom Freestyle 151"
     product.body_html = "<strong>Good snowboard!</strong>"
     product.vendor = "Burton"
@@ -344,7 +344,7 @@ class Product202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new(session: @test_session)
+    product = ShopifyAPI::Product.new
     product.title = "Burton Custom Freestyle 151"
     product.body_html = "<strong>Good snowboard!</strong>"
     product.vendor = "Burton"
@@ -367,7 +367,7 @@ class Product202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new(session: @test_session)
+    product = ShopifyAPI::Product.new
     product.title = "Burton Custom Freestyle 151"
     product.body_html = "<strong>Good snowboard!</strong>"
     product.vendor = "Burton"
@@ -396,9 +396,7 @@ class Product202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Product.count(
-      session: @test_session,
-    )
+    ShopifyAPI::Product.count()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-10/products/count.json")
   end
@@ -415,7 +413,6 @@ class Product202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Product.count(
-      session: @test_session,
       collection_id: "841564295",
     )
 
@@ -434,7 +431,6 @@ class Product202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Product.find(
-      session: @test_session,
       id: 632910392,
     )
 
@@ -453,7 +449,6 @@ class Product202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Product.find(
-      session: @test_session,
       id: 632910392,
       fields: "id,images,title",
     )
@@ -472,7 +467,7 @@ class Product202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new(session: @test_session)
+    product = ShopifyAPI::Product.new
     product.id = 632910392
     product.title = "New product title"
     product.save()
@@ -491,7 +486,7 @@ class Product202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new(session: @test_session)
+    product = ShopifyAPI::Product.new
     product.id = 632910392
     product.status = "draft"
     product.save()
@@ -510,7 +505,7 @@ class Product202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new(session: @test_session)
+    product = ShopifyAPI::Product.new
     product.id = 632910392
     product.tags = "Barnes & Noble, John's Fav"
     product.save()
@@ -529,7 +524,7 @@ class Product202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new(session: @test_session)
+    product = ShopifyAPI::Product.new
     product.id = 632910392
     product.images = []
     product.save()
@@ -548,7 +543,7 @@ class Product202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new(session: @test_session)
+    product = ShopifyAPI::Product.new
     product.id = 632910392
     product.images = [
       {
@@ -580,7 +575,7 @@ class Product202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new(session: @test_session)
+    product = ShopifyAPI::Product.new
     product.id = 632910392
     product.images = [
       {
@@ -612,7 +607,7 @@ class Product202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new(session: @test_session)
+    product = ShopifyAPI::Product.new
     product.id = 632910392
     product.variants = [
       {
@@ -644,7 +639,7 @@ class Product202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new(session: @test_session)
+    product = ShopifyAPI::Product.new
     product.id = 632910392
     product.title = "Updated Product Title"
     product.variants = [
@@ -679,7 +674,7 @@ class Product202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new(session: @test_session)
+    product = ShopifyAPI::Product.new
     product.id = 632910392
     product.metafields_global_title_tag = "Brand new title"
     product.metafields_global_description_tag = "Brand new description"
@@ -699,7 +694,7 @@ class Product202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new(session: @test_session)
+    product = ShopifyAPI::Product.new
     product.id = 632910392
     product.published = true
     product.save()
@@ -718,7 +713,7 @@ class Product202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new(session: @test_session)
+    product = ShopifyAPI::Product.new
     product.id = 632910392
     product.published = false
     product.save()
@@ -737,7 +732,7 @@ class Product202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new(session: @test_session)
+    product = ShopifyAPI::Product.new
     product.id = 632910392
     product.metafields = [
       {
@@ -764,7 +759,6 @@ class Product202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Product.delete(
-      session: @test_session,
       id: 632910392,
     )
 

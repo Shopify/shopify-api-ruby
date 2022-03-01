@@ -14,8 +14,15 @@ class FulfillmentEvent202201Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2022-01")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -30,7 +37,6 @@ class FulfillmentEvent202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::FulfillmentEvent.all(
-      session: @test_session,
       order_id: 450789469,
       fulfillment_id: 255858046,
     )
@@ -49,7 +55,7 @@ class FulfillmentEvent202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment_event = ShopifyAPI::FulfillmentEvent.new(session: @test_session)
+    fulfillment_event = ShopifyAPI::FulfillmentEvent.new
     fulfillment_event.order_id = 450789469
     fulfillment_event.fulfillment_id = 255858046
     fulfillment_event.status = "in_transit"
@@ -70,7 +76,6 @@ class FulfillmentEvent202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::FulfillmentEvent.find(
-      session: @test_session,
       order_id: 450789469,
       fulfillment_id: 255858046,
       id: 944956395,
@@ -91,7 +96,6 @@ class FulfillmentEvent202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::FulfillmentEvent.delete(
-      session: @test_session,
       order_id: 450789469,
       fulfillment_id: 255858046,
       id: 944956397,

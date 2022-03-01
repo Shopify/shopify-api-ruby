@@ -14,8 +14,15 @@ class BlogUnstableTest < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "unstable")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,9 +36,7 @@ class BlogUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Blog.all(
-      session: @test_session,
-    )
+    ShopifyAPI::Blog.all()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/unstable/blogs.json")
   end
@@ -48,7 +53,6 @@ class BlogUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Blog.all(
-      session: @test_session,
       since_id: "241253187",
     )
 
@@ -66,7 +70,7 @@ class BlogUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    blog = ShopifyAPI::Blog.new(session: @test_session)
+    blog = ShopifyAPI::Blog.new
     blog.title = "Apple main blog"
     blog.save()
 
@@ -84,7 +88,7 @@ class BlogUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    blog = ShopifyAPI::Blog.new(session: @test_session)
+    blog = ShopifyAPI::Blog.new
     blog.title = "Apple main blog"
     blog.metafields = [
       {
@@ -110,9 +114,7 @@ class BlogUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Blog.count(
-      session: @test_session,
-    )
+    ShopifyAPI::Blog.count()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/unstable/blogs/count.json")
   end
@@ -129,7 +131,6 @@ class BlogUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Blog.find(
-      session: @test_session,
       id: 241253187,
     )
 
@@ -148,7 +149,6 @@ class BlogUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Blog.find(
-      session: @test_session,
       id: 241253187,
       fields: "id,title",
     )
@@ -167,7 +167,7 @@ class BlogUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    blog = ShopifyAPI::Blog.new(session: @test_session)
+    blog = ShopifyAPI::Blog.new
     blog.id = 241253187
     blog.title = "IPod Updates"
     blog.save()
@@ -186,7 +186,7 @@ class BlogUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    blog = ShopifyAPI::Blog.new(session: @test_session)
+    blog = ShopifyAPI::Blog.new
     blog.id = 241253187
     blog.title = "IPod Updates"
     blog.handle = "ipod-updates"
@@ -207,7 +207,7 @@ class BlogUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    blog = ShopifyAPI::Blog.new(session: @test_session)
+    blog = ShopifyAPI::Blog.new
     blog.id = 241253187
     blog.metafields = [
       {
@@ -234,7 +234,6 @@ class BlogUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Blog.delete(
-      session: @test_session,
       id: 241253187,
     )
 

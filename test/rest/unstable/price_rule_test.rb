@@ -14,8 +14,15 @@ class PriceRuleUnstableTest < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "unstable")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,7 +36,7 @@ class PriceRuleUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    price_rule = ShopifyAPI::PriceRule.new(session: @test_session)
+    price_rule = ShopifyAPI::PriceRule.new
     price_rule.title = "SUMMERSALE10OFF"
     price_rule.target_type = "line_item"
     price_rule.target_selection = "all"
@@ -54,7 +61,7 @@ class PriceRuleUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    price_rule = ShopifyAPI::PriceRule.new(session: @test_session)
+    price_rule = ShopifyAPI::PriceRule.new
     price_rule.title = "15OFFCOLLECTION"
     price_rule.target_type = "line_item"
     price_rule.target_selection = "entitled"
@@ -82,7 +89,7 @@ class PriceRuleUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    price_rule = ShopifyAPI::PriceRule.new(session: @test_session)
+    price_rule = ShopifyAPI::PriceRule.new
     price_rule.title = "FREESHIPPING"
     price_rule.target_type = "shipping_line"
     price_rule.target_selection = "all"
@@ -111,7 +118,7 @@ class PriceRuleUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    price_rule = ShopifyAPI::PriceRule.new(session: @test_session)
+    price_rule = ShopifyAPI::PriceRule.new
     price_rule.title = "5OFFCUSTOMERGROUP"
     price_rule.target_type = "line_item"
     price_rule.target_selection = "all"
@@ -139,7 +146,7 @@ class PriceRuleUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    price_rule = ShopifyAPI::PriceRule.new(session: @test_session)
+    price_rule = ShopifyAPI::PriceRule.new
     price_rule.title = "Buy2iPodsGetiPodTouchForFree"
     price_rule.value_type = "percentage"
     price_rule.value = -100.0
@@ -175,9 +182,7 @@ class PriceRuleUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::PriceRule.all(
-      session: @test_session,
-    )
+    ShopifyAPI::PriceRule.all()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/unstable/price_rules.json")
   end
@@ -193,7 +198,7 @@ class PriceRuleUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    price_rule = ShopifyAPI::PriceRule.new(session: @test_session)
+    price_rule = ShopifyAPI::PriceRule.new
     price_rule.id = 507328175
     price_rule.title = "WINTER SALE"
     price_rule.save()
@@ -213,7 +218,6 @@ class PriceRuleUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::PriceRule.find(
-      session: @test_session,
       id: 507328175,
     )
 
@@ -232,7 +236,6 @@ class PriceRuleUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::PriceRule.delete(
-      session: @test_session,
       id: 507328175,
     )
 
@@ -250,9 +253,7 @@ class PriceRuleUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::PriceRule.count(
-      session: @test_session,
-    )
+    ShopifyAPI::PriceRule.count()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/unstable/price_rules/count.json")
   end

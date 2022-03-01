@@ -14,8 +14,15 @@ class CustomerAddress202110Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2021-10")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -30,7 +37,6 @@ class CustomerAddress202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::CustomerAddress.all(
-      session: @test_session,
       customer_id: 207119551,
     )
 
@@ -49,7 +55,6 @@ class CustomerAddress202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::CustomerAddress.all(
-      session: @test_session,
       customer_id: 207119551,
       limit: "1",
     )
@@ -68,7 +73,7 @@ class CustomerAddress202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    customer_address = ShopifyAPI::CustomerAddress.new(session: @test_session)
+    customer_address = ShopifyAPI::CustomerAddress.new
     customer_address.customer_id = 207119551
     customer_address.address1 = "1 Rue des Carrieres"
     customer_address.address2 = "Suite 1234"
@@ -101,7 +106,6 @@ class CustomerAddress202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::CustomerAddress.find(
-      session: @test_session,
       customer_id: 207119551,
       id: 207119551,
     )
@@ -120,7 +124,7 @@ class CustomerAddress202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    customer_address = ShopifyAPI::CustomerAddress.new(session: @test_session)
+    customer_address = ShopifyAPI::CustomerAddress.new
     customer_address.customer_id = 207119551
     customer_address.id = 207119551
     customer_address.zip = 90210
@@ -141,7 +145,6 @@ class CustomerAddress202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::CustomerAddress.delete(
-      session: @test_session,
       customer_id: 207119551,
       id: 1053317335,
     )
@@ -160,7 +163,7 @@ class CustomerAddress202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    customer_address = ShopifyAPI::CustomerAddress.new(session: @test_session)
+    customer_address = ShopifyAPI::CustomerAddress.new
     customer_address.customer_id = 207119551
     customer_address.set(
       address_ids: [1053317336],
@@ -181,7 +184,7 @@ class CustomerAddress202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    customer_address = ShopifyAPI::CustomerAddress.new(session: @test_session)
+    customer_address = ShopifyAPI::CustomerAddress.new
     customer_address.customer_id = 207119551
     customer_address.id = 1053317337
     customer_address.default()

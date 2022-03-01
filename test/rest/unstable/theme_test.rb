@@ -14,8 +14,15 @@ class ThemeUnstableTest < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "unstable")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,9 +36,7 @@ class ThemeUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Theme.all(
-      session: @test_session,
-    )
+    ShopifyAPI::Theme.all()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/unstable/themes.json")
   end
@@ -47,7 +52,7 @@ class ThemeUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    theme = ShopifyAPI::Theme.new(session: @test_session)
+    theme = ShopifyAPI::Theme.new
     theme.name = "Lemongrass"
     theme.src = "http://themes.shopify.com/theme.zip"
     theme.role = "main"
@@ -68,7 +73,6 @@ class ThemeUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Theme.find(
-      session: @test_session,
       id: 828155753,
     )
 
@@ -86,7 +90,7 @@ class ThemeUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    theme = ShopifyAPI::Theme.new(session: @test_session)
+    theme = ShopifyAPI::Theme.new
     theme.id = 752253240
     theme.name = "Experimental"
     theme.save()
@@ -105,7 +109,7 @@ class ThemeUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    theme = ShopifyAPI::Theme.new(session: @test_session)
+    theme = ShopifyAPI::Theme.new
     theme.id = 752253240
     theme.role = "main"
     theme.save()
@@ -125,7 +129,6 @@ class ThemeUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Theme.delete(
-      session: @test_session,
       id: 752253240,
     )
 

@@ -14,8 +14,15 @@ class FulfillmentUnstableTest < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "unstable")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -30,7 +37,6 @@ class FulfillmentUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Fulfillment.all(
-      session: @test_session,
       order_id: 450789469,
     )
 
@@ -49,7 +55,6 @@ class FulfillmentUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Fulfillment.all(
-      session: @test_session,
       order_id: 450789469,
       since_id: "255858046",
     )
@@ -68,7 +73,7 @@ class FulfillmentUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment = ShopifyAPI::Fulfillment.new(session: @test_session)
+    fulfillment = ShopifyAPI::Fulfillment.new
     fulfillment.order_id = 450789469
     fulfillment.location_id = 487838322
     fulfillment.tracking_number = 123456789
@@ -93,7 +98,7 @@ class FulfillmentUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment = ShopifyAPI::Fulfillment.new(session: @test_session)
+    fulfillment = ShopifyAPI::Fulfillment.new
     fulfillment.order_id = 450789469
     fulfillment.location_id = 655441491
     fulfillment.tracking_number = nil
@@ -118,7 +123,7 @@ class FulfillmentUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment = ShopifyAPI::Fulfillment.new(session: @test_session)
+    fulfillment = ShopifyAPI::Fulfillment.new
     fulfillment.order_id = 450789469
     fulfillment.location_id = 655441491
     fulfillment.tracking_numbers = [
@@ -147,7 +152,7 @@ class FulfillmentUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment = ShopifyAPI::Fulfillment.new(session: @test_session)
+    fulfillment = ShopifyAPI::Fulfillment.new
     fulfillment.order_id = 450789469
     fulfillment.location_id = 655441491
     fulfillment.tracking_url = "http://www.packagetrackr.com/track/somecarrier/1234567"
@@ -173,7 +178,7 @@ class FulfillmentUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment = ShopifyAPI::Fulfillment.new(session: @test_session)
+    fulfillment = ShopifyAPI::Fulfillment.new
     fulfillment.order_id = 450789469
     fulfillment.location_id = 655441491
     fulfillment.tracking_number = 123456789
@@ -199,7 +204,7 @@ class FulfillmentUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment = ShopifyAPI::Fulfillment.new(session: @test_session)
+    fulfillment = ShopifyAPI::Fulfillment.new
     fulfillment.order_id = 450789469
     fulfillment.location_id = 655441491
     fulfillment.tracking_number = 123456789010
@@ -225,7 +230,7 @@ class FulfillmentUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment = ShopifyAPI::Fulfillment.new(session: @test_session)
+    fulfillment = ShopifyAPI::Fulfillment.new
     fulfillment.order_id = 450789469
     fulfillment.location_id = 655441491
     fulfillment.tracking_number = 123456789010
@@ -252,7 +257,7 @@ class FulfillmentUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment = ShopifyAPI::Fulfillment.new(session: @test_session)
+    fulfillment = ShopifyAPI::Fulfillment.new
     fulfillment.order_id = 450789469
     fulfillment.location_id = 655441491
     fulfillment.tracking_number = "RR123456789CN"
@@ -278,7 +283,7 @@ class FulfillmentUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment = ShopifyAPI::Fulfillment.new(session: @test_session)
+    fulfillment = ShopifyAPI::Fulfillment.new
     fulfillment.order_id = 450789469
     fulfillment.location_id = 655441491
     fulfillment.tracking_number = 1234567
@@ -304,7 +309,7 @@ class FulfillmentUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment = ShopifyAPI::Fulfillment.new(session: @test_session)
+    fulfillment = ShopifyAPI::Fulfillment.new
     fulfillment.order_id = 450789469
     fulfillment.location_id = 655441491
     fulfillment.tracking_number = "CJ274101086US"
@@ -330,7 +335,7 @@ class FulfillmentUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment = ShopifyAPI::Fulfillment.new(session: @test_session)
+    fulfillment = ShopifyAPI::Fulfillment.new
     fulfillment.order_id = 450789469
     fulfillment.location_id = 655441491
     fulfillment.tracking_number = nil
@@ -355,7 +360,7 @@ class FulfillmentUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment = ShopifyAPI::Fulfillment.new(session: @test_session)
+    fulfillment = ShopifyAPI::Fulfillment.new
     fulfillment.order_id = 450789469
     fulfillment.location_id = 655441491
     fulfillment.tracking_number = nil
@@ -382,7 +387,6 @@ class FulfillmentUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Fulfillment.all(
-      session: @test_session,
       fulfillment_order_id: 1046000859,
     )
 
@@ -401,7 +405,6 @@ class FulfillmentUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Fulfillment.count(
-      session: @test_session,
       order_id: 450789469,
     )
 
@@ -420,7 +423,6 @@ class FulfillmentUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Fulfillment.find(
-      session: @test_session,
       order_id: 450789469,
       id: 255858046,
     )
@@ -439,7 +441,7 @@ class FulfillmentUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment = ShopifyAPI::Fulfillment.new(session: @test_session)
+    fulfillment = ShopifyAPI::Fulfillment.new
     fulfillment.order_id = 450789469
     fulfillment.id = 255858046
     fulfillment.tracking_number = 987654321
@@ -459,7 +461,7 @@ class FulfillmentUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment = ShopifyAPI::Fulfillment.new(session: @test_session)
+    fulfillment = ShopifyAPI::Fulfillment.new
     fulfillment.message = "The package was shipped this morning."
     fulfillment.notify_customer = false
     fulfillment.tracking_info = {
@@ -494,7 +496,7 @@ class FulfillmentUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment = ShopifyAPI::Fulfillment.new(session: @test_session)
+    fulfillment = ShopifyAPI::Fulfillment.new
     fulfillment.message = "The package was shipped this morning."
     fulfillment.notify_customer = false
     fulfillment.tracking_info = {
@@ -523,7 +525,7 @@ class FulfillmentUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment = ShopifyAPI::Fulfillment.new(session: @test_session)
+    fulfillment = ShopifyAPI::Fulfillment.new
     fulfillment.id = 1069019908
     fulfillment.update_tracking(
       body: {fulfillment: {notify_customer: true, tracking_info: {number: 1111, url: "http://www.my-url.com", company: "my-company"}}},
@@ -543,7 +545,7 @@ class FulfillmentUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment = ShopifyAPI::Fulfillment.new(session: @test_session)
+    fulfillment = ShopifyAPI::Fulfillment.new
     fulfillment.order_id = 450789469
     fulfillment.id = 255858046
     fulfillment.complete()
@@ -562,7 +564,7 @@ class FulfillmentUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment = ShopifyAPI::Fulfillment.new(session: @test_session)
+    fulfillment = ShopifyAPI::Fulfillment.new
     fulfillment.order_id = 450789469
     fulfillment.id = 255858046
     fulfillment.open()
@@ -581,7 +583,7 @@ class FulfillmentUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment = ShopifyAPI::Fulfillment.new(session: @test_session)
+    fulfillment = ShopifyAPI::Fulfillment.new
     fulfillment.order_id = 450789469
     fulfillment.id = 255858046
     fulfillment.cancel()
@@ -600,7 +602,7 @@ class FulfillmentUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment = ShopifyAPI::Fulfillment.new(session: @test_session)
+    fulfillment = ShopifyAPI::Fulfillment.new
     fulfillment.id = 1069019909
     fulfillment.cancel()
 

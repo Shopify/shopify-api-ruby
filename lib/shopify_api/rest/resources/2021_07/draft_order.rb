@@ -9,7 +9,7 @@ module ShopifyAPI
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: nil)
+    def initialize(session: ShopifyAPI::Context.active_session)
       super(session: session)
 
       @applied_discount = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
@@ -115,15 +115,15 @@ module ShopifyAPI
     class << self
       sig do
         params(
-          session: Auth::Session,
           id: T.any(Integer, String),
-          fields: T.untyped
+          fields: T.untyped,
+          session: Auth::Session
         ).returns(T.nilable(DraftOrder))
       end
       def find(
-        session:,
         id:,
-        fields: nil
+        fields: nil,
+        session: ShopifyAPI::Context.active_session
       )
         result = base_find(
           session: session,
@@ -135,13 +135,13 @@ module ShopifyAPI
 
       sig do
         params(
-          session: Auth::Session,
-          id: T.any(Integer, String)
+          id: T.any(Integer, String),
+          session: Auth::Session
         ).returns(T.untyped)
       end
       def delete(
-        session:,
-        id:
+        id:,
+        session: ShopifyAPI::Context.active_session
       )
         request(
           http_method: :delete,
@@ -154,7 +154,6 @@ module ShopifyAPI
 
       sig do
         params(
-          session: Auth::Session,
           fields: T.untyped,
           limit: T.untyped,
           since_id: T.untyped,
@@ -162,11 +161,11 @@ module ShopifyAPI
           updated_at_max: T.untyped,
           ids: T.untyped,
           status: T.untyped,
+          session: Auth::Session,
           kwargs: T.untyped
         ).returns(T::Array[DraftOrder])
       end
       def all(
-        session:,
         fields: nil,
         limit: nil,
         since_id: nil,
@@ -174,6 +173,7 @@ module ShopifyAPI
         updated_at_max: nil,
         ids: nil,
         status: nil,
+        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         response = base_find(
@@ -187,20 +187,20 @@ module ShopifyAPI
 
       sig do
         params(
-          session: Auth::Session,
           since_id: T.untyped,
           status: T.untyped,
           updated_at_max: T.untyped,
           updated_at_min: T.untyped,
+          session: Auth::Session,
           kwargs: T.untyped
         ).returns(T.untyped)
       end
       def count(
-        session:,
         since_id: nil,
         status: nil,
         updated_at_max: nil,
         updated_at_min: nil,
+        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         request(

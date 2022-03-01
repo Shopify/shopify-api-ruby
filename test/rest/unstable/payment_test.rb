@@ -14,8 +14,15 @@ class PaymentUnstableTest < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "unstable")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,7 +36,7 @@ class PaymentUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    payment = ShopifyAPI::Payment.new(session: @test_session)
+    payment = ShopifyAPI::Payment.new
     payment.checkout_id = "7yjf4v2we7gamku6a6h7tvm8h3mmvs4x"
     payment.request_details = {
       ip_address: "123.1.1.1",
@@ -56,7 +63,6 @@ class PaymentUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Payment.all(
-      session: @test_session,
       checkout_id: "7yjf4v2we7gamku6a6h7tvm8h3mmvs4x",
     )
 
@@ -75,7 +81,6 @@ class PaymentUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Payment.find(
-      session: @test_session,
       checkout_id: "7yjf4v2we7gamku6a6h7tvm8h3mmvs4x",
       id: 25428999,
     )
@@ -95,7 +100,6 @@ class PaymentUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Payment.find(
-      session: @test_session,
       checkout_id: "7yjf4v2we7gamku6a6h7tvm8h3mmvs4x",
       id: 25428999,
     )
@@ -115,7 +119,6 @@ class PaymentUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Payment.count(
-      session: @test_session,
       checkout_id: "7yjf4v2we7gamku6a6h7tvm8h3mmvs4x",
     )
 

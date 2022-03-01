@@ -9,7 +9,7 @@ module ShopifyAPI
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: nil)
+    def initialize(session: ShopifyAPI::Context.active_session)
       super(session: session)
 
       @amount = T.let(nil, T.nilable(String))
@@ -68,22 +68,22 @@ module ShopifyAPI
     class << self
       sig do
         params(
-          session: Auth::Session,
           since_id: T.untyped,
           last_id: T.untyped,
           test: T.untyped,
           payout_id: T.untyped,
           payout_status: T.untyped,
+          session: Auth::Session,
           kwargs: T.untyped
         ).returns(T.untyped)
       end
       def transactions(
-        session:,
         since_id: nil,
         last_id: nil,
         test: nil,
         payout_id: nil,
         payout_status: nil,
+        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         request(

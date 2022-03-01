@@ -14,8 +14,15 @@ class Checkout202110Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2021-10")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,7 +36,7 @@ class Checkout202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    checkout = ShopifyAPI::Checkout.new(session: @test_session)
+    checkout = ShopifyAPI::Checkout.new
     checkout.line_items = [
       {
         variant_id: 39072856,
@@ -52,7 +59,7 @@ class Checkout202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    checkout = ShopifyAPI::Checkout.new(session: @test_session)
+    checkout = ShopifyAPI::Checkout.new
     checkout.email = "me@example.com"
     checkout.save()
 
@@ -70,7 +77,7 @@ class Checkout202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    checkout = ShopifyAPI::Checkout.new(session: @test_session)
+    checkout = ShopifyAPI::Checkout.new
     checkout.token = "b490a9220cd14d7344024f4874f640a6"
     checkout.complete()
 
@@ -89,7 +96,6 @@ class Checkout202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Checkout.find(
-      session: @test_session,
       token: "bd5a8aa1ecd019dd3520ff791ee3a24c",
     )
 
@@ -108,7 +114,6 @@ class Checkout202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Checkout.find(
-      session: @test_session,
       token: "7yjf4v2we7gamku6a6h7tvm8h3mmvs4x",
     )
 
@@ -127,7 +132,6 @@ class Checkout202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Checkout.find(
-      session: @test_session,
       token: "exuw7apwoycchjuwtiqg8nytfhphr62a",
     )
 
@@ -145,7 +149,7 @@ class Checkout202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    checkout = ShopifyAPI::Checkout.new(session: @test_session)
+    checkout = ShopifyAPI::Checkout.new
     checkout.token = "exuw7apwoycchjuwtiqg8nytfhphr62a"
     checkout.email = "john.smith@example.com"
     checkout.shipping_address = {
@@ -174,7 +178,7 @@ class Checkout202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    checkout = ShopifyAPI::Checkout.new(session: @test_session)
+    checkout = ShopifyAPI::Checkout.new
     checkout.token = "exuw7apwoycchjuwtiqg8nytfhphr62a"
     checkout.shipping_line = {
       handle: "shopify-Free Shipping-0.00"
@@ -196,7 +200,6 @@ class Checkout202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Checkout.shipping_rates(
-      session: @test_session,
       token: "exuw7apwoycchjuwtiqg8nytfhphr62a",
     )
 
@@ -215,7 +218,6 @@ class Checkout202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Checkout.shipping_rates(
-      session: @test_session,
       token: "exuw7apwoycchjuwtiqg8nytfhphr62a",
     )
 
@@ -234,7 +236,6 @@ class Checkout202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Checkout.shipping_rates(
-      session: @test_session,
       token: "zs9ru89kuqcdagk8bz4r9hnxt22wwd42",
     )
 

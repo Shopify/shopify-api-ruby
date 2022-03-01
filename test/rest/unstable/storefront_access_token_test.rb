@@ -14,8 +14,15 @@ class StorefrontAccessTokenUnstableTest < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "unstable")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,7 +36,7 @@ class StorefrontAccessTokenUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    storefront_access_token = ShopifyAPI::StorefrontAccessToken.new(session: @test_session)
+    storefront_access_token = ShopifyAPI::StorefrontAccessToken.new
     storefront_access_token.title = "Test"
     storefront_access_token.save()
 
@@ -47,9 +54,7 @@ class StorefrontAccessTokenUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::StorefrontAccessToken.all(
-      session: @test_session,
-    )
+    ShopifyAPI::StorefrontAccessToken.all()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/unstable/storefront_access_tokens.json")
   end
@@ -66,7 +71,6 @@ class StorefrontAccessTokenUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::StorefrontAccessToken.delete(
-      session: @test_session,
       id: 755357713,
     )
 

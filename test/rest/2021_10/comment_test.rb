@@ -14,8 +14,15 @@ class Comment202110Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2021-10")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -30,7 +37,6 @@ class Comment202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Comment.all(
-      session: @test_session,
       article_id: "134645308",
       blog_id: "241253187",
     )
@@ -50,7 +56,6 @@ class Comment202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Comment.all(
-      session: @test_session,
       blog_id: "241253187",
     )
 
@@ -68,9 +73,7 @@ class Comment202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Comment.all(
-      session: @test_session,
-    )
+    ShopifyAPI::Comment.all()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-10/comments.json")
   end
@@ -87,7 +90,6 @@ class Comment202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Comment.all(
-      session: @test_session,
       since_id: "118373535",
     )
 
@@ -106,7 +108,6 @@ class Comment202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Comment.count(
-      session: @test_session,
       article_id: "134645308",
       blog_id: "241253187",
     )
@@ -126,7 +127,6 @@ class Comment202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Comment.count(
-      session: @test_session,
       blog_id: "241253187",
     )
 
@@ -144,9 +144,7 @@ class Comment202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Comment.count(
-      session: @test_session,
-    )
+    ShopifyAPI::Comment.count()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-10/comments/count.json")
   end
@@ -163,7 +161,6 @@ class Comment202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Comment.find(
-      session: @test_session,
       id: 118373535,
     )
 
@@ -181,7 +178,7 @@ class Comment202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    comment = ShopifyAPI::Comment.new(session: @test_session)
+    comment = ShopifyAPI::Comment.new
     comment.id = 118373535
     comment.body = "You can even update through a web service."
     comment.author = "Your new name"
@@ -203,7 +200,7 @@ class Comment202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    comment = ShopifyAPI::Comment.new(session: @test_session)
+    comment = ShopifyAPI::Comment.new
     comment.body = "I like comments\nAnd I like posting them *RESTfully*."
     comment.author = "Your name"
     comment.email = "your@email.com"
@@ -226,7 +223,7 @@ class Comment202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    comment = ShopifyAPI::Comment.new(session: @test_session)
+    comment = ShopifyAPI::Comment.new
     comment.id = 653537639
     comment.spam()
 
@@ -244,7 +241,7 @@ class Comment202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    comment = ShopifyAPI::Comment.new(session: @test_session)
+    comment = ShopifyAPI::Comment.new
     comment.id = 653537639
     comment.not_spam()
 
@@ -262,7 +259,7 @@ class Comment202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    comment = ShopifyAPI::Comment.new(session: @test_session)
+    comment = ShopifyAPI::Comment.new
     comment.id = 653537639
     comment.approve()
 
@@ -280,7 +277,7 @@ class Comment202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    comment = ShopifyAPI::Comment.new(session: @test_session)
+    comment = ShopifyAPI::Comment.new
     comment.id = 653537639
     comment.remove()
 
@@ -298,7 +295,7 @@ class Comment202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    comment = ShopifyAPI::Comment.new(session: @test_session)
+    comment = ShopifyAPI::Comment.new
     comment.id = 653537639
     comment.restore()
 

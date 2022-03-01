@@ -14,8 +14,15 @@ class OrderRiskUnstableTest < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "unstable")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,7 +36,7 @@ class OrderRiskUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order_risk = ShopifyAPI::OrderRisk.new(session: @test_session)
+    order_risk = ShopifyAPI::OrderRisk.new
     order_risk.order_id = 450789469
     order_risk.message = "This order came from an anonymous proxy"
     order_risk.recommendation = "cancel"
@@ -54,7 +61,6 @@ class OrderRiskUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::OrderRisk.all(
-      session: @test_session,
       order_id: 450789469,
     )
 
@@ -73,7 +79,6 @@ class OrderRiskUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::OrderRisk.find(
-      session: @test_session,
       order_id: 450789469,
       id: 284138680,
     )
@@ -92,7 +97,7 @@ class OrderRiskUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order_risk = ShopifyAPI::OrderRisk.new(session: @test_session)
+    order_risk = ShopifyAPI::OrderRisk.new
     order_risk.order_id = 450789469
     order_risk.id = 284138680
     order_risk.message = "After further review, this is a legitimate order"
@@ -117,7 +122,6 @@ class OrderRiskUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::OrderRisk.delete(
-      session: @test_session,
       order_id: 450789469,
       id: 284138680,
     )

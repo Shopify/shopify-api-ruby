@@ -14,8 +14,15 @@ class Metafield202107Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2021-07")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,9 +36,7 @@ class Metafield202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Metafield.all(
-      session: @test_session,
-    )
+    ShopifyAPI::Metafield.all()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-07/metafields.json")
   end
@@ -48,7 +53,6 @@ class Metafield202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Metafield.all(
-      session: @test_session,
       since_id: "721389482",
     )
 
@@ -66,7 +70,7 @@ class Metafield202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    metafield = ShopifyAPI::Metafield.new(session: @test_session)
+    metafield = ShopifyAPI::Metafield.new
     metafield.namespace = "inventory"
     metafield.key = "warehouse"
     metafield.value = 25
@@ -88,7 +92,6 @@ class Metafield202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Metafield.all(
-      session: @test_session,
       metafield: {"owner_id" => 850703190, "owner_resource" => "product_image"},
     )
 
@@ -106,9 +109,7 @@ class Metafield202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Metafield.count(
-      session: @test_session,
-    )
+    ShopifyAPI::Metafield.count()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-07/metafields/count.json")
   end
@@ -125,7 +126,6 @@ class Metafield202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Metafield.find(
-      session: @test_session,
       id: 721389482,
     )
 
@@ -143,7 +143,7 @@ class Metafield202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    metafield = ShopifyAPI::Metafield.new(session: @test_session)
+    metafield = ShopifyAPI::Metafield.new
     metafield.id = 721389482
     metafield.value = "something new"
     metafield.type = "single_line_text_field"
@@ -164,7 +164,6 @@ class Metafield202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Metafield.delete(
-      session: @test_session,
       id: 721389482,
     )
 

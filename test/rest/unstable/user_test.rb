@@ -14,8 +14,15 @@ class UserUnstableTest < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "unstable")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,9 +36,7 @@ class UserUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::User.all(
-      session: @test_session,
-    )
+    ShopifyAPI::User.all()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/unstable/users.json")
   end
@@ -48,7 +53,6 @@ class UserUnstableTest < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::User.find(
-      session: @test_session,
       id: 548380009,
     )
 
@@ -66,9 +70,7 @@ class UserUnstableTest < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::User.current(
-      session: @test_session,
-    )
+    ShopifyAPI::User.current()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/unstable/users/current.json")
   end

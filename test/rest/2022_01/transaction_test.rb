@@ -14,8 +14,15 @@ class Transaction202201Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2022-01")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -30,7 +37,6 @@ class Transaction202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Transaction.all(
-      session: @test_session,
       order_id: 450789469,
     )
 
@@ -49,7 +55,6 @@ class Transaction202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Transaction.all(
-      session: @test_session,
       order_id: 450789469,
       since_id: "801038806",
     )
@@ -68,7 +73,7 @@ class Transaction202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    transaction = ShopifyAPI::Transaction.new(session: @test_session)
+    transaction = ShopifyAPI::Transaction.new
     transaction.order_id = 450789469
     transaction.currency = "USD"
     transaction.amount = "10.00"
@@ -90,7 +95,7 @@ class Transaction202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    transaction = ShopifyAPI::Transaction.new(session: @test_session)
+    transaction = ShopifyAPI::Transaction.new
     transaction.order_id = 450789469
     transaction.currency = "USD"
     transaction.amount = "10.00"
@@ -112,7 +117,7 @@ class Transaction202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    transaction = ShopifyAPI::Transaction.new(session: @test_session)
+    transaction = ShopifyAPI::Transaction.new
     transaction.order_id = 450789469
     transaction.currency = "USD"
     transaction.amount = "10.00"
@@ -135,7 +140,7 @@ class Transaction202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    transaction = ShopifyAPI::Transaction.new(session: @test_session)
+    transaction = ShopifyAPI::Transaction.new
     transaction.order_id = 450789469
     transaction.kind = "capture"
     transaction.authorization = "authorization-key"
@@ -156,7 +161,6 @@ class Transaction202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Transaction.count(
-      session: @test_session,
       order_id: 450789469,
     )
 
@@ -175,7 +179,6 @@ class Transaction202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Transaction.find(
-      session: @test_session,
       order_id: 450789469,
       id: 389404469,
     )
