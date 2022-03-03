@@ -119,7 +119,8 @@ module ShopifyAPI
             is_online: is_online,
             associated_user_scope: associated_user_scope,
             associated_user: associated_user,
-            expires: expires
+            expires: expires,
+            session: session_params[:session]
           )
         end
       end

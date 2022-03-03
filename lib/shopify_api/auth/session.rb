@@ -27,6 +27,9 @@ module ShopifyAPI
       sig { returns(T.nilable(AssociatedUser)) }
       attr_accessor :associated_user
 
+      sig { returns(T.nilable(String)) }
+      attr_accessor :session
+
       sig { returns(T::Boolean) }
       def online?
         @is_online
@@ -42,11 +45,12 @@ module ShopifyAPI
           associated_user_scope: T.nilable(T.any(T::Array[String], String)),
           expires: T.nilable(Time),
           is_online: T.nilable(T::Boolean),
-          associated_user: T.nilable(AssociatedUser)
+          associated_user: T.nilable(AssociatedUser),
+          session: T.nilable(String)
         ).void
       end
       def initialize(shop:, id: nil, state: nil, access_token: "",
-        scope: [], associated_user_scope: nil, expires: nil, is_online: nil, associated_user: nil)
+        scope: [], associated_user_scope: nil, expires: nil, is_online: nil, associated_user: nil, session: nil)
         @id = T.let(id || SecureRandom.uuid, String)
         @shop = shop
         @state = state
@@ -58,6 +62,7 @@ module ShopifyAPI
         @expires = expires
         @associated_user = associated_user
         @is_online = T.let(is_online || !associated_user.nil?, T::Boolean)
+        @session = session
       end
 
       class << self
@@ -102,7 +107,8 @@ module ShopifyAPI
             associated_user_scope == other.associated_user_scope &&
             (!(expires.nil? ^ other.expires.nil?) && (expires.nil? || expires.to_i == other.expires.to_i)) &&
             online? == other.online? &&
-            associated_user == other.associated_user
+            associated_user == other.associated_user &&
+            session == other.session
           )
         else
           false
