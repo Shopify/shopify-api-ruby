@@ -9,7 +9,7 @@ module ShopifyAPI
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: ShopifyAPI::Context.active_session)
+    def initialize(session: nil)
       super(session: session)
 
       @account_owner = T.let(nil, T.nilable(T::Boolean))
@@ -68,13 +68,13 @@ module ShopifyAPI
     class << self
       sig do
         params(
-          id: T.any(Integer, String),
-          session: Auth::Session
+          session: Auth::Session,
+          id: T.any(Integer, String)
         ).returns(T.nilable(User))
       end
       def find(
-        id:,
-        session: ShopifyAPI::Context.active_session
+        session:,
+        id:
       )
         result = base_find(
           session: session,
@@ -86,16 +86,16 @@ module ShopifyAPI
 
       sig do
         params(
+          session: Auth::Session,
           limit: T.untyped,
           page_info: T.untyped,
-          session: Auth::Session,
           kwargs: T.untyped
         ).returns(T::Array[User])
       end
       def all(
+        session:,
         limit: nil,
         page_info: nil,
-        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         response = base_find(
@@ -114,7 +114,7 @@ module ShopifyAPI
         ).returns(T.untyped)
       end
       def current(
-        session: ShopifyAPI::Context.active_session,
+        session:,
         **kwargs
       )
         request(

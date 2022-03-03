@@ -14,15 +14,8 @@ class Collect202107Test < Test::Unit::TestCase
   def setup
     super
 
-    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
-    ShopifyAPI::Context.activate_session(test_session)
+    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
     modify_context(api_version: "2021-07")
-  end
-
-  def teardown
-    super
-
-    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -32,11 +25,11 @@ class Collect202107Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-07/collects.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "collect" => hash_including({product_id: 921728736, collection_id: 841564295}) }
+        body: { "collect" => hash_including({"product_id" => 921728736, "collection_id" => 841564295}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    collect = ShopifyAPI::Collect.new
+    collect = ShopifyAPI::Collect.new(session: @test_session)
     collect.product_id = 921728736
     collect.collection_id = 841564295
     collect.save()
@@ -55,7 +48,9 @@ class Collect202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Collect.all()
+    ShopifyAPI::Collect.all(
+      session: @test_session,
+    )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-07/collects.json")
   end
@@ -72,6 +67,7 @@ class Collect202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Collect.all(
+      session: @test_session,
       product_id: "632910392",
     )
 
@@ -90,6 +86,7 @@ class Collect202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Collect.all(
+      session: @test_session,
       collection_id: "841564295",
     )
 
@@ -108,6 +105,7 @@ class Collect202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Collect.delete(
+      session: @test_session,
       id: 455204334,
     )
 
@@ -126,6 +124,7 @@ class Collect202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Collect.find(
+      session: @test_session,
       id: 455204334,
     )
 
@@ -143,7 +142,9 @@ class Collect202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Collect.count()
+    ShopifyAPI::Collect.count(
+      session: @test_session,
+    )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-07/collects/count.json")
   end
@@ -160,6 +161,7 @@ class Collect202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Collect.count(
+      session: @test_session,
       product_id: "632910392",
     )
 
@@ -178,6 +180,7 @@ class Collect202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Collect.count(
+      session: @test_session,
       collection_id: "841564295",
     )
 

@@ -14,15 +14,8 @@ class Asset202110Test < Test::Unit::TestCase
   def setup
     super
 
-    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
-    ShopifyAPI::Context.activate_session(test_session)
+    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
     modify_context(api_version: "2021-10")
-  end
-
-  def teardown
-    super
-
-    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -37,6 +30,7 @@ class Asset202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Asset.all(
+      session: @test_session,
       theme_id: 828155753,
     )
 
@@ -50,11 +44,11 @@ class Asset202110Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-10/themes/828155753/assets.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "asset" => hash_including({key: "templates/index.liquid", value: "<img src='backsoon-postit.png'><p>We are busy updating the store for you and will be back within the hour.</p>"}) }
+        body: { "asset" => hash_including({"key" => "templates/index.liquid", "value" => "<img src='backsoon-postit.png'><p>We are busy updating the store for you and will be back within the hour.</p>"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    asset = ShopifyAPI::Asset.new
+    asset = ShopifyAPI::Asset.new(session: @test_session)
     asset.theme_id = 828155753
     asset.key = "templates/index.liquid"
     asset.value = "<img src='backsoon-postit.png'><p>We are busy updating the store for you and will be back within the hour.</p>"
@@ -70,11 +64,11 @@ class Asset202110Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-10/themes/828155753/assets.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "asset" => hash_including({key: "assets/empty.gif", attachment: "R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==\n"}) }
+        body: { "asset" => hash_including({"key" => "assets/empty.gif", "attachment" => "R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==\n"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    asset = ShopifyAPI::Asset.new
+    asset = ShopifyAPI::Asset.new(session: @test_session)
     asset.theme_id = 828155753
     asset.key = "assets/empty.gif"
     asset.attachment = "R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==\n"
@@ -90,11 +84,11 @@ class Asset202110Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-10/themes/828155753/assets.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "asset" => hash_including({key: "assets/bg-body.gif", src: "http://apple.com/new_bg.gif"}) }
+        body: { "asset" => hash_including({"key" => "assets/bg-body.gif", "src" => "http://apple.com/new_bg.gif"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    asset = ShopifyAPI::Asset.new
+    asset = ShopifyAPI::Asset.new(session: @test_session)
     asset.theme_id = 828155753
     asset.key = "assets/bg-body.gif"
     asset.src = "http://apple.com/new_bg.gif"
@@ -110,11 +104,11 @@ class Asset202110Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-10/themes/828155753/assets.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "asset" => hash_including({key: "layout/alternate.liquid", source_key: "layout/theme.liquid"}) }
+        body: { "asset" => hash_including({"key" => "layout/alternate.liquid", "source_key" => "layout/theme.liquid"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    asset = ShopifyAPI::Asset.new
+    asset = ShopifyAPI::Asset.new(session: @test_session)
     asset.theme_id = 828155753
     asset.key = "layout/alternate.liquid"
     asset.source_key = "layout/theme.liquid"
@@ -135,6 +129,7 @@ class Asset202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Asset.all(
+      session: @test_session,
       theme_id: 828155753,
       asset: {"key" => "templates/index.liquid"},
     )
@@ -154,6 +149,7 @@ class Asset202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Asset.delete(
+      session: @test_session,
       theme_id: 828155753,
       asset: {"key" => "assets/bg-body.gif"},
     )

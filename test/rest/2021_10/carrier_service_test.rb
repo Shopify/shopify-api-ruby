@@ -14,15 +14,8 @@ class CarrierService202110Test < Test::Unit::TestCase
   def setup
     super
 
-    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
-    ShopifyAPI::Context.activate_session(test_session)
+    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
     modify_context(api_version: "2021-10")
-  end
-
-  def teardown
-    super
-
-    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -32,11 +25,11 @@ class CarrierService202110Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-10/carrier_services.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "carrier_service" => hash_including({name: "Shipping Rate Provider", callback_url: "http://shippingrateprovider.com", service_discovery: true}) }
+        body: { "carrier_service" => hash_including({"name" => "Shipping Rate Provider", "callback_url" => "http://shippingrateprovider.com", "service_discovery" => true}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    carrier_service = ShopifyAPI::CarrierService.new
+    carrier_service = ShopifyAPI::CarrierService.new(session: @test_session)
     carrier_service.name = "Shipping Rate Provider"
     carrier_service.callback_url = "http://shippingrateprovider.com"
     carrier_service.service_discovery = true
@@ -56,7 +49,9 @@ class CarrierService202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::CarrierService.all()
+    ShopifyAPI::CarrierService.all(
+      session: @test_session,
+    )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-10/carrier_services.json")
   end
@@ -68,11 +63,11 @@ class CarrierService202110Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-10/carrier_services/1036894964.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "carrier_service" => hash_including({id: 1036894964, name: "Some new name", active: false}) }
+        body: { "carrier_service" => hash_including({"id" => 1036894964, "name" => "Some new name", "active" => false}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    carrier_service = ShopifyAPI::CarrierService.new
+    carrier_service = ShopifyAPI::CarrierService.new(session: @test_session)
     carrier_service.id = 1036894964
     carrier_service.name = "Some new name"
     carrier_service.active = false
@@ -93,6 +88,7 @@ class CarrierService202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::CarrierService.find(
+      session: @test_session,
       id: 1036894966,
     )
 
@@ -111,6 +107,7 @@ class CarrierService202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::CarrierService.delete(
+      session: @test_session,
       id: 1036894967,
     )
 

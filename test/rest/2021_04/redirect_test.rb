@@ -14,15 +14,8 @@ class Redirect202104Test < Test::Unit::TestCase
   def setup
     super
 
-    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
-    ShopifyAPI::Context.activate_session(test_session)
+    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
     modify_context(api_version: "2021-04")
-  end
-
-  def teardown
-    super
-
-    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -36,7 +29,9 @@ class Redirect202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Redirect.all()
+    ShopifyAPI::Redirect.all(
+      session: @test_session,
+    )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-04/redirects.json")
   end
@@ -53,6 +48,7 @@ class Redirect202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Redirect.all(
+      session: @test_session,
       since_id: "668809255",
     )
 
@@ -66,11 +62,11 @@ class Redirect202104Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-04/redirects.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "redirect" => hash_including({path: "/ipod", target: "/pages/itunes"}) }
+        body: { "redirect" => hash_including({"path" => "/ipod", "target" => "/pages/itunes"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    redirect = ShopifyAPI::Redirect.new
+    redirect = ShopifyAPI::Redirect.new(session: @test_session)
     redirect.path = "/ipod"
     redirect.target = "/pages/itunes"
     redirect.save()
@@ -85,11 +81,11 @@ class Redirect202104Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-04/redirects.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "redirect" => hash_including({path: "http://www.apple.com/forums", target: "http://forums.apple.com"}) }
+        body: { "redirect" => hash_including({"path" => "http://www.apple.com/forums", "target" => "http://forums.apple.com"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    redirect = ShopifyAPI::Redirect.new
+    redirect = ShopifyAPI::Redirect.new(session: @test_session)
     redirect.path = "http://www.apple.com/forums"
     redirect.target = "http://forums.apple.com"
     redirect.save()
@@ -108,7 +104,9 @@ class Redirect202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Redirect.count()
+    ShopifyAPI::Redirect.count(
+      session: @test_session,
+    )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-04/redirects/count.json")
   end
@@ -125,6 +123,7 @@ class Redirect202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Redirect.find(
+      session: @test_session,
       id: 668809255,
     )
 
@@ -138,11 +137,11 @@ class Redirect202104Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-04/redirects/668809255.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "redirect" => hash_including({id: 668809255, path: "/tiger"}) }
+        body: { "redirect" => hash_including({"id" => 668809255, "path" => "/tiger"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    redirect = ShopifyAPI::Redirect.new
+    redirect = ShopifyAPI::Redirect.new(session: @test_session)
     redirect.id = 668809255
     redirect.path = "/tiger"
     redirect.save()
@@ -157,11 +156,11 @@ class Redirect202104Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-04/redirects/668809255.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "redirect" => hash_including({id: 668809255, target: "/pages/macpro"}) }
+        body: { "redirect" => hash_including({"id" => 668809255, "target" => "/pages/macpro"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    redirect = ShopifyAPI::Redirect.new
+    redirect = ShopifyAPI::Redirect.new(session: @test_session)
     redirect.id = 668809255
     redirect.target = "/pages/macpro"
     redirect.save()
@@ -176,11 +175,11 @@ class Redirect202104Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-04/redirects/950115854.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "redirect" => hash_including({id: 950115854, path: "/powermac", target: "/pages/macpro"}) }
+        body: { "redirect" => hash_including({"id" => 950115854, "path" => "/powermac", "target" => "/pages/macpro"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    redirect = ShopifyAPI::Redirect.new
+    redirect = ShopifyAPI::Redirect.new(session: @test_session)
     redirect.id = 950115854
     redirect.path = "/powermac"
     redirect.target = "/pages/macpro"
@@ -201,6 +200,7 @@ class Redirect202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Redirect.delete(
+      session: @test_session,
       id: 668809255,
     )
 

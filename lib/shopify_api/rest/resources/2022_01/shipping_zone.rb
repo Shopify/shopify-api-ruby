@@ -9,7 +9,7 @@ module ShopifyAPI
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: ShopifyAPI::Context.active_session)
+    def initialize(session: nil)
       super(session: session)
 
       @carrier_shipping_rate_providers = T.let(nil, T.untyped)
@@ -54,14 +54,14 @@ module ShopifyAPI
     class << self
       sig do
         params(
-          fields: T.untyped,
           session: Auth::Session,
+          fields: T.untyped,
           kwargs: T.untyped
         ).returns(T::Array[ShippingZone])
       end
       def all(
+        session:,
         fields: nil,
-        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         response = base_find(

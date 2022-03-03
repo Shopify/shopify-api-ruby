@@ -9,11 +9,11 @@ module ShopifyAPI
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: ShopifyAPI::Context.active_session)
+    def initialize(session: nil)
       super(session: session)
 
       @application_id = T.let(nil, T.nilable(String))
-      @enabled_shared_webcredentials = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @enabled_shared_webcredentials = T.let(nil, T.nilable(T::Boolean))
       @enabled_universal_or_app_links = T.let(nil, T.nilable(T::Boolean))
       @id = T.let(nil, T.nilable(Integer))
       @platform = T.let(nil, T.nilable(String))
@@ -32,7 +32,7 @@ module ShopifyAPI
 
     sig { returns(T.nilable(String)) }
     attr_reader :application_id
-    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
+    sig { returns(T.nilable(T::Boolean)) }
     attr_reader :enabled_shared_webcredentials
     sig { returns(T.nilable(T::Boolean)) }
     attr_reader :enabled_universal_or_app_links
@@ -46,13 +46,13 @@ module ShopifyAPI
     class << self
       sig do
         params(
-          id: T.any(Integer, String),
-          session: Auth::Session
+          session: Auth::Session,
+          id: T.any(Integer, String)
         ).returns(T.nilable(MobilePlatformApplication))
       end
       def find(
-        id:,
-        session: ShopifyAPI::Context.active_session
+        session:,
+        id:
       )
         result = base_find(
           session: session,
@@ -64,13 +64,13 @@ module ShopifyAPI
 
       sig do
         params(
-          id: T.any(Integer, String),
-          session: Auth::Session
+          session: Auth::Session,
+          id: T.any(Integer, String)
         ).returns(T.untyped)
       end
       def delete(
-        id:,
-        session: ShopifyAPI::Context.active_session
+        session:,
+        id:
       )
         request(
           http_method: :delete,
@@ -88,7 +88,7 @@ module ShopifyAPI
         ).returns(T::Array[MobilePlatformApplication])
       end
       def all(
-        session: ShopifyAPI::Context.active_session,
+        session:,
         **kwargs
       )
         response = base_find(

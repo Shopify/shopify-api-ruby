@@ -14,15 +14,8 @@ class Order202104Test < Test::Unit::TestCase
   def setup
     super
 
-    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
-    ShopifyAPI::Context.activate_session(test_session)
+    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
     modify_context(api_version: "2021-04")
-  end
-
-  def teardown
-    super
-
-    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -37,6 +30,7 @@ class Order202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Order.all(
+      session: @test_session,
       status: "any",
     )
 
@@ -55,6 +49,7 @@ class Order202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Order.all(
+      session: @test_session,
       ids: "1073459980",
     )
 
@@ -73,6 +68,7 @@ class Order202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Order.all(
+      session: @test_session,
       financial_status: "authorized",
     )
 
@@ -91,6 +87,7 @@ class Order202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Order.all(
+      session: @test_session,
       updated_at_min: "2005-07-31T15:57:11-04:00",
     )
 
@@ -109,6 +106,7 @@ class Order202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Order.all(
+      session: @test_session,
       fields: "created_at,id,name,total-price",
     )
 
@@ -127,6 +125,7 @@ class Order202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Order.all(
+      session: @test_session,
       since_id: "123",
     )
 
@@ -145,6 +144,7 @@ class Order202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Order.find(
+      session: @test_session,
       id: 450789469,
     )
 
@@ -163,6 +163,7 @@ class Order202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Order.find(
+      session: @test_session,
       id: 450789469,
       fields: "id,line_items,name,total_price",
     )
@@ -177,11 +178,11 @@ class Order202104Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-04/orders/450789469.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "order" => hash_including({id: 450789469, note: "Customer contacted us about a custom engraving on this iPod"}) }
+        body: { "order" => hash_including({"id" => 450789469, "note" => "Customer contacted us about a custom engraving on this iPod"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new
+    order = ShopifyAPI::Order.new(session: @test_session)
     order.id = 450789469
     order.note = "Customer contacted us about a custom engraving on this iPod"
     order.save()
@@ -196,16 +197,16 @@ class Order202104Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-04/orders/450789469.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "order" => hash_including({id: 450789469, note_attributes: [{name: "colour", value: "red"}]}) }
+        body: { "order" => hash_including({"id" => 450789469, "note_attributes" => [{"name" => "colour", "value" => "red"}]}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new
+    order = ShopifyAPI::Order.new(session: @test_session)
     order.id = 450789469
     order.note_attributes = [
       {
-        name: "colour",
-        value: "red"
+        "name" => "colour",
+        "value" => "red"
       }
     ]
     order.save()
@@ -220,11 +221,11 @@ class Order202104Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-04/orders/450789469.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "order" => hash_including({id: 450789469, email: "a-different@email.com"}) }
+        body: { "order" => hash_including({"id" => 450789469, "email" => "a-different@email.com"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new
+    order = ShopifyAPI::Order.new(session: @test_session)
     order.id = 450789469
     order.email = "a-different@email.com"
     order.save()
@@ -239,11 +240,11 @@ class Order202104Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-04/orders/450789469.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "order" => hash_including({id: 450789469, phone: " 15145556677"}) }
+        body: { "order" => hash_including({"id" => 450789469, "phone" => " 15145556677"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new
+    order = ShopifyAPI::Order.new(session: @test_session)
     order.id = 450789469
     order.phone = " 15145556677"
     order.save()
@@ -258,11 +259,11 @@ class Order202104Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-04/orders/450789469.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "order" => hash_including({id: 450789469, buyer_accepts_marketing: true}) }
+        body: { "order" => hash_including({"id" => 450789469, "buyer_accepts_marketing" => true}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new
+    order = ShopifyAPI::Order.new(session: @test_session)
     order.id = 450789469
     order.buyer_accepts_marketing = true
     order.save()
@@ -277,15 +278,15 @@ class Order202104Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-04/orders/450789469.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "order" => hash_including({id: 450789469, shipping_address: {address1: "123 Ship Street", city: "Shipsville"}}) }
+        body: { "order" => hash_including({"id" => 450789469, "shipping_address" => {"address1" => "123 Ship Street", "city" => "Shipsville"}}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new
+    order = ShopifyAPI::Order.new(session: @test_session)
     order.id = 450789469
     order.shipping_address = {
-      address1: "123 Ship Street",
-      city: "Shipsville"
+      "address1" => "123 Ship Street",
+      "city" => "Shipsville"
     }
     order.save()
 
@@ -299,11 +300,11 @@ class Order202104Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-04/orders/450789469.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "order" => hash_including({id: 450789469, customer: nil}) }
+        body: { "order" => hash_including({"id" => 450789469, "customer" => nil}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new
+    order = ShopifyAPI::Order.new(session: @test_session)
     order.id = 450789469
     order.customer = nil
     order.save()
@@ -318,11 +319,11 @@ class Order202104Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-04/orders/450789469.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "order" => hash_including({id: 450789469, tags: "External, Inbound, Outbound"}) }
+        body: { "order" => hash_including({"id" => 450789469, "tags" => "External, Inbound, Outbound"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new
+    order = ShopifyAPI::Order.new(session: @test_session)
     order.id = 450789469
     order.tags = "External, Inbound, Outbound"
     order.save()
@@ -337,18 +338,18 @@ class Order202104Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-04/orders/450789469.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "order" => hash_including({id: 450789469, metafields: [{key: "new", value: "newvalue", value_type: "string", namespace: "global"}]}) }
+        body: { "order" => hash_including({"id" => 450789469, "metafields" => [{"key" => "new", "value" => "newvalue", "value_type" => "string", "namespace" => "global"}]}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new
+    order = ShopifyAPI::Order.new(session: @test_session)
     order.id = 450789469
     order.metafields = [
       {
-        key: "new",
-        value: "newvalue",
-        value_type: "string",
-        namespace: "global"
+        "key" => "new",
+        "value" => "newvalue",
+        "value_type" => "string",
+        "namespace" => "global"
       }
     ]
     order.save()
@@ -368,6 +369,7 @@ class Order202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Order.delete(
+      session: @test_session,
       id: 450789469,
     )
 
@@ -386,6 +388,7 @@ class Order202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Order.count(
+      session: @test_session,
       status: "any",
     )
 
@@ -404,6 +407,7 @@ class Order202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Order.count(
+      session: @test_session,
       financial_status: "authorized",
     )
 
@@ -421,7 +425,7 @@ class Order202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new
+    order = ShopifyAPI::Order.new(session: @test_session)
     order.id = 450789469
     order.close()
 
@@ -439,7 +443,7 @@ class Order202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new
+    order = ShopifyAPI::Order.new(session: @test_session)
     order.id = 450789469
     order.open()
 
@@ -457,7 +461,7 @@ class Order202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new
+    order = ShopifyAPI::Order.new(session: @test_session)
     order.id = 450789469
     order.cancel()
 
@@ -471,14 +475,14 @@ class Order202104Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-04/orders/450789469/cancel.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: hash_including({amount: "10.00", currency: "USD"})
+        body: hash_including({"amount" => "10.00", "currency" => "USD"})
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new
+    order = ShopifyAPI::Order.new(session: @test_session)
     order.id = 450789469
     order.cancel(
-      body: {amount: "10.00", currency: "USD"},
+      body: {"amount" => "10.00", "currency" => "USD"},
     )
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2021-04/orders/450789469/cancel.json")
@@ -491,14 +495,14 @@ class Order202104Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-04/orders/450789469/cancel.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: hash_including({refund: {note: "Customer made a mistake", shipping: {full_refund: true}, refund_line_items: [{line_item_id: 466157049, quantity: 1, restock_type: "cancel", location_id: 24826418}], transactions: [{parent_id: 1068278509, amount: "10.00", kind: "refund", gateway: "bogus"}, {parent_id: 1068278510, amount: "100.00", kind: "refund", gateway: "gift_card"}]}})
+        body: hash_including({"refund" => {"note" => "Customer made a mistake", "shipping" => {"full_refund" => true}, "refund_line_items" => [{"line_item_id" => 466157049, "quantity" => 1, "restock_type" => "cancel", "location_id" => 24826418}], "transactions" => [{"parent_id" => 1068278509, "amount" => "10.00", "kind" => "refund", "gateway" => "bogus"}, {"parent_id" => 1068278510, "amount" => "100.00", "kind" => "refund", "gateway" => "gift_card"}]}})
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new
+    order = ShopifyAPI::Order.new(session: @test_session)
     order.id = 450789469
     order.cancel(
-      body: {refund: {note: "Customer made a mistake", shipping: {full_refund: true}, refund_line_items: [{line_item_id: 466157049, quantity: 1, restock_type: "cancel", location_id: 24826418}], transactions: [{parent_id: 1068278509, amount: "10.00", kind: "refund", gateway: "bogus"}, {parent_id: 1068278510, amount: "100.00", kind: "refund", gateway: "gift_card"}]}},
+      body: {"refund" => {"note" => "Customer made a mistake", "shipping" => {"full_refund" => true}, "refund_line_items" => [{"line_item_id" => 466157049, "quantity" => 1, "restock_type" => "cancel", "location_id" => 24826418}], "transactions" => [{"parent_id" => 1068278509, "amount" => "10.00", "kind" => "refund", "gateway" => "bogus"}, {"parent_id" => 1068278510, "amount" => "100.00", "kind" => "refund", "gateway" => "gift_card"}]}},
     )
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2021-04/orders/450789469/cancel.json")
@@ -511,15 +515,15 @@ class Order202104Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-04/orders.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "order" => hash_including({line_items: [{variant_id: 447654529, quantity: 1}]}) }
+        body: { "order" => hash_including({"line_items" => [{"variant_id" => 447654529, "quantity" => 1}]}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new
+    order = ShopifyAPI::Order.new(session: @test_session)
     order.line_items = [
       {
-        variant_id: 447654529,
-        quantity: 1
+        "variant_id" => 447654529,
+        "quantity" => 1
       }
     ]
     order.save()
@@ -534,19 +538,19 @@ class Order202104Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-04/orders.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "order" => hash_including({email: "foo@example.com", fulfillment_status: "fulfilled", send_receipt: true, send_fulfillment_receipt: true, line_items: [{variant_id: 457924702, quantity: 1}]}) }
+        body: { "order" => hash_including({"email" => "foo@example.com", "fulfillment_status" => "fulfilled", "send_receipt" => true, "send_fulfillment_receipt" => true, "line_items" => [{"variant_id" => 457924702, "quantity" => 1}]}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new
+    order = ShopifyAPI::Order.new(session: @test_session)
     order.email = "foo@example.com"
     order.fulfillment_status = "fulfilled"
     order.send_receipt = true
     order.send_fulfillment_receipt = true
     order.line_items = [
       {
-        variant_id: 457924702,
-        quantity: 1
+        "variant_id" => 457924702,
+        "quantity" => 1
       }
     ]
     order.save()
@@ -561,17 +565,17 @@ class Order202104Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-04/orders.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "order" => hash_including({email: "foo@example.com", fulfillment_status: "fulfilled", line_items: [{variant_id: 447654529, quantity: 1}]}) }
+        body: { "order" => hash_including({"email" => "foo@example.com", "fulfillment_status" => "fulfilled", "line_items" => [{"variant_id" => 447654529, "quantity" => 1}]}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new
+    order = ShopifyAPI::Order.new(session: @test_session)
     order.email = "foo@example.com"
     order.fulfillment_status = "fulfilled"
     order.line_items = [
       {
-        variant_id: 447654529,
-        quantity: 1
+        "variant_id" => 447654529,
+        "quantity" => 1
       }
     ]
     order.save()
@@ -586,22 +590,22 @@ class Order202104Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-04/orders.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "order" => hash_including({email: "foo@example.com", fulfillment_status: "fulfilled", fulfillments: [{location_id: 24826418}], line_items: [{variant_id: 447654529, quantity: 1}]}) }
+        body: { "order" => hash_including({"email" => "foo@example.com", "fulfillment_status" => "fulfilled", "fulfillments" => [{"location_id" => 24826418}], "line_items" => [{"variant_id" => 447654529, "quantity" => 1}]}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new
+    order = ShopifyAPI::Order.new(session: @test_session)
     order.email = "foo@example.com"
     order.fulfillment_status = "fulfilled"
     order.fulfillments = [
       {
-        location_id: 24826418
+        "location_id" => 24826418
       }
     ]
     order.line_items = [
       {
-        variant_id: 447654529,
-        quantity: 1
+        "variant_id" => 447654529,
+        "quantity" => 1
       }
     ]
     order.save()
@@ -616,31 +620,31 @@ class Order202104Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-04/orders.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "order" => hash_including({line_items: [{title: "Big Brown Bear Boots", price: 74.99, grams: 1300, quantity: 3, tax_lines: [{price: 13.5, rate: 0.06, title: "State tax"}]}], transactions: [{kind: "sale", status: "success", amount: 238.47}], total_tax: 13.5, currency: "EUR"}) }
+        body: { "order" => hash_including({"line_items" => [{"title" => "Big Brown Bear Boots", "price" => 74.99, "grams" => "1300", "quantity" => 3, "tax_lines" => [{"price" => 13.5, "rate" => 0.06, "title" => "State tax"}]}], "transactions" => [{"kind" => "sale", "status" => "success", "amount" => 238.47}], "total_tax" => 13.5, "currency" => "EUR"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new
+    order = ShopifyAPI::Order.new(session: @test_session)
     order.line_items = [
       {
-        title: "Big Brown Bear Boots",
-        price: 74.99,
-        grams: 1300,
-        quantity: 3,
-        tax_lines: [
+        "title" => "Big Brown Bear Boots",
+        "price" => 74.99,
+        "grams" => "1300",
+        "quantity" => 3,
+        "tax_lines" => [
             {
-                  price: 13.5,
-                  rate: 0.06,
-                  title: "State tax"
+                  "price" => 13.5,
+                  "rate" => 0.06,
+                  "title" => "State tax"
                 }
           ]
       }
     ]
     order.transactions = [
       {
-        kind: "sale",
-        status: "success",
-        amount: 238.47
+        "kind" => "sale",
+        "status" => "success",
+        "amount" => 238.47
       }
     ]
     order.total_tax = 13.5
@@ -657,42 +661,42 @@ class Order202104Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-04/orders.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "order" => hash_including({line_items: [{title: "Red Leather Coat", price: 129.99, grams: 1700, quantity: 1}, {title: "Blue Suede Shoes", price: 85.95, grams: 750, quantity: 1, taxable: false}, {title: "Raspberry Beret", price: 19.99, grams: 320, quantity: 2}], tax_lines: [{price: 10.2, rate: 0.06, title: "State tax"}, {price: 4.25, rate: 0.025, title: "County tax"}], total_tax: 14.45}) }
+        body: { "order" => hash_including({"line_items" => [{"title" => "Red Leather Coat", "price" => 129.99, "grams" => "1700", "quantity" => 1}, {"title" => "Blue Suede Shoes", "price" => 85.95, "grams" => "750", "quantity" => 1, "taxable" => false}, {"title" => "Raspberry Beret", "price" => 19.99, "grams" => "320", "quantity" => 2}], "tax_lines" => [{"price" => 10.2, "rate" => 0.06, "title" => "State tax"}, {"price" => 4.25, "rate" => 0.025, "title" => "County tax"}], "total_tax" => 14.45}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new
+    order = ShopifyAPI::Order.new(session: @test_session)
     order.line_items = [
       {
-        title: "Red Leather Coat",
-        price: 129.99,
-        grams: 1700,
-        quantity: 1
+        "title" => "Red Leather Coat",
+        "price" => 129.99,
+        "grams" => "1700",
+        "quantity" => 1
       },
       {
-        title: "Blue Suede Shoes",
-        price: 85.95,
-        grams: 750,
-        quantity: 1,
-        taxable: false
+        "title" => "Blue Suede Shoes",
+        "price" => 85.95,
+        "grams" => "750",
+        "quantity" => 1,
+        "taxable" => false
       },
       {
-        title: "Raspberry Beret",
-        price: 19.99,
-        grams: 320,
-        quantity: 2
+        "title" => "Raspberry Beret",
+        "price" => 19.99,
+        "grams" => "320",
+        "quantity" => 2
       }
     ]
     order.tax_lines = [
       {
-        price: 10.2,
-        rate: 0.06,
-        title: "State tax"
+        "price" => 10.2,
+        "rate" => 0.06,
+        "title" => "State tax"
       },
       {
-        price: 4.25,
-        rate: 0.025,
-        title: "County tax"
+        "price" => 4.25,
+        "rate" => 0.025,
+        "title" => "County tax"
       }
     ]
     order.total_tax = 14.45
@@ -708,19 +712,19 @@ class Order202104Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-04/orders.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "order" => hash_including({line_items: [{variant_id: 447654529, quantity: 1}], customer: {id: 207119551}, financial_status: "pending"}) }
+        body: { "order" => hash_including({"line_items" => [{"variant_id" => 447654529, "quantity" => 1}], "customer" => {"id" => 207119551}, "financial_status" => "pending"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new
+    order = ShopifyAPI::Order.new(session: @test_session)
     order.line_items = [
       {
-        variant_id: 447654529,
-        quantity: 1
+        "variant_id" => 447654529,
+        "quantity" => 1
       }
     ]
     order.customer = {
-      id: 207119551
+      "id" => 207119551
     }
     order.financial_status = "pending"
     order.save()
@@ -735,48 +739,48 @@ class Order202104Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-04/orders.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "order" => hash_including({line_items: [{variant_id: 447654529, quantity: 1}], customer: {first_name: "Paul", last_name: "Norman", email: "paul.norman@example.com"}, billing_address: {first_name: "John", last_name: "Smith", address1: "123 Fake Street", phone: "555-555-5555", city: "Fakecity", province: "Ontario", country: "Canada", zip: "K2P 1L4"}, shipping_address: {first_name: "Jane", last_name: "Smith", address1: "123 Fake Street", phone: "777-777-7777", city: "Fakecity", province: "Ontario", country: "Canada", zip: "K2P 1L4"}, email: "jane@example.com", transactions: [{kind: "authorization", status: "success", amount: 50.0}], financial_status: "partially_paid"}) }
+        body: { "order" => hash_including({"line_items" => [{"variant_id" => 447654529, "quantity" => 1}], "customer" => {"first_name" => "Paul", "last_name" => "Norman", "email" => "paul.norman@example.com"}, "billing_address" => {"first_name" => "John", "last_name" => "Smith", "address1" => "123 Fake Street", "phone" => "555-555-5555", "city" => "Fakecity", "province" => "Ontario", "country" => "Canada", "zip" => "K2P 1L4"}, "shipping_address" => {"first_name" => "Jane", "last_name" => "Smith", "address1" => "123 Fake Street", "phone" => "777-777-7777", "city" => "Fakecity", "province" => "Ontario", "country" => "Canada", "zip" => "K2P 1L4"}, "email" => "jane@example.com", "transactions" => [{"kind" => "authorization", "status" => "success", "amount" => 50.0}], "financial_status" => "partially_paid"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new
+    order = ShopifyAPI::Order.new(session: @test_session)
     order.line_items = [
       {
-        variant_id: 447654529,
-        quantity: 1
+        "variant_id" => 447654529,
+        "quantity" => 1
       }
     ]
     order.customer = {
-      first_name: "Paul",
-      last_name: "Norman",
-      email: "paul.norman@example.com"
+      "first_name" => "Paul",
+      "last_name" => "Norman",
+      "email" => "paul.norman@example.com"
     }
     order.billing_address = {
-      first_name: "John",
-      last_name: "Smith",
-      address1: "123 Fake Street",
-      phone: "555-555-5555",
-      city: "Fakecity",
-      province: "Ontario",
-      country: "Canada",
-      zip: "K2P 1L4"
+      "first_name" => "John",
+      "last_name" => "Smith",
+      "address1" => "123 Fake Street",
+      "phone" => "555-555-5555",
+      "city" => "Fakecity",
+      "province" => "Ontario",
+      "country" => "Canada",
+      "zip" => "K2P 1L4"
     }
     order.shipping_address = {
-      first_name: "Jane",
-      last_name: "Smith",
-      address1: "123 Fake Street",
-      phone: "777-777-7777",
-      city: "Fakecity",
-      province: "Ontario",
-      country: "Canada",
-      zip: "K2P 1L4"
+      "first_name" => "Jane",
+      "last_name" => "Smith",
+      "address1" => "123 Fake Street",
+      "phone" => "777-777-7777",
+      "city" => "Fakecity",
+      "province" => "Ontario",
+      "country" => "Canada",
+      "zip" => "K2P 1L4"
     }
     order.email = "jane@example.com"
     order.transactions = [
       {
-        kind: "authorization",
-        status: "success",
-        amount: 50.0
+        "kind" => "authorization",
+        "status" => "success",
+        "amount" => 50.0
       }
     ]
     order.financial_status = "partially_paid"
@@ -792,52 +796,52 @@ class Order202104Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-04/orders.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "order" => hash_including({line_items: [{variant_id: 447654529, quantity: 1}], email: "jane@example.com", phone: 18885551234, billing_address: {first_name: "John", last_name: "Smith", address1: "123 Fake Street", phone: "555-555-5555", city: "Fakecity", province: "Ontario", country: "Canada", zip: "K2P 1L4"}, shipping_address: {first_name: "Jane", last_name: "Smith", address1: "123 Fake Street", phone: "777-777-7777", city: "Fakecity", province: "Ontario", country: "Canada", zip: "K2P 1L4"}, transactions: [{kind: "sale", status: "success", amount: 50.0}], financial_status: "paid", discount_codes: [{code: "FAKE30", amount: "9.00", type: "percentage"}]}) }
+        body: { "order" => hash_including({"line_items" => [{"variant_id" => 447654529, "quantity" => 1}], "email" => "jane@example.com", "phone" => "18885551234", "billing_address" => {"first_name" => "John", "last_name" => "Smith", "address1" => "123 Fake Street", "phone" => "555-555-5555", "city" => "Fakecity", "province" => "Ontario", "country" => "Canada", "zip" => "K2P 1L4"}, "shipping_address" => {"first_name" => "Jane", "last_name" => "Smith", "address1" => "123 Fake Street", "phone" => "777-777-7777", "city" => "Fakecity", "province" => "Ontario", "country" => "Canada", "zip" => "K2P 1L4"}, "transactions" => [{"kind" => "sale", "status" => "success", "amount" => 50.0}], "financial_status" => "paid", "discount_codes" => [{"code" => "FAKE30", "amount" => "9.00", "type" => "percentage"}]}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    order = ShopifyAPI::Order.new
+    order = ShopifyAPI::Order.new(session: @test_session)
     order.line_items = [
       {
-        variant_id: 447654529,
-        quantity: 1
+        "variant_id" => 447654529,
+        "quantity" => 1
       }
     ]
     order.email = "jane@example.com"
-    order.phone = 18885551234
+    order.phone = "18885551234"
     order.billing_address = {
-      first_name: "John",
-      last_name: "Smith",
-      address1: "123 Fake Street",
-      phone: "555-555-5555",
-      city: "Fakecity",
-      province: "Ontario",
-      country: "Canada",
-      zip: "K2P 1L4"
+      "first_name" => "John",
+      "last_name" => "Smith",
+      "address1" => "123 Fake Street",
+      "phone" => "555-555-5555",
+      "city" => "Fakecity",
+      "province" => "Ontario",
+      "country" => "Canada",
+      "zip" => "K2P 1L4"
     }
     order.shipping_address = {
-      first_name: "Jane",
-      last_name: "Smith",
-      address1: "123 Fake Street",
-      phone: "777-777-7777",
-      city: "Fakecity",
-      province: "Ontario",
-      country: "Canada",
-      zip: "K2P 1L4"
+      "first_name" => "Jane",
+      "last_name" => "Smith",
+      "address1" => "123 Fake Street",
+      "phone" => "777-777-7777",
+      "city" => "Fakecity",
+      "province" => "Ontario",
+      "country" => "Canada",
+      "zip" => "K2P 1L4"
     }
     order.transactions = [
       {
-        kind: "sale",
-        status: "success",
-        amount: 50.0
+        "kind" => "sale",
+        "status" => "success",
+        "amount" => 50.0
       }
     ]
     order.financial_status = "paid"
     order.discount_codes = [
       {
-        code: "FAKE30",
-        amount: "9.00",
-        type: "percentage"
+        "code" => "FAKE30",
+        "amount" => "9.00",
+        "type" => "percentage"
       }
     ]
     order.save()

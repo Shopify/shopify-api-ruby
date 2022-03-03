@@ -14,15 +14,8 @@ class TenderTransaction202104Test < Test::Unit::TestCase
   def setup
     super
 
-    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
-    ShopifyAPI::Context.activate_session(test_session)
+    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
     modify_context(api_version: "2021-04")
-  end
-
-  def teardown
-    super
-
-    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -37,6 +30,7 @@ class TenderTransaction202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::TenderTransaction.all(
+      session: @test_session,
       processed_at_max: "2005-08-05 10:22:51 -0400",
     )
 
@@ -55,6 +49,7 @@ class TenderTransaction202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::TenderTransaction.all(
+      session: @test_session,
       order: "processed_at ASC",
     )
 
@@ -72,7 +67,9 @@ class TenderTransaction202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::TenderTransaction.all()
+    ShopifyAPI::TenderTransaction.all(
+      session: @test_session,
+    )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-04/tender_transactions.json")
   end
@@ -89,6 +86,7 @@ class TenderTransaction202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::TenderTransaction.all(
+      session: @test_session,
       since_id: "1011222896",
     )
 
@@ -107,6 +105,7 @@ class TenderTransaction202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::TenderTransaction.all(
+      session: @test_session,
       processed_at_min: "2005-08-06 10:22:51 -0400",
     )
 
@@ -125,6 +124,7 @@ class TenderTransaction202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::TenderTransaction.all(
+      session: @test_session,
       processed_at_max: "2005-08-06 10:22:51 -0400",
     )
 

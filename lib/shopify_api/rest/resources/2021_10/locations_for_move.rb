@@ -9,7 +9,7 @@ module ShopifyAPI
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: ShopifyAPI::Context.active_session)
+    def initialize(session: nil)
       super(session: session)
 
       @locations_for_move = T.let(nil, T.nilable(T::Array[T.untyped]))
@@ -27,14 +27,14 @@ module ShopifyAPI
     class << self
       sig do
         params(
-          fulfillment_order_id: T.nilable(T.any(Integer, String)),
           session: Auth::Session,
+          fulfillment_order_id: T.nilable(T.any(Integer, String)),
           kwargs: T.untyped
         ).returns(T::Array[LocationsForMove])
       end
       def all(
+        session:,
         fulfillment_order_id: nil,
-        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         response = base_find(

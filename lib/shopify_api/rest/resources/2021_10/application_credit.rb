@@ -9,13 +9,13 @@ module ShopifyAPI
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: ShopifyAPI::Context.active_session)
+    def initialize(session: nil)
       super(session: session)
 
       @amount = T.let(nil, T.nilable(Integer))
       @description = T.let(nil, T.nilable(String))
       @id = T.let(nil, T.nilable(Integer))
-      @test = T.let(nil, T.nilable(String))
+      @test = T.let(nil, T.nilable(T::Boolean))
     end
 
     @has_one = T.let({}, T::Hash[Symbol, Class])
@@ -32,21 +32,21 @@ module ShopifyAPI
     attr_reader :description
     sig { returns(T.nilable(Integer)) }
     attr_reader :id
-    sig { returns(T.nilable(String)) }
+    sig { returns(T.nilable(T::Boolean)) }
     attr_reader :test
 
     class << self
       sig do
         params(
+          session: Auth::Session,
           id: T.any(Integer, String),
-          fields: T.untyped,
-          session: Auth::Session
+          fields: T.untyped
         ).returns(T.nilable(ApplicationCredit))
       end
       def find(
+        session:,
         id:,
-        fields: nil,
-        session: ShopifyAPI::Context.active_session
+        fields: nil
       )
         result = base_find(
           session: session,
@@ -58,14 +58,14 @@ module ShopifyAPI
 
       sig do
         params(
-          fields: T.untyped,
           session: Auth::Session,
+          fields: T.untyped,
           kwargs: T.untyped
         ).returns(T::Array[ApplicationCredit])
       end
       def all(
+        session:,
         fields: nil,
-        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         response = base_find(

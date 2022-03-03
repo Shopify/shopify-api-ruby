@@ -9,7 +9,7 @@ module ShopifyAPI
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: ShopifyAPI::Context.active_session)
+    def initialize(session: nil)
       super(session: session)
 
       @checkout = T.let(nil, T.nilable(Checkout))
@@ -51,15 +51,15 @@ module ShopifyAPI
     class << self
       sig do
         params(
+          session: Auth::Session,
           id: T.any(Integer, String),
-          checkout_id: T.nilable(T.any(Integer, String)),
-          session: Auth::Session
+          checkout_id: T.nilable(T.any(Integer, String))
         ).returns(T.nilable(Payment))
       end
       def find(
+        session:,
         id:,
-        checkout_id: nil,
-        session: ShopifyAPI::Context.active_session
+        checkout_id: nil
       )
         result = base_find(
           session: session,
@@ -71,14 +71,14 @@ module ShopifyAPI
 
       sig do
         params(
-          checkout_id: T.nilable(T.any(Integer, String)),
           session: Auth::Session,
+          checkout_id: T.nilable(T.any(Integer, String)),
           kwargs: T.untyped
         ).returns(T::Array[Payment])
       end
       def all(
+        session:,
         checkout_id: nil,
-        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         response = base_find(
@@ -92,14 +92,14 @@ module ShopifyAPI
 
       sig do
         params(
-          checkout_id: T.nilable(T.any(Integer, String)),
           session: Auth::Session,
+          checkout_id: T.nilable(T.any(Integer, String)),
           kwargs: T.untyped
         ).returns(T.untyped)
       end
       def count(
+        session:,
         checkout_id: nil,
-        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         request(

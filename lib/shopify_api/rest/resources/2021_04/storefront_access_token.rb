@@ -9,7 +9,7 @@ module ShopifyAPI
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: ShopifyAPI::Context.active_session)
+    def initialize(session: nil)
       super(session: session)
 
       @title = T.let(nil, T.nilable(String))
@@ -43,13 +43,13 @@ module ShopifyAPI
     class << self
       sig do
         params(
-          id: T.any(Integer, String),
-          session: Auth::Session
+          session: Auth::Session,
+          id: T.any(Integer, String)
         ).returns(T.untyped)
       end
       def delete(
-        id:,
-        session: ShopifyAPI::Context.active_session
+        session:,
+        id:
       )
         request(
           http_method: :delete,
@@ -67,7 +67,7 @@ module ShopifyAPI
         ).returns(T::Array[StorefrontAccessToken])
       end
       def all(
-        session: ShopifyAPI::Context.active_session,
+        session:,
         **kwargs
       )
         response = base_find(

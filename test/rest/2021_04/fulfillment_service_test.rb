@@ -14,15 +14,8 @@ class FulfillmentService202104Test < Test::Unit::TestCase
   def setup
     super
 
-    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
-    ShopifyAPI::Context.activate_session(test_session)
+    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
     modify_context(api_version: "2021-04")
-  end
-
-  def teardown
-    super
-
-    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -36,7 +29,9 @@ class FulfillmentService202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::FulfillmentService.all()
+    ShopifyAPI::FulfillmentService.all(
+      session: @test_session,
+    )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-04/fulfillment_services.json")
   end
@@ -53,6 +48,7 @@ class FulfillmentService202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::FulfillmentService.all(
+      session: @test_session,
       scope: "all",
     )
 
@@ -66,11 +62,11 @@ class FulfillmentService202104Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-04/fulfillment_services.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "fulfillment_service" => hash_including({name: "Jupiter Fulfillment", callback_url: "http://google.com", inventory_management: true, tracking_support: true, requires_shipping_method: true, format: "json"}) }
+        body: { "fulfillment_service" => hash_including({"name" => "Jupiter Fulfillment", "callback_url" => "http://google.com", "inventory_management" => true, "tracking_support" => true, "requires_shipping_method" => true, "format" => "json"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment_service = ShopifyAPI::FulfillmentService.new
+    fulfillment_service = ShopifyAPI::FulfillmentService.new(session: @test_session)
     fulfillment_service.name = "Jupiter Fulfillment"
     fulfillment_service.callback_url = "http://google.com"
     fulfillment_service.inventory_management = true
@@ -94,6 +90,7 @@ class FulfillmentService202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::FulfillmentService.find(
+      session: @test_session,
       id: 755357713,
     )
 
@@ -107,11 +104,11 @@ class FulfillmentService202104Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-04/fulfillment_services/755357713.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "fulfillment_service" => hash_including({id: 755357713, name: "New Fulfillment Service Name"}) }
+        body: { "fulfillment_service" => hash_including({"id" => 755357713, "name" => "New Fulfillment Service Name"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment_service = ShopifyAPI::FulfillmentService.new
+    fulfillment_service = ShopifyAPI::FulfillmentService.new(session: @test_session)
     fulfillment_service.id = 755357713
     fulfillment_service.name = "New Fulfillment Service Name"
     fulfillment_service.save()
@@ -131,6 +128,7 @@ class FulfillmentService202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::FulfillmentService.delete(
+      session: @test_session,
       id: 755357713,
     )
 

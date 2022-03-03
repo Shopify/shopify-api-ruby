@@ -14,15 +14,8 @@ class Transaction202104Test < Test::Unit::TestCase
   def setup
     super
 
-    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
-    ShopifyAPI::Context.activate_session(test_session)
+    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
     modify_context(api_version: "2021-04")
-  end
-
-  def teardown
-    super
-
-    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -37,6 +30,7 @@ class Transaction202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Transaction.all(
+      session: @test_session,
       order_id: 450789469,
     )
 
@@ -55,6 +49,7 @@ class Transaction202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Transaction.all(
+      session: @test_session,
       order_id: 450789469,
       since_id: "801038806",
     )
@@ -69,11 +64,11 @@ class Transaction202104Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-04/orders/450789469/transactions.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "transaction" => hash_including({currency: "USD", amount: "10.00", kind: "capture", parent_id: 389404469}) }
+        body: { "transaction" => hash_including({"currency" => "USD", "amount" => "10.00", "kind" => "capture", "parent_id" => 389404469}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    transaction = ShopifyAPI::Transaction.new
+    transaction = ShopifyAPI::Transaction.new(session: @test_session)
     transaction.order_id = 450789469
     transaction.currency = "USD"
     transaction.amount = "10.00"
@@ -91,11 +86,11 @@ class Transaction202104Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-04/orders/450789469/transactions.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "transaction" => hash_including({currency: "USD", amount: "10.00", kind: "void", parent_id: 389404469}) }
+        body: { "transaction" => hash_including({"currency" => "USD", "amount" => "10.00", "kind" => "void", "parent_id" => 389404469}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    transaction = ShopifyAPI::Transaction.new
+    transaction = ShopifyAPI::Transaction.new(session: @test_session)
     transaction.order_id = 450789469
     transaction.currency = "USD"
     transaction.amount = "10.00"
@@ -113,11 +108,11 @@ class Transaction202104Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-04/orders/450789469/transactions.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "transaction" => hash_including({currency: "USD", amount: "10.00", kind: "capture", parent_id: 389404469, test: true}) }
+        body: { "transaction" => hash_including({"currency" => "USD", "amount" => "10.00", "kind" => "capture", "parent_id" => 389404469, "test" => true}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    transaction = ShopifyAPI::Transaction.new
+    transaction = ShopifyAPI::Transaction.new(session: @test_session)
     transaction.order_id = 450789469
     transaction.currency = "USD"
     transaction.amount = "10.00"
@@ -136,11 +131,11 @@ class Transaction202104Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-04/orders/450789469/transactions.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "transaction" => hash_including({kind: "capture", authorization: "authorization-key"}) }
+        body: { "transaction" => hash_including({"kind" => "capture", "authorization" => "authorization-key"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    transaction = ShopifyAPI::Transaction.new
+    transaction = ShopifyAPI::Transaction.new(session: @test_session)
     transaction.order_id = 450789469
     transaction.kind = "capture"
     transaction.authorization = "authorization-key"
@@ -161,6 +156,7 @@ class Transaction202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Transaction.count(
+      session: @test_session,
       order_id: 450789469,
     )
 
@@ -179,6 +175,7 @@ class Transaction202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Transaction.find(
+      session: @test_session,
       order_id: 450789469,
       id: 389404469,
     )

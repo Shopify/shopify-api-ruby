@@ -9,7 +9,7 @@ module ShopifyAPI
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: ShopifyAPI::Context.active_session)
+    def initialize(session: nil)
       super(session: session)
 
       @cause_cancel = T.let(nil, T.nilable(T::Boolean))
@@ -65,15 +65,15 @@ module ShopifyAPI
 
       sig do
         params(
+          session: Auth::Session,
           id: T.any(Integer, String),
-          order_id: T.nilable(T.any(Integer, String)),
-          session: Auth::Session
+          order_id: T.nilable(T.any(Integer, String))
         ).returns(T.nilable(OrderRisk))
       end
       def find(
+        session:,
         id:,
-        order_id: nil,
-        session: ShopifyAPI::Context.active_session
+        order_id: nil
       )
         result = base_find(
           session: session,
@@ -85,15 +85,15 @@ module ShopifyAPI
 
       sig do
         params(
+          session: Auth::Session,
           id: T.any(Integer, String),
-          order_id: T.nilable(T.any(Integer, String)),
-          session: Auth::Session
+          order_id: T.nilable(T.any(Integer, String))
         ).returns(T.untyped)
       end
       def delete(
+        session:,
         id:,
-        order_id: nil,
-        session: ShopifyAPI::Context.active_session
+        order_id: nil
       )
         request(
           http_method: :delete,
@@ -106,14 +106,14 @@ module ShopifyAPI
 
       sig do
         params(
-          order_id: T.nilable(T.any(Integer, String)),
           session: Auth::Session,
+          order_id: T.nilable(T.any(Integer, String)),
           kwargs: T.untyped
         ).returns(T::Array[OrderRisk])
       end
       def all(
+        session:,
         order_id: nil,
-        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         response = base_find(

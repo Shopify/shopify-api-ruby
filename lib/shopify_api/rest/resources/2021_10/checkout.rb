@@ -9,7 +9,7 @@ module ShopifyAPI
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: ShopifyAPI::Context.active_session)
+    def initialize(session: nil)
       super(session: session)
 
       @billing_address = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
@@ -134,13 +134,13 @@ module ShopifyAPI
 
       sig do
         params(
-          token: T.any(Integer, String),
-          session: Auth::Session
+          session: Auth::Session,
+          token: T.any(Integer, String)
         ).returns(T.nilable(Checkout))
       end
       def find(
-        token:,
-        session: ShopifyAPI::Context.active_session
+        session:,
+        token:
       )
         result = base_find(
           session: session,
@@ -152,14 +152,14 @@ module ShopifyAPI
 
       sig do
         params(
-          token: T.any(Integer, String),
           session: Auth::Session,
+          token: T.any(Integer, String),
           kwargs: T.untyped
         ).returns(T.untyped)
       end
       def shipping_rates(
+        session:,
         token:,
-        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         request(

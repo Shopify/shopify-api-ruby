@@ -9,7 +9,7 @@ module ShopifyAPI
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: ShopifyAPI::Context.active_session)
+    def initialize(session: nil)
       super(session: session)
 
       @api_client_id = T.let(nil, T.nilable(Integer))
@@ -84,13 +84,13 @@ module ShopifyAPI
     class << self
       sig do
         params(
-          id: T.any(Integer, String),
-          session: Auth::Session
+          session: Auth::Session,
+          id: T.any(Integer, String)
         ).returns(T.nilable(GiftCard))
       end
       def find(
-        id:,
-        session: ShopifyAPI::Context.active_session
+        session:,
+        id:
       )
         result = base_find(
           session: session,
@@ -102,20 +102,20 @@ module ShopifyAPI
 
       sig do
         params(
+          session: Auth::Session,
           status: T.untyped,
           limit: T.untyped,
           since_id: T.untyped,
           fields: T.untyped,
-          session: Auth::Session,
           kwargs: T.untyped
         ).returns(T::Array[GiftCard])
       end
       def all(
+        session:,
         status: nil,
         limit: nil,
         since_id: nil,
         fields: nil,
-        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         response = base_find(
@@ -129,14 +129,14 @@ module ShopifyAPI
 
       sig do
         params(
-          status: T.untyped,
           session: Auth::Session,
+          status: T.untyped,
           kwargs: T.untyped
         ).returns(T.untyped)
       end
       def count(
+        session:,
         status: nil,
-        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         request(
@@ -152,20 +152,20 @@ module ShopifyAPI
 
       sig do
         params(
+          session: Auth::Session,
           order: T.untyped,
           query: T.untyped,
           limit: T.untyped,
           fields: T.untyped,
-          session: Auth::Session,
           kwargs: T.untyped
         ).returns(T.untyped)
       end
       def search(
+        session:,
         order: nil,
         query: nil,
         limit: nil,
         fields: nil,
-        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         request(

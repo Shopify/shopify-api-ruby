@@ -14,15 +14,8 @@ class ScriptTag202104Test < Test::Unit::TestCase
   def setup
     super
 
-    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
-    ShopifyAPI::Context.activate_session(test_session)
+    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
     modify_context(api_version: "2021-04")
-  end
-
-  def teardown
-    super
-
-    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -36,7 +29,9 @@ class ScriptTag202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::ScriptTag.all()
+    ShopifyAPI::ScriptTag.all(
+      session: @test_session,
+    )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-04/script_tags.json")
   end
@@ -53,6 +48,7 @@ class ScriptTag202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::ScriptTag.all(
+      session: @test_session,
       src: "https://js-aplenty.com/foo.js",
     )
 
@@ -71,6 +67,7 @@ class ScriptTag202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::ScriptTag.all(
+      session: @test_session,
       since_id: "421379493",
     )
 
@@ -84,11 +81,11 @@ class ScriptTag202104Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-04/script_tags.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "script_tag" => hash_including({event: "onload", src: "https://djavaskripped.org/fancy.js"}) }
+        body: { "script_tag" => hash_including({"event" => "onload", "src" => "https://djavaskripped.org/fancy.js"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    script_tag = ShopifyAPI::ScriptTag.new
+    script_tag = ShopifyAPI::ScriptTag.new(session: @test_session)
     script_tag.event = "onload"
     script_tag.src = "https://djavaskripped.org/fancy.js"
     script_tag.save()
@@ -107,7 +104,9 @@ class ScriptTag202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::ScriptTag.count()
+    ShopifyAPI::ScriptTag.count(
+      session: @test_session,
+    )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-04/script_tags/count.json")
   end
@@ -124,6 +123,7 @@ class ScriptTag202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::ScriptTag.find(
+      session: @test_session,
       id: 596726825,
     )
 
@@ -137,11 +137,11 @@ class ScriptTag202104Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-04/script_tags/596726825.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "script_tag" => hash_including({id: 596726825, src: "https://somewhere-else.com/another.js"}) }
+        body: { "script_tag" => hash_including({"id" => 596726825, "src" => "https://somewhere-else.com/another.js"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    script_tag = ShopifyAPI::ScriptTag.new
+    script_tag = ShopifyAPI::ScriptTag.new(session: @test_session)
     script_tag.id = 596726825
     script_tag.src = "https://somewhere-else.com/another.js"
     script_tag.save()
@@ -161,6 +161,7 @@ class ScriptTag202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::ScriptTag.delete(
+      session: @test_session,
       id: 596726825,
     )
 

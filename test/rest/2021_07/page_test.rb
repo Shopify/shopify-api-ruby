@@ -14,15 +14,8 @@ class Page202107Test < Test::Unit::TestCase
   def setup
     super
 
-    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
-    ShopifyAPI::Context.activate_session(test_session)
+    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
     modify_context(api_version: "2021-07")
-  end
-
-  def teardown
-    super
-
-    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -36,7 +29,9 @@ class Page202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Page.all()
+    ShopifyAPI::Page.all(
+      session: @test_session,
+    )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-07/pages.json")
   end
@@ -53,6 +48,7 @@ class Page202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Page.all(
+      session: @test_session,
       since_id: "108828309",
     )
 
@@ -66,11 +62,11 @@ class Page202107Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-07/pages.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "page" => hash_including({title: "Warranty information", body_html: "<h2>Warranty</h2>\n<p>Returns accepted if we receive items <strong>30 days after purchase</strong>.</p>"}) }
+        body: { "page" => hash_including({"title" => "Warranty information", "body_html" => "<h2>Warranty</h2>\n<p>Returns accepted if we receive items <strong>30 days after purchase</strong>.</p>"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    page = ShopifyAPI::Page.new
+    page = ShopifyAPI::Page.new(session: @test_session)
     page.title = "Warranty information"
     page.body_html = "<h2>Warranty</h2>\n<p>Returns accepted if we receive items <strong>30 days after purchase</strong>.</p>"
     page.save()
@@ -85,11 +81,11 @@ class Page202107Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-07/pages.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "page" => hash_including({title: "Warranty information", body_html: "<h2>Warranty</h2>\n<p>Returns accepted if we receive items <strong>30 days after purchase</strong>.</p>", published: false}) }
+        body: { "page" => hash_including({"title" => "Warranty information", "body_html" => "<h2>Warranty</h2>\n<p>Returns accepted if we receive items <strong>30 days after purchase</strong>.</p>", "published" => false}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    page = ShopifyAPI::Page.new
+    page = ShopifyAPI::Page.new(session: @test_session)
     page.title = "Warranty information"
     page.body_html = "<h2>Warranty</h2>\n<p>Returns accepted if we receive items <strong>30 days after purchase</strong>.</p>"
     page.published = false
@@ -105,19 +101,19 @@ class Page202107Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-07/pages.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "page" => hash_including({title: "Warranty information", body_html: "<h2>Warranty</h2>\n<p>Returns accepted if we receive items <strong>30 days after purchase</strong>.</p>", metafields: [{key: "new", value: "new value", type: "single_line_text_field", namespace: "global"}]}) }
+        body: { "page" => hash_including({"title" => "Warranty information", "body_html" => "<h2>Warranty</h2>\n<p>Returns accepted if we receive items <strong>30 days after purchase</strong>.</p>", "metafields" => [{"key" => "new", "value" => "new value", "type" => "single_line_text_field", "namespace" => "global"}]}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    page = ShopifyAPI::Page.new
+    page = ShopifyAPI::Page.new(session: @test_session)
     page.title = "Warranty information"
     page.body_html = "<h2>Warranty</h2>\n<p>Returns accepted if we receive items <strong>30 days after purchase</strong>.</p>"
     page.metafields = [
       {
-        key: "new",
-        value: "new value",
-        type: "single_line_text_field",
-        namespace: "global"
+        "key" => "new",
+        "value" => "new value",
+        "type" => "single_line_text_field",
+        "namespace" => "global"
       }
     ]
     page.save()
@@ -136,7 +132,9 @@ class Page202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Page.count()
+    ShopifyAPI::Page.count(
+      session: @test_session,
+    )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-07/pages/count.json")
   end
@@ -153,6 +151,7 @@ class Page202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Page.find(
+      session: @test_session,
       id: 131092082,
     )
 
@@ -166,11 +165,11 @@ class Page202107Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-07/pages/131092082.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "page" => hash_including({id: 131092082, body_html: "<p>Returns accepted if we receive the items 14 days after purchase.</p>"}) }
+        body: { "page" => hash_including({"id" => 131092082, "body_html" => "<p>Returns accepted if we receive the items 14 days after purchase.</p>"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    page = ShopifyAPI::Page.new
+    page = ShopifyAPI::Page.new(session: @test_session)
     page.id = 131092082
     page.body_html = "<p>Returns accepted if we receive the items 14 days after purchase.</p>"
     page.save()
@@ -185,11 +184,11 @@ class Page202107Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-07/pages/131092082.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "page" => hash_including({id: 131092082, body_html: "<p>Returns accepted if we receive the items <strong>14 days</strong> after purchase.</p>", author: "Christopher Gorski", title: "New warranty", handle: "new-warranty"}) }
+        body: { "page" => hash_including({"id" => 131092082, "body_html" => "<p>Returns accepted if we receive the items <strong>14 days</strong> after purchase.</p>", "author" => "Christopher Gorski", "title" => "New warranty", "handle" => "new-warranty"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    page = ShopifyAPI::Page.new
+    page = ShopifyAPI::Page.new(session: @test_session)
     page.id = 131092082
     page.body_html = "<p>Returns accepted if we receive the items <strong>14 days</strong> after purchase.</p>"
     page.author = "Christopher Gorski"
@@ -207,11 +206,11 @@ class Page202107Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-07/pages/131092082.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "page" => hash_including({id: 131092082, published: true}) }
+        body: { "page" => hash_including({"id" => 131092082, "published" => true}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    page = ShopifyAPI::Page.new
+    page = ShopifyAPI::Page.new(session: @test_session)
     page.id = 131092082
     page.published = true
     page.save()
@@ -226,11 +225,11 @@ class Page202107Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-07/pages/131092082.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "page" => hash_including({id: 131092082, published: false}) }
+        body: { "page" => hash_including({"id" => 131092082, "published" => false}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    page = ShopifyAPI::Page.new
+    page = ShopifyAPI::Page.new(session: @test_session)
     page.id = 131092082
     page.published = false
     page.save()
@@ -245,18 +244,18 @@ class Page202107Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-07/pages/131092082.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "page" => hash_including({id: 131092082, metafields: [{key: "new", value: "new value", type: "single_line_text_field", namespace: "global"}]}) }
+        body: { "page" => hash_including({"id" => 131092082, "metafields" => [{"key" => "new", "value" => "new value", "type" => "single_line_text_field", "namespace" => "global"}]}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    page = ShopifyAPI::Page.new
+    page = ShopifyAPI::Page.new(session: @test_session)
     page.id = 131092082
     page.metafields = [
       {
-        key: "new",
-        value: "new value",
-        type: "single_line_text_field",
-        namespace: "global"
+        "key" => "new",
+        "value" => "new value",
+        "type" => "single_line_text_field",
+        "namespace" => "global"
       }
     ]
     page.save()
@@ -276,6 +275,7 @@ class Page202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Page.delete(
+      session: @test_session,
       id: 131092082,
     )
 
