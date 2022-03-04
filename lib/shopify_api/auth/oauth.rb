@@ -120,7 +120,7 @@ module ShopifyAPI
             associated_user_scope: associated_user_scope,
             associated_user: associated_user,
             expires: expires,
-            session: session_params[:session]
+            shopify_session_id: session_params[:session]
           )
         end
       end
