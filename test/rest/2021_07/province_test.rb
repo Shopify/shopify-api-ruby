@@ -14,15 +14,8 @@ class Province202107Test < Test::Unit::TestCase
   def setup
     super
 
-    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
-    ShopifyAPI::Context.activate_session(test_session)
+    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
     modify_context(api_version: "2021-07")
-  end
-
-  def teardown
-    super
-
-    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -37,6 +30,7 @@ class Province202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Province.all(
+      session: @test_session,
       country_id: 879921427,
     )
 
@@ -55,6 +49,7 @@ class Province202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Province.all(
+      session: @test_session,
       country_id: 879921427,
       since_id: "536137098",
     )
@@ -74,6 +69,7 @@ class Province202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Province.count(
+      session: @test_session,
       country_id: 879921427,
     )
 
@@ -92,6 +88,7 @@ class Province202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Province.find(
+      session: @test_session,
       country_id: 879921427,
       id: 224293623,
     )
@@ -106,11 +103,11 @@ class Province202107Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-07/countries/879921427/provinces/224293623.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "province" => hash_including({id: 224293623, tax: 0.09}) }
+        body: { "province" => hash_including({"id" => 224293623, "tax" => 0.09}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    province = ShopifyAPI::Province.new
+    province = ShopifyAPI::Province.new(session: @test_session)
     province.country_id = 879921427
     province.id = 224293623
     province.tax = 0.09

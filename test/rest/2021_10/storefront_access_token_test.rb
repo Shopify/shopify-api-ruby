@@ -14,15 +14,8 @@ class StorefrontAccessToken202110Test < Test::Unit::TestCase
   def setup
     super
 
-    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
-    ShopifyAPI::Context.activate_session(test_session)
+    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
     modify_context(api_version: "2021-10")
-  end
-
-  def teardown
-    super
-
-    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -32,11 +25,11 @@ class StorefrontAccessToken202110Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-10/storefront_access_tokens.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "storefront_access_token" => hash_including({title: "Test"}) }
+        body: { "storefront_access_token" => hash_including({"title" => "Test"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    storefront_access_token = ShopifyAPI::StorefrontAccessToken.new
+    storefront_access_token = ShopifyAPI::StorefrontAccessToken.new(session: @test_session)
     storefront_access_token.title = "Test"
     storefront_access_token.save()
 
@@ -54,7 +47,9 @@ class StorefrontAccessToken202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::StorefrontAccessToken.all()
+    ShopifyAPI::StorefrontAccessToken.all(
+      session: @test_session,
+    )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-10/storefront_access_tokens.json")
   end
@@ -71,6 +66,7 @@ class StorefrontAccessToken202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::StorefrontAccessToken.delete(
+      session: @test_session,
       id: 755357713,
     )
 

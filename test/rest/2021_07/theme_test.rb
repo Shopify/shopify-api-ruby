@@ -14,15 +14,8 @@ class Theme202107Test < Test::Unit::TestCase
   def setup
     super
 
-    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
-    ShopifyAPI::Context.activate_session(test_session)
+    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
     modify_context(api_version: "2021-07")
-  end
-
-  def teardown
-    super
-
-    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -36,7 +29,9 @@ class Theme202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Theme.all()
+    ShopifyAPI::Theme.all(
+      session: @test_session,
+    )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-07/themes.json")
   end
@@ -48,11 +43,11 @@ class Theme202107Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-07/themes.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "theme" => hash_including({name: "Lemongrass", src: "http://themes.shopify.com/theme.zip", role: "main"}) }
+        body: { "theme" => hash_including({"name" => "Lemongrass", "src" => "http://themes.shopify.com/theme.zip", "role" => "main"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    theme = ShopifyAPI::Theme.new
+    theme = ShopifyAPI::Theme.new(session: @test_session)
     theme.name = "Lemongrass"
     theme.src = "http://themes.shopify.com/theme.zip"
     theme.role = "main"
@@ -73,6 +68,7 @@ class Theme202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Theme.find(
+      session: @test_session,
       id: 828155753,
     )
 
@@ -86,11 +82,11 @@ class Theme202107Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-07/themes/752253240.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "theme" => hash_including({id: 752253240, name: "Experimental"}) }
+        body: { "theme" => hash_including({"id" => 752253240, "name" => "Experimental"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    theme = ShopifyAPI::Theme.new
+    theme = ShopifyAPI::Theme.new(session: @test_session)
     theme.id = 752253240
     theme.name = "Experimental"
     theme.save()
@@ -105,11 +101,11 @@ class Theme202107Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-07/themes/752253240.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "theme" => hash_including({id: 752253240, role: "main"}) }
+        body: { "theme" => hash_including({"id" => 752253240, "role" => "main"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    theme = ShopifyAPI::Theme.new
+    theme = ShopifyAPI::Theme.new(session: @test_session)
     theme.id = 752253240
     theme.role = "main"
     theme.save()
@@ -129,6 +125,7 @@ class Theme202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Theme.delete(
+      session: @test_session,
       id: 752253240,
     )
 

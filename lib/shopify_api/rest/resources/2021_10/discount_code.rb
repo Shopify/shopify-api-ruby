@@ -9,7 +9,7 @@ module ShopifyAPI
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: ShopifyAPI::Context.active_session)
+    def initialize(session: nil)
       super(session: session)
 
       @code = T.let(nil, T.nilable(String))
@@ -51,15 +51,15 @@ module ShopifyAPI
     class << self
       sig do
         params(
+          session: Auth::Session,
           id: T.any(Integer, String),
-          price_rule_id: T.nilable(T.any(Integer, String)),
-          session: Auth::Session
+          price_rule_id: T.nilable(T.any(Integer, String))
         ).returns(T.nilable(DiscountCode))
       end
       def find(
+        session:,
         id:,
-        price_rule_id: nil,
-        session: ShopifyAPI::Context.active_session
+        price_rule_id: nil
       )
         result = base_find(
           session: session,
@@ -71,15 +71,15 @@ module ShopifyAPI
 
       sig do
         params(
+          session: Auth::Session,
           id: T.any(Integer, String),
-          price_rule_id: T.nilable(T.any(Integer, String)),
-          session: Auth::Session
+          price_rule_id: T.nilable(T.any(Integer, String))
         ).returns(T.untyped)
       end
       def delete(
+        session:,
         id:,
-        price_rule_id: nil,
-        session: ShopifyAPI::Context.active_session
+        price_rule_id: nil
       )
         request(
           http_method: :delete,
@@ -92,16 +92,16 @@ module ShopifyAPI
 
       sig do
         params(
+          session: Auth::Session,
           price_rule_id: T.nilable(T.any(Integer, String)),
           batch_id: T.nilable(T.any(Integer, String)),
-          session: Auth::Session,
           kwargs: T.untyped
         ).returns(T::Array[DiscountCode])
       end
       def all(
+        session:,
         price_rule_id: nil,
         batch_id: nil,
-        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         response = base_find(
@@ -115,14 +115,14 @@ module ShopifyAPI
 
       sig do
         params(
-          code: T.untyped,
           session: Auth::Session,
+          code: T.untyped,
           kwargs: T.untyped
         ).returns(T.untyped)
       end
       def lookup(
+        session:,
         code: nil,
-        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         request(
@@ -138,18 +138,18 @@ module ShopifyAPI
 
       sig do
         params(
+          session: Auth::Session,
           times_used: T.untyped,
           times_used_min: T.untyped,
           times_used_max: T.untyped,
-          session: Auth::Session,
           kwargs: T.untyped
         ).returns(T.untyped)
       end
       def count(
+        session:,
         times_used: nil,
         times_used_min: nil,
         times_used_max: nil,
-        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         request(
@@ -165,16 +165,16 @@ module ShopifyAPI
 
       sig do
         params(
+          session: Auth::Session,
           price_rule_id: T.nilable(T.any(Integer, String)),
           batch_id: T.nilable(T.any(Integer, String)),
-          session: Auth::Session,
           kwargs: T.untyped
         ).returns(T.untyped)
       end
       def get_all(
+        session:,
         price_rule_id: nil,
         batch_id: nil,
-        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         request(

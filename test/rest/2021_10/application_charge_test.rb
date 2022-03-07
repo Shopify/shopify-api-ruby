@@ -14,15 +14,8 @@ class ApplicationCharge202110Test < Test::Unit::TestCase
   def setup
     super
 
-    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
-    ShopifyAPI::Context.activate_session(test_session)
+    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
     modify_context(api_version: "2021-10")
-  end
-
-  def teardown
-    super
-
-    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -32,11 +25,11 @@ class ApplicationCharge202110Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-10/application_charges.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "application_charge" => hash_including({name: "Super Duper Expensive action", price: 100.0, return_url: "http://super-duper.shopifyapps.com"}) }
+        body: { "application_charge" => hash_including({"name" => "Super Duper Expensive action", "price" => 100.0, "return_url" => "http://super-duper.shopifyapps.com"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    application_charge = ShopifyAPI::ApplicationCharge.new
+    application_charge = ShopifyAPI::ApplicationCharge.new(session: @test_session)
     application_charge.name = "Super Duper Expensive action"
     application_charge.price = 100.0
     application_charge.return_url = "http://super-duper.shopifyapps.com"
@@ -52,11 +45,11 @@ class ApplicationCharge202110Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-10/application_charges.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "application_charge" => hash_including({name: "Super Duper Expensive action", price: 100.0, return_url: "http://super-duper.shopifyapps.com", test: true}) }
+        body: { "application_charge" => hash_including({"name" => "Super Duper Expensive action", "price" => 100.0, "return_url" => "http://super-duper.shopifyapps.com", "test" => true}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    application_charge = ShopifyAPI::ApplicationCharge.new
+    application_charge = ShopifyAPI::ApplicationCharge.new(session: @test_session)
     application_charge.name = "Super Duper Expensive action"
     application_charge.price = 100.0
     application_charge.return_url = "http://super-duper.shopifyapps.com"
@@ -78,6 +71,7 @@ class ApplicationCharge202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::ApplicationCharge.find(
+      session: @test_session,
       id: 675931192,
     )
 
@@ -96,6 +90,7 @@ class ApplicationCharge202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::ApplicationCharge.all(
+      session: @test_session,
       since_id: "556467234",
     )
 
@@ -113,7 +108,9 @@ class ApplicationCharge202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::ApplicationCharge.all()
+    ShopifyAPI::ApplicationCharge.all(
+      session: @test_session,
+    )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-10/application_charges.json")
   end

@@ -14,15 +14,8 @@ class Product202110Test < Test::Unit::TestCase
   def setup
     super
 
-    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
-    ShopifyAPI::Context.activate_session(test_session)
+    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
     modify_context(api_version: "2021-10")
-  end
-
-  def teardown
-    super
-
-    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -36,7 +29,9 @@ class Product202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Product.all()
+    ShopifyAPI::Product.all(
+      session: @test_session,
+    )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-10/products.json")
   end
@@ -53,6 +48,7 @@ class Product202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Product.all(
+      session: @test_session,
       ids: "632910392,921728736",
     )
 
@@ -71,6 +67,7 @@ class Product202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Product.all(
+      session: @test_session,
       fields: "id,images,title",
     )
 
@@ -89,6 +86,7 @@ class Product202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Product.all(
+      session: @test_session,
       collection_id: "841564295",
     )
 
@@ -107,6 +105,7 @@ class Product202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Product.all(
+      session: @test_session,
       since_id: "632910392",
     )
 
@@ -125,6 +124,7 @@ class Product202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Product.all(
+      session: @test_session,
       presentment_currencies: "USD",
     )
 
@@ -138,11 +138,11 @@ class Product202110Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-10/products.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "product" => hash_including({title: "Burton Custom Freestyle 151", body_html: "<strong>Good snowboard!</strong>", vendor: "Burton", product_type: "Snowboard", tags: ["Barnes & Noble", "Big Air", "John's Fav"]}) }
+        body: { "product" => hash_including({"title" => "Burton Custom Freestyle 151", "body_html" => "<strong>Good snowboard!</strong>", "vendor" => "Burton", "product_type" => "Snowboard", "tags" => ["Barnes & Noble", "Big Air", "John's Fav"]}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new
+    product = ShopifyAPI::Product.new(session: @test_session)
     product.title = "Burton Custom Freestyle 151"
     product.body_html = "<strong>Good snowboard!</strong>"
     product.vendor = "Burton"
@@ -164,11 +164,11 @@ class Product202110Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-10/products.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "product" => hash_including({title: "Burton Custom Freestyle 151", body_html: "<strong>Good snowboard!</strong>", vendor: "Burton", product_type: "Snowboard", published: false}) }
+        body: { "product" => hash_including({"title" => "Burton Custom Freestyle 151", "body_html" => "<strong>Good snowboard!</strong>", "vendor" => "Burton", "product_type" => "Snowboard", "published" => false}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new
+    product = ShopifyAPI::Product.new(session: @test_session)
     product.title = "Burton Custom Freestyle 151"
     product.body_html = "<strong>Good snowboard!</strong>"
     product.vendor = "Burton"
@@ -186,11 +186,11 @@ class Product202110Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-10/products.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "product" => hash_including({title: "Burton Custom Freestyle 151", body_html: "<strong>Good snowboard!</strong>", vendor: "Burton", product_type: "Snowboard", status: "draft"}) }
+        body: { "product" => hash_including({"title" => "Burton Custom Freestyle 151", "body_html" => "<strong>Good snowboard!</strong>", "vendor" => "Burton", "product_type" => "Snowboard", "status" => "draft"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new
+    product = ShopifyAPI::Product.new(session: @test_session)
     product.title = "Burton Custom Freestyle 151"
     product.body_html = "<strong>Good snowboard!</strong>"
     product.vendor = "Burton"
@@ -208,25 +208,25 @@ class Product202110Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-10/products.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "product" => hash_including({title: "Burton Custom Freestyle 151", body_html: "<strong>Good snowboard!</strong>", vendor: "Burton", product_type: "Snowboard", variants: [{option1: "First", price: "10.00", sku: 123}, {option1: "Second", price: "20.00", sku: 123}]}) }
+        body: { "product" => hash_including({"title" => "Burton Custom Freestyle 151", "body_html" => "<strong>Good snowboard!</strong>", "vendor" => "Burton", "product_type" => "Snowboard", "variants" => [{"option1" => "First", "price" => "10.00", "sku" => "123"}, {"option1" => "Second", "price" => "20.00", "sku" => "123"}]}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new
+    product = ShopifyAPI::Product.new(session: @test_session)
     product.title = "Burton Custom Freestyle 151"
     product.body_html = "<strong>Good snowboard!</strong>"
     product.vendor = "Burton"
     product.product_type = "Snowboard"
     product.variants = [
       {
-        option1: "First",
-        price: "10.00",
-        sku: 123
+        "option1" => "First",
+        "price" => "10.00",
+        "sku" => "123"
       },
       {
-        option1: "Second",
-        price: "20.00",
-        sku: 123
+        "option1" => "Second",
+        "price" => "20.00",
+        "sku" => "123"
       }
     ]
     product.save()
@@ -241,38 +241,38 @@ class Product202110Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-10/products.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "product" => hash_including({title: "Burton Custom Freestyle 151", body_html: "<strong>Good snowboard!</strong>", vendor: "Burton", product_type: "Snowboard", variants: [{option1: "Blue", option2: 155}, {option1: "Black", option2: 159}], options: [{name: "Color", values: ["Blue", "Black"]}, {name: "Size", values: [155, 159]}]}) }
+        body: { "product" => hash_including({"title" => "Burton Custom Freestyle 151", "body_html" => "<strong>Good snowboard!</strong>", "vendor" => "Burton", "product_type" => "Snowboard", "variants" => [{"option1" => "Blue", "option2" => "155"}, {"option1" => "Black", "option2" => "159"}], "options" => [{"name" => "Color", "values" => ["Blue", "Black"]}, {"name" => "Size", "values" => ["155", "159"]}]}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new
+    product = ShopifyAPI::Product.new(session: @test_session)
     product.title = "Burton Custom Freestyle 151"
     product.body_html = "<strong>Good snowboard!</strong>"
     product.vendor = "Burton"
     product.product_type = "Snowboard"
     product.variants = [
       {
-        option1: "Blue",
-        option2: 155
+        "option1" => "Blue",
+        "option2" => "155"
       },
       {
-        option1: "Black",
-        option2: 159
+        "option1" => "Black",
+        "option2" => "159"
       }
     ]
     product.options = [
       {
-        name: "Color",
-        values: [
+        "name" => "Color",
+        "values" => [
             "Blue",
             "Black"
           ]
       },
       {
-        name: "Size",
-        values: [
-            155,
-            159
+        "name" => "Size",
+        "values" => [
+            "155",
+            "159"
           ]
       }
     ]
@@ -288,18 +288,18 @@ class Product202110Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-10/products.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "product" => hash_including({title: "Burton Custom Freestyle 151", body_html: "<strong>Good snowboard!</strong>", vendor: "Burton", product_type: "Snowboard", images: [{attachment: "R0lGODlhAQABAIAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\n"}]}) }
+        body: { "product" => hash_including({"title" => "Burton Custom Freestyle 151", "body_html" => "<strong>Good snowboard!</strong>", "vendor" => "Burton", "product_type" => "Snowboard", "images" => [{"attachment" => "R0lGODlhAQABAIAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\n"}]}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new
+    product = ShopifyAPI::Product.new(session: @test_session)
     product.title = "Burton Custom Freestyle 151"
     product.body_html = "<strong>Good snowboard!</strong>"
     product.vendor = "Burton"
     product.product_type = "Snowboard"
     product.images = [
       {
-        attachment: "R0lGODlhAQABAIAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\n"
+        "attachment" => "R0lGODlhAQABAIAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\n"
       }
     ]
     product.save()
@@ -314,18 +314,18 @@ class Product202110Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-10/products.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "product" => hash_including({title: "Burton Custom Freestyle 151", body_html: "<strong>Good snowboard!</strong>", vendor: "Burton", product_type: "Snowboard", images: [{src: "http://example.com/rails_logo.gif"}]}) }
+        body: { "product" => hash_including({"title" => "Burton Custom Freestyle 151", "body_html" => "<strong>Good snowboard!</strong>", "vendor" => "Burton", "product_type" => "Snowboard", "images" => [{"src" => "http://example.com/rails_logo.gif"}]}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new
+    product = ShopifyAPI::Product.new(session: @test_session)
     product.title = "Burton Custom Freestyle 151"
     product.body_html = "<strong>Good snowboard!</strong>"
     product.vendor = "Burton"
     product.product_type = "Snowboard"
     product.images = [
       {
-        src: "http://example.com/rails_logo.gif"
+        "src" => "http://example.com/rails_logo.gif"
       }
     ]
     product.save()
@@ -340,11 +340,11 @@ class Product202110Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-10/products.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "product" => hash_including({title: "Burton Custom Freestyle 151", body_html: "<strong>Good snowboard!</strong>", vendor: "Burton", product_type: "Snowboard", metafields_global_title_tag: "Product SEO Title", metafields_global_description_tag: "Product SEO Description"}) }
+        body: { "product" => hash_including({"title" => "Burton Custom Freestyle 151", "body_html" => "<strong>Good snowboard!</strong>", "vendor" => "Burton", "product_type" => "Snowboard", "metafields_global_title_tag" => "Product SEO Title", "metafields_global_description_tag" => "Product SEO Description"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new
+    product = ShopifyAPI::Product.new(session: @test_session)
     product.title = "Burton Custom Freestyle 151"
     product.body_html = "<strong>Good snowboard!</strong>"
     product.vendor = "Burton"
@@ -363,21 +363,21 @@ class Product202110Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-10/products.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "product" => hash_including({title: "Burton Custom Freestyle 151", body_html: "<strong>Good snowboard!</strong>", vendor: "Burton", product_type: "Snowboard", metafields: [{key: "new", value: "newvalue", type: "single_line_text_field", namespace: "global"}]}) }
+        body: { "product" => hash_including({"title" => "Burton Custom Freestyle 151", "body_html" => "<strong>Good snowboard!</strong>", "vendor" => "Burton", "product_type" => "Snowboard", "metafields" => [{"key" => "new", "value" => "newvalue", "type" => "single_line_text_field", "namespace" => "global"}]}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new
+    product = ShopifyAPI::Product.new(session: @test_session)
     product.title = "Burton Custom Freestyle 151"
     product.body_html = "<strong>Good snowboard!</strong>"
     product.vendor = "Burton"
     product.product_type = "Snowboard"
     product.metafields = [
       {
-        key: "new",
-        value: "newvalue",
-        type: "single_line_text_field",
-        namespace: "global"
+        "key" => "new",
+        "value" => "newvalue",
+        "type" => "single_line_text_field",
+        "namespace" => "global"
       }
     ]
     product.save()
@@ -396,7 +396,9 @@ class Product202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Product.count()
+    ShopifyAPI::Product.count(
+      session: @test_session,
+    )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-10/products/count.json")
   end
@@ -413,6 +415,7 @@ class Product202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Product.count(
+      session: @test_session,
       collection_id: "841564295",
     )
 
@@ -431,6 +434,7 @@ class Product202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Product.find(
+      session: @test_session,
       id: 632910392,
     )
 
@@ -449,6 +453,7 @@ class Product202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Product.find(
+      session: @test_session,
       id: 632910392,
       fields: "id,images,title",
     )
@@ -463,11 +468,11 @@ class Product202110Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-10/products/632910392.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "product" => hash_including({id: 632910392, title: "New product title"}) }
+        body: { "product" => hash_including({"id" => 632910392, "title" => "New product title"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new
+    product = ShopifyAPI::Product.new(session: @test_session)
     product.id = 632910392
     product.title = "New product title"
     product.save()
@@ -482,11 +487,11 @@ class Product202110Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-10/products/632910392.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "product" => hash_including({id: 632910392, status: "draft"}) }
+        body: { "product" => hash_including({"id" => 632910392, "status" => "draft"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new
+    product = ShopifyAPI::Product.new(session: @test_session)
     product.id = 632910392
     product.status = "draft"
     product.save()
@@ -501,11 +506,11 @@ class Product202110Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-10/products/632910392.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "product" => hash_including({id: 632910392, tags: "Barnes & Noble, John's Fav"}) }
+        body: { "product" => hash_including({"id" => 632910392, "tags" => "Barnes & Noble, John's Fav"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new
+    product = ShopifyAPI::Product.new(session: @test_session)
     product.id = 632910392
     product.tags = "Barnes & Noble, John's Fav"
     product.save()
@@ -520,11 +525,11 @@ class Product202110Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-10/products/632910392.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "product" => hash_including({id: 632910392, images: []}) }
+        body: { "product" => hash_including({"id" => 632910392, "images" => []}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new
+    product = ShopifyAPI::Product.new(session: @test_session)
     product.id = 632910392
     product.images = []
     product.save()
@@ -539,24 +544,24 @@ class Product202110Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-10/products/632910392.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "product" => hash_including({id: 632910392, images: [{id: 850703190}, {id: 562641783}, {id: 378407906}, {src: "http://example.com/rails_logo.gif"}]}) }
+        body: { "product" => hash_including({"id" => 632910392, "images" => [{"id" => 850703190}, {"id" => 562641783}, {"id" => 378407906}, {"src" => "http://example.com/rails_logo.gif"}]}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new
+    product = ShopifyAPI::Product.new(session: @test_session)
     product.id = 632910392
     product.images = [
       {
-        id: 850703190
+        "id" => 850703190
       },
       {
-        id: 562641783
+        "id" => 562641783
       },
       {
-        id: 378407906
+        "id" => 378407906
       },
       {
-        src: "http://example.com/rails_logo.gif"
+        "src" => "http://example.com/rails_logo.gif"
       }
     ]
     product.save()
@@ -571,24 +576,24 @@ class Product202110Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-10/products/632910392.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "product" => hash_including({id: 632910392, images: [{id: 850703190, position: 3}, {id: 562641783, position: 2}, {id: 378407906, position: 1}]}) }
+        body: { "product" => hash_including({"id" => 632910392, "images" => [{"id" => 850703190, "position" => 3}, {"id" => 562641783, "position" => 2}, {"id" => 378407906, "position" => 1}]}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new
+    product = ShopifyAPI::Product.new(session: @test_session)
     product.id = 632910392
     product.images = [
       {
-        id: 850703190,
-        position: 3
+        "id" => 850703190,
+        "position" => 3
       },
       {
-        id: 562641783,
-        position: 2
+        "id" => 562641783,
+        "position" => 2
       },
       {
-        id: 378407906,
-        position: 1
+        "id" => 378407906,
+        "position" => 1
       }
     ]
     product.save()
@@ -603,24 +608,24 @@ class Product202110Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-10/products/632910392.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "product" => hash_including({id: 632910392, variants: [{id: 457924702}, {id: 39072856}, {id: 49148385}, {id: 808950810}]}) }
+        body: { "product" => hash_including({"id" => 632910392, "variants" => [{"id" => 457924702}, {"id" => 39072856}, {"id" => 49148385}, {"id" => 808950810}]}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new
+    product = ShopifyAPI::Product.new(session: @test_session)
     product.id = 632910392
     product.variants = [
       {
-        id: 457924702
+        "id" => 457924702
       },
       {
-        id: 39072856
+        "id" => 39072856
       },
       {
-        id: 49148385
+        "id" => 49148385
       },
       {
-        id: 808950810
+        "id" => 808950810
       }
     ]
     product.save()
@@ -635,27 +640,27 @@ class Product202110Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-10/products/632910392.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "product" => hash_including({id: 632910392, title: "Updated Product Title", variants: [{id: 808950810, price: "2000.00", sku: "Updating the Product SKU"}, {id: 49148385}, {id: 39072856}, {id: 457924702}]}) }
+        body: { "product" => hash_including({"id" => 632910392, "title" => "Updated Product Title", "variants" => [{"id" => 808950810, "price" => "2000.00", "sku" => "Updating the Product SKU"}, {"id" => 49148385}, {"id" => 39072856}, {"id" => 457924702}]}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new
+    product = ShopifyAPI::Product.new(session: @test_session)
     product.id = 632910392
     product.title = "Updated Product Title"
     product.variants = [
       {
-        id: 808950810,
-        price: "2000.00",
-        sku: "Updating the Product SKU"
+        "id" => 808950810,
+        "price" => "2000.00",
+        "sku" => "Updating the Product SKU"
       },
       {
-        id: 49148385
+        "id" => 49148385
       },
       {
-        id: 39072856
+        "id" => 39072856
       },
       {
-        id: 457924702
+        "id" => 457924702
       }
     ]
     product.save()
@@ -670,11 +675,11 @@ class Product202110Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-10/products/632910392.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "product" => hash_including({id: 632910392, metafields_global_title_tag: "Brand new title", metafields_global_description_tag: "Brand new description"}) }
+        body: { "product" => hash_including({"id" => 632910392, "metafields_global_title_tag" => "Brand new title", "metafields_global_description_tag" => "Brand new description"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new
+    product = ShopifyAPI::Product.new(session: @test_session)
     product.id = 632910392
     product.metafields_global_title_tag = "Brand new title"
     product.metafields_global_description_tag = "Brand new description"
@@ -690,11 +695,11 @@ class Product202110Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-10/products/632910392.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "product" => hash_including({id: 632910392, published: true}) }
+        body: { "product" => hash_including({"id" => 632910392, "published" => true}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new
+    product = ShopifyAPI::Product.new(session: @test_session)
     product.id = 632910392
     product.published = true
     product.save()
@@ -709,11 +714,11 @@ class Product202110Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-10/products/632910392.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "product" => hash_including({id: 632910392, published: false}) }
+        body: { "product" => hash_including({"id" => 632910392, "published" => false}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new
+    product = ShopifyAPI::Product.new(session: @test_session)
     product.id = 632910392
     product.published = false
     product.save()
@@ -728,18 +733,18 @@ class Product202110Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-10/products/632910392.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "product" => hash_including({id: 632910392, metafields: [{key: "new", value: "newvalue", type: "single_line_text_field", namespace: "global"}]}) }
+        body: { "product" => hash_including({"id" => 632910392, "metafields" => [{"key" => "new", "value" => "newvalue", "type" => "single_line_text_field", "namespace" => "global"}]}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    product = ShopifyAPI::Product.new
+    product = ShopifyAPI::Product.new(session: @test_session)
     product.id = 632910392
     product.metafields = [
       {
-        key: "new",
-        value: "newvalue",
-        type: "single_line_text_field",
-        namespace: "global"
+        "key" => "new",
+        "value" => "newvalue",
+        "type" => "single_line_text_field",
+        "namespace" => "global"
       }
     ]
     product.save()
@@ -759,6 +764,7 @@ class Product202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Product.delete(
+      session: @test_session,
       id: 632910392,
     )
 

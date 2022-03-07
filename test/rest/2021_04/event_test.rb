@@ -14,15 +14,8 @@ class Event202104Test < Test::Unit::TestCase
   def setup
     super
 
-    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
-    ShopifyAPI::Context.activate_session(test_session)
+    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
     modify_context(api_version: "2021-04")
-  end
-
-  def teardown
-    super
-
-    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -36,7 +29,9 @@ class Event202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Event.all()
+    ShopifyAPI::Event.all(
+      session: @test_session,
+    )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-04/events.json")
   end
@@ -53,6 +48,7 @@ class Event202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Event.all(
+      session: @test_session,
       created_at_min: "2008-01-10 12:30:00+00:00",
     )
 
@@ -71,6 +67,7 @@ class Event202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Event.all(
+      session: @test_session,
       order_id: 450789469,
     )
 
@@ -89,6 +86,7 @@ class Event202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Event.all(
+      session: @test_session,
       order_id: 450789469,
       limit: "1",
       since_id: "164748010",
@@ -109,6 +107,7 @@ class Event202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Event.all(
+      session: @test_session,
       product_id: 921728736,
     )
 
@@ -127,6 +126,7 @@ class Event202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Event.all(
+      session: @test_session,
       since_id: "164748010",
     )
 
@@ -145,6 +145,7 @@ class Event202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Event.all(
+      session: @test_session,
       filter: "Product,Order",
     )
 
@@ -163,6 +164,7 @@ class Event202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Event.all(
+      session: @test_session,
       filter: "Product",
       verb: "destroy",
     )
@@ -182,6 +184,7 @@ class Event202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Event.find(
+      session: @test_session,
       id: 677313116,
     )
 
@@ -200,6 +203,7 @@ class Event202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Event.count(
+      session: @test_session,
       created_at_min: "2008-01-10T13:00:00+00:00",
     )
 
@@ -217,7 +221,9 @@ class Event202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Event.count()
+    ShopifyAPI::Event.count(
+      session: @test_session,
+    )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-04/events/count.json")
   end

@@ -9,7 +9,7 @@ module ShopifyAPI
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: ShopifyAPI::Context.active_session)
+    def initialize(session: nil)
       super(session: session)
 
       @body_html = T.let(nil, T.nilable(String))
@@ -78,13 +78,13 @@ module ShopifyAPI
 
       sig do
         params(
-          product_id: T.any(Integer, String),
-          session: Auth::Session
+          session: Auth::Session,
+          product_id: T.any(Integer, String)
         ).returns(T.nilable(ProductListing))
       end
       def find(
-        product_id:,
-        session: ShopifyAPI::Context.active_session
+        session:,
+        product_id:
       )
         result = base_find(
           session: session,
@@ -96,13 +96,13 @@ module ShopifyAPI
 
       sig do
         params(
-          product_id: T.any(Integer, String),
-          session: Auth::Session
+          session: Auth::Session,
+          product_id: T.any(Integer, String)
         ).returns(T.untyped)
       end
       def delete(
-        product_id:,
-        session: ShopifyAPI::Context.active_session
+        session:,
+        product_id:
       )
         request(
           http_method: :delete,
@@ -115,22 +115,22 @@ module ShopifyAPI
 
       sig do
         params(
+          session: Auth::Session,
           product_ids: T.untyped,
           limit: T.untyped,
           collection_id: T.untyped,
           updated_at_min: T.untyped,
           handle: T.untyped,
-          session: Auth::Session,
           kwargs: T.untyped
         ).returns(T::Array[ProductListing])
       end
       def all(
+        session:,
         product_ids: nil,
         limit: nil,
         collection_id: nil,
         updated_at_min: nil,
         handle: nil,
-        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         response = base_find(
@@ -144,14 +144,14 @@ module ShopifyAPI
 
       sig do
         params(
-          limit: T.untyped,
           session: Auth::Session,
+          limit: T.untyped,
           kwargs: T.untyped
         ).returns(T.untyped)
       end
       def product_ids(
+        session:,
         limit: nil,
-        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         request(
@@ -172,7 +172,7 @@ module ShopifyAPI
         ).returns(T.untyped)
       end
       def count(
-        session: ShopifyAPI::Context.active_session,
+        session:,
         **kwargs
       )
         request(

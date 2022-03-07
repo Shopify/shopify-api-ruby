@@ -9,7 +9,7 @@ module ShopifyAPI
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: ShopifyAPI::Context.active_session)
+    def initialize(session: nil)
       super(session: session)
 
       @line_items = T.let(nil, T.nilable(T::Array[T.untyped]))
@@ -81,7 +81,7 @@ module ShopifyAPI
       @total_price = T.let(nil, T.nilable(String))
       @total_price_set = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
       @total_shipping_price_set = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
-      @total_tax = T.let(nil, T.nilable(String))
+      @total_tax = T.let(nil, T.nilable(T.any(String, Float)))
       @total_tax_set = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
       @total_tip_received = T.let(nil, T.nilable(String))
       @total_weight = T.let(nil, T.nilable(Integer))
@@ -247,7 +247,7 @@ module ShopifyAPI
     attr_reader :total_price_set
     sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :total_shipping_price_set
-    sig { returns(T.nilable(String)) }
+    sig { returns(T.nilable(T.any(String, Float))) }
     attr_reader :total_tax
     sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :total_tax_set
@@ -263,15 +263,15 @@ module ShopifyAPI
     class << self
       sig do
         params(
+          session: Auth::Session,
           id: T.any(Integer, String),
-          fields: T.untyped,
-          session: Auth::Session
+          fields: T.untyped
         ).returns(T.nilable(Order))
       end
       def find(
+        session:,
         id:,
-        fields: nil,
-        session: ShopifyAPI::Context.active_session
+        fields: nil
       )
         result = base_find(
           session: session,
@@ -283,13 +283,13 @@ module ShopifyAPI
 
       sig do
         params(
-          id: T.any(Integer, String),
-          session: Auth::Session
+          session: Auth::Session,
+          id: T.any(Integer, String)
         ).returns(T.untyped)
       end
       def delete(
-        id:,
-        session: ShopifyAPI::Context.active_session
+        session:,
+        id:
       )
         request(
           http_method: :delete,
@@ -302,6 +302,7 @@ module ShopifyAPI
 
       sig do
         params(
+          session: Auth::Session,
           ids: T.untyped,
           limit: T.untyped,
           since_id: T.untyped,
@@ -316,11 +317,11 @@ module ShopifyAPI
           financial_status: T.untyped,
           fulfillment_status: T.untyped,
           fields: T.untyped,
-          session: Auth::Session,
           kwargs: T.untyped
         ).returns(T::Array[Order])
       end
       def all(
+        session:,
         ids: nil,
         limit: nil,
         since_id: nil,
@@ -335,7 +336,6 @@ module ShopifyAPI
         financial_status: nil,
         fulfillment_status: nil,
         fields: nil,
-        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         response = base_find(
@@ -349,6 +349,7 @@ module ShopifyAPI
 
       sig do
         params(
+          session: Auth::Session,
           created_at_min: T.untyped,
           created_at_max: T.untyped,
           updated_at_min: T.untyped,
@@ -356,11 +357,11 @@ module ShopifyAPI
           status: T.untyped,
           financial_status: T.untyped,
           fulfillment_status: T.untyped,
-          session: Auth::Session,
           kwargs: T.untyped
         ).returns(T.untyped)
       end
       def count(
+        session:,
         created_at_min: nil,
         created_at_max: nil,
         updated_at_min: nil,
@@ -368,7 +369,6 @@ module ShopifyAPI
         status: nil,
         financial_status: nil,
         fulfillment_status: nil,
-        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         request(

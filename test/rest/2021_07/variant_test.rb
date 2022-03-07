@@ -14,15 +14,8 @@ class Variant202107Test < Test::Unit::TestCase
   def setup
     super
 
-    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
-    ShopifyAPI::Context.activate_session(test_session)
+    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
     modify_context(api_version: "2021-07")
-  end
-
-  def teardown
-    super
-
-    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -37,6 +30,7 @@ class Variant202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Variant.all(
+      session: @test_session,
       product_id: 632910392,
       since_id: "49148385",
     )
@@ -56,6 +50,7 @@ class Variant202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Variant.all(
+      session: @test_session,
       product_id: 632910392,
       presentment_currencies: "USD,CAD",
     )
@@ -75,6 +70,7 @@ class Variant202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Variant.all(
+      session: @test_session,
       product_id: 632910392,
     )
 
@@ -93,6 +89,7 @@ class Variant202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Variant.count(
+      session: @test_session,
       product_id: 632910392,
     )
 
@@ -111,6 +108,7 @@ class Variant202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Variant.find(
+      session: @test_session,
       id: 808950810,
     )
 
@@ -124,11 +122,11 @@ class Variant202107Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-07/variants/808950810.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "variant" => hash_including({id: 808950810, option1: "Not Pink", price: "99.00"}) }
+        body: { "variant" => hash_including({"id" => 808950810, "option1" => "Not Pink", "price" => "99.00"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    variant = ShopifyAPI::Variant.new
+    variant = ShopifyAPI::Variant.new(session: @test_session)
     variant.id = 808950810
     variant.option1 = "Not Pink"
     variant.price = "99.00"
@@ -144,11 +142,11 @@ class Variant202107Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-07/variants/808950810.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "variant" => hash_including({id: 808950810, image_id: 562641783}) }
+        body: { "variant" => hash_including({"id" => 808950810, "image_id" => 562641783}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    variant = ShopifyAPI::Variant.new
+    variant = ShopifyAPI::Variant.new(session: @test_session)
     variant.id = 808950810
     variant.image_id = 562641783
     variant.save()
@@ -163,18 +161,18 @@ class Variant202107Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-07/variants/808950810.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "variant" => hash_including({id: 808950810, metafields: [{key: "new", value: "newvalue", type: "single_line_text_field", namespace: "global"}]}) }
+        body: { "variant" => hash_including({"id" => 808950810, "metafields" => [{"key" => "new", "value" => "newvalue", "type" => "single_line_text_field", "namespace" => "global"}]}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    variant = ShopifyAPI::Variant.new
+    variant = ShopifyAPI::Variant.new(session: @test_session)
     variant.id = 808950810
     variant.metafields = [
       {
-        key: "new",
-        value: "newvalue",
-        type: "single_line_text_field",
-        namespace: "global"
+        "key" => "new",
+        "value" => "newvalue",
+        "type" => "single_line_text_field",
+        "namespace" => "global"
       }
     ]
     variant.save()
@@ -189,11 +187,11 @@ class Variant202107Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-07/products/632910392/variants.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "variant" => hash_including({option1: "Yellow", price: "1.00"}) }
+        body: { "variant" => hash_including({"option1" => "Yellow", "price" => "1.00"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    variant = ShopifyAPI::Variant.new
+    variant = ShopifyAPI::Variant.new(session: @test_session)
     variant.product_id = 632910392
     variant.option1 = "Yellow"
     variant.price = "1.00"
@@ -209,11 +207,11 @@ class Variant202107Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-07/products/632910392/variants.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "variant" => hash_including({image_id: 850703190, option1: "Purple"}) }
+        body: { "variant" => hash_including({"image_id" => 850703190, "option1" => "Purple"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    variant = ShopifyAPI::Variant.new
+    variant = ShopifyAPI::Variant.new(session: @test_session)
     variant.product_id = 632910392
     variant.image_id = 850703190
     variant.option1 = "Purple"
@@ -229,19 +227,19 @@ class Variant202107Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-07/products/632910392/variants.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "variant" => hash_including({option1: "Blue", metafields: [{key: "new", value: "newvalue", type: "single_line_text_field", namespace: "global"}]}) }
+        body: { "variant" => hash_including({"option1" => "Blue", "metafields" => [{"key" => "new", "value" => "newvalue", "type" => "single_line_text_field", "namespace" => "global"}]}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    variant = ShopifyAPI::Variant.new
+    variant = ShopifyAPI::Variant.new(session: @test_session)
     variant.product_id = 632910392
     variant.option1 = "Blue"
     variant.metafields = [
       {
-        key: "new",
-        value: "newvalue",
-        type: "single_line_text_field",
-        namespace: "global"
+        "key" => "new",
+        "value" => "newvalue",
+        "type" => "single_line_text_field",
+        "namespace" => "global"
       }
     ]
     variant.save()
@@ -261,6 +259,7 @@ class Variant202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Variant.delete(
+      session: @test_session,
       product_id: 632910392,
       id: 808950810,
     )

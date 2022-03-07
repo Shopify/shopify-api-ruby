@@ -14,15 +14,8 @@ class Metafield202104Test < Test::Unit::TestCase
   def setup
     super
 
-    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
-    ShopifyAPI::Context.activate_session(test_session)
+    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
     modify_context(api_version: "2021-04")
-  end
-
-  def teardown
-    super
-
-    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -36,7 +29,9 @@ class Metafield202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Metafield.all()
+    ShopifyAPI::Metafield.all(
+      session: @test_session,
+    )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-04/metafields.json")
   end
@@ -53,6 +48,7 @@ class Metafield202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Metafield.all(
+      session: @test_session,
       since_id: "721389482",
     )
 
@@ -66,11 +62,11 @@ class Metafield202104Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2021-04/metafields.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "metafield" => hash_including({namespace: "inventory", key: "warehouse", value: 25, type: "number_integer", value_type: "integer"}) }
+        body: { "metafield" => hash_including({"namespace" => "inventory", "key" => "warehouse", "value" => 25, "type" => "number_integer", "value_type" => "integer"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    metafield = ShopifyAPI::Metafield.new
+    metafield = ShopifyAPI::Metafield.new(session: @test_session)
     metafield.namespace = "inventory"
     metafield.key = "warehouse"
     metafield.value = 25
@@ -93,7 +89,8 @@ class Metafield202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Metafield.all(
-      metafield: {"owner_id" => 850703190, "owner_resource" => "product_image"},
+      session: @test_session,
+      metafield: {"owner_id" => "850703190", "owner_resource" => "product_image"},
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-04/metafields.json?metafield%5Bowner_id%5D=850703190&metafield%5Bowner_resource%5D=product_image")
@@ -110,7 +107,9 @@ class Metafield202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Metafield.count()
+    ShopifyAPI::Metafield.count(
+      session: @test_session,
+    )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-04/metafields/count.json")
   end
@@ -127,6 +126,7 @@ class Metafield202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Metafield.find(
+      session: @test_session,
       id: 721389482,
     )
 
@@ -140,11 +140,11 @@ class Metafield202104Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-04/metafields/721389482.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "metafield" => hash_including({id: 721389482, value: "something new", type: "single_line_text_field", value_type: "string"}) }
+        body: { "metafield" => hash_including({"id" => 721389482, "value" => "something new", "type" => "single_line_text_field", "value_type" => "string"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    metafield = ShopifyAPI::Metafield.new
+    metafield = ShopifyAPI::Metafield.new(session: @test_session)
     metafield.id = 721389482
     metafield.value = "something new"
     metafield.type = "single_line_text_field"
@@ -166,6 +166,7 @@ class Metafield202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Metafield.delete(
+      session: @test_session,
       id: 721389482,
     )
 

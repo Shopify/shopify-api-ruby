@@ -14,15 +14,8 @@ class GiftCardAdjustment202201Test < Test::Unit::TestCase
   def setup
     super
 
-    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
-    ShopifyAPI::Context.activate_session(test_session)
+    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
     modify_context(api_version: "2022-01")
-  end
-
-  def teardown
-    super
-
-    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -37,6 +30,7 @@ class GiftCardAdjustment202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::GiftCardAdjustment.all(
+      session: @test_session,
       gift_card_id: 1035197676,
     )
 
@@ -50,11 +44,11 @@ class GiftCardAdjustment202201Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2022-01/gift_cards/1035197676/adjustments.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "adjustment" => hash_including({amount: 10.0, note: "Customer refilled gift card by $10"}) }
+        body: { "adjustment" => hash_including({"amount" => 10.0, "note" => "Customer refilled gift card by $10"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    gift_card_adjustment = ShopifyAPI::GiftCardAdjustment.new
+    gift_card_adjustment = ShopifyAPI::GiftCardAdjustment.new(session: @test_session)
     gift_card_adjustment.gift_card_id = 1035197676
     gift_card_adjustment.amount = 10.0
     gift_card_adjustment.note = "Customer refilled gift card by $10"
@@ -70,11 +64,11 @@ class GiftCardAdjustment202201Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2022-01/gift_cards/1035197676/adjustments.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "adjustment" => hash_including({amount: -20.0, note: "Customer spent $20 via external service"}) }
+        body: { "adjustment" => hash_including({"amount" => -20.0, "note" => "Customer spent $20 via external service"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    gift_card_adjustment = ShopifyAPI::GiftCardAdjustment.new
+    gift_card_adjustment = ShopifyAPI::GiftCardAdjustment.new(session: @test_session)
     gift_card_adjustment.gift_card_id = 1035197676
     gift_card_adjustment.amount = -20.0
     gift_card_adjustment.note = "Customer spent $20 via external service"
@@ -90,11 +84,11 @@ class GiftCardAdjustment202201Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2022-01/gift_cards/1035197676/adjustments.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "adjustment" => hash_including({amount: 10.0, remote_transaction_ref: "gift_card_app_transaction_193402", remote_transaction_url: "http://example.com/my-gift-card-app/gift_card_adjustments/193402"}) }
+        body: { "adjustment" => hash_including({"amount" => 10.0, "remote_transaction_ref" => "gift_card_app_transaction_193402", "remote_transaction_url" => "http://example.com/my-gift-card-app/gift_card_adjustments/193402"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    gift_card_adjustment = ShopifyAPI::GiftCardAdjustment.new
+    gift_card_adjustment = ShopifyAPI::GiftCardAdjustment.new(session: @test_session)
     gift_card_adjustment.gift_card_id = 1035197676
     gift_card_adjustment.amount = 10.0
     gift_card_adjustment.remote_transaction_ref = "gift_card_app_transaction_193402"
@@ -111,11 +105,11 @@ class GiftCardAdjustment202201Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2022-01/gift_cards/1035197676/adjustments.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "adjustment" => hash_including({amount: 10.0, processed_at: "2021-08-03T16:57:35-04:00"}) }
+        body: { "adjustment" => hash_including({"amount" => 10.0, "processed_at" => "2021-08-03T16:57:35-04:00"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    gift_card_adjustment = ShopifyAPI::GiftCardAdjustment.new
+    gift_card_adjustment = ShopifyAPI::GiftCardAdjustment.new(session: @test_session)
     gift_card_adjustment.gift_card_id = 1035197676
     gift_card_adjustment.amount = 10.0
     gift_card_adjustment.processed_at = "2021-08-03T16:57:35-04:00"
@@ -136,6 +130,7 @@ class GiftCardAdjustment202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::GiftCardAdjustment.find(
+      session: @test_session,
       gift_card_id: 1035197676,
       id: 9,
     )

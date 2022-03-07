@@ -14,15 +14,8 @@ class CollectionListing202201Test < Test::Unit::TestCase
   def setup
     super
 
-    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
-    ShopifyAPI::Context.activate_session(test_session)
+    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
     modify_context(api_version: "2022-01")
-  end
-
-  def teardown
-    super
-
-    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -36,7 +29,9 @@ class CollectionListing202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::CollectionListing.all()
+    ShopifyAPI::CollectionListing.all(
+      session: @test_session,
+    )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-01/collection_listings.json")
   end
@@ -53,6 +48,7 @@ class CollectionListing202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::CollectionListing.product_ids(
+      session: @test_session,
       collection_id: 841564295,
     )
 
@@ -71,6 +67,7 @@ class CollectionListing202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::CollectionListing.find(
+      session: @test_session,
       collection_id: 482865238,
     )
 
@@ -84,11 +81,11 @@ class CollectionListing202201Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2022-01/collection_listings/482865238.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "collection_listing" => hash_including({collection_id: 482865238}) }
+        body: { "collection_listing" => hash_including({"collection_id" => 482865238}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    collection_listing = ShopifyAPI::CollectionListing.new
+    collection_listing = ShopifyAPI::CollectionListing.new(session: @test_session)
     collection_listing.collection_id = 482865238
     collection_listing.save()
 
@@ -107,6 +104,7 @@ class CollectionListing202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::CollectionListing.delete(
+      session: @test_session,
       collection_id: 482865238,
     )
 

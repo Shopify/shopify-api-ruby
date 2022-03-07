@@ -9,22 +9,22 @@ module ShopifyAPI
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: ShopifyAPI::Context.active_session)
+    def initialize(session: nil)
       super(session: session)
 
       @activated_on = T.let(nil, T.nilable(String))
       @billing_on = T.let(nil, T.nilable(String))
       @cancelled_on = T.let(nil, T.nilable(String))
-      @capped_amount = T.let(nil, T.nilable(String))
+      @capped_amount = T.let(nil, T.nilable(T.any(String, Integer)))
       @confirmation_url = T.let(nil, T.nilable(String))
       @created_at = T.let(nil, T.nilable(String))
       @id = T.let(nil, T.nilable(Integer))
       @name = T.let(nil, T.nilable(String))
-      @price = T.let(nil, T.nilable(String))
+      @price = T.let(nil, T.nilable(T.any(String, Float)))
       @return_url = T.let(nil, T.nilable(String))
       @status = T.let(nil, T.nilable(String))
       @terms = T.let(nil, T.nilable(String))
-      @test = T.let(nil, T.nilable(String))
+      @test = T.let(nil, T.nilable(T::Boolean))
       @trial_days = T.let(nil, T.nilable(Integer))
       @trial_ends_on = T.let(nil, T.nilable(String))
       @updated_at = T.let(nil, T.nilable(String))
@@ -46,7 +46,7 @@ module ShopifyAPI
     attr_reader :billing_on
     sig { returns(T.nilable(String)) }
     attr_reader :cancelled_on
-    sig { returns(T.nilable(String)) }
+    sig { returns(T.nilable(T.any(String, Integer))) }
     attr_reader :capped_amount
     sig { returns(T.nilable(String)) }
     attr_reader :confirmation_url
@@ -56,7 +56,7 @@ module ShopifyAPI
     attr_reader :id
     sig { returns(T.nilable(String)) }
     attr_reader :name
-    sig { returns(T.nilable(String)) }
+    sig { returns(T.nilable(T.any(String, Float))) }
     attr_reader :price
     sig { returns(T.nilable(String)) }
     attr_reader :return_url
@@ -64,7 +64,7 @@ module ShopifyAPI
     attr_reader :status
     sig { returns(T.nilable(String)) }
     attr_reader :terms
-    sig { returns(T.nilable(String)) }
+    sig { returns(T.nilable(T::Boolean)) }
     attr_reader :test
     sig { returns(T.nilable(Integer)) }
     attr_reader :trial_days
@@ -76,15 +76,15 @@ module ShopifyAPI
     class << self
       sig do
         params(
+          session: Auth::Session,
           id: T.any(Integer, String),
-          fields: T.untyped,
-          session: Auth::Session
+          fields: T.untyped
         ).returns(T.nilable(RecurringApplicationCharge))
       end
       def find(
+        session:,
         id:,
-        fields: nil,
-        session: ShopifyAPI::Context.active_session
+        fields: nil
       )
         result = base_find(
           session: session,
@@ -96,13 +96,13 @@ module ShopifyAPI
 
       sig do
         params(
-          id: T.any(Integer, String),
-          session: Auth::Session
+          session: Auth::Session,
+          id: T.any(Integer, String)
         ).returns(T.untyped)
       end
       def delete(
-        id:,
-        session: ShopifyAPI::Context.active_session
+        session:,
+        id:
       )
         request(
           http_method: :delete,
@@ -115,16 +115,16 @@ module ShopifyAPI
 
       sig do
         params(
+          session: Auth::Session,
           since_id: T.untyped,
           fields: T.untyped,
-          session: Auth::Session,
           kwargs: T.untyped
         ).returns(T::Array[RecurringApplicationCharge])
       end
       def all(
+        session:,
         since_id: nil,
         fields: nil,
-        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         response = base_find(

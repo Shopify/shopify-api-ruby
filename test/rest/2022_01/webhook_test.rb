@@ -14,15 +14,8 @@ class Webhook202201Test < Test::Unit::TestCase
   def setup
     super
 
-    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
-    ShopifyAPI::Context.activate_session(test_session)
+    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
     modify_context(api_version: "2022-01")
-  end
-
-  def teardown
-    super
-
-    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -36,7 +29,9 @@ class Webhook202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Webhook.all()
+    ShopifyAPI::Webhook.all(
+      session: @test_session,
+    )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-01/webhooks.json")
   end
@@ -53,6 +48,7 @@ class Webhook202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Webhook.all(
+      session: @test_session,
       since_id: "901431826",
     )
 
@@ -66,11 +62,11 @@ class Webhook202201Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2022-01/webhooks.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "webhook" => hash_including({topic: "orders/create", address: "https://example.hostname.com/", format: "json", fields: ["id", "note"]}) }
+        body: { "webhook" => hash_including({"topic" => "orders/create", "address" => "https://example.hostname.com/", "format" => "json", "fields" => ["id", "note"]}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    webhook = ShopifyAPI::Webhook.new
+    webhook = ShopifyAPI::Webhook.new(session: @test_session)
     webhook.topic = "orders/create"
     webhook.address = "https://example.hostname.com/"
     webhook.format = "json"
@@ -90,11 +86,11 @@ class Webhook202201Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2022-01/webhooks.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "webhook" => hash_including({address: "arn:aws:events:us-east-1::event-source/aws.partner/shopify.com/755357713/example-event-source", topic: "customers/update", format: "json"}) }
+        body: { "webhook" => hash_including({"address" => "arn:aws:events:us-east-1::event-source/aws.partner/shopify.com/755357713/example-event-source", "topic" => "customers/update", "format" => "json"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    webhook = ShopifyAPI::Webhook.new
+    webhook = ShopifyAPI::Webhook.new(session: @test_session)
     webhook.address = "arn:aws:events:us-east-1::event-source/aws.partner/shopify.com/755357713/example-event-source"
     webhook.topic = "customers/update"
     webhook.format = "json"
@@ -110,11 +106,11 @@ class Webhook202201Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2022-01/webhooks.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "webhook" => hash_including({address: "pubsub://projectName:topicName", topic: "customers/update", format: "json"}) }
+        body: { "webhook" => hash_including({"address" => "pubsub://projectName:topicName", "topic" => "customers/update", "format" => "json"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    webhook = ShopifyAPI::Webhook.new
+    webhook = ShopifyAPI::Webhook.new(session: @test_session)
     webhook.address = "pubsub://projectName:topicName"
     webhook.topic = "customers/update"
     webhook.format = "json"
@@ -134,7 +130,9 @@ class Webhook202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Webhook.count()
+    ShopifyAPI::Webhook.count(
+      session: @test_session,
+    )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-01/webhooks/count.json")
   end
@@ -151,6 +149,7 @@ class Webhook202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Webhook.count(
+      session: @test_session,
       topic: "orders/create",
     )
 
@@ -169,6 +168,7 @@ class Webhook202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Webhook.find(
+      session: @test_session,
       id: 4759306,
     )
 
@@ -182,11 +182,11 @@ class Webhook202201Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2022-01/webhooks/4759306.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "webhook" => hash_including({id: 4759306, address: "https://somewhere-else.com/"}) }
+        body: { "webhook" => hash_including({"id" => 4759306, "address" => "https://somewhere-else.com/"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    webhook = ShopifyAPI::Webhook.new
+    webhook = ShopifyAPI::Webhook.new(session: @test_session)
     webhook.id = 4759306
     webhook.address = "https://somewhere-else.com/"
     webhook.save()
@@ -206,6 +206,7 @@ class Webhook202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Webhook.delete(
+      session: @test_session,
       id: 4759306,
     )
 

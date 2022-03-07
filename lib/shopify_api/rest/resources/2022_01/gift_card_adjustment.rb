@@ -9,7 +9,7 @@ module ShopifyAPI
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: ShopifyAPI::Context.active_session)
+    def initialize(session: nil)
       super(session: session)
 
       @amount = T.let(nil, T.nilable(Float))
@@ -69,15 +69,15 @@ module ShopifyAPI
 
       sig do
         params(
+          session: Auth::Session,
           id: T.any(Integer, String),
-          gift_card_id: T.nilable(T.any(Integer, String)),
-          session: Auth::Session
+          gift_card_id: T.nilable(T.any(Integer, String))
         ).returns(T.nilable(GiftCardAdjustment))
       end
       def find(
+        session:,
         id:,
-        gift_card_id: nil,
-        session: ShopifyAPI::Context.active_session
+        gift_card_id: nil
       )
         result = base_find(
           session: session,
@@ -89,14 +89,14 @@ module ShopifyAPI
 
       sig do
         params(
-          gift_card_id: T.nilable(T.any(Integer, String)),
           session: Auth::Session,
+          gift_card_id: T.nilable(T.any(Integer, String)),
           kwargs: T.untyped
         ).returns(T::Array[GiftCardAdjustment])
       end
       def all(
+        session:,
         gift_card_id: nil,
-        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         response = base_find(

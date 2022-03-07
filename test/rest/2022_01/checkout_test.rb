@@ -14,15 +14,8 @@ class Checkout202201Test < Test::Unit::TestCase
   def setup
     super
 
-    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
-    ShopifyAPI::Context.activate_session(test_session)
+    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
     modify_context(api_version: "2022-01")
-  end
-
-  def teardown
-    super
-
-    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -32,15 +25,15 @@ class Checkout202201Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2022-01/checkouts.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "checkout" => hash_including({line_items: [{variant_id: 39072856, quantity: 5}]}) }
+        body: { "checkout" => hash_including({"line_items" => [{"variant_id" => 39072856, "quantity" => 5}]}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    checkout = ShopifyAPI::Checkout.new
+    checkout = ShopifyAPI::Checkout.new(session: @test_session)
     checkout.line_items = [
       {
-        variant_id: 39072856,
-        quantity: 5
+        "variant_id" => 39072856,
+        "quantity" => 5
       }
     ]
     checkout.save()
@@ -55,11 +48,11 @@ class Checkout202201Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2022-01/checkouts.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "checkout" => hash_including({email: "me@example.com"}) }
+        body: { "checkout" => hash_including({"email" => "me@example.com"}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    checkout = ShopifyAPI::Checkout.new
+    checkout = ShopifyAPI::Checkout.new(session: @test_session)
     checkout.email = "me@example.com"
     checkout.save()
 
@@ -77,7 +70,7 @@ class Checkout202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    checkout = ShopifyAPI::Checkout.new
+    checkout = ShopifyAPI::Checkout.new(session: @test_session)
     checkout.token = "b490a9220cd14d7344024f4874f640a6"
     checkout.complete()
 
@@ -96,6 +89,7 @@ class Checkout202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Checkout.find(
+      session: @test_session,
       token: "bd5a8aa1ecd019dd3520ff791ee3a24c",
     )
 
@@ -114,6 +108,7 @@ class Checkout202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Checkout.find(
+      session: @test_session,
       token: "7yjf4v2we7gamku6a6h7tvm8h3mmvs4x",
     )
 
@@ -132,6 +127,7 @@ class Checkout202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Checkout.find(
+      session: @test_session,
       token: "exuw7apwoycchjuwtiqg8nytfhphr62a",
     )
 
@@ -145,22 +141,22 @@ class Checkout202201Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2022-01/checkouts/exuw7apwoycchjuwtiqg8nytfhphr62a.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "checkout" => hash_including({token: "exuw7apwoycchjuwtiqg8nytfhphr62a", email: "john.smith@example.com", shipping_address: {first_name: "John", last_name: "Smith", address1: "126 York St.", city: "Los Angeles", province_code: "CA", country_code: "US", phone: "(123)456-7890", zip: 90002}}) }
+        body: { "checkout" => hash_including({"token" => "exuw7apwoycchjuwtiqg8nytfhphr62a", "email" => "john.smith@example.com", "shipping_address" => {"first_name" => "John", "last_name" => "Smith", "address1" => "126 York St.", "city" => "Los Angeles", "province_code" => "CA", "country_code" => "US", "phone" => "(123)456-7890", "zip" => "90002"}}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    checkout = ShopifyAPI::Checkout.new
+    checkout = ShopifyAPI::Checkout.new(session: @test_session)
     checkout.token = "exuw7apwoycchjuwtiqg8nytfhphr62a"
     checkout.email = "john.smith@example.com"
     checkout.shipping_address = {
-      first_name: "John",
-      last_name: "Smith",
-      address1: "126 York St.",
-      city: "Los Angeles",
-      province_code: "CA",
-      country_code: "US",
-      phone: "(123)456-7890",
-      zip: 90002
+      "first_name" => "John",
+      "last_name" => "Smith",
+      "address1" => "126 York St.",
+      "city" => "Los Angeles",
+      "province_code" => "CA",
+      "country_code" => "US",
+      "phone" => "(123)456-7890",
+      "zip" => "90002"
     }
     checkout.save()
 
@@ -174,14 +170,14 @@ class Checkout202201Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2022-01/checkouts/exuw7apwoycchjuwtiqg8nytfhphr62a.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "checkout" => hash_including({token: "exuw7apwoycchjuwtiqg8nytfhphr62a", shipping_line: {handle: "shopify-Free Shipping-0.00"}}) }
+        body: { "checkout" => hash_including({"token" => "exuw7apwoycchjuwtiqg8nytfhphr62a", "shipping_line" => {"handle" => "shopify-Free Shipping-0.00"}}) }
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    checkout = ShopifyAPI::Checkout.new
+    checkout = ShopifyAPI::Checkout.new(session: @test_session)
     checkout.token = "exuw7apwoycchjuwtiqg8nytfhphr62a"
     checkout.shipping_line = {
-      handle: "shopify-Free Shipping-0.00"
+      "handle" => "shopify-Free Shipping-0.00"
     }
     checkout.save()
 
@@ -200,6 +196,7 @@ class Checkout202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Checkout.shipping_rates(
+      session: @test_session,
       token: "exuw7apwoycchjuwtiqg8nytfhphr62a",
     )
 
@@ -218,6 +215,7 @@ class Checkout202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Checkout.shipping_rates(
+      session: @test_session,
       token: "exuw7apwoycchjuwtiqg8nytfhphr62a",
     )
 
@@ -236,6 +234,7 @@ class Checkout202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Checkout.shipping_rates(
+      session: @test_session,
       token: "zs9ru89kuqcdagk8bz4r9hnxt22wwd42",
     )
 
