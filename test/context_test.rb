@@ -104,7 +104,7 @@ module ShopifyAPITest
           is_private: false,
           is_embedded: true,
           session_storage: ShopifyAPI::Auth::FileSessionStorage.new,
-          logger: Logger.new(STDOUT),
+          logger: Logger.new($stdout),
         )
       end
     end

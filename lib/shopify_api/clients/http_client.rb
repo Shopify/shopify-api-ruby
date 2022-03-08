@@ -74,6 +74,7 @@ module ShopifyAPI
 
           if tries == request.tries
             raise ShopifyAPI::Errors::HttpResponseError.new(code: response.code), error_message if request.tries == 1
+
             raise ShopifyAPI::Errors::MaxHttpRetriesExceededError.new(code: response.code),
               "Exceeded maximum retry count of #{request.tries}. Last message: #{error_message}"
           end

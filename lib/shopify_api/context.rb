@@ -14,7 +14,7 @@ module ShopifyAPI
     @is_private = T.let(false, T::Boolean)
     @private_shop = T.let(nil, T.nilable(String))
     @is_embedded = T.let(true, T::Boolean)
-    @logger = T.let(Logger.new(STDOUT), Logger)
+    @logger = T.let(Logger.new($stdout), Logger)
     @notified_missing_resources_folder = T.let({}, T::Hash[String, T::Boolean])
     @active_session = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @user_agent_prefix = T.let(nil, T.nilable(String))
@@ -48,7 +48,7 @@ module ShopifyAPI
         is_private:,
         is_embedded:,
         session_storage:,
-        logger: Logger.new(STDOUT),
+        logger: Logger.new($stdout),
         private_shop: nil,
         user_agent_prefix: nil
       )
@@ -130,6 +130,7 @@ module ShopifyAPI
       sig { returns(T.nilable(Auth::Session)) }
       def active_session
         return @active_session.value unless @active_session.value.nil?
+
         private? ? Utils::SessionUtils.load_current_session : nil
       end
 

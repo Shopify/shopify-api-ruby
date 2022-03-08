@@ -131,6 +131,7 @@ module ShopifyAPI
           max_ids = T.let(-1, Integer)
           @paths.each do |path|
             next if http_method != path[:http_method] || operation != path[:operation]
+
             path_ids = T.cast(path[:ids], T::Array[Symbol])
 
             url_ids = ids.transform_keys(&:to_sym)
