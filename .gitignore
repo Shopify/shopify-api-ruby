@@ -12,3 +12,4 @@ pkg
 vendor/
 _site/
 docs/.jekyll-cache/
+.byebug_history
