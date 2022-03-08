@@ -14,8 +14,15 @@ class Report202107Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2021-07")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,9 +36,7 @@ class Report202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Report.all(
-      session: @test_session,
-    )
+    ShopifyAPI::Report.all()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-07/reports.json")
   end
@@ -48,7 +53,6 @@ class Report202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Report.all(
-      session: @test_session,
       ids: "517154478",
     )
 
@@ -67,7 +71,6 @@ class Report202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Report.all(
-      session: @test_session,
       updated_at_min: "2005-07-31 15:57:11 EDT -04:00",
     )
 
@@ -86,7 +89,6 @@ class Report202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Report.all(
-      session: @test_session,
       fields: "id,shopify_ql",
     )
 
@@ -105,7 +107,6 @@ class Report202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Report.all(
-      session: @test_session,
       since_id: "123",
     )
 
@@ -123,7 +124,7 @@ class Report202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    report = ShopifyAPI::Report.new(session: @test_session)
+    report = ShopifyAPI::Report.new
     report.name = "A new app report"
     report.shopify_ql = "SHOW total_sales BY order_id FROM sales SINCE -1m UNTIL today ORDER BY total_sales"
     report.save()
@@ -143,7 +144,6 @@ class Report202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Report.find(
-      session: @test_session,
       id: 517154478,
     )
 
@@ -162,7 +162,6 @@ class Report202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Report.find(
-      session: @test_session,
       id: 517154478,
       fields: "id,shopify_ql",
     )
@@ -181,7 +180,7 @@ class Report202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    report = ShopifyAPI::Report.new(session: @test_session)
+    report = ShopifyAPI::Report.new
     report.id = 517154478
     report.name = "Changed Report Name"
     report.shopify_ql = "SHOW total_sales BY order_id FROM sales SINCE -12m UNTIL today ORDER BY total_sales"
@@ -202,7 +201,6 @@ class Report202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Report.delete(
-      session: @test_session,
       id: 517154478,
     )
 

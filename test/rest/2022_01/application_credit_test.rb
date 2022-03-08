@@ -14,8 +14,15 @@ class ApplicationCredit202201Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2022-01")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,7 +36,7 @@ class ApplicationCredit202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    application_credit = ShopifyAPI::ApplicationCredit.new(session: @test_session)
+    application_credit = ShopifyAPI::ApplicationCredit.new
     application_credit.description = "application credit for refund"
     application_credit.amount = 5.0
     application_credit.save()
@@ -48,7 +55,7 @@ class ApplicationCredit202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    application_credit = ShopifyAPI::ApplicationCredit.new(session: @test_session)
+    application_credit = ShopifyAPI::ApplicationCredit.new
     application_credit.description = "application credit for refund"
     application_credit.amount = 5.0
     application_credit.test = true
@@ -68,9 +75,7 @@ class ApplicationCredit202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::ApplicationCredit.all(
-      session: @test_session,
-    )
+    ShopifyAPI::ApplicationCredit.all()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-01/application_credits.json")
   end
@@ -87,7 +92,6 @@ class ApplicationCredit202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::ApplicationCredit.find(
-      session: @test_session,
       id: 140583599,
     )
 

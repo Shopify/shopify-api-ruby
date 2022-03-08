@@ -21,6 +21,7 @@ module ShopifyAPI
 
           session_id = current_session_id(auth_header, cookies, is_online)
           return nil unless session_id
+
           Context.session_storage.load_session(session_id)
         end
 
@@ -34,6 +35,7 @@ module ShopifyAPI
         def delete_current_session(auth_header: nil, cookies: nil, is_online: false)
           session_id = current_session_id(auth_header, cookies, is_online)
           return false unless session_id
+
           Context.session_storage.delete_session(session_id)
         end
 
@@ -47,6 +49,7 @@ module ShopifyAPI
           session_id = offline_session_id(shop)
           session = Context.session_storage.load_session(session_id)
           return nil if session && !include_expired && session.expires && T.must(session.expires) < Time.now
+
           session
         end
 
@@ -101,11 +104,13 @@ module ShopifyAPI
               # falling back to session cookie
               raise Errors::CookieNotFoundError, "JWT token or Session cookie not found for app" unless
                 cookies && cookies[Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME]
+
               cookie_session_id(cookies)
             end
           else
             raise Errors::CookieNotFoundError, "Session cookie not found for app" unless
               cookies && cookies[Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME]
+
             cookie_session_id(cookies)
           end
         end

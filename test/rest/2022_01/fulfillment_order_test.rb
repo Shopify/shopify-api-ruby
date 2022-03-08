@@ -14,8 +14,15 @@ class FulfillmentOrder202201Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2022-01")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -30,7 +37,6 @@ class FulfillmentOrder202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::FulfillmentOrder.all(
-      session: @test_session,
       order_id: 450789469,
     )
 
@@ -49,7 +55,6 @@ class FulfillmentOrder202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::FulfillmentOrder.find(
-      session: @test_session,
       id: 1046000847,
     )
 
@@ -67,7 +72,7 @@ class FulfillmentOrder202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment_order = ShopifyAPI::FulfillmentOrder.new(session: @test_session)
+    fulfillment_order = ShopifyAPI::FulfillmentOrder.new
     fulfillment_order.id = 1046000848
     fulfillment_order.cancel()
 
@@ -85,7 +90,7 @@ class FulfillmentOrder202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment_order = ShopifyAPI::FulfillmentOrder.new(session: @test_session)
+    fulfillment_order = ShopifyAPI::FulfillmentOrder.new
     fulfillment_order.id = 1046000851
     fulfillment_order.close(
       body: {"fulfillment_order" => {"message" => "Not enough inventory to complete this work."}},
@@ -105,7 +110,7 @@ class FulfillmentOrder202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment_order = ShopifyAPI::FulfillmentOrder.new(session: @test_session)
+    fulfillment_order = ShopifyAPI::FulfillmentOrder.new
     fulfillment_order.id = 1046000852
     fulfillment_order.move(
       body: {"fulfillment_order" => {"new_location_id" => 655441491}},
@@ -125,7 +130,7 @@ class FulfillmentOrder202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment_order = ShopifyAPI::FulfillmentOrder.new(session: @test_session)
+    fulfillment_order = ShopifyAPI::FulfillmentOrder.new
     fulfillment_order.id = 1046000854
     fulfillment_order.open()
 
@@ -143,7 +148,7 @@ class FulfillmentOrder202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment_order = ShopifyAPI::FulfillmentOrder.new(session: @test_session)
+    fulfillment_order = ShopifyAPI::FulfillmentOrder.new
     fulfillment_order.id = 1046000855
     fulfillment_order.reschedule(
       body: {"fulfillment_order" => {"new_fulfill_at" => "2023-03-03"}},
@@ -163,7 +168,7 @@ class FulfillmentOrder202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment_order = ShopifyAPI::FulfillmentOrder.new(session: @test_session)
+    fulfillment_order = ShopifyAPI::FulfillmentOrder.new
     fulfillment_order.id = 1046000856
     fulfillment_order.hold(
       body: {"fulfillment_hold" => {"reason" => "inventory_out_of_stock", "reason_notes" => "Not enough inventory to complete this work."}},
@@ -183,7 +188,7 @@ class FulfillmentOrder202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    fulfillment_order = ShopifyAPI::FulfillmentOrder.new(session: @test_session)
+    fulfillment_order = ShopifyAPI::FulfillmentOrder.new
     fulfillment_order.id = 1046000858
     fulfillment_order.release_hold()
 

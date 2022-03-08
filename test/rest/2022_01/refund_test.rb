@@ -14,8 +14,15 @@ class Refund202201Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2022-01")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -30,7 +37,6 @@ class Refund202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Refund.all(
-      session: @test_session,
       order_id: 450789469,
     )
 
@@ -48,7 +54,7 @@ class Refund202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    refund = ShopifyAPI::Refund.new(session: @test_session)
+    refund = ShopifyAPI::Refund.new
     refund.order_id = 450789469
     refund.currency = "USD"
     refund.notify = true
@@ -88,7 +94,7 @@ class Refund202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    refund = ShopifyAPI::Refund.new(session: @test_session)
+    refund = ShopifyAPI::Refund.new
     refund.order_id = 450789469
     refund.currency = "USD"
     refund.shipping = {
@@ -119,7 +125,6 @@ class Refund202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Refund.find(
-      session: @test_session,
       order_id: 450789469,
       id: 509562969,
     )
@@ -138,7 +143,7 @@ class Refund202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    refund = ShopifyAPI::Refund.new(session: @test_session)
+    refund = ShopifyAPI::Refund.new
     refund.order_id = 450789469
     refund.calculate(
       body: {"refund" => {"shipping" => {"full_refund" => true}, "refund_line_items" => [{"line_item_id" => 518995019, "quantity" => 1, "restock_type" => "no_restock"}]}},
@@ -158,7 +163,7 @@ class Refund202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    refund = ShopifyAPI::Refund.new(session: @test_session)
+    refund = ShopifyAPI::Refund.new
     refund.order_id = 450789469
     refund.calculate(
       body: {"refund" => {"currency" => "USD", "shipping" => {"full_refund" => true}, "refund_line_items" => [{"line_item_id" => 518995019, "quantity" => 1, "restock_type" => "no_restock"}]}},
@@ -178,7 +183,7 @@ class Refund202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    refund = ShopifyAPI::Refund.new(session: @test_session)
+    refund = ShopifyAPI::Refund.new
     refund.order_id = 450789469
     refund.calculate(
       body: {"refund" => {"currency" => "USD", "shipping" => {"amount" => 2.0}}},

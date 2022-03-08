@@ -52,3 +52,8 @@ Sorbet/ForbidIncludeConstLiteral:
   Enabled: true
 Sorbet/ForbidSuperclassConstLiteral:
   Enabled: true
+
+Layout/EmptyLineAfterGuardClause:
+  Enabled: true
+Style/GlobalStdStream:
+  Enabled: true

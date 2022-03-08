@@ -14,8 +14,15 @@ class GiftCard202110Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2021-10")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,9 +36,7 @@ class GiftCard202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::GiftCard.all(
-      session: @test_session,
-    )
+    ShopifyAPI::GiftCard.all()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-10/gift_cards.json")
   end
@@ -48,7 +53,6 @@ class GiftCard202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::GiftCard.all(
-      session: @test_session,
       status: "enabled",
     )
 
@@ -66,7 +70,7 @@ class GiftCard202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    gift_card = ShopifyAPI::GiftCard.new(session: @test_session)
+    gift_card = ShopifyAPI::GiftCard.new
     gift_card.note = "This is a note"
     gift_card.initial_value = 100.0
     gift_card.code = "ABCD EFGH IJKL MNOP"
@@ -87,7 +91,7 @@ class GiftCard202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    gift_card = ShopifyAPI::GiftCard.new(session: @test_session)
+    gift_card = ShopifyAPI::GiftCard.new
     gift_card.initial_value = 25.0
     gift_card.save()
 
@@ -106,7 +110,6 @@ class GiftCard202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::GiftCard.find(
-      session: @test_session,
       id: 1035197676,
     )
 
@@ -124,7 +127,7 @@ class GiftCard202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    gift_card = ShopifyAPI::GiftCard.new(session: @test_session)
+    gift_card = ShopifyAPI::GiftCard.new
     gift_card.id = 1035197676
     gift_card.note = "Updating with a new note"
     gift_card.save()
@@ -143,7 +146,7 @@ class GiftCard202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    gift_card = ShopifyAPI::GiftCard.new(session: @test_session)
+    gift_card = ShopifyAPI::GiftCard.new
     gift_card.id = 1035197676
     gift_card.expires_on = "2020-01-01"
     gift_card.save()
@@ -162,9 +165,7 @@ class GiftCard202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::GiftCard.count(
-      session: @test_session,
-    )
+    ShopifyAPI::GiftCard.count()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-10/gift_cards/count.json")
   end
@@ -181,7 +182,6 @@ class GiftCard202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::GiftCard.count(
-      session: @test_session,
       status: "enabled",
     )
 
@@ -199,7 +199,7 @@ class GiftCard202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    gift_card = ShopifyAPI::GiftCard.new(session: @test_session)
+    gift_card = ShopifyAPI::GiftCard.new
     gift_card.id = 1035197676
     gift_card.disable(
       body: {"gift_card" => {"id" => 1035197676}},
@@ -220,7 +220,6 @@ class GiftCard202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::GiftCard.search(
-      session: @test_session,
       query: "last_characters:mnop",
     )
 

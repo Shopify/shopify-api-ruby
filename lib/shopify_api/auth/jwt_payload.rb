@@ -53,6 +53,7 @@ module ShopifyAPI
       sig { params(other: T.nilable(JwtPayload)).returns(T::Boolean) }
       def ==(other)
         return false unless other
+
         iss == other.iss &&
           dest == other.dest &&
           aud == other.aud &&

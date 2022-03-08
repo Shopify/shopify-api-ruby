@@ -25,6 +25,7 @@ module ShopifyAPI
             unless handler
               raise Errors::InvalidWebhookRegistrationError, "Cannot create an Http registration without a handler."
             end
+
             Registrations::Http.new(topic: topic, path: path, handler: handler, fields: fields)
           else
             raise Errors::InvalidWebhookRegistrationError,
@@ -201,6 +202,7 @@ module ShopifyAPI
           register_response = client.query(query: registration.build_register_query(webhook_id: webhook_id))
 
           raise Errors::WebhookRegistrationError, "Failed to register webhook with Shopify" unless register_response.ok?
+
           T.cast(register_response.body, T::Hash[String, T.untyped])
         end
 

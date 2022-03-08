@@ -14,8 +14,15 @@ class Customer202110Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2021-10")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,9 +36,7 @@ class Customer202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Customer.all(
-      session: @test_session,
-    )
+    ShopifyAPI::Customer.all()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-10/customers.json")
   end
@@ -48,7 +53,6 @@ class Customer202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Customer.all(
-      session: @test_session,
       since_id: "207119551",
     )
 
@@ -67,7 +71,6 @@ class Customer202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Customer.all(
-      session: @test_session,
       updated_at_min: "2022-02-02 21:51:21",
     )
 
@@ -86,7 +89,6 @@ class Customer202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Customer.all(
-      session: @test_session,
       ids: "207119551,1073339489",
     )
 
@@ -104,7 +106,7 @@ class Customer202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    customer = ShopifyAPI::Customer.new(session: @test_session)
+    customer = ShopifyAPI::Customer.new
     customer.first_name = "Steve"
     customer.last_name = "Lastnameson"
     customer.email = "steve.lastnameson@example.com"
@@ -141,7 +143,7 @@ class Customer202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    customer = ShopifyAPI::Customer.new(session: @test_session)
+    customer = ShopifyAPI::Customer.new
     customer.first_name = "Steve"
     customer.last_name = "Lastnameson"
     customer.email = "steve.lastnameson@example.com"
@@ -175,7 +177,7 @@ class Customer202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    customer = ShopifyAPI::Customer.new(session: @test_session)
+    customer = ShopifyAPI::Customer.new
     customer.first_name = "Steve"
     customer.last_name = "Lastnameson"
     customer.email = "steve.lastnameson@example.com"
@@ -217,7 +219,7 @@ class Customer202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    customer = ShopifyAPI::Customer.new(session: @test_session)
+    customer = ShopifyAPI::Customer.new
     customer.first_name = "Steve"
     customer.last_name = "Lastnameson"
     customer.email = "steve.lastnameson@example.com"
@@ -253,7 +255,6 @@ class Customer202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Customer.search(
-      session: @test_session,
       query: "Bob country:United States",
     )
 
@@ -272,7 +273,6 @@ class Customer202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Customer.find(
-      session: @test_session,
       id: 207119551,
     )
 
@@ -290,7 +290,7 @@ class Customer202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    customer = ShopifyAPI::Customer.new(session: @test_session)
+    customer = ShopifyAPI::Customer.new
     customer.id = 207119551
     customer.email = "changed@email.address.com"
     customer.note = "Customer is a great guy"
@@ -310,7 +310,7 @@ class Customer202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    customer = ShopifyAPI::Customer.new(session: @test_session)
+    customer = ShopifyAPI::Customer.new
     customer.id = 207119551
     customer.metafields = [
       {
@@ -336,7 +336,7 @@ class Customer202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    customer = ShopifyAPI::Customer.new(session: @test_session)
+    customer = ShopifyAPI::Customer.new
     customer.id = 207119551
     customer.tags = "New Customer, Repeat Customer"
     customer.save()
@@ -355,7 +355,7 @@ class Customer202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    customer = ShopifyAPI::Customer.new(session: @test_session)
+    customer = ShopifyAPI::Customer.new
     customer.id = 207119551
     customer.accepts_marketing = true
     customer.accepts_marketing_updated_at = "2022-01-31T16:45:55-05:00"
@@ -376,7 +376,7 @@ class Customer202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    customer = ShopifyAPI::Customer.new(session: @test_session)
+    customer = ShopifyAPI::Customer.new
     customer.id = 207119551
     customer.account_activation_url()
 
@@ -394,7 +394,7 @@ class Customer202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    customer = ShopifyAPI::Customer.new(session: @test_session)
+    customer = ShopifyAPI::Customer.new
     customer.id = 207119551
     customer.send_invite(
       body: {"customer_invite" => {}},
@@ -414,7 +414,7 @@ class Customer202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    customer = ShopifyAPI::Customer.new(session: @test_session)
+    customer = ShopifyAPI::Customer.new
     customer.id = 207119551
     customer.send_invite(
       body: {"customer_invite" => {"to" => "new_test_email@shopify.com", "from" => "j.limited@example.com", "bcc" => ["j.limited@example.com"], "subject" => "Welcome to my new shop", "custom_message" => "My awesome new store"}},
@@ -434,9 +434,7 @@ class Customer202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Customer.count(
-      session: @test_session,
-    )
+    ShopifyAPI::Customer.count()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-10/customers/count.json")
   end
@@ -453,7 +451,6 @@ class Customer202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Customer.orders(
-      session: @test_session,
       id: 207119551,
     )
 

@@ -9,7 +9,7 @@ module ShopifyAPI
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: nil)
+    def initialize(session: ShopifyAPI::Context.active_session)
       super(session: session)
 
       @author = T.let(nil, T.nilable(String))
@@ -82,17 +82,17 @@ module ShopifyAPI
     class << self
       sig do
         params(
-          session: Auth::Session,
           id: T.any(Integer, String),
           blog_id: T.nilable(T.any(Integer, String)),
-          fields: T.untyped
+          fields: T.untyped,
+          session: Auth::Session
         ).returns(T.nilable(Article))
       end
       def find(
-        session:,
         id:,
         blog_id: nil,
-        fields: nil
+        fields: nil,
+        session: ShopifyAPI::Context.active_session
       )
         result = base_find(
           session: session,
@@ -104,15 +104,15 @@ module ShopifyAPI
 
       sig do
         params(
-          session: Auth::Session,
           id: T.any(Integer, String),
-          blog_id: T.nilable(T.any(Integer, String))
+          blog_id: T.nilable(T.any(Integer, String)),
+          session: Auth::Session
         ).returns(T.untyped)
       end
       def delete(
-        session:,
         id:,
-        blog_id: nil
+        blog_id: nil,
+        session: ShopifyAPI::Context.active_session
       )
         request(
           http_method: :delete,
@@ -125,7 +125,6 @@ module ShopifyAPI
 
       sig do
         params(
-          session: Auth::Session,
           blog_id: T.nilable(T.any(Integer, String)),
           limit: T.untyped,
           since_id: T.untyped,
@@ -140,11 +139,11 @@ module ShopifyAPI
           tag: T.untyped,
           author: T.untyped,
           fields: T.untyped,
+          session: Auth::Session,
           kwargs: T.untyped
         ).returns(T::Array[Article])
       end
       def all(
-        session:,
         blog_id: nil,
         limit: nil,
         since_id: nil,
@@ -159,6 +158,7 @@ module ShopifyAPI
         tag: nil,
         author: nil,
         fields: nil,
+        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         response = base_find(
@@ -172,7 +172,6 @@ module ShopifyAPI
 
       sig do
         params(
-          session: Auth::Session,
           blog_id: T.nilable(T.any(Integer, String)),
           created_at_min: T.untyped,
           created_at_max: T.untyped,
@@ -181,11 +180,11 @@ module ShopifyAPI
           published_at_min: T.untyped,
           published_at_max: T.untyped,
           published_status: T.untyped,
+          session: Auth::Session,
           kwargs: T.untyped
         ).returns(T.untyped)
       end
       def count(
-        session:,
         blog_id: nil,
         created_at_min: nil,
         created_at_max: nil,
@@ -194,6 +193,7 @@ module ShopifyAPI
         published_at_min: nil,
         published_at_max: nil,
         published_status: nil,
+        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         request(
@@ -214,7 +214,7 @@ module ShopifyAPI
         ).returns(T.untyped)
       end
       def authors(
-        session:,
+        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         request(
@@ -230,18 +230,18 @@ module ShopifyAPI
 
       sig do
         params(
-          session: Auth::Session,
           blog_id: T.nilable(T.any(Integer, String)),
           limit: T.untyped,
           popular: T.untyped,
+          session: Auth::Session,
           kwargs: T.untyped
         ).returns(T.untyped)
       end
       def tags(
-        session:,
         blog_id: nil,
         limit: nil,
         popular: nil,
+        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         request(

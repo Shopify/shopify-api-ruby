@@ -9,7 +9,7 @@ module ShopifyAPI
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: nil)
+    def initialize(session: ShopifyAPI::Context.active_session)
       super(session: session)
 
       @arguments = T.let(nil, T.nilable(String))
@@ -58,15 +58,15 @@ module ShopifyAPI
     class << self
       sig do
         params(
-          session: Auth::Session,
           id: T.any(Integer, String),
-          fields: T.untyped
+          fields: T.untyped,
+          session: Auth::Session
         ).returns(T.nilable(Event))
       end
       def find(
-        session:,
         id:,
-        fields: nil
+        fields: nil,
+        session: ShopifyAPI::Context.active_session
       )
         result = base_find(
           session: session,
@@ -78,7 +78,6 @@ module ShopifyAPI
 
       sig do
         params(
-          session: Auth::Session,
           order_id: T.nilable(T.any(Integer, String)),
           product_id: T.nilable(T.any(Integer, String)),
           limit: T.untyped,
@@ -88,11 +87,11 @@ module ShopifyAPI
           filter: T.untyped,
           verb: T.untyped,
           fields: T.untyped,
+          session: Auth::Session,
           kwargs: T.untyped
         ).returns(T::Array[Event])
       end
       def all(
-        session:,
         order_id: nil,
         product_id: nil,
         limit: nil,
@@ -102,6 +101,7 @@ module ShopifyAPI
         filter: nil,
         verb: nil,
         fields: nil,
+        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         response = base_find(
@@ -115,16 +115,16 @@ module ShopifyAPI
 
       sig do
         params(
-          session: Auth::Session,
           created_at_min: T.untyped,
           created_at_max: T.untyped,
+          session: Auth::Session,
           kwargs: T.untyped
         ).returns(T.untyped)
       end
       def count(
-        session:,
         created_at_min: nil,
         created_at_max: nil,
+        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         request(
