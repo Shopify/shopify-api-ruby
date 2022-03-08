@@ -14,6 +14,10 @@ require "zeitwerk"
 require "jwt"
 require "concurrent"
 
+if Gem::Version.new(RUBY_VERSION) < Gem::Version.new("2.6")
+  puts("\nshopify_api: NOTE: Support for Ruby #{RUBY_VERSION} will be dropped in the next major release. Please update to Ruby 2.6 or newer before updating this gem.\n\n")
+end
+
 require_relative "shopify_api/inflector"
 require_relative "shopify_api/admin_versions"
 
