@@ -14,8 +14,15 @@ class Shop202201Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2022-01")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,9 +36,7 @@ class Shop202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::Shop.all(
-      session: @test_session,
-    )
+    ShopifyAPI::Shop.all()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-01/shop.json")
   end
@@ -48,7 +53,6 @@ class Shop202201Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Shop.all(
-      session: @test_session,
       fields: "address1,address2,city,province,country",
     )
 

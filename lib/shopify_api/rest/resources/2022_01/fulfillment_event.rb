@@ -9,7 +9,7 @@ module ShopifyAPI
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: nil)
+    def initialize(session: ShopifyAPI::Context.active_session)
       super(session: session)
 
       @address1 = T.let(nil, T.nilable(String))
@@ -88,19 +88,19 @@ module ShopifyAPI
 
       sig do
         params(
-          session: Auth::Session,
           id: T.any(Integer, String),
           order_id: T.nilable(T.any(Integer, String)),
           fulfillment_id: T.nilable(T.any(Integer, String)),
-          event_id: T.untyped
+          event_id: T.untyped,
+          session: Auth::Session
         ).returns(T.nilable(FulfillmentEvent))
       end
       def find(
-        session:,
         id:,
         order_id: nil,
         fulfillment_id: nil,
-        event_id: nil
+        event_id: nil,
+        session: ShopifyAPI::Context.active_session
       )
         result = base_find(
           session: session,
@@ -112,17 +112,17 @@ module ShopifyAPI
 
       sig do
         params(
-          session: Auth::Session,
           id: T.any(Integer, String),
           order_id: T.nilable(T.any(Integer, String)),
-          fulfillment_id: T.nilable(T.any(Integer, String))
+          fulfillment_id: T.nilable(T.any(Integer, String)),
+          session: Auth::Session
         ).returns(T.untyped)
       end
       def delete(
-        session:,
         id:,
         order_id: nil,
-        fulfillment_id: nil
+        fulfillment_id: nil,
+        session: ShopifyAPI::Context.active_session
       )
         request(
           http_method: :delete,
@@ -135,16 +135,16 @@ module ShopifyAPI
 
       sig do
         params(
-          session: Auth::Session,
           order_id: T.nilable(T.any(Integer, String)),
           fulfillment_id: T.nilable(T.any(Integer, String)),
+          session: Auth::Session,
           kwargs: T.untyped
         ).returns(T::Array[FulfillmentEvent])
       end
       def all(
-        session:,
         order_id: nil,
         fulfillment_id: nil,
+        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         response = base_find(

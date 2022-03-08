@@ -14,8 +14,15 @@ class PaymentGateway202110Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2021-10")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,9 +36,7 @@ class PaymentGateway202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::PaymentGateway.all(
-      session: @test_session,
-    )
+    ShopifyAPI::PaymentGateway.all()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-10/payment_gateways.json")
   end
@@ -48,7 +53,6 @@ class PaymentGateway202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::PaymentGateway.all(
-      session: @test_session,
       disabled: "false",
     )
 
@@ -66,7 +70,7 @@ class PaymentGateway202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    payment_gateway = ShopifyAPI::PaymentGateway.new(session: @test_session)
+    payment_gateway = ShopifyAPI::PaymentGateway.new
     payment_gateway.credential1 = "someone@example.com"
     payment_gateway.provider_id = 7
     payment_gateway.save()
@@ -86,7 +90,6 @@ class PaymentGateway202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::PaymentGateway.find(
-      session: @test_session,
       id: 431363653,
     )
 
@@ -104,7 +107,7 @@ class PaymentGateway202110Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    payment_gateway = ShopifyAPI::PaymentGateway.new(session: @test_session)
+    payment_gateway = ShopifyAPI::PaymentGateway.new
     payment_gateway.id = 170508070
     payment_gateway.sandbox = true
     payment_gateway.save()
@@ -124,7 +127,6 @@ class PaymentGateway202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::PaymentGateway.delete(
-      session: @test_session,
       id: 170508070,
     )
 

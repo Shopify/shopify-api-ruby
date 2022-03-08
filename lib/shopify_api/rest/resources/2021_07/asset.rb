@@ -9,7 +9,7 @@ module ShopifyAPI
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: nil)
+    def initialize(session: ShopifyAPI::Context.active_session)
       super(session: session)
 
       @attachment = T.let(nil, T.nilable(String))
@@ -64,15 +64,15 @@ module ShopifyAPI
 
       sig do
         params(
-          session: Auth::Session,
           theme_id: T.nilable(T.any(Integer, String)),
-          asset: T.nilable(T::Hash[T.untyped, T.untyped])
+          asset: T.nilable(T::Hash[T.untyped, T.untyped]),
+          session: Auth::Session
         ).returns(T.untyped)
       end
       def delete(
-        session:,
         theme_id: nil,
-        asset: nil
+        asset: nil,
+        session: ShopifyAPI::Context.active_session
       )
         request(
           http_method: :delete,
@@ -85,18 +85,18 @@ module ShopifyAPI
 
       sig do
         params(
-          session: Auth::Session,
           theme_id: T.nilable(T.any(Integer, String)),
           fields: T.untyped,
           asset: T.nilable(T::Hash[T.untyped, T.untyped]),
+          session: Auth::Session,
           kwargs: T.untyped
         ).returns(T::Array[Asset])
       end
       def all(
-        session:,
         theme_id: nil,
         fields: nil,
         asset: nil,
+        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         response = base_find(

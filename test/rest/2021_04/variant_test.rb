@@ -14,8 +14,15 @@ class Variant202104Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2021-04")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -30,7 +37,6 @@ class Variant202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Variant.all(
-      session: @test_session,
       product_id: 632910392,
       since_id: "49148385",
     )
@@ -50,7 +56,6 @@ class Variant202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Variant.all(
-      session: @test_session,
       product_id: 632910392,
       presentment_currencies: "USD,CAD",
     )
@@ -70,7 +75,6 @@ class Variant202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Variant.all(
-      session: @test_session,
       product_id: 632910392,
     )
 
@@ -89,7 +93,6 @@ class Variant202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Variant.count(
-      session: @test_session,
       product_id: 632910392,
     )
 
@@ -108,7 +111,6 @@ class Variant202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Variant.find(
-      session: @test_session,
       id: 808950810,
     )
 
@@ -126,7 +128,7 @@ class Variant202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    variant = ShopifyAPI::Variant.new(session: @test_session)
+    variant = ShopifyAPI::Variant.new
     variant.id = 808950810
     variant.option1 = "Not Pink"
     variant.price = "99.00"
@@ -146,7 +148,7 @@ class Variant202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    variant = ShopifyAPI::Variant.new(session: @test_session)
+    variant = ShopifyAPI::Variant.new
     variant.id = 808950810
     variant.image_id = 562641783
     variant.save()
@@ -165,7 +167,7 @@ class Variant202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    variant = ShopifyAPI::Variant.new(session: @test_session)
+    variant = ShopifyAPI::Variant.new
     variant.id = 808950810
     variant.metafields = [
       {
@@ -191,7 +193,7 @@ class Variant202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    variant = ShopifyAPI::Variant.new(session: @test_session)
+    variant = ShopifyAPI::Variant.new
     variant.product_id = 632910392
     variant.option1 = "Yellow"
     variant.price = "1.00"
@@ -211,7 +213,7 @@ class Variant202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    variant = ShopifyAPI::Variant.new(session: @test_session)
+    variant = ShopifyAPI::Variant.new
     variant.product_id = 632910392
     variant.image_id = 850703190
     variant.option1 = "Purple"
@@ -231,7 +233,7 @@ class Variant202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    variant = ShopifyAPI::Variant.new(session: @test_session)
+    variant = ShopifyAPI::Variant.new
     variant.product_id = 632910392
     variant.option1 = "Blue"
     variant.metafields = [
@@ -259,7 +261,6 @@ class Variant202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Variant.delete(
-      session: @test_session,
       product_id: 632910392,
       id: 808950810,
     )

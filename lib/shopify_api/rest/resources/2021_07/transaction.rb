@@ -9,7 +9,7 @@ module ShopifyAPI
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: nil)
+    def initialize(session: ShopifyAPI::Context.active_session)
       super(session: session)
 
       @kind = T.let(nil, T.nilable(String))
@@ -96,19 +96,19 @@ module ShopifyAPI
     class << self
       sig do
         params(
-          session: Auth::Session,
           id: T.any(Integer, String),
           order_id: T.nilable(T.any(Integer, String)),
           fields: T.untyped,
-          in_shop_currency: T.untyped
+          in_shop_currency: T.untyped,
+          session: Auth::Session
         ).returns(T.nilable(Transaction))
       end
       def find(
-        session:,
         id:,
         order_id: nil,
         fields: nil,
-        in_shop_currency: nil
+        in_shop_currency: nil,
+        session: ShopifyAPI::Context.active_session
       )
         result = base_find(
           session: session,
@@ -120,20 +120,20 @@ module ShopifyAPI
 
       sig do
         params(
-          session: Auth::Session,
           order_id: T.nilable(T.any(Integer, String)),
           since_id: T.untyped,
           fields: T.untyped,
           in_shop_currency: T.untyped,
+          session: Auth::Session,
           kwargs: T.untyped
         ).returns(T::Array[Transaction])
       end
       def all(
-        session:,
         order_id: nil,
         since_id: nil,
         fields: nil,
         in_shop_currency: nil,
+        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         response = base_find(
@@ -147,14 +147,14 @@ module ShopifyAPI
 
       sig do
         params(
-          session: Auth::Session,
           order_id: T.nilable(T.any(Integer, String)),
+          session: Auth::Session,
           kwargs: T.untyped
         ).returns(T.untyped)
       end
       def count(
-        session:,
         order_id: nil,
+        session: ShopifyAPI::Context.active_session,
         **kwargs
       )
         request(

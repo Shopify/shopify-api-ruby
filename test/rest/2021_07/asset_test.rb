@@ -14,8 +14,15 @@ class Asset202107Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2021-07")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -30,7 +37,6 @@ class Asset202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Asset.all(
-      session: @test_session,
       theme_id: 828155753,
     )
 
@@ -48,7 +54,7 @@ class Asset202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    asset = ShopifyAPI::Asset.new(session: @test_session)
+    asset = ShopifyAPI::Asset.new
     asset.theme_id = 828155753
     asset.key = "templates/index.liquid"
     asset.value = "<img src='backsoon-postit.png'><p>We are busy updating the store for you and will be back within the hour.</p>"
@@ -68,7 +74,7 @@ class Asset202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    asset = ShopifyAPI::Asset.new(session: @test_session)
+    asset = ShopifyAPI::Asset.new
     asset.theme_id = 828155753
     asset.key = "assets/empty.gif"
     asset.attachment = "R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==\n"
@@ -88,7 +94,7 @@ class Asset202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    asset = ShopifyAPI::Asset.new(session: @test_session)
+    asset = ShopifyAPI::Asset.new
     asset.theme_id = 828155753
     asset.key = "assets/bg-body.gif"
     asset.src = "http://apple.com/new_bg.gif"
@@ -108,7 +114,7 @@ class Asset202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    asset = ShopifyAPI::Asset.new(session: @test_session)
+    asset = ShopifyAPI::Asset.new
     asset.theme_id = 828155753
     asset.key = "layout/alternate.liquid"
     asset.source_key = "layout/theme.liquid"
@@ -129,7 +135,6 @@ class Asset202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Asset.all(
-      session: @test_session,
       theme_id: 828155753,
       asset: {"key" => "templates/index.liquid"},
     )
@@ -149,7 +154,6 @@ class Asset202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::Asset.delete(
-      session: @test_session,
       theme_id: 828155753,
       asset: {"key" => "assets/bg-body.gif"},
     )

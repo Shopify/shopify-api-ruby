@@ -14,8 +14,15 @@ class MobilePlatformApplication202104Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2021-04")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,9 +36,7 @@ class MobilePlatformApplication202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::MobilePlatformApplication.all(
-      session: @test_session,
-    )
+    ShopifyAPI::MobilePlatformApplication.all()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-04/mobile_platform_applications.json")
   end
@@ -47,7 +52,7 @@ class MobilePlatformApplication202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    mobile_platform_application = ShopifyAPI::MobilePlatformApplication.new(session: @test_session)
+    mobile_platform_application = ShopifyAPI::MobilePlatformApplication.new
     mobile_platform_application.platform = "ios"
     mobile_platform_application.application_id = "X1Y2.ca.domain.app"
     mobile_platform_application.enabled_universal_or_app_links = true
@@ -68,7 +73,7 @@ class MobilePlatformApplication202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    mobile_platform_application = ShopifyAPI::MobilePlatformApplication.new(session: @test_session)
+    mobile_platform_application = ShopifyAPI::MobilePlatformApplication.new
     mobile_platform_application.platform = "android"
     mobile_platform_application.application_id = "com.example"
     mobile_platform_application.sha256_cert_fingerprints = [
@@ -92,7 +97,6 @@ class MobilePlatformApplication202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::MobilePlatformApplication.find(
-      session: @test_session,
       id: 1066176008,
     )
 
@@ -110,7 +114,7 @@ class MobilePlatformApplication202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    mobile_platform_application = ShopifyAPI::MobilePlatformApplication.new(session: @test_session)
+    mobile_platform_application = ShopifyAPI::MobilePlatformApplication.new
     mobile_platform_application.id = 1066176009
     mobile_platform_application.application_id = "A1B2.ca.domain.app"
     mobile_platform_application.platform = "ios"
@@ -135,7 +139,7 @@ class MobilePlatformApplication202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    mobile_platform_application = ShopifyAPI::MobilePlatformApplication.new(session: @test_session)
+    mobile_platform_application = ShopifyAPI::MobilePlatformApplication.new
     mobile_platform_application.id = 1066176010
     mobile_platform_application.application_id = "com.example.news.app"
     mobile_platform_application.platform = "android"
@@ -163,7 +167,6 @@ class MobilePlatformApplication202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::MobilePlatformApplication.delete(
-      session: @test_session,
       id: 1066176011,
     )
 

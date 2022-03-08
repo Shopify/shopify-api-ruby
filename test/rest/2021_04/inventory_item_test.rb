@@ -14,8 +14,15 @@ class InventoryItem202104Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2021-04")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -30,7 +37,6 @@ class InventoryItem202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::InventoryItem.all(
-      session: @test_session,
       ids: "808950810,39072856,457924702",
     )
 
@@ -49,7 +55,6 @@ class InventoryItem202104Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::InventoryItem.find(
-      session: @test_session,
       id: 808950810,
     )
 
@@ -67,7 +72,7 @@ class InventoryItem202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    inventory_item = ShopifyAPI::InventoryItem.new(session: @test_session)
+    inventory_item = ShopifyAPI::InventoryItem.new
     inventory_item.id = 808950810
     inventory_item.sku = "new sku"
     inventory_item.save()
@@ -86,7 +91,7 @@ class InventoryItem202104Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    inventory_item = ShopifyAPI::InventoryItem.new(session: @test_session)
+    inventory_item = ShopifyAPI::InventoryItem.new
     inventory_item.id = 808950810
     inventory_item.cost = "25.00"
     inventory_item.save()

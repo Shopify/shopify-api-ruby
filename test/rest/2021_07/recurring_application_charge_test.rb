@@ -14,8 +14,15 @@ class RecurringApplicationCharge202107Test < Test::Unit::TestCase
   def setup
     super
 
-    @test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    test_session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "this_is_a_test_token")
+    ShopifyAPI::Context.activate_session(test_session)
     modify_context(api_version: "2021-07")
+  end
+
+  def teardown
+    super
+
+    ShopifyAPI::Context.deactivate_session
   end
 
   sig do
@@ -29,7 +36,7 @@ class RecurringApplicationCharge202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    recurring_application_charge = ShopifyAPI::RecurringApplicationCharge.new(session: @test_session)
+    recurring_application_charge = ShopifyAPI::RecurringApplicationCharge.new
     recurring_application_charge.name = "Super Duper Plan"
     recurring_application_charge.price = 10.0
     recurring_application_charge.return_url = "http://super-duper.shopifyapps.com"
@@ -49,7 +56,7 @@ class RecurringApplicationCharge202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    recurring_application_charge = ShopifyAPI::RecurringApplicationCharge.new(session: @test_session)
+    recurring_application_charge = ShopifyAPI::RecurringApplicationCharge.new
     recurring_application_charge.name = "Super Duper Plan"
     recurring_application_charge.price = 10.0
     recurring_application_charge.return_url = "http://super-duper.shopifyapps.com"
@@ -71,7 +78,7 @@ class RecurringApplicationCharge202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    recurring_application_charge = ShopifyAPI::RecurringApplicationCharge.new(session: @test_session)
+    recurring_application_charge = ShopifyAPI::RecurringApplicationCharge.new
     recurring_application_charge.name = "Super Duper Plan"
     recurring_application_charge.price = 10.0
     recurring_application_charge.return_url = "http://super-duper.shopifyapps.com"
@@ -92,7 +99,7 @@ class RecurringApplicationCharge202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    recurring_application_charge = ShopifyAPI::RecurringApplicationCharge.new(session: @test_session)
+    recurring_application_charge = ShopifyAPI::RecurringApplicationCharge.new
     recurring_application_charge.name = "Super Duper Plan"
     recurring_application_charge.price = 10.0
     recurring_application_charge.return_url = "http://super-duper.shopifyapps.com"
@@ -113,9 +120,7 @@ class RecurringApplicationCharge202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    ShopifyAPI::RecurringApplicationCharge.all(
-      session: @test_session,
-    )
+    ShopifyAPI::RecurringApplicationCharge.all()
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-07/recurring_application_charges.json")
   end
@@ -132,7 +137,6 @@ class RecurringApplicationCharge202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::RecurringApplicationCharge.all(
-      session: @test_session,
       since_id: "455696195",
     )
 
@@ -151,7 +155,6 @@ class RecurringApplicationCharge202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::RecurringApplicationCharge.find(
-      session: @test_session,
       id: 455696195,
     )
 
@@ -170,7 +173,6 @@ class RecurringApplicationCharge202107Test < Test::Unit::TestCase
       .to_return(status: 200, body: "{}", headers: {})
 
     ShopifyAPI::RecurringApplicationCharge.delete(
-      session: @test_session,
       id: 455696195,
     )
 
@@ -188,7 +190,7 @@ class RecurringApplicationCharge202107Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: "{}", headers: {})
 
-    recurring_application_charge = ShopifyAPI::RecurringApplicationCharge.new(session: @test_session)
+    recurring_application_charge = ShopifyAPI::RecurringApplicationCharge.new
     recurring_application_charge.id = 455696195
     recurring_application_charge.customize(
       recurring_application_charge: {"capped_amount" => "200"},
