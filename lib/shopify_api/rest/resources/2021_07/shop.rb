@@ -17,12 +17,12 @@ module ShopifyAPI
       @checkout_api_supported = T.let(nil, T.nilable(T::Boolean))
       @city = T.let(nil, T.nilable(String))
       @cookie_consent_level = T.let(nil, T.nilable(String))
-      @country = T.let(nil, T.nilable(Country))
+      @country = T.let(nil, T.nilable(String))
       @country_code = T.let(nil, T.nilable(String))
       @country_name = T.let(nil, T.nilable(String))
       @county_taxes = T.let(nil, T.nilable(String))
       @created_at = T.let(nil, T.nilable(String))
-      @currency = T.let(nil, T.nilable(Currency))
+      @currency = T.let(nil, T.nilable(String))
       @customer_email = T.let(nil, T.nilable(String))
       @domain = T.let(nil, T.nilable(String))
       @eligible_for_card_reader_giveaway = T.let(nil, T.nilable(T::Boolean))
@@ -54,7 +54,7 @@ module ShopifyAPI
       @pre_launch_enabled = T.let(nil, T.nilable(T::Boolean))
       @primary_locale = T.let(nil, T.nilable(String))
       @primary_location_id = T.let(nil, T.nilable(Integer))
-      @province = T.let(nil, T.nilable(Province))
+      @province = T.let(nil, T.nilable(String))
       @province_code = T.let(nil, T.nilable(String))
       @requires_extra_payments_agreement = T.let(nil, T.nilable(T::Boolean))
       @setup_required = T.let(nil, T.nilable(T::Boolean))
@@ -68,11 +68,7 @@ module ShopifyAPI
       @zip = T.let(nil, T.nilable(String))
     end
 
-    @has_one = T.let({
-      country: Country,
-      currency: Currency,
-      province: Province
-    }, T::Hash[Symbol, Class])
+    @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
     @paths = T.let([
       {http_method: :get, operation: :get, ids: [], path: "shop.json"}
@@ -88,7 +84,7 @@ module ShopifyAPI
     attr_reader :city
     sig { returns(T.nilable(String)) }
     attr_reader :cookie_consent_level
-    sig { returns(T.nilable(Country)) }
+    sig { returns(T.nilable(String)) }
     attr_reader :country
     sig { returns(T.nilable(String)) }
     attr_reader :country_code
@@ -98,7 +94,7 @@ module ShopifyAPI
     attr_reader :county_taxes
     sig { returns(T.nilable(String)) }
     attr_reader :created_at
-    sig { returns(T.nilable(Currency)) }
+    sig { returns(T.nilable(String)) }
     attr_reader :currency
     sig { returns(T.nilable(String)) }
     attr_reader :customer_email
@@ -162,7 +158,7 @@ module ShopifyAPI
     attr_reader :primary_locale
     sig { returns(T.nilable(Integer)) }
     attr_reader :primary_location_id
-    sig { returns(T.nilable(Province)) }
+    sig { returns(T.nilable(String)) }
     attr_reader :province
     sig { returns(T.nilable(String)) }
     attr_reader :province_code

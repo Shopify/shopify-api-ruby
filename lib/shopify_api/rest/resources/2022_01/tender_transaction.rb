@@ -13,7 +13,7 @@ module ShopifyAPI
       super(session: session)
 
       @amount = T.let(nil, T.nilable(String))
-      @currency = T.let(nil, T.nilable(Currency))
+      @currency = T.let(nil, T.nilable(String))
       @id = T.let(nil, T.nilable(Integer))
       @order_id = T.let(nil, T.nilable(Integer))
       @payment_details = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
@@ -24,9 +24,7 @@ module ShopifyAPI
       @user_id = T.let(nil, T.nilable(Integer))
     end
 
-    @has_one = T.let({
-      currency: Currency
-    }, T::Hash[Symbol, Class])
+    @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
     @paths = T.let([
       {http_method: :get, operation: :get, ids: [], path: "tender_transactions.json"}
@@ -34,7 +32,7 @@ module ShopifyAPI
 
     sig { returns(T.nilable(String)) }
     attr_reader :amount
-    sig { returns(T.nilable(Currency)) }
+    sig { returns(T.nilable(String)) }
     attr_reader :currency
     sig { returns(T.nilable(Integer)) }
     attr_reader :id

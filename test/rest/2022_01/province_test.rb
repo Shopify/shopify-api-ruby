@@ -34,7 +34,7 @@ class Province202201Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: "{}", headers: {})
+      .to_return(status: 200, body: JSON.generate({"provinces" => [{"id" => 205434194, "country_id" => 879921427, "name" => "Alberta", "code" => "AB", "tax_name" => nil, "tax_type" => nil, "shipping_zone_id" => nil, "tax" => 0.08, "tax_percentage" => 8.0}, {"id" => 170405627, "country_id" => 879921427, "name" => "British Columbia", "code" => "BC", "tax_name" => nil, "tax_type" => nil, "shipping_zone_id" => nil, "tax" => 0.07, "tax_percentage" => 7.0}, {"id" => 342345110, "country_id" => 879921427, "name" => "Manitoba", "code" => "MB", "tax_name" => nil, "tax_type" => nil, "shipping_zone_id" => nil, "tax" => 0.07, "tax_percentage" => 7.0}, {"id" => 92264567, "country_id" => 879921427, "name" => "New Brunswick", "code" => "NB", "tax_name" => nil, "tax_type" => nil, "shipping_zone_id" => nil, "tax" => 0.15, "tax_percentage" => 15.0}, {"id" => 243284171, "country_id" => 879921427, "name" => "Newfoundland", "code" => "NL", "tax_name" => nil, "tax_type" => nil, "shipping_zone_id" => nil, "tax" => 0.15, "tax_percentage" => 15.0}, {"id" => 439598329, "country_id" => 879921427, "name" => "Northwest Territories", "code" => "NT", "tax_name" => nil, "tax_type" => nil, "shipping_zone_id" => nil, "tax" => 0.0, "tax_percentage" => 0.0}, {"id" => 448070559, "country_id" => 879921427, "name" => "Nova Scotia", "code" => "NS", "tax_name" => nil, "tax_type" => "harmonized", "shipping_zone_id" => nil, "tax" => 0.15, "tax_percentage" => 15.0}, {"id" => 670206421, "country_id" => 879921427, "name" => "Nunavut", "code" => "NU", "tax_name" => nil, "tax_type" => nil, "shipping_zone_id" => nil, "tax" => 0.0, "tax_percentage" => 0.0}, {"id" => 702530425, "country_id" => 879921427, "name" => "Ontario", "code" => "ON", "tax_name" => nil, "tax_type" => nil, "shipping_zone_id" => nil, "tax" => 0.08, "tax_percentage" => 8.0}, {"id" => 570891722, "country_id" => 879921427, "name" => "Prince Edward Island", "code" => "PE", "tax_name" => nil, "tax_type" => nil, "shipping_zone_id" => nil, "tax" => 0.1, "tax_percentage" => 10.0}, {"id" => 224293623, "country_id" => 879921427, "name" => "Quebec", "code" => "QC", "tax_name" => "HST", "tax_type" => "compounded", "shipping_zone_id" => nil, "tax" => 0.09, "tax_percentage" => 9.0}, {"id" => 473391800, "country_id" => 879921427, "name" => "Saskatchewan", "code" => "SK", "tax_name" => nil, "tax_type" => nil, "shipping_zone_id" => nil, "tax" => 0.09, "tax_percentage" => 9.0}, {"id" => 1005264686, "country_id" => 879921427, "name" => "Yukon", "code" => "YT", "tax_name" => nil, "tax_type" => nil, "shipping_zone_id" => nil, "tax" => 0.0, "tax_percentage" => 0.0}]}), headers: {})
 
     ShopifyAPI::Province.all(
       country_id: 879921427,
@@ -52,7 +52,7 @@ class Province202201Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: "{}", headers: {})
+      .to_return(status: 200, body: JSON.generate({"provinces" => [{"id" => 570891722, "country_id" => 879921427, "name" => "Prince Edward Island", "code" => "PE", "tax_name" => nil, "tax_type" => nil, "shipping_zone_id" => nil, "tax" => 0.1, "tax_percentage" => 10.0}, {"id" => 670206421, "country_id" => 879921427, "name" => "Nunavut", "code" => "NU", "tax_name" => nil, "tax_type" => nil, "shipping_zone_id" => nil, "tax" => 0.0, "tax_percentage" => 0.0}, {"id" => 702530425, "country_id" => 879921427, "name" => "Ontario", "code" => "ON", "tax_name" => nil, "tax_type" => nil, "shipping_zone_id" => nil, "tax" => 0.08, "tax_percentage" => 8.0}, {"id" => 1005264686, "country_id" => 879921427, "name" => "Yukon", "code" => "YT", "tax_name" => nil, "tax_type" => nil, "shipping_zone_id" => nil, "tax" => 0.0, "tax_percentage" => 0.0}]}), headers: {})
 
     ShopifyAPI::Province.all(
       country_id: 879921427,
@@ -71,7 +71,7 @@ class Province202201Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: "{}", headers: {})
+      .to_return(status: 200, body: JSON.generate({"count" => 13}), headers: {})
 
     ShopifyAPI::Province.count(
       country_id: 879921427,
@@ -89,7 +89,7 @@ class Province202201Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: "{}", headers: {})
+      .to_return(status: 200, body: JSON.generate({"province" => {"id" => 224293623, "country_id" => 879921427, "name" => "Quebec", "code" => "QC", "tax_name" => "HST", "tax_type" => "compounded", "shipping_zone_id" => nil, "tax" => 0.09, "tax_percentage" => 9.0}}), headers: {})
 
     ShopifyAPI::Province.find(
       country_id: 879921427,
@@ -108,7 +108,7 @@ class Province202201Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "province" => hash_including({"id" => 224293623, "tax" => 0.09}) }
       )
-      .to_return(status: 200, body: "{}", headers: {})
+      .to_return(status: 200, body: JSON.generate({"province" => {"country_id" => 879921427, "id" => 224293623, "name" => "Quebec", "code" => "QC", "tax_name" => "HST", "tax_type" => "compounded", "shipping_zone_id" => nil, "tax" => 0.09, "tax_percentage" => 9.0}}), headers: {})
 
     province = ShopifyAPI::Province.new
     province.country_id = 879921427

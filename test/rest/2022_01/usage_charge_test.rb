@@ -34,7 +34,7 @@ class UsageCharge202201Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "usage_charge" => hash_including({"description" => "Super Mega Plan 1000 emails", "price" => 1.0}) }
       )
-      .to_return(status: 200, body: "{}", headers: {})
+      .to_return(status: 200, body: JSON.generate({"usage_charge" => {"id" => 1034618215, "description" => "Super Mega Plan 1000 emails", "price" => "1.00", "created_at" => "2022-02-03T16:42:27-05:00", "billing_on" => nil, "balance_used" => 11.0, "balance_remaining" => 89.0, "risk_level" => 0}}), headers: {})
 
     usage_charge = ShopifyAPI::UsageCharge.new
     usage_charge.recurring_application_charge_id = 455696195
@@ -54,7 +54,7 @@ class UsageCharge202201Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: "{}", headers: {})
+      .to_return(status: 200, body: JSON.generate({"usage_charges" => [{"id" => 1034618218, "description" => "Super Mega Plan Add-ons", "price" => "10.00", "created_at" => "2022-02-03T16:42:30-05:00", "billing_on" => nil, "balance_used" => 10.0, "balance_remaining" => 90.0, "risk_level" => 0}]}), headers: {})
 
     ShopifyAPI::UsageCharge.all(
       recurring_application_charge_id: 455696195,
@@ -72,7 +72,7 @@ class UsageCharge202201Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: "{}", headers: {})
+      .to_return(status: 200, body: JSON.generate({"usage_charge" => {"id" => 1034618217, "description" => "Super Mega Plan Add-ons", "price" => "10.00", "created_at" => "2022-02-03T16:42:29-05:00", "billing_on" => nil, "balance_used" => 10.0, "balance_remaining" => 90.0, "risk_level" => 0}}), headers: {})
 
     ShopifyAPI::UsageCharge.find(
       recurring_application_charge_id: 455696195,

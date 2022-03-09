@@ -17,7 +17,7 @@ module ShopifyAPI
       @applied_discount = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
       @buyer_accepts_marketing = T.let(nil, T.nilable(T::Boolean))
       @created_at = T.let(nil, T.nilable(String))
-      @currency = T.let(nil, T.nilable(Currency))
+      @currency = T.let(nil, T.nilable(String))
       @customer_id = T.let(nil, T.nilable(Integer))
       @discount_code = T.let(nil, T.nilable(DiscountCode))
       @email = T.let(nil, T.nilable(String))
@@ -46,7 +46,6 @@ module ShopifyAPI
     end
 
     @has_one = T.let({
-      currency: Currency,
       discount_code: DiscountCode,
       order: Order
     }, T::Hash[Symbol, Class])
@@ -71,7 +70,7 @@ module ShopifyAPI
     attr_reader :buyer_accepts_marketing
     sig { returns(T.nilable(String)) }
     attr_reader :created_at
-    sig { returns(T.nilable(Currency)) }
+    sig { returns(T.nilable(String)) }
     attr_reader :currency
     sig { returns(T.nilable(Integer)) }
     attr_reader :customer_id

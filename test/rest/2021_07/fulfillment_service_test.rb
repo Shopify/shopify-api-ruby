@@ -34,7 +34,7 @@ class FulfillmentService202107Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: "{}", headers: {})
+      .to_return(status: 200, body: JSON.generate({"fulfillment_services" => [{"id" => 755357713, "name" => "Mars Fulfillment", "email" => nil, "service_name" => "Mars Fulfillment", "handle" => "mars-fulfillment", "fulfillment_orders_opt_in" => true, "include_pending_stock" => false, "provider_id" => nil, "location_id" => 24826418, "callback_url" => "http://google.com/", "tracking_support" => true, "inventory_management" => true, "admin_graphql_api_id" => "gid://shopify/ApiFulfillmentService/755357713"}]}), headers: {})
 
     ShopifyAPI::FulfillmentService.all()
 
@@ -50,7 +50,7 @@ class FulfillmentService202107Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: "{}", headers: {})
+      .to_return(status: 200, body: JSON.generate({"fulfillment_services" => [{"id" => 611870435, "name" => "Venus Fulfillment", "email" => nil, "service_name" => "Venus Fulfillment", "handle" => "venus-fulfillment", "fulfillment_orders_opt_in" => false, "include_pending_stock" => false, "provider_id" => nil, "location_id" => 611870435, "callback_url" => nil, "tracking_support" => true, "inventory_management" => true, "admin_graphql_api_id" => "gid://shopify/ApiFulfillmentService/611870435"}, {"id" => 755357713, "name" => "Mars Fulfillment", "email" => nil, "service_name" => "Mars Fulfillment", "handle" => "mars-fulfillment", "fulfillment_orders_opt_in" => true, "include_pending_stock" => false, "provider_id" => nil, "location_id" => 24826418, "callback_url" => "http://google.com/", "tracking_support" => true, "inventory_management" => true, "admin_graphql_api_id" => "gid://shopify/ApiFulfillmentService/755357713"}]}), headers: {})
 
     ShopifyAPI::FulfillmentService.all(
       scope: "all",
@@ -68,7 +68,7 @@ class FulfillmentService202107Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "fulfillment_service" => hash_including({"name" => "Jupiter Fulfillment", "callback_url" => "http://google.com", "inventory_management" => true, "tracking_support" => true, "requires_shipping_method" => true, "format" => "json"}) }
       )
-      .to_return(status: 200, body: "{}", headers: {})
+      .to_return(status: 200, body: JSON.generate({"fulfillment_service" => {"id" => 1061774490, "name" => "Jupiter Fulfillment", "email" => nil, "service_name" => "Jupiter Fulfillment", "handle" => "jupiter-fulfillment", "fulfillment_orders_opt_in" => false, "include_pending_stock" => false, "provider_id" => nil, "location_id" => 1072404547, "callback_url" => "http://google.com/", "tracking_support" => true, "inventory_management" => true, "admin_graphql_api_id" => "gid://shopify/ApiFulfillmentService/1061774490"}}), headers: {})
 
     fulfillment_service = ShopifyAPI::FulfillmentService.new
     fulfillment_service.name = "Jupiter Fulfillment"
@@ -91,7 +91,7 @@ class FulfillmentService202107Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: "{}", headers: {})
+      .to_return(status: 200, body: JSON.generate({"fulfillment_service" => {"id" => 755357713, "name" => "Mars Fulfillment", "email" => nil, "service_name" => "Mars Fulfillment", "handle" => "mars-fulfillment", "fulfillment_orders_opt_in" => true, "include_pending_stock" => false, "provider_id" => nil, "location_id" => 24826418, "callback_url" => "http://google.com/", "tracking_support" => true, "inventory_management" => true, "admin_graphql_api_id" => "gid://shopify/ApiFulfillmentService/755357713"}}), headers: {})
 
     ShopifyAPI::FulfillmentService.find(
       id: 755357713,
@@ -109,7 +109,7 @@ class FulfillmentService202107Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "fulfillment_service" => hash_including({"id" => 755357713, "name" => "New Fulfillment Service Name"}) }
       )
-      .to_return(status: 200, body: "{}", headers: {})
+      .to_return(status: 200, body: JSON.generate({"fulfillment_service" => {"id" => 755357713, "name" => "New Fulfillment Service Name", "email" => nil, "service_name" => "New Fulfillment Service Name", "handle" => "new-fulfillment-service-name", "fulfillment_orders_opt_in" => true, "include_pending_stock" => false, "provider_id" => nil, "location_id" => 24826418, "callback_url" => "http://google.com/", "tracking_support" => true, "inventory_management" => true, "admin_graphql_api_id" => "gid://shopify/ApiFulfillmentService/755357713"}}), headers: {})
 
     fulfillment_service = ShopifyAPI::FulfillmentService.new
     fulfillment_service.id = 755357713
@@ -128,7 +128,7 @@ class FulfillmentService202107Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: "{}", headers: {})
+      .to_return(status: 200, body: JSON.generate({}), headers: {})
 
     ShopifyAPI::FulfillmentService.delete(
       id: 755357713,

@@ -34,7 +34,7 @@ class CarrierService202104Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "carrier_service" => hash_including({"name" => "Shipping Rate Provider", "callback_url" => "http://shippingrateprovider.com", "service_discovery" => true}) }
       )
-      .to_return(status: 200, body: "{}", headers: {})
+      .to_return(status: 200, body: JSON.generate({"carrier_service" => {"id" => 1036894963, "name" => "Shipping Rate Provider", "active" => true, "service_discovery" => true, "carrier_service_type" => "api", "admin_graphql_api_id" => "gid://shopify/DeliveryCarrierService/1036894963", "format" => "json", "callback_url" => "http://shippingrateprovider.com/"}}), headers: {})
 
     carrier_service = ShopifyAPI::CarrierService.new
     carrier_service.name = "Shipping Rate Provider"
@@ -54,7 +54,7 @@ class CarrierService202104Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: "{}", headers: {})
+      .to_return(status: 200, body: JSON.generate({"carrier_services" => [{"id" => 1036894965, "name" => "Purolator", "active" => true, "service_discovery" => true, "carrier_service_type" => "api", "admin_graphql_api_id" => "gid://shopify/DeliveryCarrierService/1036894965", "format" => "json", "callback_url" => "http://example.com/"}, {"id" => 260046840, "name" => "ups_shipping", "active" => true, "service_discovery" => true, "carrier_service_type" => "legacy", "admin_graphql_api_id" => "gid://shopify/DeliveryCarrierService/260046840"}]}), headers: {})
 
     ShopifyAPI::CarrierService.all()
 
@@ -70,7 +70,7 @@ class CarrierService202104Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "carrier_service" => hash_including({"id" => 1036894964, "name" => "Some new name", "active" => false}) }
       )
-      .to_return(status: 200, body: "{}", headers: {})
+      .to_return(status: 200, body: JSON.generate({"carrier_service" => {"active" => false, "id" => 1036894964, "name" => "Some new name", "service_discovery" => true, "carrier_service_type" => "api", "admin_graphql_api_id" => "gid://shopify/DeliveryCarrierService/1036894964", "format" => "json", "callback_url" => "http://example.com/"}}), headers: {})
 
     carrier_service = ShopifyAPI::CarrierService.new
     carrier_service.id = 1036894964
@@ -90,7 +90,7 @@ class CarrierService202104Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: "{}", headers: {})
+      .to_return(status: 200, body: JSON.generate({"carrier_service" => {"id" => 1036894966, "name" => "Purolator", "active" => true, "service_discovery" => true, "carrier_service_type" => "api", "admin_graphql_api_id" => "gid://shopify/DeliveryCarrierService/1036894966", "format" => "json", "callback_url" => "http://example.com/"}}), headers: {})
 
     ShopifyAPI::CarrierService.find(
       id: 1036894966,
@@ -108,7 +108,7 @@ class CarrierService202104Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: "{}", headers: {})
+      .to_return(status: 200, body: JSON.generate({}), headers: {})
 
     ShopifyAPI::CarrierService.delete(
       id: 1036894967,
