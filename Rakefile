@@ -1,55 +1,22 @@
+# typed: false
 # frozen_string_literal: true
-require 'rake'
-require "bundler/gem_tasks"
-require 'rake/testtask'
-require 'rubocop/rake_task'
 
-Rake::TestTask.new(:test) do |test|
-  test.libs << 'lib' << 'test'
-  test.pattern = 'test/**/*_test.rb'
-  test.warning = false
-end
+require "rake/testtask"
 
-RuboCop::RakeTask.new
-
-begin
-  require 'rcov/rcovtask'
-  Rcov::RcovTask.new do |test|
-    test.libs << 'test'
-    test.pattern = 'test/**/*_test.rb'
-    test.verbose = true
+namespace :test do
+  Rake::TestTask.new(:library) do |t|
+    t.test_files = FileList["test/**/*_test.rb"].exclude("test/rest/**/*.rb")
   end
-rescue LoadError
-  task(:rcov) do
-    abort("RCov is not available. In order to run rcov, you must: sudo gem install spicycode-rcov")
+
+  Rake::TestTask.new(:rest_wrappers) do |t|
+    pattern = if ENV.key?("API_VERSION")
+      "test/rest/**/#{ENV["API_VERSION"]}/*.rb"
+    else
+      "test/rest/**/*.rb"
+    end
+
+    t.pattern = pattern
   end
 end
 
-task(default: [:test, :rubocop, :verify_docs])
-
-require 'verify_docs'
-task(:verify_docs) do
-  unless VerifyDocs.call
-    abort("\nWARNING: docs/index.md and README.md no longer have identical content. Please correct this.")
-  end
-end
-
-require 'rdoc/task'
-Rake::RDocTask.new do |rdoc|
-  if File.exist?('VERSION.yml')
-    config = YAML.load(File.read('VERSION.yml'))
-    version = "#{config[:major]}.#{config[:minor]}.#{config[:patch]}"
-  else
-    version = ""
-  end
-
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "shopify_api #{version}"
-  rdoc.rdoc_files.include('README*')
-  rdoc.rdoc_files.include('lib/**/*.rb')
-end
-
-task(:docker) do
-  cmd = "docker-compose up -d && docker exec -i -t shopify_api bash"
-  exec(cmd, err: File::NULL)
-end
+task test: ["test:library"]

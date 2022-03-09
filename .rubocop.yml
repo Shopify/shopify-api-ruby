@@ -1,28 +1,59 @@
 inherit_gem:
   rubocop-shopify: rubocop.yml
 
-inherit_from:
-  - .rubocop_todo.yml
+require:
+  - rubocop-sorbet
 
 AllCops:
-  TargetRubyVersion: 2.4
-
-Lint/SuppressedException:
+  TargetRubyVersion: 2.6
+  NewCops: enable
   Exclude:
-    # Warning on test setup, the exception is expected
-    - 'test/test_helper.rb'
+    - "sorbet/**/*"
+    - "bin/**/*"
+    - "lib/shopify_api/rest/resources/**/*"
+    - "test/rest/**/*"
 
-Lint/MissingSuper:
+Sorbet:
+  Enabled: true
+Sorbet/HasSigil:
+  Enabled: true
   Exclude:
-    # We explicitly do not want to call super here
-    - 'lib/shopify_api/graphql/http_client.rb'
+    - Gemfile*
+Sorbet/StrictSigil:
+  Enabled: true
+  Exclude:
+    - Gemfile*
+    - "lib/shopify_api/auth/session.rb"
+    - Rakefile
+    - "test/**/*"
+Sorbet/TrueSigil:
+  Enabled: true
+  Exclude:
+    - Gemfile*
+    - Rakefile
+    - "test/**/*"
+Sorbet/ValidSigil:
+  Enabled: true
+Sorbet/EnforceSigilOrder:
+  Enabled: true
+Sorbet/AllowIncompatibleOverride:
+  Enabled: true
+Sorbet/CheckedTrueInSignature:
+  Enabled: true
+Sorbet/KeywordArgumentOrdering:
+  Enabled: true
+Sorbet/SignatureBuildOrder:
+  Enabled: true
+Sorbet/BindingConstantWithoutTypeAlias:
+  Enabled: true
+Sorbet/ConstantsFromStrings:
+  Enabled: true
+Sorbet/ForbidIncludeConstLiteral:
+  Enabled: true
+Sorbet/ForbidSuperclassConstLiteral:
+  Enabled: true
 
-Lint/UnderscorePrefixedVariableName:
-  Exclude:
-    # This is an internal attribute and we want to make sure it's called _headers
-    - 'lib/shopify_api/resources/base.rb'
-
-Naming/AccessorMethodName:
-  Exclude:
-    # This comes from activesupport, so we can't rename it
-    - 'test/detailed_log_subscriber_test.rb'
+Layout/EmptyLineAfterGuardClause:
+  Enabled: true
+Style/GlobalStdStream:
+  Enabled: true

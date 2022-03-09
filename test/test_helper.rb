@@ -1,125 +1,81 @@
+# typed: strict
 # frozen_string_literal: true
-require 'rubygems'
-require 'minitest/autorun'
-require 'webmock/minitest'
-require_relative 'lib/webmock_extensions/last_request'
-require 'mocha/minitest'
-require 'pry'
 
-$LOAD_PATH.unshift(File.dirname(__FILE__))
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
+$VERBOSE = nil
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
 
-WebMock.disable_net_connect!
-require 'shopify_api'
+require "minitest/autorun"
+require "webmock/minitest"
+require "mocha"
+require "mocha/minitest"
 
-# setup ShopifyAPI with fake api_key and secret
+require "shopify_api"
+
+require_relative("./test_helpers/constants.rb")
+
+Dir[File.dirname(__FILE__) + "/test_helpers/*.rb"].each { |file| require file }
+
 module Test
   module Unit
     class TestCase < Minitest::Test
-      def self.test(string, &block)
-        define_method("test_#{string}", &block)
-      end
+      extend T::Sig
 
-      def self.should(string, &block)
-        self.test("should_#{string}", &block)
-      end
-
-      def self.context(_string)
-        yield
-      end
-
+      sig { void }
       def setup
-        ActiveResource::Base.format = :json
-        ShopifyAPI.constants.each do |const|
-          begin
-            const = mod.const_get(const)
-            const.format = :json if const.respond_to?(:format=)
-          rescue NameError
-            # Do nothing
-          end
-        end
-
-        ShopifyAPI::Base.clear_session
-
-        fake("apis",
-              url: "https://app.shopify.com/services/apis.json",
-              method: :get,
-              status: 200,
-              api_version: :stub,
-              body: load_fixture('apis'))
-
-        ShopifyAPI::ApiVersion.fetch_known_versions
-        session = ShopifyAPI::Session.new(
-          domain: "https://this-is-my-test-shop.myshopify.com",
-          token: "token_test_helper",
-          api_version: '2019-01',
-        )
-
-        ShopifyAPI::Base.activate_session(session)
-      end
-
-      def teardown
-        ShopifyAPI::Base.clear_session
-        ShopifyAPI::Base.site = nil
-        ShopifyAPI::Base.password = nil
-        ShopifyAPI::Base.user = nil
-
-        ShopifyAPI::ApiVersion.clear_known_versions
-        ShopifyAPI::ApiVersion.version_lookup_mode = :raise_on_unknown
-      end
-
-      # Custom Assertions
-      def assert_not(expression)
-        refute(expression, "Expected <#{expression}> to be false!")
-      end
-
-      def assert_nothing_raised
-        yield
-      end
-
-      def assert_not_includes(array, value)
-        refute(array.include?(value))
-      end
-
-      def assert_includes(array, value)
-        assert(array.include?(value))
-      end
-
-      def load_fixture(name, format = :json)
-        File.read(File.dirname(__FILE__) + "/fixtures/#{name}.#{format}")
-      end
-
-      def assert_request_body(expected)
-        assert_equal(expected, WebMock.last_request.body)
-      end
-
-      def fake(endpoint, options = {})
-        request_body = options.key?(:request_body) ? options.delete(:request_body) : nil
-        body = options.key?(:body) ? options.delete(:body) : load_fixture(endpoint)
-        format = options.delete(:format) || :json
-        method = options.delete(:method) || :get
-        api_version = options.delete(:api_version) || ShopifyAPI::ApiVersion.find_version('2019-01')
-        extension = ".#{options.delete(:extension) || 'json'}" unless options[:extension] == false
-        status = options.delete(:status) || 200
-        url = if options.key?(:url)
-          options[:url]
-        else
-          "https://this-is-my-test-shop.myshopify.com#{api_version.construct_api_path("#{endpoint}#{extension}")}"
-        end
-
-        stubbing = WebMock.stub_request(method, url)
-        stubbing = stubbing.with(body: request_body) if request_body
-        stubbing.to_return(
-          body: body, status: status, headers: { content_type: "text/#{format}", content_length: 1 }.merge(options)
+        ShopifyAPI::Context.setup(
+          api_key: "API_KEY",
+          api_secret_key: "API_SECRET_KEY",
+          api_version: "unstable",
+          host_name: "app-address.com",
+          scope: ["scope1", "scope2"],
+          is_private: false,
+          is_embedded: false,
+          session_storage: TestHelpers::FakeSessionStorage.new,
+          user_agent_prefix: nil
         )
       end
 
-      def ar_version_before?(version_string)
-        Gem::Version.new(ActiveResource::VERSION::STRING) < Gem::Version.new(version_string)
+      sig do
+        params(
+          api_key: T.nilable(String),
+          api_secret_key: T.nilable(String),
+          api_version: T.nilable(String),
+          host_name: T.nilable(String),
+          scope: T.nilable(T.any(T::Array[String], String)),
+          is_private: T.nilable(T::Boolean),
+          is_embedded: T.nilable(T::Boolean),
+          session_storage: T.nilable(ShopifyAPI::Auth::SessionStorage),
+          logger: T.nilable(Logger),
+          private_shop: T.nilable(String),
+          user_agent_prefix: T.nilable(String)
+        ).void
       end
-
-      def ar_version_after?(version_string)
-        Gem::Version.new(version_string) < Gem::Version.new(ActiveResource::VERSION::STRING)
+      def modify_context(
+        api_key: nil,
+        api_secret_key: nil,
+        api_version: nil,
+        host_name: nil,
+        scope: nil,
+        is_private: nil,
+        is_embedded: nil,
+        session_storage: nil,
+        logger: nil,
+        private_shop: "do-not-set",
+        user_agent_prefix: nil
+      )
+        ShopifyAPI::Context.setup(
+          api_key: api_key ? api_key : ShopifyAPI::Context.api_key,
+          api_secret_key: api_secret_key ? api_secret_key : ShopifyAPI::Context.api_secret_key,
+          api_version: api_version ? api_version : ShopifyAPI::Context.api_version,
+          host_name: host_name ? host_name : ShopifyAPI::Context.host_name,
+          scope: scope ? scope : ShopifyAPI::Context.scope.to_s,
+          is_private: !is_private.nil? ? is_private : ShopifyAPI::Context.private?,
+          is_embedded: !is_embedded.nil? ? is_embedded : ShopifyAPI::Context.embedded?,
+          session_storage: session_storage ? session_storage : ShopifyAPI::Context.session_storage,
+          logger: logger ? logger : ShopifyAPI::Context.logger,
+          private_shop: private_shop != "do-not-set" ? private_shop : ShopifyAPI::Context.private_shop,
+          user_agent_prefix: user_agent_prefix ? user_agent_prefix : ShopifyAPI::Context.user_agent_prefix
+        )
       end
     end
   end

@@ -1,47 +1,52 @@
 # frozen_string_literal: true
-$:.push(File.expand_path("../lib", __FILE__))
+
+$LOAD_PATH.push(File.expand_path("../lib", __FILE__))
 require "shopify_api/version"
 
 Gem::Specification.new do |s|
-  s.name = %q{shopify_api}
+  s.name = "shopify_api"
   s.version = ShopifyAPI::VERSION
   s.author = "Shopify"
 
-  s.summary = %q{The Shopify API gem is a lightweight gem for accessing the Shopify admin REST web services}
+  s.summary = "The gem for accessing the Shopify API"
   s.description = <<~HERE
-    The Shopify API gem allows Ruby developers to programmatically access the admin
-    section of Shopify stores. The API is implemented as JSON or XML over HTTP using
-    all four verbs (GET/POST/PUT/DELETE). Each resource, like Order, Product, or
-    Collection, has its own URL and is manipulated in isolation.
+    This gem allows Ruby developers to programmatically access the admin
+    section of Shopify stores.
   HERE
-  s.email = %q{developers@jadedpixel.com}
-  s.homepage = %q{http://www.shopify.com/partners/apps}
+  s.email = "developers@shopify.com"
+  s.homepage = "https://shopify.dev/apps"
 
-  s.metadata['allowed_push_host'] = 'https://rubygems.org'
+  s.metadata["allowed_push_host"] = "https://rubygems.org"
 
   s.extra_rdoc_files = [
     "LICENSE",
     "README.md",
   ]
-  s.files         = `git ls-files`.split("\n")
-  s.test_files    = `git ls-files -- {test}/*`.split("\n")
+  s.files = Dir.chdir(File.expand_path("..", __FILE__)) do
+    %x(git ls-files -z).split("\x0").reject { |f| f.match(%r{^(test)/}) }
+  end
 
   s.rdoc_options = ["--charset=UTF-8"]
-  s.summary = %q{ShopifyAPI is a lightweight gem for accessing the Shopify admin REST web services}
+
   s.license = "MIT"
 
-  s.required_ruby_version = ">= 2.4"
+  s.required_ruby_version = ">= 2.6"
 
-  s.add_runtime_dependency("activeresource", ">= 4.1.0")
-  s.add_runtime_dependency("rack")
-  s.add_runtime_dependency("graphql-client")
+  s.add_runtime_dependency("concurrent-ruby")
+  s.add_runtime_dependency("hash_diff")
+  s.add_runtime_dependency("httparty")
+  s.add_runtime_dependency("jwt")
+  s.add_runtime_dependency("oj")
+  s.add_runtime_dependency("openssl")
+  s.add_runtime_dependency("securerandom")
+  s.add_runtime_dependency("sorbet-runtime")
+  s.add_runtime_dependency("zeitwerk", "~> 2.5")
 
-  s.add_development_dependency("mocha", ">= 1.4.0")
-  s.add_development_dependency("webmock")
-  s.add_development_dependency("minitest", ">= 5.14")
+  s.add_development_dependency("activesupport")
   s.add_development_dependency("rake")
-  s.add_development_dependency("timecop")
+  s.add_development_dependency("rubocop")
   s.add_development_dependency("rubocop-shopify")
-  s.add_development_dependency("pry")
-  s.add_development_dependency("pry-byebug")
+  s.add_development_dependency("rubocop-sorbet")
+  s.add_development_dependency("sorbet")
+  s.add_development_dependency("tapioca")
 end

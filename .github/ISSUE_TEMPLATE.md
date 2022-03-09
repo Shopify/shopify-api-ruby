@@ -32,5 +32,4 @@ If applicable, enable the logs as described in the README, and paste the relevan
 ## Specifications
 
 - `shopify_api` version:
-- `activeresource` version:
 - Shopify API version used (example: `2020-07`):

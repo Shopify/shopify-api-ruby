@@ -5,27 +5,14 @@ on:
 
 jobs:
   build:
-    name: Ruby ${{ matrix.version }} ${{ matrix.gemfile }}
+    name: Ruby ${{ matrix.version }}
     runs-on: ubuntu-latest
-    env:
-      BUNDLE_GEMFILE: ${{ matrix.gemfile }}
     strategy:
       matrix:
         version:
-          - "2.6"
-          - "2.7"
-          - "3.0"
-        gemfile:
-          - Gemfile_ar41
-          - Gemfile_ar50
-          - Gemfile_ar51
-          - Gemfile_ar60
-          - Gemfile_ar_main
-        exclude:
-          - version: "2.7"
-            gemfile: Gemfile_ar41
-          - version: "3.0"
-            gemfile: Gemfile_ar41
+          - 2.6
+          - 2.7
+          - 3.0
     steps:
       - uses: actions/checkout@v2
       - name: Remove Gemfile.lock
@@ -35,9 +22,20 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.version }}
-      - name: Run Tests
+      - name: Run Bundle Commands
         run: |
           bundle config set --with docs
           bundle config set ignore_messages true
           bundle
-          bundle exec rake test
+      - name: Run RuboCop
+        run: |
+          bundle exec rubocop
+      - name: Run Typecheck
+        run: |
+          bundle exec srb tc
+      - name: Run tests
+        run: |
+          bundle exec rake test:library
+      - name: Run REST wrapper tests
+        run: |
+          bundle exec rake test:rest_wrappers

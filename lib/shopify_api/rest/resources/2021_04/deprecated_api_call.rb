@@ -1,0 +1,53 @@
+# typed: false
+# frozen_string_literal: true
+
+module ShopifyAPI
+  class DeprecatedApiCall < ShopifyAPI::Rest::Base
+    extend T::Sig
+
+    @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+    @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
+    def initialize(session: ShopifyAPI::Context.active_session)
+      super(session: session)
+
+      @data_updated_at = T.let(nil, T.nilable(String))
+      @deprecated_api_calls = T.let(nil, T.nilable(T::Array[T.untyped]))
+    end
+
+    @has_one = T.let({}, T::Hash[Symbol, Class])
+    @has_many = T.let({}, T::Hash[Symbol, Class])
+    @paths = T.let([
+      {http_method: :get, operation: :get, ids: [], path: "deprecated_api_calls.json"}
+    ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
+
+    sig { returns(T.nilable(String)) }
+    attr_reader :data_updated_at
+    sig { returns(T.nilable(T::Array[T::Hash[T.untyped, T.untyped]])) }
+    attr_reader :deprecated_api_calls
+
+    class << self
+      sig do
+        params(
+          session: Auth::Session,
+          kwargs: T.untyped
+        ).returns(T::Array[DeprecatedApiCall])
+      end
+      def all(
+        session: ShopifyAPI::Context.active_session,
+        **kwargs
+      )
+        response = base_find(
+          session: session,
+          ids: {},
+          params: {}.merge(kwargs).compact,
+        )
+
+        T.cast(response, T::Array[DeprecatedApiCall])
+      end
+
+    end
+
+  end
+end
