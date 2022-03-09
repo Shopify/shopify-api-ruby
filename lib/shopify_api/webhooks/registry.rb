@@ -51,7 +51,7 @@ module ShopifyAPI
             raise Errors::InvalidWebhookRegistrationError, "Webhook topic #{topic} has not been added to the registry."
           end
 
-          client = Clients::Graphql::Admin.new(session)
+          client = Clients::Graphql::Admin.new(session: session)
           register_check_result = webhook_registration_needed?(client, registration)
 
           registered = true
@@ -97,7 +97,7 @@ module ShopifyAPI
           ).returns(T::Hash[String, T.untyped])
         end
         def unregister(topic:, session:)
-          client = Clients::Graphql::Admin.new(session)
+          client = Clients::Graphql::Admin.new(session: session)
 
           webhook_id = get_webhook_id(topic: topic, client: client)
           return {} if webhook_id.nil?
