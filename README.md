@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 ![Build Status](https://github.com/Shopify/shopify_api/workflows/CI/badge.svg?branch=main)
 
-This library provides support for Ruby [Shopify](https://www.shopify.com) apps to access the [Shopify Admin API](https://shopify.dev/api/admin), by making it easier to perform the following actions:
+This library provides support for Ruby [Shopify apps](https://apps.shopify.com/) to access the [Shopify Admin API](https://shopify.dev/api/admin), by making it easier to perform the following actions:
 
 - Creating [online](https://shopify.dev/concepts/about-apis/authentication#online-access) or [offline](https://shopify.dev/concepts/about-apis/authentication#offline-access) access tokens for the Admin API via OAuth
 - Making requests to the [REST API](https://shopify.dev/api/admin-rest)
