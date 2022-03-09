@@ -13,7 +13,7 @@ module ShopifyAPI
       super(session: session)
 
       @amount = T.let(nil, T.nilable(String))
-      @currency = T.let(nil, T.nilable(Currency))
+      @currency = T.let(nil, T.nilable(String))
       @evidence_due_by = T.let(nil, T.nilable(String))
       @evidence_sent_on = T.let(nil, T.nilable(String))
       @finalized_on = T.let(nil, T.nilable(String))
@@ -25,9 +25,7 @@ module ShopifyAPI
       @type = T.let(nil, T.nilable(String))
     end
 
-    @has_one = T.let({
-      currency: Currency
-    }, T::Hash[Symbol, Class])
+    @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
     @paths = T.let([
       {http_method: :get, operation: :get, ids: [], path: "shopify_payments/disputes.json"},
@@ -36,7 +34,7 @@ module ShopifyAPI
 
     sig { returns(T.nilable(String)) }
     attr_reader :amount
-    sig { returns(T.nilable(Currency)) }
+    sig { returns(T.nilable(String)) }
     attr_reader :currency
     sig { returns(T.nilable(String)) }
     attr_reader :evidence_due_by

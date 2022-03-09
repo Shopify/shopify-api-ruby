@@ -191,12 +191,12 @@ module ShopifyAPI
 
           body = T.cast(response.body, T::Hash[String, T.untyped])
 
-          if body.key?(class_name)
-            objects << create_instance(data: body[class_name], session: session)
-          elsif body.key?(class_name.pluralize)
-            body[class_name.pluralize].each do |entry|
+          if body.key?(class_name.pluralize) || (body.key?(class_name) && body[class_name].is_a?(Array))
+            (body[class_name.pluralize] || body[class_name]).each do |entry|
               objects << create_instance(data: entry, session: session)
             end
+          elsif body.key?(class_name)
+            objects << create_instance(data: body[class_name], session: session)
           end
 
           objects
@@ -214,13 +214,13 @@ module ShopifyAPI
             instance_methods(false).select { |method| !method.to_s.include?("=") }.each do |attribute|
               next unless data.key?(attribute.to_s)
 
-              if has_many?(attribute)
+              if has_many?(attribute) && data[attribute.to_s]
                 attr_list = []
                 data[attribute.to_s].each do |element|
                   attr_list << T.unsafe(@has_many[attribute]).create_instance(data: element, session: session)
                 end
                 instance.public_send("#{attribute}=", attr_list)
-              elsif has_one?(attribute)
+              elsif has_one?(attribute) && data[attribute.to_s]
                 instance.public_send("#{attribute}=",
                   T.unsafe(@has_one[attribute]).create_instance(data: data[attribute.to_s], session: session))
               else

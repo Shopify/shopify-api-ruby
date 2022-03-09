@@ -34,7 +34,7 @@ class Currency202201Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: "{}", headers: {})
+      .to_return(status: 200, body: JSON.generate({"currencies" => [{"currency" => "CAD", "rate_updated_at" => "2018-01-23T19:01:01-05:00", "enabled" => true}, {"currency" => "EUR", "rate_updated_at" => "2018-01-23T19:01:01-05:00", "enabled" => true}, {"currency" => "JPY", "rate_updated_at" => "2018-01-23T19:01:01-05:00", "enabled" => true}]}), headers: {})
 
     ShopifyAPI::Currency.all()
 

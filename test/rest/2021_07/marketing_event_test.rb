@@ -34,7 +34,7 @@ class MarketingEvent202107Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: "{}", headers: {})
+      .to_return(status: 200, body: JSON.generate({"marketing_events" => [{"id" => 998730532, "event_type" => "post", "remote_id" => "12345678", "started_at" => "2022-01-15T10:56:18-05:00", "ended_at" => nil, "scheduled_to_end_at" => nil, "budget" => "10.11", "currency" => "GBP", "manage_url" => nil, "preview_url" => nil, "utm_campaign" => "1234567890", "utm_source" => "facebook", "utm_medium" => "facebook-post", "budget_type" => "daily", "description" => nil, "marketing_channel" => "social", "paid" => false, "referring_domain" => "facebook.com", "breadcrumb_id" => nil, "marketing_activity_id" => nil, "admin_graphql_api_id" => "gid://shopify/MarketingEvent/998730532", "marketed_resources" => []}]}), headers: {})
 
     ShopifyAPI::MarketingEvent.all()
 
@@ -50,7 +50,7 @@ class MarketingEvent202107Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "marketing_event" => hash_including({"started_at" => "2022-12-15", "utm_campaign" => "Christmas2022", "utm_source" => "facebook", "utm_medium" => "cpc", "event_type" => "ad", "referring_domain" => "facebook.com", "marketing_channel" => "social", "paid" => true}) }
       )
-      .to_return(status: 200, body: "{}", headers: {})
+      .to_return(status: 200, body: JSON.generate({"marketing_event" => {"id" => 1065859217, "event_type" => "ad", "remote_id" => nil, "started_at" => "2022-12-15T00:00:00-05:00", "ended_at" => nil, "scheduled_to_end_at" => nil, "budget" => nil, "currency" => nil, "manage_url" => nil, "preview_url" => nil, "utm_campaign" => "Christmas2022", "utm_source" => "facebook", "utm_medium" => "cpc", "budget_type" => nil, "description" => nil, "marketing_channel" => "social", "paid" => true, "referring_domain" => "facebook.com", "breadcrumb_id" => nil, "marketing_activity_id" => 1063897334, "admin_graphql_api_id" => "gid://shopify/MarketingEvent/1065859217", "marketed_resources" => []}}), headers: {})
 
     marketing_event = ShopifyAPI::MarketingEvent.new
     marketing_event.started_at = "2022-12-15"
@@ -75,7 +75,7 @@ class MarketingEvent202107Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: "{}", headers: {})
+      .to_return(status: 200, body: JSON.generate({"count" => 1}), headers: {})
 
     ShopifyAPI::MarketingEvent.count()
 
@@ -91,7 +91,7 @@ class MarketingEvent202107Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: "{}", headers: {})
+      .to_return(status: 200, body: JSON.generate({"marketing_event" => {"id" => 998730532, "event_type" => "post", "remote_id" => "12345678", "started_at" => "2022-01-15T10:56:18-05:00", "ended_at" => nil, "scheduled_to_end_at" => nil, "budget" => "10.11", "currency" => "GBP", "manage_url" => nil, "preview_url" => nil, "utm_campaign" => "1234567890", "utm_source" => "facebook", "utm_medium" => "facebook-post", "budget_type" => "daily", "description" => nil, "marketing_channel" => "social", "paid" => false, "referring_domain" => "facebook.com", "breadcrumb_id" => nil, "marketing_activity_id" => nil, "admin_graphql_api_id" => "gid://shopify/MarketingEvent/998730532", "marketed_resources" => []}}), headers: {})
 
     ShopifyAPI::MarketingEvent.find(
       id: 998730532,
@@ -109,7 +109,7 @@ class MarketingEvent202107Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "marketing_event" => hash_including({"id" => 998730532, "remote_id" => "1000:2000", "started_at" => "2022-02-02T00:00  00:00", "ended_at" => "2022-02-03T00:00  00:00", "scheduled_to_end_at" => "2022-02-04T00:00  00:00", "budget" => "11.1", "budget_type" => "daily", "currency" => "CAD", "utm_campaign" => "other", "utm_source" => "other", "utm_medium" => "other", "event_type" => "ad", "referring_domain" => "instagram.com"}) }
       )
-      .to_return(status: 200, body: "{}", headers: {})
+      .to_return(status: 200, body: JSON.generate({"marketing_event" => {"started_at" => "2022-02-01T19:00:00-05:00", "ended_at" => "2022-02-02T19:00:00-05:00", "scheduled_to_end_at" => "2022-02-03T19:00:00-05:00", "remote_id" => "1000:2000", "currency" => "CAD", "budget" => "11.1", "budget_type" => "daily", "id" => 998730532, "event_type" => "post", "manage_url" => nil, "preview_url" => nil, "utm_campaign" => "1234567890", "utm_source" => "facebook", "utm_medium" => "facebook-post", "description" => nil, "marketing_channel" => "social", "paid" => false, "referring_domain" => "facebook.com", "breadcrumb_id" => nil, "marketing_activity_id" => nil, "admin_graphql_api_id" => "gid://shopify/MarketingEvent/998730532", "marketed_resources" => []}}), headers: {})
 
     marketing_event = ShopifyAPI::MarketingEvent.new
     marketing_event.id = 998730532
@@ -139,7 +139,7 @@ class MarketingEvent202107Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: "{}", headers: {})
+      .to_return(status: 200, body: JSON.generate({}), headers: {})
 
     ShopifyAPI::MarketingEvent.delete(
       id: 998730532,
@@ -157,7 +157,7 @@ class MarketingEvent202107Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: hash_including({"engagements" => [{"occurred_on" => "2022-01-15", "views_count" => 0, "clicks_count" => 0, "favorites_count" => 0, "ad_spend" => 10.0, "is_cumulative" => true}, {"occurred_on" => "2022-01-16", "views_count" => 100, "clicks_count" => 50, "is_cumulative" => true}, {"occurred_on" => "2022-01-17", "views_count" => 200, "clicks_count" => 100, "is_cumulative" => true}]})
       )
-      .to_return(status: 200, body: "{}", headers: {})
+      .to_return(status: 200, body: JSON.generate({"engagements" => [{"occurred_on" => "2022-01-15", "fetched_at" => nil, "views_count" => 0, "impressions_count" => nil, "clicks_count" => 0, "favorites_count" => 0, "comments_count" => nil, "shares_count" => nil, "ad_spend" => "10.0", "currency_code" => nil, "is_cumulative" => true, "unsubscribes_count" => nil, "complaints_count" => nil, "fails_count" => nil, "sends_count" => nil, "unique_views_count" => nil, "unique_clicks_count" => nil, "utc_offset" => nil}, {"occurred_on" => "2022-01-16", "fetched_at" => nil, "views_count" => 100, "impressions_count" => nil, "clicks_count" => 50, "favorites_count" => nil, "comments_count" => nil, "shares_count" => nil, "ad_spend" => nil, "currency_code" => nil, "is_cumulative" => true, "unsubscribes_count" => nil, "complaints_count" => nil, "fails_count" => nil, "sends_count" => nil, "unique_views_count" => nil, "unique_clicks_count" => nil, "utc_offset" => nil}, {"occurred_on" => "2022-01-17", "fetched_at" => nil, "views_count" => 200, "impressions_count" => nil, "clicks_count" => 100, "favorites_count" => nil, "comments_count" => nil, "shares_count" => nil, "ad_spend" => nil, "currency_code" => nil, "is_cumulative" => true, "unsubscribes_count" => nil, "complaints_count" => nil, "fails_count" => nil, "sends_count" => nil, "unique_views_count" => nil, "unique_clicks_count" => nil, "utc_offset" => nil}]}), headers: {})
 
     marketing_event = ShopifyAPI::MarketingEvent.new
     marketing_event.id = 998730532

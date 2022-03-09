@@ -13,15 +13,13 @@ module ShopifyAPI
       super(session: session)
 
       @title = T.let(nil, T.nilable(String))
-      @access_scope = T.let(nil, T.nilable(AccessScope))
+      @access_scope = T.let(nil, T.nilable(String))
       @access_token = T.let(nil, T.nilable(String))
       @created_at = T.let(nil, T.nilable(String))
       @id = T.let(nil, T.nilable(Integer))
     end
 
-    @has_one = T.let({
-      access_scope: AccessScope
-    }, T::Hash[Symbol, Class])
+    @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
     @paths = T.let([
       {http_method: :post, operation: :post, ids: [], path: "storefront_access_tokens.json"},
@@ -31,7 +29,7 @@ module ShopifyAPI
 
     sig { returns(T.nilable(String)) }
     attr_reader :title
-    sig { returns(T.nilable(AccessScope)) }
+    sig { returns(T.nilable(String)) }
     attr_reader :access_scope
     sig { returns(T.nilable(String)) }
     attr_reader :access_token

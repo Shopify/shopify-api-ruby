@@ -16,7 +16,7 @@ module ShopifyAPI
       @address1 = T.let(nil, T.nilable(String))
       @address2 = T.let(nil, T.nilable(String))
       @city = T.let(nil, T.nilable(String))
-      @country = T.let(nil, T.nilable(Country))
+      @country = T.let(nil, T.nilable(String))
       @country_code = T.let(nil, T.nilable(String))
       @created_at = T.let(nil, T.nilable(String))
       @id = T.let(nil, T.nilable(Integer))
@@ -25,16 +25,13 @@ module ShopifyAPI
       @localized_province_name = T.let(nil, T.nilable(String))
       @name = T.let(nil, T.nilable(String))
       @phone = T.let(nil, T.nilable(String))
-      @province = T.let(nil, T.nilable(Province))
+      @province = T.let(nil, T.nilable(String))
       @province_code = T.let(nil, T.nilable(String))
       @updated_at = T.let(nil, T.nilable(String))
       @zip = T.let(nil, T.nilable(String))
     end
 
-    @has_one = T.let({
-      country: Country,
-      province: Province
-    }, T::Hash[Symbol, Class])
+    @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
     @paths = T.let([
       {http_method: :get, operation: :get, ids: [], path: "locations.json"},
@@ -51,7 +48,7 @@ module ShopifyAPI
     attr_reader :address2
     sig { returns(T.nilable(String)) }
     attr_reader :city
-    sig { returns(T.nilable(Country)) }
+    sig { returns(T.nilable(String)) }
     attr_reader :country
     sig { returns(T.nilable(String)) }
     attr_reader :country_code
@@ -69,7 +66,7 @@ module ShopifyAPI
     attr_reader :name
     sig { returns(T.nilable(String)) }
     attr_reader :phone
-    sig { returns(T.nilable(Province)) }
+    sig { returns(T.nilable(String)) }
     attr_reader :province
     sig { returns(T.nilable(String)) }
     attr_reader :province_code

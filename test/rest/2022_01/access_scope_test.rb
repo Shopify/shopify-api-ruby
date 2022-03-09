@@ -34,7 +34,7 @@ class AccessScope202201Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: "{}", headers: {})
+      .to_return(status: 200, body: JSON.generate({"access_scopes" => [{"handle" => "read_products"}, {"handle" => "write_orders"}, {"handle" => "read_orders"}]}), headers: {})
 
     ShopifyAPI::AccessScope.all()
 

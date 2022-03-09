@@ -16,7 +16,7 @@ module ShopifyAPI
       @accepts_marketing_updated_at = T.let(nil, T.nilable(String))
       @addresses = T.let(nil, T.nilable(T::Array[T.untyped]))
       @created_at = T.let(nil, T.nilable(String))
-      @currency = T.let(nil, T.nilable(Currency))
+      @currency = T.let(nil, T.nilable(String))
       @default_address = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
       @email = T.let(nil, T.nilable(String))
       @first_name = T.let(nil, T.nilable(String))
@@ -41,7 +41,6 @@ module ShopifyAPI
     end
 
     @has_one = T.let({
-      currency: Currency,
       metafield: Metafield
     }, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
@@ -51,7 +50,6 @@ module ShopifyAPI
       {http_method: :get, operation: :search, ids: [], path: "customers/search.json"},
       {http_method: :get, operation: :get, ids: [:id], path: "customers/<id>.json"},
       {http_method: :put, operation: :put, ids: [:id], path: "customers/<id>.json"},
-      {http_method: :delete, operation: :delete, ids: [:id], path: "customers/<id>.json"},
       {http_method: :post, operation: :account_activation_url, ids: [:id], path: "customers/<id>/account_activation_url.json"},
       {http_method: :post, operation: :send_invite, ids: [:id], path: "customers/<id>/send_invite.json"},
       {http_method: :get, operation: :count, ids: [], path: "customers/count.json"},
@@ -66,7 +64,7 @@ module ShopifyAPI
     attr_reader :addresses
     sig { returns(T.nilable(String)) }
     attr_reader :created_at
-    sig { returns(T.nilable(Currency)) }
+    sig { returns(T.nilable(String)) }
     attr_reader :currency
     sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :default_address
@@ -130,25 +128,6 @@ module ShopifyAPI
           params: {fields: fields},
         )
         T.cast(result[0], T.nilable(Customer))
-      end
-
-      sig do
-        params(
-          id: T.any(Integer, String),
-          session: Auth::Session
-        ).returns(T.untyped)
-      end
-      def delete(
-        id:,
-        session: ShopifyAPI::Context.active_session
-      )
-        request(
-          http_method: :delete,
-          operation: :delete,
-          session: session,
-          ids: {id: id},
-          params: {},
-        )
       end
 
       sig do

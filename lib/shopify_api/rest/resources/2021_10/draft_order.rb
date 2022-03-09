@@ -16,7 +16,7 @@ module ShopifyAPI
       @billing_address = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
       @completed_at = T.let(nil, T.nilable(String))
       @created_at = T.let(nil, T.nilable(String))
-      @currency = T.let(nil, T.nilable(Currency))
+      @currency = T.let(nil, T.nilable(String))
       @customer = T.let(nil, T.nilable(Customer))
       @email = T.let(nil, T.nilable(String))
       @id = T.let(nil, T.nilable(Integer))
@@ -43,8 +43,7 @@ module ShopifyAPI
     end
 
     @has_one = T.let({
-      customer: Customer,
-      currency: Currency
+      customer: Customer
     }, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
     @paths = T.let([
@@ -66,7 +65,7 @@ module ShopifyAPI
     attr_reader :completed_at
     sig { returns(T.nilable(String)) }
     attr_reader :created_at
-    sig { returns(T.nilable(Currency)) }
+    sig { returns(T.nilable(String)) }
     attr_reader :currency
     sig { returns(T.nilable(Customer)) }
     attr_reader :customer

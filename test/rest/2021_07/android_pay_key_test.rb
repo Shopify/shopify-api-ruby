@@ -34,7 +34,7 @@ class AndroidPayKey202107Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "android_pay_key" => hash_including({}) }
       )
-      .to_return(status: 200, body: "{}", headers: {})
+      .to_return(status: 200, body: JSON.generate({"android_pay_key" => {"id" => 964811899, "public_key" => "BPI5no5liIrAC3knvJnxSoMW09D0KwbJOnv TaAmd3Fur3wYlD85yFaJABZC\n1qb/14GtM 616y8SrKwaVOSu4U8=\n"}}), headers: {})
 
     android_pay_key = ShopifyAPI::AndroidPayKey.new
 
@@ -52,7 +52,7 @@ class AndroidPayKey202107Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: "{}", headers: {})
+      .to_return(status: 200, body: JSON.generate({"android_pay_key" => {"id" => 964811897, "public_key" => "BPI5no5liIrAC3knvJnxSoMW09D0KwbJOnv TaAmd3Fur3wYlD85yFaJABZC\n1qb/14GtM 616y8SrKwaVOSu4U8=\n"}}), headers: {})
 
     ShopifyAPI::AndroidPayKey.find(
       id: 964811897,
@@ -70,7 +70,7 @@ class AndroidPayKey202107Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: "{}", headers: {})
+      .to_return(status: 200, body: JSON.generate({}), headers: {})
 
     ShopifyAPI::AndroidPayKey.delete(
       id: 964811898,
