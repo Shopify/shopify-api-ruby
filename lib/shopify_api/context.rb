@@ -74,6 +74,12 @@ module ShopifyAPI
 
       sig { params(api_version: String).void }
       def load_rest_resources(api_version:)
+        # Unload any previous instances - mostly useful for tests where we need to reset the version
+        @rest_resource_loader&.unload
+
+        # No resources for the unstable version
+        return if api_version == "unstable"
+
         version_folder_name = api_version.gsub("-", "_")
         path = "#{__dir__}/rest/resources/#{version_folder_name}"
 
@@ -85,9 +91,6 @@ module ShopifyAPI
 
           return
         end
-
-        # Unload any previous instances - mostly useful for tests where we need to reset the version
-        @rest_resource_loader&.unload
 
         @rest_resource_loader = T.let(Zeitwerk::Loader.new, T.nilable(Zeitwerk::Loader))
         T.must(@rest_resource_loader).enable_reloading
