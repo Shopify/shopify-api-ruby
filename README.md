@@ -6,7 +6,7 @@
 
 ## A Note About Versions
 
-The latest release of `shopify_api` is v9. The main branch of this repo reflects the upcoming v10 release, which has some major changes. If you’re looking for the documentation / instructions for v9, you can find them [in this branch](https://github.com/Shopify/shopify_api/tree/v9_main).
+The latest release of `shopify_api` is v9. The main branch of this repo reflects the upcoming v10 release, which has some major changes. If you’re looking for the documentation / instructions for v9, you can find them [in this branch](https://github.com/Shopify/shopify_api/tree/v9).
 
 ## v10
 
