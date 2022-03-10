@@ -13,7 +13,7 @@ module ShopifyAPI
           super
           @session = ShopifyAPI::Auth::Session.new(shop: "test-shop.myshopify.com",
             access_token: SecureRandom.alphanumeric(10))
-          @client = ShopifyAPI::Clients::Graphql::Admin.new(@session)
+          @client = ShopifyAPI::Clients::Graphql::Admin.new(session: @session)
           @path = "admin/api"
           @expected_headers = TestHelpers::Constants::DEFAULT_CLIENT_HEADERS.merge({
             "X-Shopify-Access-Token": @session.access_token,

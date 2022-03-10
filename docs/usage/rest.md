@@ -25,7 +25,7 @@ The Rest Admin client offers the 4 core request methods: `get`, `delete`, `post`
 session = ShopifyAPI::Auth::SessionLoader.load_current_session(headers, cookies, is_online)
 
 # Create a new client.
-client = ShopifyAPI::Clients::Rest::Admin.new(session)
+client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
 
 # Use `client.get` to request the specified Shopify REST API endpoint, in this case `products`.
 response = client.get(path: "products")
@@ -41,7 +41,7 @@ some_function(response.body)
 session = ShopifyAPI::Auth::SessionLoader.load_current_session(headers, cookies, is_online)
 
 # Create a new client.
-client = ShopifyAPI::Clients::Rest::Admin.new(session)
+client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
 
 # Build your post request body.
 body = {
@@ -72,7 +72,7 @@ An example of this is shown below:
 
 ```ruby
 session = ShopifyAPI::Auth::SessionLoader.load_current_session(headers, cookies, is_online)
-client = ShopifyAPI::Clients::Rest::Admin.new(session)
+client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
 
 response = client.get(path: "products", query: { limit: 10 })
 
@@ -105,7 +105,7 @@ An example of this is shown below:
 
 ```ruby
 session = ShopifyAPI::Auth::SessionLoader.load_current_session(headers, cookies, is_online)
-client = ShopifyAPI::Clients::Rest::Admin.new(session)
+client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
 
 response = client.get(path: "products", query: { limit: 10 })
 next_page_info = response.next_page_info

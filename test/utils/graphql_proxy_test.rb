@@ -16,11 +16,11 @@ module ShopifyAPITest
         @cookies = { "shopify_app_session" => "id" }
         ShopifyAPI::Context.session_storage.store_session(@session)
 
-        @client = ShopifyAPI::Clients::Graphql::Admin.new(@session)
+        @client = ShopifyAPI::Clients::Graphql::Admin.new(session: @session)
       end
 
       def test_proxy_query_application_json
-        ShopifyAPI::Clients::Graphql::Admin.expects(:new).with(@session).returns(@client)
+        ShopifyAPI::Clients::Graphql::Admin.expects(:new).with(session: @session).returns(@client)
 
         body = JSON.dump({ query: "query string", variables: { foo: :bar } })
 
@@ -34,7 +34,7 @@ module ShopifyAPITest
       end
 
       def test_proxy_query_application_graphql
-        ShopifyAPI::Clients::Graphql::Admin.expects(:new).with(@session).returns(@client)
+        ShopifyAPI::Clients::Graphql::Admin.expects(:new).with(session: @session).returns(@client)
         @client.expects(:query)
           .with(query: "query string", tries: 1)
           .returns(ShopifyAPI::Clients::HttpResponse.new(code: 200, body: "", headers: {}))
