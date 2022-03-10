@@ -29,7 +29,7 @@ module ShopifyAPI
               "Failed to load an online session from the provided parameters."
           end
 
-          client = Clients::Graphql::Admin.new(session)
+          client = Clients::Graphql::Admin.new(session: session)
 
           case normalized_headers["content-type"]
           when "application/graphql"
