@@ -9,7 +9,7 @@ Below is an example
 session = ShopifyAPI::Utils::SessionUtils.load_current_session(auth_header: <auth-header>, cookies: <cookies>, is_online: <true|false>)
 
 # initalize the client
-client = ShopifyAPI::Clients::Graphql::Admin.new(session)
+client = ShopifyAPI::Clients::Graphql::Admin.new(session: session)
 
 # make the GraphQL query string
 query =<<~QUERY
@@ -34,7 +34,7 @@ response = client.query(query: query)
 You can also make GraphQL calls that take in variables
 
 ```ruby
-client = ShopifyAPI::Clients::Graphql::Admin.new(session)
+client = ShopifyAPI::Clients::Graphql::Admin.new(session: session)
 
 query = <<~QUERY
   query testQueryWithVariables($first: Int!){
@@ -61,7 +61,7 @@ response = client.query(data: query, variables: variables)
 Here is an example of how you might use fragments as part of the client
 
 ```ruby
-client = ShopifyAPI::Clients::Graphql::Admin.new(session)
+client = ShopifyAPI::Clients::Graphql::Admin.new(session: session)
 # define the fragment as part of the query
 query = <<~QUERY
   fragment ProductStuff on Product {
