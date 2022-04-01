@@ -45,15 +45,15 @@ module ShopifyAPI
     }, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
     @paths = T.let([
-      {http_method: :get, operation: :get, ids: [], path: "customers.json"},
-      {http_method: :post, operation: :post, ids: [], path: "customers.json"},
-      {http_method: :get, operation: :search, ids: [], path: "customers/search.json"},
-      {http_method: :get, operation: :get, ids: [:id], path: "customers/<id>.json"},
-      {http_method: :put, operation: :put, ids: [:id], path: "customers/<id>.json"},
-      {http_method: :post, operation: :account_activation_url, ids: [:id], path: "customers/<id>/account_activation_url.json"},
-      {http_method: :post, operation: :send_invite, ids: [:id], path: "customers/<id>/send_invite.json"},
       {http_method: :get, operation: :count, ids: [], path: "customers/count.json"},
-      {http_method: :get, operation: :orders, ids: [:id], path: "customers/<id>/orders.json"}
+      {http_method: :get, operation: :get, ids: [], path: "customers.json"},
+      {http_method: :get, operation: :get, ids: [:id], path: "customers/<id>.json"},
+      {http_method: :get, operation: :orders, ids: [:id], path: "customers/<id>/orders.json"},
+      {http_method: :get, operation: :search, ids: [], path: "customers/search.json"},
+      {http_method: :post, operation: :account_activation_url, ids: [:id], path: "customers/<id>/account_activation_url.json"},
+      {http_method: :post, operation: :post, ids: [], path: "customers.json"},
+      {http_method: :post, operation: :send_invite, ids: [:id], path: "customers/<id>/send_invite.json"},
+      {http_method: :put, operation: :put, ids: [:id], path: "customers/<id>.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
     sig { returns(T.nilable(T::Boolean)) }
@@ -167,35 +167,6 @@ module ShopifyAPI
 
       sig do
         params(
-          order: T.untyped,
-          query: T.untyped,
-          limit: T.untyped,
-          fields: T.untyped,
-          session: Auth::Session,
-          kwargs: T.untyped
-        ).returns(T.untyped)
-      end
-      def search(
-        order: nil,
-        query: nil,
-        limit: nil,
-        fields: nil,
-        session: ShopifyAPI::Context.active_session,
-        **kwargs
-      )
-        request(
-          http_method: :get,
-          operation: :search,
-          session: session,
-          ids: {},
-          params: {order: order, query: query, limit: limit, fields: fields}.merge(kwargs).compact,
-          body: {},
-          entity: nil,
-        )
-      end
-
-      sig do
-        params(
           session: Auth::Session,
           kwargs: T.untyped
         ).returns(T.untyped)
@@ -218,12 +189,14 @@ module ShopifyAPI
       sig do
         params(
           id: T.any(Integer, String),
+          status: T.untyped,
           session: Auth::Session,
           kwargs: T.untyped
         ).returns(T.untyped)
       end
       def orders(
         id:,
+        status: nil,
         session: ShopifyAPI::Context.active_session,
         **kwargs
       )
@@ -232,7 +205,36 @@ module ShopifyAPI
           operation: :orders,
           session: session,
           ids: {id: id},
-          params: {}.merge(kwargs).compact,
+          params: {status: status}.merge(kwargs).compact,
+          body: {},
+          entity: nil,
+        )
+      end
+
+      sig do
+        params(
+          order: T.untyped,
+          query: T.untyped,
+          limit: T.untyped,
+          fields: T.untyped,
+          session: Auth::Session,
+          kwargs: T.untyped
+        ).returns(T.untyped)
+      end
+      def search(
+        order: nil,
+        query: nil,
+        limit: nil,
+        fields: nil,
+        session: ShopifyAPI::Context.active_session,
+        **kwargs
+      )
+        request(
+          http_method: :get,
+          operation: :search,
+          session: session,
+          ids: {},
+          params: {order: order, query: query, limit: limit, fields: fields}.merge(kwargs).compact,
           body: {},
           entity: nil,
         )

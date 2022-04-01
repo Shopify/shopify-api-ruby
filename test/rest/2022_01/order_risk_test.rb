@@ -34,7 +34,7 @@ class OrderRisk202201Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "risk" => hash_including({"message" => "This order came from an anonymous proxy", "recommendation" => "cancel", "score" => 1.0, "source" => "External", "cause_cancel" => true, "display" => true}) }
       )
-      .to_return(status: 200, body: JSON.generate({"risk" => {"id" => 700140154, "order_id" => 450789469, "checkout_id" => 901414060, "source" => "External", "score" => "1.0", "recommendation" => "cancel", "display" => true, "cause_cancel" => true, "message" => "This order came from an anonymous proxy", "merchant_message" => "This order came from an anonymous proxy"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"risk" => {"id" => 1029151489, "order_id" => 450789469, "checkout_id" => 901414060, "source" => "External", "score" => "1.0", "recommendation" => "cancel", "display" => true, "cause_cancel" => true, "message" => "This order came from an anonymous proxy", "merchant_message" => "This order came from an anonymous proxy"}}), headers: {})
 
     order_risk = ShopifyAPI::OrderRisk.new
     order_risk.order_id = 450789469
@@ -58,7 +58,7 @@ class OrderRisk202201Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"risks" => [{"id" => 284138680, "order_id" => 450789469, "checkout_id" => nil, "source" => "External", "score" => "1.0", "recommendation" => "cancel", "display" => true, "cause_cancel" => true, "message" => "This order was placed from a proxy IP", "merchant_message" => "This order was placed from a proxy IP"}, {"id" => 700140156, "order_id" => 450789469, "checkout_id" => 901414060, "source" => "External", "score" => "1.0", "recommendation" => "cancel", "display" => true, "cause_cancel" => true, "message" => "This order came from an anonymous proxy", "merchant_message" => "This order came from an anonymous proxy"}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"risks" => [{"id" => 284138680, "order_id" => 450789469, "checkout_id" => nil, "source" => "External", "score" => "1.0", "recommendation" => "cancel", "display" => true, "cause_cancel" => true, "message" => "This order was placed from a proxy IP", "merchant_message" => "This order was placed from a proxy IP"}, {"id" => 1029151491, "order_id" => 450789469, "checkout_id" => 901414060, "source" => "External", "score" => "1.0", "recommendation" => "cancel", "display" => true, "cause_cancel" => true, "message" => "This order came from an anonymous proxy", "merchant_message" => "This order came from an anonymous proxy"}]}), headers: {})
 
     ShopifyAPI::OrderRisk.all(
       order_id: 450789469,

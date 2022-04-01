@@ -64,7 +64,9 @@ module ShopifyAPI
       @refunds = T.let(nil, T.nilable(T::Array[T.untyped]))
       @shipping_address = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
       @shipping_lines = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @source_identifier = T.let(nil, T.nilable(String))
       @source_name = T.let(nil, T.nilable(String))
+      @source_url = T.let(nil, T.nilable(String))
       @subtotal_price = T.let(nil, T.nilable(Float))
       @subtotal_price_set = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
       @tags = T.let(nil, T.nilable(String))
@@ -97,15 +99,15 @@ module ShopifyAPI
       refunds: Refund
     }, T::Hash[Symbol, Class])
     @paths = T.let([
-      {http_method: :get, operation: :get, ids: [], path: "orders.json"},
-      {http_method: :get, operation: :get, ids: [:id], path: "orders/<id>.json"},
-      {http_method: :put, operation: :put, ids: [:id], path: "orders/<id>.json"},
       {http_method: :delete, operation: :delete, ids: [:id], path: "orders/<id>.json"},
       {http_method: :get, operation: :count, ids: [], path: "orders/count.json"},
+      {http_method: :get, operation: :get, ids: [], path: "orders.json"},
+      {http_method: :get, operation: :get, ids: [:id], path: "orders/<id>.json"},
+      {http_method: :post, operation: :cancel, ids: [:id], path: "orders/<id>/cancel.json"},
       {http_method: :post, operation: :close, ids: [:id], path: "orders/<id>/close.json"},
       {http_method: :post, operation: :open, ids: [:id], path: "orders/<id>/open.json"},
-      {http_method: :post, operation: :cancel, ids: [:id], path: "orders/<id>/cancel.json"},
-      {http_method: :post, operation: :post, ids: [], path: "orders.json"}
+      {http_method: :post, operation: :post, ids: [], path: "orders.json"},
+      {http_method: :put, operation: :put, ids: [:id], path: "orders/<id>.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
     sig { returns(T.nilable(T::Array[T::Hash[T.untyped, T.untyped]])) }
@@ -213,7 +215,11 @@ module ShopifyAPI
     sig { returns(T.nilable(T::Array[T::Hash[T.untyped, T.untyped]])) }
     attr_reader :shipping_lines
     sig { returns(T.nilable(String)) }
+    attr_reader :source_identifier
+    sig { returns(T.nilable(String)) }
     attr_reader :source_name
+    sig { returns(T.nilable(String)) }
+    attr_reader :source_url
     sig { returns(T.nilable(Float)) }
     attr_reader :subtotal_price
     sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
@@ -383,6 +389,39 @@ module ShopifyAPI
 
     sig do
       params(
+        amount: T.untyped,
+        currency: T.untyped,
+        restock: T.untyped,
+        reason: T.untyped,
+        email: T.untyped,
+        refund: T.untyped,
+        body: T.untyped,
+        kwargs: T.untyped
+      ).returns(T.untyped)
+    end
+    def cancel(
+      amount: nil,
+      currency: nil,
+      restock: nil,
+      reason: nil,
+      email: nil,
+      refund: nil,
+      body: nil,
+      **kwargs
+    )
+      self.class.request(
+        http_method: :post,
+        operation: :cancel,
+        session: @session,
+        ids: {id: @id},
+        params: {amount: amount, currency: currency, restock: restock, reason: reason, email: email, refund: refund}.merge(kwargs).compact,
+        body: body,
+        entity: self,
+      )
+    end
+
+    sig do
+      params(
         body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
@@ -418,39 +457,6 @@ module ShopifyAPI
         session: @session,
         ids: {id: @id},
         params: {}.merge(kwargs).compact,
-        body: body,
-        entity: self,
-      )
-    end
-
-    sig do
-      params(
-        amount: T.untyped,
-        currency: T.untyped,
-        restock: T.untyped,
-        reason: T.untyped,
-        email: T.untyped,
-        refund: T.untyped,
-        body: T.untyped,
-        kwargs: T.untyped
-      ).returns(T.untyped)
-    end
-    def cancel(
-      amount: nil,
-      currency: nil,
-      restock: nil,
-      reason: nil,
-      email: nil,
-      refund: nil,
-      body: nil,
-      **kwargs
-    )
-      self.class.request(
-        http_method: :post,
-        operation: :cancel,
-        session: @session,
-        ids: {id: @id},
-        params: {amount: amount, currency: currency, restock: restock, reason: reason, email: email, refund: refund}.merge(kwargs).compact,
         body: body,
         entity: self,
       )

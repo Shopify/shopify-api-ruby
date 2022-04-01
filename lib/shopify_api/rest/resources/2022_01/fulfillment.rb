@@ -34,18 +34,11 @@ module ShopifyAPI
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
     @paths = T.let([
-      {http_method: :get, operation: :get, ids: [:order_id], path: "orders/<order_id>/fulfillments.json"},
-      {http_method: :post, operation: :post, ids: [:order_id], path: "orders/<order_id>/fulfillments.json"},
-      {http_method: :get, operation: :get, ids: [:fulfillment_order_id], path: "fulfillment_orders/<fulfillment_order_id>/fulfillments.json"},
       {http_method: :get, operation: :count, ids: [:order_id], path: "orders/<order_id>/fulfillments/count.json"},
+      {http_method: :get, operation: :get, ids: [:fulfillment_order_id], path: "fulfillment_orders/<fulfillment_order_id>/fulfillments.json"},
+      {http_method: :get, operation: :get, ids: [:order_id], path: "orders/<order_id>/fulfillments.json"},
       {http_method: :get, operation: :get, ids: [:order_id, :id], path: "orders/<order_id>/fulfillments/<id>.json"},
-      {http_method: :put, operation: :put, ids: [:order_id, :id], path: "orders/<order_id>/fulfillments/<id>.json"},
-      {http_method: :post, operation: :post, ids: [], path: "fulfillments.json"},
-      {http_method: :post, operation: :update_tracking, ids: [:id], path: "fulfillments/<id>/update_tracking.json"},
-      {http_method: :post, operation: :complete, ids: [:order_id, :id], path: "orders/<order_id>/fulfillments/<id>/complete.json"},
-      {http_method: :post, operation: :open, ids: [:order_id, :id], path: "orders/<order_id>/fulfillments/<id>/open.json"},
-      {http_method: :post, operation: :cancel, ids: [:order_id, :id], path: "orders/<order_id>/fulfillments/<id>/cancel.json"},
-      {http_method: :post, operation: :cancel, ids: [:id], path: "fulfillments/<id>/cancel.json"}
+      {http_method: :post, operation: :update_tracking, ids: [:id], path: "fulfillments/<id>/update_tracking.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
     sig { returns(T.nilable(String)) }
@@ -108,8 +101,8 @@ module ShopifyAPI
 
       sig do
         params(
-          order_id: T.nilable(T.any(Integer, String)),
           fulfillment_order_id: T.nilable(T.any(Integer, String)),
+          order_id: T.nilable(T.any(Integer, String)),
           created_at_max: T.untyped,
           created_at_min: T.untyped,
           fields: T.untyped,
@@ -122,8 +115,8 @@ module ShopifyAPI
         ).returns(T::Array[Fulfillment])
       end
       def all(
-        order_id: nil,
         fulfillment_order_id: nil,
+        order_id: nil,
         created_at_max: nil,
         created_at_min: nil,
         fields: nil,
@@ -136,7 +129,7 @@ module ShopifyAPI
       )
         response = base_find(
           session: session,
-          ids: {order_id: order_id, fulfillment_order_id: fulfillment_order_id},
+          ids: {fulfillment_order_id: fulfillment_order_id, order_id: order_id},
           params: {created_at_max: created_at_max, created_at_min: created_at_min, fields: fields, limit: limit, since_id: since_id, updated_at_max: updated_at_max, updated_at_min: updated_at_min}.merge(kwargs).compact,
         )
 
@@ -191,69 +184,6 @@ module ShopifyAPI
         operation: :update_tracking,
         session: @session,
         ids: {id: @id},
-        params: {}.merge(kwargs).compact,
-        body: body,
-        entity: self,
-      )
-    end
-
-    sig do
-      params(
-        body: T.untyped,
-        kwargs: T.untyped
-      ).returns(T.untyped)
-    end
-    def complete(
-      body: nil,
-      **kwargs
-    )
-      self.class.request(
-        http_method: :post,
-        operation: :complete,
-        session: @session,
-        ids: {id: @id, order_id: @order_id},
-        params: {}.merge(kwargs).compact,
-        body: body,
-        entity: self,
-      )
-    end
-
-    sig do
-      params(
-        body: T.untyped,
-        kwargs: T.untyped
-      ).returns(T.untyped)
-    end
-    def open(
-      body: nil,
-      **kwargs
-    )
-      self.class.request(
-        http_method: :post,
-        operation: :open,
-        session: @session,
-        ids: {id: @id, order_id: @order_id},
-        params: {}.merge(kwargs).compact,
-        body: body,
-        entity: self,
-      )
-    end
-
-    sig do
-      params(
-        body: T.untyped,
-        kwargs: T.untyped
-      ).returns(T.untyped)
-    end
-    def cancel(
-      body: nil,
-      **kwargs
-    )
-      self.class.request(
-        http_method: :post,
-        operation: :cancel,
-        session: @session,
-        ids: {id: @id, order_id: @order_id},
         params: {}.merge(kwargs).compact,
         body: body,
         entity: self,

@@ -26,12 +26,12 @@ module ShopifyAPI
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
     @paths = T.let([
-      {http_method: :get, operation: :get, ids: [:product_id], path: "products/<product_id>/images.json"},
-      {http_method: :post, operation: :post, ids: [:product_id], path: "products/<product_id>/images.json"},
+      {http_method: :delete, operation: :delete, ids: [:product_id, :id], path: "products/<product_id>/images/<id>.json"},
       {http_method: :get, operation: :count, ids: [:product_id], path: "products/<product_id>/images/count.json"},
+      {http_method: :get, operation: :get, ids: [:product_id], path: "products/<product_id>/images.json"},
       {http_method: :get, operation: :get, ids: [:product_id, :id], path: "products/<product_id>/images/<id>.json"},
-      {http_method: :put, operation: :put, ids: [:product_id, :id], path: "products/<product_id>/images/<id>.json"},
-      {http_method: :delete, operation: :delete, ids: [:product_id, :id], path: "products/<product_id>/images/<id>.json"}
+      {http_method: :post, operation: :post, ids: [:product_id], path: "products/<product_id>/images.json"},
+      {http_method: :put, operation: :put, ids: [:product_id, :id], path: "products/<product_id>/images/<id>.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
     sig { returns(T.nilable(String)) }

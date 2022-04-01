@@ -33,12 +33,12 @@ module ShopifyAPI
       variants: Variant
     }, T::Hash[Symbol, Class])
     @paths = T.let([
-      {http_method: :get, operation: :get, ids: [], path: "product_listings.json"},
-      {http_method: :get, operation: :product_ids, ids: [], path: "product_listings/product_ids.json"},
+      {http_method: :delete, operation: :delete, ids: [:product_id], path: "product_listings/<product_id>.json"},
       {http_method: :get, operation: :count, ids: [], path: "product_listings/count.json"},
+      {http_method: :get, operation: :get, ids: [], path: "product_listings.json"},
       {http_method: :get, operation: :get, ids: [:product_id], path: "product_listings/<product_id>.json"},
-      {http_method: :put, operation: :put, ids: [:product_id], path: "product_listings/<product_id>.json"},
-      {http_method: :delete, operation: :delete, ids: [:product_id], path: "product_listings/<product_id>.json"}
+      {http_method: :get, operation: :product_ids, ids: [], path: "product_listings/product_ids.json"},
+      {http_method: :put, operation: :put, ids: [:product_id], path: "product_listings/<product_id>.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
     sig { returns(T.nilable(String)) }
@@ -144,6 +144,27 @@ module ShopifyAPI
 
       sig do
         params(
+          session: Auth::Session,
+          kwargs: T.untyped
+        ).returns(T.untyped)
+      end
+      def count(
+        session: ShopifyAPI::Context.active_session,
+        **kwargs
+      )
+        request(
+          http_method: :get,
+          operation: :count,
+          session: session,
+          ids: {},
+          params: {}.merge(kwargs).compact,
+          body: {},
+          entity: nil,
+        )
+      end
+
+      sig do
+        params(
           limit: T.untyped,
           session: Auth::Session,
           kwargs: T.untyped
@@ -160,27 +181,6 @@ module ShopifyAPI
           session: session,
           ids: {},
           params: {limit: limit}.merge(kwargs).compact,
-          body: {},
-          entity: nil,
-        )
-      end
-
-      sig do
-        params(
-          session: Auth::Session,
-          kwargs: T.untyped
-        ).returns(T.untyped)
-      end
-      def count(
-        session: ShopifyAPI::Context.active_session,
-        **kwargs
-      )
-        request(
-          http_method: :get,
-          operation: :count,
-          session: session,
-          ids: {},
-          params: {}.merge(kwargs).compact,
           body: {},
           entity: nil,
         )

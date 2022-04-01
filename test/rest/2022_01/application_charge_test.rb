@@ -34,7 +34,7 @@ class ApplicationCharge202201Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "application_charge" => hash_including({"name" => "Super Duper Expensive action", "price" => 100.0, "return_url" => "http://super-duper.shopifyapps.com"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"application_charge" => {"id" => 1017262365, "name" => "Super Duper Expensive action", "api_client_id" => 755357713, "price" => "100.00", "status" => "pending", "return_url" => "http://super-duper.shopifyapps.com/", "test" => nil, "created_at" => "2022-02-03T17:00:37-05:00", "updated_at" => "2022-02-03T17:00:37-05:00", "charge_type" => nil, "decorated_return_url" => "http://super-duper.shopifyapps.com/?charge_id=1017262365", "confirmation_url" => "https://jsmith.myshopify.com/admin/charges/1017262365/confirm_application_charge?signature=BAh7BzoHaWRpBB0xojw6EmF1dG9fYWN0aXZhdGVU--c65c9a4c3e9f9c78448bd1e8c3cab9a0ac240c86"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"application_charge" => {"id" => 1017262353, "name" => "Super Duper Expensive action", "api_client_id" => 755357713, "price" => "100.00", "status" => "pending", "return_url" => "http://super-duper.shopifyapps.com/", "test" => nil, "created_at" => "2022-03-30T19:48:10-04:00", "updated_at" => "2022-03-30T19:48:10-04:00", "charge_type" => nil, "decorated_return_url" => "http://super-duper.shopifyapps.com/?charge_id=1017262353", "confirmation_url" => "https://jsmith.myshopify.com/admin/charges/755357713/1017262353/ApplicationCharge/confirm_application_charge?signature=BAh7BzoHaWRpBBExojw6EmF1dG9fYWN0aXZhdGVU--4b989186f161ec69921210da6f5d98191710e2c7"}}), headers: {})
 
     application_charge = ShopifyAPI::ApplicationCharge.new
     application_charge.name = "Super Duper Expensive action"
@@ -54,7 +54,7 @@ class ApplicationCharge202201Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "application_charge" => hash_including({"name" => "Super Duper Expensive action", "price" => 100.0, "return_url" => "http://super-duper.shopifyapps.com", "test" => true}) }
       )
-      .to_return(status: 200, body: JSON.generate({"application_charge" => {"id" => 1017262366, "name" => "Super Duper Expensive action", "api_client_id" => 755357713, "price" => "100.00", "status" => "pending", "return_url" => "http://super-duper.shopifyapps.com/", "test" => true, "created_at" => "2022-02-03T17:00:39-05:00", "updated_at" => "2022-02-03T17:00:39-05:00", "charge_type" => nil, "decorated_return_url" => "http://super-duper.shopifyapps.com/?charge_id=1017262366", "confirmation_url" => "https://jsmith.myshopify.com/admin/charges/1017262366/confirm_application_charge?signature=BAh7BzoHaWRpBB4xojw6EmF1dG9fYWN0aXZhdGVU--ef747ae7283a52e94e47a4b0b3140e348319fe94"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"application_charge" => {"id" => 1017262354, "name" => "Super Duper Expensive action", "api_client_id" => 755357713, "price" => "100.00", "status" => "pending", "return_url" => "http://super-duper.shopifyapps.com/", "test" => true, "created_at" => "2022-03-30T19:48:11-04:00", "updated_at" => "2022-03-30T19:48:11-04:00", "charge_type" => nil, "decorated_return_url" => "http://super-duper.shopifyapps.com/?charge_id=1017262354", "confirmation_url" => "https://jsmith.myshopify.com/admin/charges/755357713/1017262354/ApplicationCharge/confirm_application_charge?signature=BAh7BzoHaWRpBBIxojw6EmF1dG9fYWN0aXZhdGVU--1b6f3b667f231b2159e83d75cd915aa748643be5"}}), headers: {})
 
     application_charge = ShopifyAPI::ApplicationCharge.new
     application_charge.name = "Super Duper Expensive action"
@@ -70,18 +70,16 @@ class ApplicationCharge202201Test < Test::Unit::TestCase
     void
   end
   def test_3()
-    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-01/application_charges/675931192.json")
+    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-01/application_charges.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"application_charge" => {"id" => 675931192, "name" => "iPod Cleaning", "api_client_id" => 755357713, "price" => "5.00", "status" => "accepted", "return_url" => "http://google.com", "test" => nil, "created_at" => "2022-02-03T16:53:36-05:00", "updated_at" => "2022-02-03T16:53:36-05:00", "charge_type" => nil, "decorated_return_url" => "http://google.com?charge_id=675931192"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"application_charges" => [{"id" => 1017262346, "name" => "Create me a logo", "api_client_id" => 755357713, "price" => "123.00", "status" => "accepted", "return_url" => "http://google.com", "test" => nil, "created_at" => "2022-03-30T19:40:01-04:00", "updated_at" => "2022-03-30T19:40:01-04:00", "charge_type" => "brokered_service", "decorated_return_url" => "http://google.com?charge_id=1017262346"}, {"id" => 556467234, "name" => "Green theme", "api_client_id" => 755357713, "price" => "120.00", "status" => "accepted", "return_url" => "http://google.com", "test" => nil, "created_at" => "2022-03-30T19:40:01-04:00", "updated_at" => "2022-03-30T19:40:01-04:00", "charge_type" => "theme", "decorated_return_url" => "http://google.com?charge_id=556467234"}, {"id" => 675931192, "name" => "iPod Cleaning", "api_client_id" => 755357713, "price" => "5.00", "status" => "accepted", "return_url" => "http://google.com", "test" => nil, "created_at" => "2022-03-30T19:40:01-04:00", "updated_at" => "2022-03-30T19:40:01-04:00", "charge_type" => nil, "decorated_return_url" => "http://google.com?charge_id=675931192"}]}), headers: {})
 
-    ShopifyAPI::ApplicationCharge.find(
-      id: 675931192,
-    )
+    ShopifyAPI::ApplicationCharge.all()
 
-    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-01/application_charges/675931192.json")
+    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-01/application_charges.json")
   end
 
   sig do
@@ -93,7 +91,7 @@ class ApplicationCharge202201Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"application_charges" => [{"id" => 675931192, "name" => "iPod Cleaning", "api_client_id" => 755357713, "price" => "5.00", "status" => "accepted", "return_url" => "http://google.com", "test" => nil, "created_at" => "2022-02-03T16:53:36-05:00", "updated_at" => "2022-02-03T16:53:36-05:00", "charge_type" => nil, "decorated_return_url" => "http://google.com?charge_id=675931192"}, {"id" => 1017262346, "name" => "Create me a logo", "api_client_id" => 755357713, "price" => "123.00", "status" => "accepted", "return_url" => "http://google.com", "test" => nil, "created_at" => "2022-02-03T16:53:36-05:00", "updated_at" => "2022-02-03T16:53:36-05:00", "charge_type" => "brokered_service", "decorated_return_url" => "http://google.com?charge_id=1017262346"}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"application_charges" => [{"id" => 675931192, "name" => "iPod Cleaning", "api_client_id" => 755357713, "price" => "5.00", "status" => "accepted", "return_url" => "http://google.com", "test" => nil, "created_at" => "2022-03-30T19:40:01-04:00", "updated_at" => "2022-03-30T19:40:01-04:00", "charge_type" => nil, "decorated_return_url" => "http://google.com?charge_id=675931192"}, {"id" => 1017262346, "name" => "Create me a logo", "api_client_id" => 755357713, "price" => "123.00", "status" => "accepted", "return_url" => "http://google.com", "test" => nil, "created_at" => "2022-03-30T19:40:01-04:00", "updated_at" => "2022-03-30T19:40:01-04:00", "charge_type" => "brokered_service", "decorated_return_url" => "http://google.com?charge_id=1017262346"}]}), headers: {})
 
     ShopifyAPI::ApplicationCharge.all(
       since_id: "556467234",
@@ -106,16 +104,18 @@ class ApplicationCharge202201Test < Test::Unit::TestCase
     void
   end
   def test_5()
-    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-01/application_charges.json")
+    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-01/application_charges/675931192.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"application_charges" => [{"id" => 1017262346, "name" => "Create me a logo", "api_client_id" => 755357713, "price" => "123.00", "status" => "accepted", "return_url" => "http://google.com", "test" => nil, "created_at" => "2022-02-03T16:53:36-05:00", "updated_at" => "2022-02-03T16:53:36-05:00", "charge_type" => "brokered_service", "decorated_return_url" => "http://google.com?charge_id=1017262346"}, {"id" => 556467234, "name" => "Green theme", "api_client_id" => 755357713, "price" => "120.00", "status" => "accepted", "return_url" => "http://google.com", "test" => nil, "created_at" => "2022-02-03T16:53:36-05:00", "updated_at" => "2022-02-03T16:53:36-05:00", "charge_type" => "theme", "decorated_return_url" => "http://google.com?charge_id=556467234"}, {"id" => 675931192, "name" => "iPod Cleaning", "api_client_id" => 755357713, "price" => "5.00", "status" => "accepted", "return_url" => "http://google.com", "test" => nil, "created_at" => "2022-02-03T16:53:36-05:00", "updated_at" => "2022-02-03T16:53:36-05:00", "charge_type" => nil, "decorated_return_url" => "http://google.com?charge_id=675931192"}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"application_charge" => {"id" => 675931192, "name" => "iPod Cleaning", "api_client_id" => 755357713, "price" => "5.00", "status" => "accepted", "return_url" => "http://google.com", "test" => nil, "created_at" => "2022-03-30T19:40:01-04:00", "updated_at" => "2022-03-30T19:40:01-04:00", "charge_type" => nil, "decorated_return_url" => "http://google.com?charge_id=675931192"}}), headers: {})
 
-    ShopifyAPI::ApplicationCharge.all()
+    ShopifyAPI::ApplicationCharge.find(
+      id: 675931192,
+    )
 
-    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-01/application_charges.json")
+    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-01/application_charges/675931192.json")
   end
 
 end

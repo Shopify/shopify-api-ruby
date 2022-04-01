@@ -27,10 +27,10 @@ module ShopifyAPI
     }, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
     @paths = T.let([
-      {http_method: :post, operation: :post, ids: [:checkout_id], path: "checkouts/<checkout_id>/payments.json"},
+      {http_method: :get, operation: :count, ids: [:checkout_id], path: "checkouts/<checkout_id>/payments/count.json"},
       {http_method: :get, operation: :get, ids: [:checkout_id], path: "checkouts/<checkout_id>/payments.json"},
       {http_method: :get, operation: :get, ids: [:checkout_id, :id], path: "checkouts/<checkout_id>/payments/<id>.json"},
-      {http_method: :get, operation: :count, ids: [:checkout_id], path: "checkouts/<checkout_id>/payments/count.json"}
+      {http_method: :post, operation: :post, ids: [:checkout_id], path: "checkouts/<checkout_id>/payments.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
     sig { returns(T.nilable(Checkout)) }

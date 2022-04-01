@@ -71,7 +71,7 @@ class CustomerAddress202201Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "address" => hash_including({"address1" => "1 Rue des Carrieres", "address2" => "Suite 1234", "city" => "Montreal", "company" => "Fancy Co.", "first_name" => "Samuel", "last_name" => "de Champlain", "phone" => "819-555-5555", "province" => "Quebec", "country" => "Canada", "zip" => "G1R 4P5", "name" => "Samuel de Champlain", "province_code" => "QC", "country_code" => "CA", "country_name" => "Canada"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"customer_address" => {"id" => 1053317334, "customer_id" => 207119551, "first_name" => "Samuel", "last_name" => "de Champlain", "company" => "Fancy Co.", "address1" => "1 Rue des Carrieres", "address2" => "Suite 1234", "city" => "Montreal", "province" => "Quebec", "country" => "Canada", "zip" => "G1R 4P5", "phone" => "819-555-5555", "name" => "Samuel de Champlain", "province_code" => "QC", "country_code" => "CA", "country_name" => "Canada", "default" => false}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"customer_address" => {"id" => 1053317287, "customer_id" => 207119551, "first_name" => "Samuel", "last_name" => "de Champlain", "company" => "Fancy Co.", "address1" => "1 Rue des Carrieres", "address2" => "Suite 1234", "city" => "Montreal", "province" => "Quebec", "country" => "Canada", "zip" => "G1R 4P5", "phone" => "819-555-5555", "name" => "Samuel de Champlain", "province_code" => "QC", "country_code" => "CA", "country_name" => "Canada", "default" => false}}), headers: {})
 
     customer_address = ShopifyAPI::CustomerAddress.new
     customer_address.customer_id = 207119551
@@ -137,7 +137,7 @@ class CustomerAddress202201Test < Test::Unit::TestCase
     void
   end
   def test_6()
-    stub_request(:delete, "https://test-shop.myshopify.io/admin/api/2022-01/customers/207119551/addresses/1053317335.json")
+    stub_request(:delete, "https://test-shop.myshopify.io/admin/api/2022-01/customers/207119551/addresses/1053317288.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
@@ -146,17 +146,17 @@ class CustomerAddress202201Test < Test::Unit::TestCase
 
     ShopifyAPI::CustomerAddress.delete(
       customer_id: 207119551,
-      id: 1053317335,
+      id: 1053317288,
     )
 
-    assert_requested(:delete, "https://test-shop.myshopify.io/admin/api/2022-01/customers/207119551/addresses/1053317335.json")
+    assert_requested(:delete, "https://test-shop.myshopify.io/admin/api/2022-01/customers/207119551/addresses/1053317288.json")
   end
 
   sig do
     void
   end
   def test_7()
-    stub_request(:put, "https://test-shop.myshopify.io/admin/api/2022-01/customers/207119551/addresses/set.json?address_ids%5B%5D=1053317336&operation=destroy")
+    stub_request(:put, "https://test-shop.myshopify.io/admin/api/2022-01/customers/207119551/addresses/set.json?address_ids%5B%5D=1053317289&operation=destroy")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: {}
@@ -166,30 +166,30 @@ class CustomerAddress202201Test < Test::Unit::TestCase
     customer_address = ShopifyAPI::CustomerAddress.new
     customer_address.customer_id = 207119551
     customer_address.set(
-      address_ids: ["1053317336"],
+      address_ids: ["1053317289"],
       operation: "destroy",
     )
 
-    assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2022-01/customers/207119551/addresses/set.json?address_ids%5B%5D=1053317336&operation=destroy")
+    assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2022-01/customers/207119551/addresses/set.json?address_ids%5B%5D=1053317289&operation=destroy")
   end
 
   sig do
     void
   end
   def test_8()
-    stub_request(:put, "https://test-shop.myshopify.io/admin/api/2022-01/customers/207119551/addresses/1053317337/default.json")
+    stub_request(:put, "https://test-shop.myshopify.io/admin/api/2022-01/customers/207119551/addresses/1053317290/default.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"customer_address" => {"id" => 1053317337, "customer_id" => 207119551, "first_name" => "Bob", "last_name" => "Norman", "company" => nil, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "province" => "Kentucky", "country" => "United States", "zip" => "40202", "phone" => "555-625-1199", "name" => "Bob Norman", "province_code" => "KY", "country_code" => "US", "country_name" => "United States", "default" => true}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"customer_address" => {"id" => 1053317290, "customer_id" => 207119551, "first_name" => "Bob", "last_name" => "Norman", "company" => nil, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "province" => "Kentucky", "country" => "United States", "zip" => "40202", "phone" => "555-625-1199", "name" => "Bob Norman", "province_code" => "KY", "country_code" => "US", "country_name" => "United States", "default" => true}}), headers: {})
 
     customer_address = ShopifyAPI::CustomerAddress.new
     customer_address.customer_id = 207119551
-    customer_address.id = 1053317337
+    customer_address.id = 1053317290
     customer_address.default()
 
-    assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2022-01/customers/207119551/addresses/1053317337/default.json")
+    assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2022-01/customers/207119551/addresses/1053317290/default.json")
   end
 
 end

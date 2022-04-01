@@ -26,8 +26,8 @@ module ShopifyAPI
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
     @paths = T.let([
-      {http_method: :get, operation: :get, ids: [:country_id], path: "countries/<country_id>/provinces.json"},
       {http_method: :get, operation: :count, ids: [:country_id], path: "countries/<country_id>/provinces/count.json"},
+      {http_method: :get, operation: :get, ids: [:country_id], path: "countries/<country_id>/provinces.json"},
       {http_method: :get, operation: :get, ids: [:country_id, :id], path: "countries/<country_id>/provinces/<id>.json"},
       {http_method: :put, operation: :put, ids: [:country_id, :id], path: "countries/<country_id>/provinces/<id>.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])

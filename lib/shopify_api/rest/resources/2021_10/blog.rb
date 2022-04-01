@@ -31,12 +31,12 @@ module ShopifyAPI
       metafields: Metafield
     }, T::Hash[Symbol, Class])
     @paths = T.let([
-      {http_method: :get, operation: :get, ids: [], path: "blogs.json"},
-      {http_method: :post, operation: :post, ids: [], path: "blogs.json"},
+      {http_method: :delete, operation: :delete, ids: [:id], path: "blogs/<id>.json"},
       {http_method: :get, operation: :count, ids: [], path: "blogs/count.json"},
+      {http_method: :get, operation: :get, ids: [], path: "blogs.json"},
       {http_method: :get, operation: :get, ids: [:id], path: "blogs/<id>.json"},
-      {http_method: :put, operation: :put, ids: [:id], path: "blogs/<id>.json"},
-      {http_method: :delete, operation: :delete, ids: [:id], path: "blogs/<id>.json"}
+      {http_method: :post, operation: :post, ids: [], path: "blogs.json"},
+      {http_method: :put, operation: :put, ids: [:id], path: "blogs/<id>.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
     sig { returns(T.nilable(String)) }

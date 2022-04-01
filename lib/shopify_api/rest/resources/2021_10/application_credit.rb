@@ -21,9 +21,9 @@ module ShopifyAPI
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
     @paths = T.let([
-      {http_method: :post, operation: :post, ids: [], path: "application_credits.json"},
       {http_method: :get, operation: :get, ids: [], path: "application_credits.json"},
-      {http_method: :get, operation: :get, ids: [:id], path: "application_credits/<id>.json"}
+      {http_method: :get, operation: :get, ids: [:id], path: "application_credits/<id>.json"},
+      {http_method: :post, operation: :post, ids: [], path: "application_credits.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
     sig { returns(T.nilable(Integer)) }

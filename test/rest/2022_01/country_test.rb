@@ -68,7 +68,7 @@ class Country202201Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "country" => hash_including({"code" => "FR"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"country" => {"id" => 1070231513, "name" => "France", "code" => "FR", "tax_name" => "TVA", "tax" => 0.2, "provinces" => []}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"country" => {"id" => 1070231511, "name" => "France", "code" => "FR", "tax_name" => "TVA", "tax" => 0.2, "provinces" => []}}), headers: {})
 
     country = ShopifyAPI::Country.new
     country.code = "FR"
@@ -86,7 +86,7 @@ class Country202201Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "country" => hash_including({"code" => "FR", "tax" => 0.2}) }
       )
-      .to_return(status: 200, body: JSON.generate({"country" => {"id" => 1070231514, "name" => "France", "code" => "FR", "tax_name" => "TVA", "tax" => 0.2, "provinces" => []}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"country" => {"id" => 1070231512, "name" => "France", "code" => "FR", "tax_name" => "TVA", "tax" => 0.2, "provinces" => []}}), headers: {})
 
     country = ShopifyAPI::Country.new
     country.code = "FR"
