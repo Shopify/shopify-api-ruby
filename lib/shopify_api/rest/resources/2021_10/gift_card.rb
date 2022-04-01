@@ -34,13 +34,13 @@ module ShopifyAPI
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
     @paths = T.let([
-      {http_method: :get, operation: :get, ids: [], path: "gift_cards.json"},
-      {http_method: :post, operation: :post, ids: [], path: "gift_cards.json"},
-      {http_method: :get, operation: :get, ids: [:id], path: "gift_cards/<id>.json"},
-      {http_method: :put, operation: :put, ids: [:id], path: "gift_cards/<id>.json"},
       {http_method: :get, operation: :count, ids: [], path: "gift_cards/count.json"},
+      {http_method: :get, operation: :get, ids: [], path: "gift_cards.json"},
+      {http_method: :get, operation: :get, ids: [:id], path: "gift_cards/<id>.json"},
+      {http_method: :get, operation: :search, ids: [], path: "gift_cards/search.json"},
       {http_method: :post, operation: :disable, ids: [:id], path: "gift_cards/<id>/disable.json"},
-      {http_method: :get, operation: :search, ids: [], path: "gift_cards/search.json"}
+      {http_method: :post, operation: :post, ids: [], path: "gift_cards.json"},
+      {http_method: :put, operation: :put, ids: [:id], path: "gift_cards/<id>.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
     sig { returns(T.nilable(Integer)) }

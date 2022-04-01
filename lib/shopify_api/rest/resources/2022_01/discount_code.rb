@@ -23,16 +23,16 @@ module ShopifyAPI
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
     @paths = T.let([
-      {http_method: :post, operation: :post, ids: [:price_rule_id], path: "price_rules/<price_rule_id>/discount_codes.json"},
-      {http_method: :get, operation: :get, ids: [:price_rule_id], path: "price_rules/<price_rule_id>/discount_codes.json"},
-      {http_method: :put, operation: :put, ids: [:price_rule_id, :id], path: "price_rules/<price_rule_id>/discount_codes/<id>.json"},
-      {http_method: :get, operation: :get, ids: [:price_rule_id, :id], path: "price_rules/<price_rule_id>/discount_codes/<id>.json"},
       {http_method: :delete, operation: :delete, ids: [:price_rule_id, :id], path: "price_rules/<price_rule_id>/discount_codes/<id>.json"},
-      {http_method: :get, operation: :lookup, ids: [], path: "discount_codes/lookup.json"},
       {http_method: :get, operation: :count, ids: [], path: "discount_codes/count.json"},
-      {http_method: :post, operation: :batch, ids: [:price_rule_id], path: "price_rules/<price_rule_id>/batch.json"},
+      {http_method: :get, operation: :get, ids: [:price_rule_id, :batch_id], path: "price_rules/<price_rule_id>/batch/<batch_id>/discount_codes.json"},
+      {http_method: :get, operation: :get, ids: [:price_rule_id], path: "price_rules/<price_rule_id>/discount_codes.json"},
+      {http_method: :get, operation: :get, ids: [:price_rule_id, :id], path: "price_rules/<price_rule_id>/discount_codes/<id>.json"},
       {http_method: :get, operation: :get_all, ids: [:price_rule_id, :batch_id], path: "price_rules/<price_rule_id>/batch/<batch_id>.json"},
-      {http_method: :get, operation: :get, ids: [:price_rule_id, :batch_id], path: "price_rules/<price_rule_id>/batch/<batch_id>/discount_codes.json"}
+      {http_method: :get, operation: :lookup, ids: [], path: "discount_codes/lookup.json"},
+      {http_method: :post, operation: :batch, ids: [:price_rule_id], path: "price_rules/<price_rule_id>/batch.json"},
+      {http_method: :post, operation: :post, ids: [:price_rule_id], path: "price_rules/<price_rule_id>/discount_codes.json"},
+      {http_method: :put, operation: :put, ids: [:price_rule_id, :id], path: "price_rules/<price_rule_id>/discount_codes/<id>.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
     sig { returns(T.nilable(String)) }
@@ -115,29 +115,6 @@ module ShopifyAPI
 
       sig do
         params(
-          code: T.untyped,
-          session: Auth::Session,
-          kwargs: T.untyped
-        ).returns(T.untyped)
-      end
-      def lookup(
-        code: nil,
-        session: ShopifyAPI::Context.active_session,
-        **kwargs
-      )
-        request(
-          http_method: :get,
-          operation: :lookup,
-          session: session,
-          ids: {},
-          params: {code: code}.merge(kwargs).compact,
-          body: {},
-          entity: nil,
-        )
-      end
-
-      sig do
-        params(
           times_used: T.untyped,
           times_used_min: T.untyped,
           times_used_max: T.untyped,
@@ -183,6 +160,29 @@ module ShopifyAPI
           session: session,
           ids: {price_rule_id: price_rule_id, batch_id: batch_id},
           params: {}.merge(kwargs).compact,
+          body: {},
+          entity: nil,
+        )
+      end
+
+      sig do
+        params(
+          code: T.untyped,
+          session: Auth::Session,
+          kwargs: T.untyped
+        ).returns(T.untyped)
+      end
+      def lookup(
+        code: nil,
+        session: ShopifyAPI::Context.active_session,
+        **kwargs
+      )
+        request(
+          http_method: :get,
+          operation: :lookup,
+          session: session,
+          ids: {},
+          params: {code: code}.merge(kwargs).compact,
           body: {},
           entity: nil,
         )

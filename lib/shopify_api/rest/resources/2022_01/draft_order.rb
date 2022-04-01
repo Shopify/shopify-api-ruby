@@ -30,6 +30,7 @@ module ShopifyAPI
       @payment_terms = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
       @shipping_address = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
       @shipping_line = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @source_name = T.let(nil, T.nilable(String))
       @status = T.let(nil, T.nilable(String))
       @subtotal_price = T.let(nil, T.nilable(Float))
       @tags = T.let(nil, T.nilable(String))
@@ -47,14 +48,14 @@ module ShopifyAPI
     }, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
     @paths = T.let([
-      {http_method: :post, operation: :post, ids: [], path: "draft_orders.json"},
-      {http_method: :get, operation: :get, ids: [], path: "draft_orders.json"},
-      {http_method: :put, operation: :put, ids: [:id], path: "draft_orders/<id>.json"},
-      {http_method: :get, operation: :get, ids: [:id], path: "draft_orders/<id>.json"},
       {http_method: :delete, operation: :delete, ids: [:id], path: "draft_orders/<id>.json"},
       {http_method: :get, operation: :count, ids: [], path: "draft_orders/count.json"},
+      {http_method: :get, operation: :get, ids: [], path: "draft_orders.json"},
+      {http_method: :get, operation: :get, ids: [:id], path: "draft_orders/<id>.json"},
+      {http_method: :post, operation: :post, ids: [], path: "draft_orders.json"},
       {http_method: :post, operation: :send_invoice, ids: [:id], path: "draft_orders/<id>/send_invoice.json"},
-      {http_method: :put, operation: :complete, ids: [:id], path: "draft_orders/<id>/complete.json"}
+      {http_method: :put, operation: :complete, ids: [:id], path: "draft_orders/<id>/complete.json"},
+      {http_method: :put, operation: :put, ids: [:id], path: "draft_orders/<id>.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
     sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
@@ -93,6 +94,8 @@ module ShopifyAPI
     attr_reader :shipping_address
     sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :shipping_line
+    sig { returns(T.nilable(String)) }
+    attr_reader :source_name
     sig { returns(T.nilable(String)) }
     attr_reader :status
     sig { returns(T.nilable(Float)) }

@@ -33,10 +33,10 @@ module ShopifyAPI
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
     @paths = T.let([
-      {http_method: :post, operation: :post, ids: [], path: "recurring_application_charges.json"},
+      {http_method: :delete, operation: :delete, ids: [:id], path: "recurring_application_charges/<id>.json"},
       {http_method: :get, operation: :get, ids: [], path: "recurring_application_charges.json"},
       {http_method: :get, operation: :get, ids: [:id], path: "recurring_application_charges/<id>.json"},
-      {http_method: :delete, operation: :delete, ids: [:id], path: "recurring_application_charges/<id>.json"},
+      {http_method: :post, operation: :post, ids: [], path: "recurring_application_charges.json"},
       {http_method: :put, operation: :customize, ids: [:id], path: "recurring_application_charges/<id>/customize.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 

@@ -34,7 +34,7 @@ class AndroidPayKey202110Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "android_pay_key" => hash_including({}) }
       )
-      .to_return(status: 200, body: JSON.generate({"android_pay_key" => {"id" => 964811899, "public_key" => "BPI5no5liIrAC3knvJnxSoMW09D0KwbJOnv TaAmd3Fur3wYlD85yFaJABZC\n1qb/14GtM 616y8SrKwaVOSu4U8=\n"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"android_pay_key" => {"id" => 964811896, "public_key" => "BPI5no5liIrAC3knvJnxSoMW09D0KwbJOnv TaAmd3Fur3wYlD85yFaJABZC\n1qb/14GtM 616y8SrKwaVOSu4U8=\n"}}), headers: {})
 
     android_pay_key = ShopifyAPI::AndroidPayKey.new
 
@@ -47,25 +47,25 @@ class AndroidPayKey202110Test < Test::Unit::TestCase
     void
   end
   def test_2()
-    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2021-10/android_pay_keys/964811897.json")
+    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2021-10/android_pay_keys/964811894.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"android_pay_key" => {"id" => 964811897, "public_key" => "BPI5no5liIrAC3knvJnxSoMW09D0KwbJOnv TaAmd3Fur3wYlD85yFaJABZC\n1qb/14GtM 616y8SrKwaVOSu4U8=\n"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"android_pay_key" => {"id" => 964811894, "public_key" => "BPI5no5liIrAC3knvJnxSoMW09D0KwbJOnv TaAmd3Fur3wYlD85yFaJABZC\n1qb/14GtM 616y8SrKwaVOSu4U8=\n"}}), headers: {})
 
     ShopifyAPI::AndroidPayKey.find(
-      id: 964811897,
+      id: 964811894,
     )
 
-    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-10/android_pay_keys/964811897.json")
+    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2021-10/android_pay_keys/964811894.json")
   end
 
   sig do
     void
   end
   def test_3()
-    stub_request(:delete, "https://test-shop.myshopify.io/admin/api/2021-10/android_pay_keys/964811898.json")
+    stub_request(:delete, "https://test-shop.myshopify.io/admin/api/2021-10/android_pay_keys/964811895.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
@@ -73,10 +73,10 @@ class AndroidPayKey202110Test < Test::Unit::TestCase
       .to_return(status: 200, body: JSON.generate({}), headers: {})
 
     ShopifyAPI::AndroidPayKey.delete(
-      id: 964811898,
+      id: 964811895,
     )
 
-    assert_requested(:delete, "https://test-shop.myshopify.io/admin/api/2021-10/android_pay_keys/964811898.json")
+    assert_requested(:delete, "https://test-shop.myshopify.io/admin/api/2021-10/android_pay_keys/964811895.json")
   end
 
 end

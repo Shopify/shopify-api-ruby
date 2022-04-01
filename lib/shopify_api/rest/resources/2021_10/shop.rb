@@ -63,6 +63,7 @@ module ShopifyAPI
       @tax_shipping = T.let(nil, T.nilable(String))
       @taxes_included = T.let(nil, T.nilable(String))
       @timezone = T.let(nil, T.nilable(String))
+      @transactional_sms_disabled = T.let(nil, T.nilable(T::Boolean))
       @updated_at = T.let(nil, T.nilable(String))
       @weight_unit = T.let(nil, T.nilable(String))
       @zip = T.let(nil, T.nilable(String))
@@ -176,6 +177,8 @@ module ShopifyAPI
     attr_reader :taxes_included
     sig { returns(T.nilable(String)) }
     attr_reader :timezone
+    sig { returns(T.nilable(T::Boolean)) }
+    attr_reader :transactional_sms_disabled
     sig { returns(T.nilable(String)) }
     attr_reader :updated_at
     sig { returns(T.nilable(String)) }

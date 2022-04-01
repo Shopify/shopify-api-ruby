@@ -32,15 +32,15 @@ module ShopifyAPI
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
     @paths = T.let([
-      {http_method: :get, operation: :get, ids: [:order_id], path: "orders/<order_id>/fulfillment_orders.json"},
       {http_method: :get, operation: :get, ids: [:id], path: "fulfillment_orders/<id>.json"},
+      {http_method: :get, operation: :get, ids: [:order_id], path: "orders/<order_id>/fulfillment_orders.json"},
       {http_method: :post, operation: :cancel, ids: [:id], path: "fulfillment_orders/<id>/cancel.json"},
       {http_method: :post, operation: :close, ids: [:id], path: "fulfillment_orders/<id>/close.json"},
+      {http_method: :post, operation: :hold, ids: [:id], path: "fulfillment_orders/<id>/hold.json"},
       {http_method: :post, operation: :move, ids: [:id], path: "fulfillment_orders/<id>/move.json"},
       {http_method: :post, operation: :open, ids: [:id], path: "fulfillment_orders/<id>/open.json"},
-      {http_method: :post, operation: :reschedule, ids: [:id], path: "fulfillment_orders/<id>/reschedule.json"},
-      {http_method: :post, operation: :hold, ids: [:id], path: "fulfillment_orders/<id>/hold.json"},
-      {http_method: :post, operation: :release_hold, ids: [:id], path: "fulfillment_orders/<id>/release_hold.json"}
+      {http_method: :post, operation: :release_hold, ids: [:id], path: "fulfillment_orders/<id>/release_hold.json"},
+      {http_method: :post, operation: :reschedule, ids: [:id], path: "fulfillment_orders/<id>/reschedule.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
     sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
@@ -162,6 +162,33 @@ module ShopifyAPI
 
     sig do
       params(
+        reason: T.untyped,
+        reason_notes: T.untyped,
+        notify_merchant: T.untyped,
+        body: T.untyped,
+        kwargs: T.untyped
+      ).returns(T.untyped)
+    end
+    def hold(
+      reason: nil,
+      reason_notes: nil,
+      notify_merchant: nil,
+      body: nil,
+      **kwargs
+    )
+      self.class.request(
+        http_method: :post,
+        operation: :hold,
+        session: @session,
+        ids: {id: @id},
+        params: {reason: reason, reason_notes: reason_notes, notify_merchant: notify_merchant}.merge(kwargs).compact,
+        body: body,
+        entity: self,
+      )
+    end
+
+    sig do
+      params(
         new_location_id: T.untyped,
         body: T.untyped,
         kwargs: T.untyped
@@ -210,13 +237,13 @@ module ShopifyAPI
         kwargs: T.untyped
       ).returns(T.untyped)
     end
-    def reschedule(
+    def release_hold(
       body: nil,
       **kwargs
     )
       self.class.request(
         http_method: :post,
-        operation: :reschedule,
+        operation: :release_hold,
         session: @session,
         ids: {id: @id},
         params: {}.merge(kwargs).compact,
@@ -227,44 +254,17 @@ module ShopifyAPI
 
     sig do
       params(
-        reason: T.untyped,
-        reason_notes: T.untyped,
-        notify_merchant: T.untyped,
         body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end
-    def hold(
-      reason: nil,
-      reason_notes: nil,
-      notify_merchant: nil,
+    def reschedule(
       body: nil,
       **kwargs
     )
       self.class.request(
         http_method: :post,
-        operation: :hold,
-        session: @session,
-        ids: {id: @id},
-        params: {reason: reason, reason_notes: reason_notes, notify_merchant: notify_merchant}.merge(kwargs).compact,
-        body: body,
-        entity: self,
-      )
-    end
-
-    sig do
-      params(
-        body: T.untyped,
-        kwargs: T.untyped
-      ).returns(T.untyped)
-    end
-    def release_hold(
-      body: nil,
-      **kwargs
-    )
-      self.class.request(
-        http_method: :post,
-        operation: :release_hold,
+        operation: :reschedule,
         session: @session,
         ids: {id: @id},
         params: {}.merge(kwargs).compact,

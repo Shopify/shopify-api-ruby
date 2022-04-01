@@ -33,13 +33,13 @@ module ShopifyAPI
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
     @paths = T.let([
-      {http_method: :get, operation: :get, ids: [:customer_id], path: "customers/<customer_id>/addresses.json"},
-      {http_method: :post, operation: :post, ids: [:customer_id], path: "customers/<customer_id>/addresses.json"},
-      {http_method: :get, operation: :get, ids: [:customer_id, :id], path: "customers/<customer_id>/addresses/<id>.json"},
-      {http_method: :put, operation: :put, ids: [:customer_id, :id], path: "customers/<customer_id>/addresses/<id>.json"},
       {http_method: :delete, operation: :delete, ids: [:customer_id, :id], path: "customers/<customer_id>/addresses/<id>.json"},
-      {http_method: :put, operation: :set, ids: [:customer_id], path: "customers/<customer_id>/addresses/set.json"},
-      {http_method: :put, operation: :default, ids: [:customer_id, :id], path: "customers/<customer_id>/addresses/<id>/default.json"}
+      {http_method: :get, operation: :get, ids: [:customer_id], path: "customers/<customer_id>/addresses.json"},
+      {http_method: :get, operation: :get, ids: [:customer_id, :id], path: "customers/<customer_id>/addresses/<id>.json"},
+      {http_method: :post, operation: :post, ids: [:customer_id], path: "customers/<customer_id>/addresses.json"},
+      {http_method: :put, operation: :default, ids: [:customer_id, :id], path: "customers/<customer_id>/addresses/<id>/default.json"},
+      {http_method: :put, operation: :put, ids: [:customer_id, :id], path: "customers/<customer_id>/addresses/<id>.json"},
+      {http_method: :put, operation: :set, ids: [:customer_id], path: "customers/<customer_id>/addresses/set.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
     sig { returns(T.nilable(String)) }
@@ -149,6 +149,27 @@ module ShopifyAPI
 
     sig do
       params(
+        body: T.untyped,
+        kwargs: T.untyped
+      ).returns(T.untyped)
+    end
+    def default(
+      body: nil,
+      **kwargs
+    )
+      self.class.request(
+        http_method: :put,
+        operation: :default,
+        session: @session,
+        ids: {id: @id, customer_id: @customer_id},
+        params: {}.merge(kwargs).compact,
+        body: body,
+        entity: self,
+      )
+    end
+
+    sig do
+      params(
         address_ids: T.nilable(T.any(T::Array[T.untyped], Integer, String)),
         operation: T.untyped,
         body: T.untyped,
@@ -167,27 +188,6 @@ module ShopifyAPI
         session: @session,
         ids: {customer_id: @customer_id},
         params: {address_ids: address_ids, operation: operation}.merge(kwargs).compact,
-        body: body,
-        entity: self,
-      )
-    end
-
-    sig do
-      params(
-        body: T.untyped,
-        kwargs: T.untyped
-      ).returns(T.untyped)
-    end
-    def default(
-      body: nil,
-      **kwargs
-    )
-      self.class.request(
-        http_method: :put,
-        operation: :default,
-        session: @session,
-        ids: {id: @id, customer_id: @customer_id},
-        params: {}.merge(kwargs).compact,
         body: body,
         entity: self,
       )

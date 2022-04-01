@@ -22,11 +22,11 @@ module ShopifyAPI
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
     @paths = T.let([
+      {http_method: :delete, operation: :delete, ids: [:id], path: "reports/<id>.json"},
       {http_method: :get, operation: :get, ids: [], path: "reports.json"},
-      {http_method: :post, operation: :post, ids: [], path: "reports.json"},
       {http_method: :get, operation: :get, ids: [:id], path: "reports/<id>.json"},
-      {http_method: :put, operation: :put, ids: [:id], path: "reports/<id>.json"},
-      {http_method: :delete, operation: :delete, ids: [:id], path: "reports/<id>.json"}
+      {http_method: :post, operation: :post, ids: [], path: "reports.json"},
+      {http_method: :put, operation: :put, ids: [:id], path: "reports/<id>.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
     sig { returns(T.nilable(String)) }

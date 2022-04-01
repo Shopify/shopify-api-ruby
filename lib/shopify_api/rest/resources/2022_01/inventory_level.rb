@@ -21,9 +21,9 @@ module ShopifyAPI
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
     @paths = T.let([
+      {http_method: :delete, operation: :delete, ids: [], path: "inventory_levels.json"},
       {http_method: :get, operation: :get, ids: [], path: "inventory_levels.json"},
       {http_method: :post, operation: :adjust, ids: [], path: "inventory_levels/adjust.json"},
-      {http_method: :delete, operation: :delete, ids: [], path: "inventory_levels.json"},
       {http_method: :post, operation: :connect, ids: [], path: "inventory_levels/connect.json"},
       {http_method: :post, operation: :set, ids: [], path: "inventory_levels/set.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])

@@ -31,8 +31,8 @@ module ShopifyAPI
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
     @paths = T.let([
-      {http_method: :get, operation: :get, ids: [:order_id], path: "orders/<order_id>/fulfillment_orders.json"},
       {http_method: :get, operation: :get, ids: [:id], path: "fulfillment_orders/<id>.json"},
+      {http_method: :get, operation: :get, ids: [:order_id], path: "orders/<order_id>/fulfillment_orders.json"},
       {http_method: :post, operation: :cancel, ids: [:id], path: "fulfillment_orders/<id>/cancel.json"},
       {http_method: :post, operation: :close, ids: [:id], path: "fulfillment_orders/<id>/close.json"},
       {http_method: :post, operation: :move, ids: [:id], path: "fulfillment_orders/<id>/move.json"},
