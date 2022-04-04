@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    shopify_api (0.0.1)
+    shopify_api (10.0.0)
       concurrent-ruby
       hash_diff
       httparty
@@ -78,7 +78,7 @@ GEM
     rubocop-sorbet (0.6.5)
       rubocop (>= 0.90.0)
     ruby-progressbar (1.11.0)
-    securerandom (0.1.1)
+    securerandom (0.2.0)
     sorbet (0.5.9623)
       sorbet-static (= 0.5.9623)
     sorbet-runtime (0.5.9619)

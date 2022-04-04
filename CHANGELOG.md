@@ -1,4 +1,6 @@
-## Unreleased
+## Version 10.0.0
+
+- Major update to the library to provide _all_ essential functions needed for a Shopify app, supporting embedded apps with session tokens. See the [full list of changes](https://github.com/Shopify/shopify_api#breaking-change-notice-for-version-1000) here
 
 ## Version 9.5.1
 
