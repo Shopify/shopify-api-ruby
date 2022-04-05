@@ -53,4 +53,21 @@ class MetafieldTest < Test::Unit::TestCase
     metafield = ShopifyAPI::Metafield.find(721389482)
     assert(metafield.destroy)
   end
+
+  def test_coerce_metafield_value
+    metafield = ShopifyAPI::Metafield.new(value: "999", value_type: "integer")
+    assert_equal(999, metafield.value)
+  end
+
+  def test_coerce_metafield_value_2021_07
+    ShopifyAPI::ApiVersion.version_lookup_mode = :define_on_unknown
+    version = ShopifyAPI::ApiVersion.find_version('2021-07')
+    ShopifyAPI::Base.api_version = version.to_s
+
+    metafield1 = ShopifyAPI::Metafield.new(value: "999", type: "integer")
+    assert_equal(999, metafield1.value)
+
+    metafield2 = ShopifyAPI::Metafield.new(value: "999", type: "number_integer")
+    assert_equal(999, metafield2.value)
+  end
 end
