@@ -215,24 +215,21 @@ module ShopifyAPI
           instance ||= new(session: session)
           instance.original_state = {}
 
-          unless data.empty?
-            # This retrieves all the setters on the resource and calls them with the data
-            instance_methods(false).select { |method| !method.to_s.include?("=") }.each do |attribute|
-              next unless data.key?(attribute.to_s)
+          data.each do |attribute, value|
+            attr_sym = attribute.to_sym
 
-              if has_many?(attribute) && data[attribute.to_s]
-                attr_list = []
-                data[attribute.to_s].each do |element|
-                  attr_list << T.unsafe(@has_many[attribute]).create_instance(data: element, session: session)
-                end
-                instance.public_send("#{attribute}=", attr_list)
-              elsif has_one?(attribute) && data[attribute.to_s]
-                instance.public_send("#{attribute}=",
-                  T.unsafe(@has_one[attribute]).create_instance(data: data[attribute.to_s], session: session))
-              else
-                instance.public_send("#{attribute}=", data[attribute.to_s])
-                instance.original_state[attribute] = data[attribute.to_s]
+            if has_many?(attr_sym) && value
+              attr_list = []
+              value.each do |element|
+                attr_list << T.unsafe(@has_many[attr_sym]).create_instance(data: element, session: session)
               end
+              instance.public_send("#{attribute}=", attr_list)
+            elsif has_one?(attr_sym) && value
+              instance.public_send("#{attribute}=",
+                T.unsafe(@has_one[attr_sym]).create_instance(data: value, session: session))
+            else
+              instance.public_send("#{attribute}=", value)
+              instance.original_state[attr_sym] = value
             end
           end
 
@@ -240,16 +237,18 @@ module ShopifyAPI
         end
       end
 
-      sig { params(meth_id: Symbol, val: T.untyped).void }
+      sig { params(meth_id: Symbol, val: T.untyped).returns(T.untyped) }
       def method_missing(meth_id, val = nil)
-        match = meth_id.id2name.match(/([^=]+)=/)
-
-        return super unless match
+        match = meth_id.id2name.match(/([^=]+)(=)?/)
 
         var = match[1]
 
-        instance_variable_set("@#{var}", val)
-        @forced_nils[T.must(var)] = val.nil?
+        if match[2]
+          instance_variable_set("@#{var}", val)
+          @forced_nils[T.must(var)] = val.nil?
+        else
+          instance_variable_get("@#{var}")
+        end
       end
 
       sig { params(meth_id: Symbol, args: T.untyped).void }
