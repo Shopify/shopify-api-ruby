@@ -16,6 +16,8 @@ module TestHelpers
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
+    @read_only_attributes = T.let([:unsaveable_attribute], T::Array[Symbol])
+
     @paths = T.let([
       { http_method: :get, operation: :get, ids: [], path: "fake_resources.json" },
       { http_method: :post, operation: :post, ids: [], path: "fake_resources.json" },
@@ -36,6 +38,7 @@ module TestHelpers
       @has_one_attribute = T.let(nil, T.nilable(FakeResource))
       @has_many_attribute = T.let(nil, T.nilable(T::Array[FakeResource]))
       @other_resource_id = T.let(nil, T.nilable(Integer))
+      @unsaveable_attribute = T.let(nil, T.nilable(String))
     end
 
     sig { returns(T.nilable(Integer)) }
@@ -52,6 +55,9 @@ module TestHelpers
 
     sig { returns(T.nilable(Integer)) }
     attr_reader :other_resource_id
+
+    sig { returns(T.nilable(String)) }
+    attr_reader :unsaveable_attribute
 
     class << self
       sig do

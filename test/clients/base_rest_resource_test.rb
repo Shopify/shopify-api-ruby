@@ -146,6 +146,23 @@ module ShopifyAPITest
         assert_requested(stubbed_request)
       end
 
+      def test_save_ignores_unsaveable_attributes
+        request_body = { fake_resource: { attribute: "attribute" } }.to_json
+        response_body = { fake_resource: { id: 1, attribute: "attribute" } }.to_json
+
+        stubbed_request = stub_request(:post, "#{@prefix}/fake_resources.json")
+          .with(body: request_body)
+          .to_return(status: 201, body: response_body)
+
+        resource = TestHelpers::FakeResource.new(session: @session)
+        resource.attribute = "attribute"
+        resource.unsaveable_attribute = "this is an attribute"
+
+        resource.save
+        assert_requested(stubbed_request)
+        assert_nil(resource.id)
+      end
+
       def test_deletes_existing_resource_and_fails_on_deleting_nonexistent_resource
         resource = TestHelpers::FakeResource.new(session: @session)
         resource.id = 1
