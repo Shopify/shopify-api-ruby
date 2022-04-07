@@ -173,7 +173,7 @@ module ShopifyAPITest
         assert_requested(stubbed_request)
       end
 
-      def test_load_unknown_attribute
+      def test_loads_unknown_attribute
         body = { fake_resource: { id: 1, attribute: "attribute", unknown: "some-value" } }.to_json
 
         stub_request(:get, "#{@prefix}/fake_resources/1.json").to_return(body: body)
@@ -181,6 +181,18 @@ module ShopifyAPITest
         resource = TestHelpers::FakeResource.find(id: 1, session: @session)
 
         assert_equal("some-value", resource.unknown)
+        assert_equal("some-value", resource.to_hash["unknown"])
+      end
+
+      def test_loads_unknown_attribute_with_special_character
+        body = { fake_resource: { id: 1, attribute: "attribute", "unknown?": "some-value" } }.to_json
+
+        stub_request(:get, "#{@prefix}/fake_resources/1.json").to_return(body: body)
+
+        resource = TestHelpers::FakeResource.find(id: 1, session: @session)
+
+        assert_equal("some-value", resource.unknown?)
+        assert_equal("some-value", resource.to_hash["unknown?"])
       end
 
       def test_save_with_unknown_attribute
