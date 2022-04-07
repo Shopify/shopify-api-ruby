@@ -16,7 +16,7 @@ module TestHelpers
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
-    @attribute_save_deny_list = T.let([:unsaveable_attribute], T::Array[Symbol])
+    @read_only_attributes = T.let([:unsaveable_attribute], T::Array[Symbol])
 
     @paths = T.let([
       { http_method: :get, operation: :get, ids: [], path: "fake_resources.json" },

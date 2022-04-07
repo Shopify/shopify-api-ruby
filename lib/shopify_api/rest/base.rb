@@ -15,7 +15,7 @@ module ShopifyAPI
       @has_many = T.let({}, T::Hash[Symbol, Class])
       @paths = T.let([], T::Array[T::Hash[Symbol, T.any(T::Array[Symbol], String, Symbol)]])
       @custom_prefix = T.let(nil, T.nilable(String))
-      @attribute_save_deny_list = T.let([], T.nilable(T::Array[Symbol]))
+      @read_only_attributes = T.let([], T.nilable(T::Array[Symbol]))
 
       sig { returns(T::Hash[Symbol, T.untyped]) }
       attr_accessor :original_state
@@ -120,8 +120,8 @@ module ShopifyAPI
         end
 
         sig { returns(T.nilable(T::Array[Symbol])) }
-        def attribute_save_deny_list
-          @attribute_save_deny_list&.map { |a| :"@#{a}" }
+        def read_only_attributes
+          @read_only_attributes&.map { |a| :"@#{a}" }
         end
 
         sig do
@@ -265,7 +265,7 @@ module ShopifyAPI
         hash = {}
         instance_variables.each do |var|
           next if [:"@original_state", :"@session", :"@client", :"@forced_nils", :"@errors"].include?(var)
-          next if self.class.attribute_save_deny_list&.include?(var)
+          next if self.class.read_only_attributes&.include?(var)
 
           attribute = var.to_s.delete("@").to_sym
           if self.class.has_many?(attribute)
