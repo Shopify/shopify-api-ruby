@@ -3,6 +3,7 @@
 ## Unreleased
 
 - [#919](https://github.com/Shopify/shopify_api/pull/919) Allow REST resources to configure a deny list of attributes to be excluded when saving
+- [#921](https://github.com/Shopify/shopify_api/pull/921) Fix the Zeitwerk issue [#913](https://github.com/Shopify/shopify_api/issues/913) and allow the applications start successfully with `config.eager_load = true`
 
 ## Version 10.0.0
 
