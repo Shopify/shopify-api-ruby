@@ -12,4 +12,7 @@ module ShopifyAPI
   ], T::Array[String])
 
   LATEST_SUPPORTED_ADMIN_VERSION = T.let("2022-01", String)
+  
+  class AdminVersions
+  end
 end
