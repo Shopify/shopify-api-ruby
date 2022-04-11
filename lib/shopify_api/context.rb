@@ -52,9 +52,9 @@ module ShopifyAPI
         private_shop: nil,
         user_agent_prefix: nil
       )
-        unless SUPPORTED_ADMIN_VERSIONS.include?(api_version)
+        unless ShopifyAPI::AdminVersions::SUPPORTED_ADMIN_VERSIONS.include?(api_version)
           raise Errors::UnsupportedVersionError,
-            "Invalid vession #{api_version}, supported versions: #{SUPPORTED_ADMIN_VERSIONS}"
+            "Invalid vession #{api_version}, supported versions: #{ShopifyAPI::AdminVersions::SUPPORTED_ADMIN_VERSIONS}"
         end
 
         @api_key = api_key
