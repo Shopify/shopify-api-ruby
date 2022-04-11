@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## Version 10.0.2
+
+- [#929](https://github.com/Shopify/shopify_api/pull/929) Aligning sorbet dependencies
+
 ## Version 10.0.1
 
 ### Fixed
