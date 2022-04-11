@@ -4,12 +4,6 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 ![Build Status](https://github.com/Shopify/shopify_api/workflows/CI/badge.svg?branch=main)
 
-## A Note About Versions
-
-The latest release of `shopify_api` is v9. The main branch of this repo reflects the upcoming v10 release, which has some major changes. If you’re looking for the documentation / instructions for v9, you can find them [in this branch](https://github.com/Shopify/shopify_api/tree/v9).
-
-## v10
-
 This library provides support for Ruby [Shopify apps](https://apps.shopify.com/) to access the [Shopify Admin API](https://shopify.dev/api/admin), by making it easier to perform the following actions:
 
 - Creating [online](https://shopify.dev/concepts/about-apis/authentication#online-access) or [offline](https://shopify.dev/concepts/about-apis/authentication#offline-access) access tokens for the Admin API via OAuth
@@ -20,6 +14,8 @@ This library provides support for Ruby [Shopify apps](https://apps.shopify.com/)
 In addition to the Admin API, this library also allows querying the [Storefront API](https://shopify.dev/docs/storefront-api).
 
 You can use this library in any application that has a Ruby backend, since it doesn't rely on any specific framework — you can include it alongside your preferred stack and use the features that you need to build your app.
+
+**Note**: These instructions apply to v10 or later of this package. If you're running v9 in your app, you can find the documentation [in this branch](https://github.com/Shopify/shopify_api/tree/v9).
 
 ## Requirements
 
