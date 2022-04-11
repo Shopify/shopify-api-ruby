@@ -50,6 +50,10 @@ module ShopifyAPI
       {http_method: :post, operation: :post, ids: [:product_id], path: "products/<product_id>/variants.json"},
       {http_method: :put, operation: :put, ids: [:id], path: "variants/<id>.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
+    @read_only_attributes = T.let([
+      :inventory_quantity,
+      :inventory_quantity_adjustment
+    ], T::Array[Symbol])
 
     sig { returns(T.nilable(String)) }
     attr_reader :barcode

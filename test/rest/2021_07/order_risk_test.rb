@@ -93,7 +93,7 @@ class OrderRisk202107Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-07/orders/450789469/risks/284138680.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "risk" => hash_including({"id" => 284138680, "message" => "After further review, this is a legitimate order", "recommendation" => "accept", "source" => "External", "cause_cancel" => false, "score" => 0.0}) }
+        body: { "risk" => hash_including({"message" => "After further review, this is a legitimate order", "recommendation" => "accept", "source" => "External", "cause_cancel" => false, "score" => 0.0}) }
       )
       .to_return(status: 200, body: JSON.generate({"risk" => {"order_id" => 450789469, "cause_cancel" => false, "message" => "After further review, this is a legitimate order", "recommendation" => "accept", "score" => "0.0", "source" => "External", "id" => 284138680, "checkout_id" => nil, "display" => true, "merchant_message" => "After further review, this is a legitimate order"}}), headers: {})
 

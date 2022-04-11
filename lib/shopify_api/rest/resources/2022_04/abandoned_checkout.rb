@@ -61,7 +61,6 @@ module ShopifyAPI
       discount_codes: DiscountCode
     }, T::Hash[Symbol, Class])
     @paths = T.let([
-      {http_method: :get, operation: :checkouts, ids: [], path: "checkouts.json"},
       {http_method: :get, operation: :checkouts, ids: [], path: "checkouts.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
@@ -147,25 +146,25 @@ module ShopifyAPI
     class << self
       sig do
         params(
+          limit: T.untyped,
           since_id: T.untyped,
           created_at_min: T.untyped,
           created_at_max: T.untyped,
           updated_at_min: T.untyped,
           updated_at_max: T.untyped,
           status: T.untyped,
-          limit: T.untyped,
           session: Auth::Session,
           kwargs: T.untyped
         ).returns(T.untyped)
       end
       def checkouts(
+        limit: nil,
         since_id: nil,
         created_at_min: nil,
         created_at_max: nil,
         updated_at_min: nil,
         updated_at_max: nil,
         status: nil,
-        limit: nil,
         session: ShopifyAPI::Context.active_session,
         **kwargs
       )
@@ -174,7 +173,7 @@ module ShopifyAPI
           operation: :checkouts,
           session: session,
           ids: {},
-          params: {since_id: since_id, created_at_min: created_at_min, created_at_max: created_at_max, updated_at_min: updated_at_min, updated_at_max: updated_at_max, status: status, limit: limit}.merge(kwargs).compact,
+          params: {limit: limit, since_id: since_id, created_at_min: created_at_min, created_at_max: created_at_max, updated_at_min: updated_at_min, updated_at_max: updated_at_max, status: status}.merge(kwargs).compact,
           body: {},
           entity: nil,
         )
