@@ -138,7 +138,7 @@ class Redirect202110Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-10/redirects/668809255.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "redirect" => hash_including({"id" => 668809255, "path" => "/tiger"}) }
+        body: { "redirect" => hash_including({"path" => "/tiger"}) }
       )
       .to_return(status: 200, body: JSON.generate({"redirect" => {"path" => "/tiger", "target" => "/pages/macosx", "id" => 668809255}}), headers: {})
 
@@ -157,7 +157,7 @@ class Redirect202110Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-10/redirects/668809255.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "redirect" => hash_including({"id" => 668809255, "target" => "/pages/macpro"}) }
+        body: { "redirect" => hash_including({"target" => "/pages/macpro"}) }
       )
       .to_return(status: 200, body: JSON.generate({"redirect" => {"target" => "/pages/macpro", "path" => "/leopard", "id" => 668809255}}), headers: {})
 
@@ -176,7 +176,7 @@ class Redirect202110Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-10/redirects/950115854.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "redirect" => hash_including({"id" => 950115854, "path" => "/powermac", "target" => "/pages/macpro"}) }
+        body: { "redirect" => hash_including({"path" => "/powermac", "target" => "/pages/macpro"}) }
       )
       .to_return(status: 200, body: JSON.generate({"redirect" => {"path" => "/powermac", "target" => "/pages/macpro", "id" => 950115854}}), headers: {})
 

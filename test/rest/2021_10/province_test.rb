@@ -106,7 +106,7 @@ class Province202110Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-10/countries/879921427/provinces/224293623.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "province" => hash_including({"id" => 224293623, "tax" => 0.09}) }
+        body: { "province" => hash_including({"tax" => 0.09}) }
       )
       .to_return(status: 200, body: JSON.generate({"province" => {"country_id" => 879921427, "id" => 224293623, "name" => "Quebec", "code" => "QC", "tax_name" => "HST", "tax_type" => "compounded", "shipping_zone_id" => nil, "tax" => 0.09, "tax_percentage" => 9.0}}), headers: {})
 
