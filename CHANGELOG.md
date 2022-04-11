@@ -6,6 +6,7 @@
 
 - [#919](https://github.com/Shopify/shopify_api/pull/919) Allow REST resources to configure a deny list of attributes to be excluded when saving
 - [#920](https://github.com/Shopify/shopify_api/pull/920) Set all values received from the API response to REST resource objects, and allow setting / getting attributes with special characters (such as `?`)
+- [#927](https://github.com/Shopify/shopify_api/pull/927) Fix the `ShopifyAPI::AdminVersions` module for backward compatibility
 
 ## Version 10.0.0
 
