@@ -41,6 +41,7 @@ module ShopifyAPI
       {http_method: :get, operation: :get, ids: [:blog_id], path: "blogs/<blog_id>/articles.json"},
       {http_method: :get, operation: :get, ids: [:blog_id, :id], path: "blogs/<blog_id>/articles/<id>.json"},
       {http_method: :get, operation: :tags, ids: [], path: "articles/tags.json"},
+      {http_method: :get, operation: :tags, ids: [:blog_id], path: "blogs/<blog_id>/articles/tags.json"},
       {http_method: :post, operation: :post, ids: [:blog_id], path: "blogs/<blog_id>/articles.json"},
       {http_method: :put, operation: :put, ids: [:blog_id, :id], path: "blogs/<blog_id>/articles/<id>.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
@@ -229,11 +230,17 @@ module ShopifyAPI
 
       sig do
         params(
+          blog_id: T.nilable(T.any(Integer, String)),
+          limit: T.untyped,
+          popular: T.untyped,
           session: Auth::Session,
           kwargs: T.untyped
         ).returns(T.untyped)
       end
       def tags(
+        blog_id: nil,
+        limit: nil,
+        popular: nil,
         session: ShopifyAPI::Context.active_session,
         **kwargs
       )
@@ -241,8 +248,8 @@ module ShopifyAPI
           http_method: :get,
           operation: :tags,
           session: session,
-          ids: {},
-          params: {}.merge(kwargs).compact,
+          ids: {blog_id: blog_id},
+          params: {limit: limit, popular: popular}.merge(kwargs).compact,
           body: {},
           entity: nil,
         )

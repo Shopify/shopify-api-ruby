@@ -50,7 +50,7 @@ class MarketingEvent202110Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "marketing_event" => hash_including({"started_at" => "2022-12-15", "utm_campaign" => "Christmas2022", "utm_source" => "facebook", "utm_medium" => "cpc", "event_type" => "ad", "referring_domain" => "facebook.com", "marketing_channel" => "social", "paid" => true}) }
       )
-      .to_return(status: 200, body: JSON.generate({"marketing_event" => {"id" => 1065859216, "event_type" => "ad", "remote_id" => nil, "started_at" => "2022-12-15T00:00:00-05:00", "ended_at" => nil, "scheduled_to_end_at" => nil, "budget" => nil, "currency" => nil, "manage_url" => nil, "preview_url" => nil, "utm_campaign" => "Christmas2022", "utm_source" => "facebook", "utm_medium" => "cpc", "budget_type" => nil, "description" => nil, "marketing_channel" => "social", "paid" => true, "referring_domain" => "facebook.com", "breadcrumb_id" => nil, "marketing_activity_id" => 1063897333, "admin_graphql_api_id" => "gid://shopify/MarketingEvent/1065859216", "marketed_resources" => []}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"marketing_event" => {"id" => 1065859216, "event_type" => "ad", "remote_id" => nil, "started_at" => "2022-12-14T19:00:00-05:00", "ended_at" => nil, "scheduled_to_end_at" => nil, "budget" => nil, "currency" => nil, "manage_url" => nil, "preview_url" => nil, "utm_campaign" => "Christmas2022", "utm_source" => "facebook", "utm_medium" => "cpc", "budget_type" => nil, "description" => nil, "marketing_channel" => "social", "paid" => true, "referring_domain" => "facebook.com", "breadcrumb_id" => nil, "marketing_activity_id" => 1063897333, "admin_graphql_api_id" => "gid://shopify/MarketingEvent/1065859216", "marketed_resources" => []}}), headers: {})
 
     marketing_event = ShopifyAPI::MarketingEvent.new
     marketing_event.started_at = "2022-12-15"
@@ -107,16 +107,16 @@ class MarketingEvent202110Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2021-10/marketing_events/998730532.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "marketing_event" => hash_including({"id" => 998730532, "remote_id" => "1000:2000", "started_at" => "2022-02-02T00:00  00:00", "ended_at" => "2022-02-03T00:00  00:00", "scheduled_to_end_at" => "2022-02-04T00:00  00:00", "budget" => "11.1", "budget_type" => "daily", "currency" => "CAD", "utm_campaign" => "other", "utm_source" => "other", "utm_medium" => "other", "event_type" => "ad", "referring_domain" => "instagram.com"}) }
+        body: { "marketing_event" => hash_including({"remote_id" => "1000:2000", "started_at" => "2022-02-02T00:00 +00:00", "ended_at" => "2022-02-03T00:00 +00:00", "scheduled_to_end_at" => "2022-02-04T00:00 +00:00", "budget" => "11.1", "budget_type" => "daily", "currency" => "CAD", "utm_campaign" => "other", "utm_source" => "other", "utm_medium" => "other", "event_type" => "ad", "referring_domain" => "instagram.com"}) }
       )
       .to_return(status: 200, body: JSON.generate({"marketing_event" => {"started_at" => "2022-02-01T19:00:00-05:00", "ended_at" => "2022-02-02T19:00:00-05:00", "scheduled_to_end_at" => "2022-02-03T19:00:00-05:00", "remote_id" => "1000:2000", "currency" => "CAD", "budget" => "11.1", "budget_type" => "daily", "id" => 998730532, "event_type" => "post", "manage_url" => nil, "preview_url" => nil, "utm_campaign" => "1234567890", "utm_source" => "facebook", "utm_medium" => "facebook-post", "description" => nil, "marketing_channel" => "social", "paid" => false, "referring_domain" => "facebook.com", "breadcrumb_id" => nil, "marketing_activity_id" => nil, "admin_graphql_api_id" => "gid://shopify/MarketingEvent/998730532", "marketed_resources" => []}}), headers: {})
 
     marketing_event = ShopifyAPI::MarketingEvent.new
     marketing_event.id = 998730532
     marketing_event.remote_id = "1000:2000"
-    marketing_event.started_at = "2022-02-02T00:00  00:00"
-    marketing_event.ended_at = "2022-02-03T00:00  00:00"
-    marketing_event.scheduled_to_end_at = "2022-02-04T00:00  00:00"
+    marketing_event.started_at = "2022-02-02T00:00 +00:00"
+    marketing_event.ended_at = "2022-02-03T00:00 +00:00"
+    marketing_event.scheduled_to_end_at = "2022-02-04T00:00 +00:00"
     marketing_event.budget = "11.1"
     marketing_event.budget_type = "daily"
     marketing_event.currency = "CAD"
