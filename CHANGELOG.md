@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## Version 10.0.1
+
 ### Fixed
 
 - [#919](https://github.com/Shopify/shopify_api/pull/919) Allow REST resources to configure a deny list of attributes to be excluded when saving
