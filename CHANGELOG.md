@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Fixed
+- [#935](https://github.com/Shopify/shopify_api/pull/935) Fix issue [#931](https://github.com/Shopify/shopify_api/pull/931), weight of variant should be float
+
 ## Version 10.0.2
 
 - [#929](https://github.com/Shopify/shopify_api/pull/929) Aligning sorbet dependencies
