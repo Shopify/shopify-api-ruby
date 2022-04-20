@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- [#933](https://github.com/Shopify/shopify_api/pull/933) Fix syntax of GraphQL query in `Webhooks.get_webhook_id` method by removing extra curly brace
 
 ### Fixed
 - [#935](https://github.com/Shopify/shopify_api/pull/935) Fix issue [#931](https://github.com/Shopify/shopify_api/pull/931), weight of variant should be float
