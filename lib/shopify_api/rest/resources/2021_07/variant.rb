@@ -36,7 +36,7 @@ module ShopifyAPI
       @taxable = T.let(nil, T.nilable(T::Boolean))
       @title = T.let(nil, T.nilable(String))
       @updated_at = T.let(nil, T.nilable(String))
-      @weight = T.let(nil, T.nilable(Integer))
+      @weight = T.let(nil, T.nilable(Float))
       @weight_unit = T.let(nil, T.nilable(String))
     end
 
@@ -103,7 +103,7 @@ module ShopifyAPI
     attr_reader :title
     sig { returns(T.nilable(String)) }
     attr_reader :updated_at
-    sig { returns(T.nilable(Integer)) }
+    sig { returns(T.nilable(Float)) }
     attr_reader :weight
     sig { returns(T.nilable(String)) }
     attr_reader :weight_unit
