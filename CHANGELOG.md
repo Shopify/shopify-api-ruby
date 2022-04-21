@@ -4,6 +4,7 @@
 
 ### Fixed
 - [#935](https://github.com/Shopify/shopify_api/pull/935) Fix issue [#931](https://github.com/Shopify/shopify_api/pull/931), weight of variant should be float
+- [#939](https://github.com/Shopify/shopify_api/pull/939) Hotfix for `.spin.dev` JWT validation.
 
 ## Version 10.0.2
 
