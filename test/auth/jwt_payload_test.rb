@@ -38,6 +38,26 @@ module ShopifyAPITest
           })
       end
 
+      def test_decode_jwt_payload_succeeds_with_spin_domain
+        payload = @jwt_payload.dup
+        payload[:iss] = "https://test-shop.other.spin.dev/admin"
+        payload[:dest] = "https://test-shop.other.spin.dev"
+        jwt_token = JWT.encode(payload, ShopifyAPI::Context.api_secret_key, "HS256")
+        decoded = ShopifyAPI::Auth::JwtPayload.new(jwt_token)
+        assert_equal(payload,
+          {
+            iss: decoded.iss,
+            dest: decoded.dest,
+            aud: decoded.aud,
+            sub: decoded.sub,
+            exp: decoded.exp,
+            nbf: decoded.nbf,
+            iat: decoded.iat,
+            jti: decoded.jti,
+            sid: decoded.sid,
+          })
+      end
+
       def test_decode_jwt_payload_fails_with_wrong_key
         jwt_token = JWT.encode(@jwt_payload, "Wrong", "HS256")
         assert_raises(ShopifyAPI::Errors::InvalidJwtTokenError) do
