@@ -46,7 +46,7 @@ module ShopifyAPI
 
       sig { params(shop: String).returns(T::Boolean) }
       def validate_shop(shop)
-        /\A[a-z0-9]+[a-z0-9\-]*[a-z0-9]+\.myshopify\.(io|com)\z/.match?(shop)
+        /\A[a-z0-9]+[a-z0-9\-\.]*[a-z0-9]+\.(myshopify\.(io|com)|spin\.dev)\z/.match?(shop)
       end
 
       alias_method :eql?, :==

@@ -11,7 +11,7 @@ namespace :test do
 
   Rake::TestTask.new(:rest_wrappers) do |t|
     pattern = if ENV.key?("API_VERSION")
-      "test/rest/**/#{ENV["API_VERSION"]}/*.rb"
+      "test/rest/**/#{ENV.fetch("API_VERSION")}/*.rb"
     else
       "test/rest/**/*.rb"
     end
