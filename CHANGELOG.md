@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-## Version 10.1.0
+## Version 10.0.3
 
 ### Fixed
 - [#935](https://github.com/Shopify/shopify_api/pull/935) Fix issue [#931](https://github.com/Shopify/shopify_api/pull/931), weight of variant should be float
