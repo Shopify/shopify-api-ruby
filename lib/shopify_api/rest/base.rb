@@ -116,10 +116,16 @@ module ShopifyAPI
           @has_many.include?(attribute)
         end
 
+        sig { returns(T::Hash[Symbol, Class]) }
+        attr_reader :has_many
+
         sig { params(attribute: Symbol).returns(T::Boolean) }
         def has_one?(attribute)
           @has_one.include?(attribute)
         end
+
+        sig { returns(T::Hash[Symbol, Class]) }
+        attr_reader :has_one
 
         sig { returns(T.nilable(T::Array[Symbol])) }
         def read_only_attributes
@@ -261,8 +267,8 @@ module ShopifyAPI
         match.nil? ? true : super
       end
 
-      sig { returns(T::Hash[String, T.untyped]) }
-      def to_hash
+      sig { params(saving: T::Boolean).returns(T::Hash[String, T.untyped]) }
+      def to_hash(saving = false)
         hash = {}
         instance_variables.each do |var|
           next if [
@@ -273,7 +279,7 @@ module ShopifyAPI
             :"@errors",
             :"@aliased_properties",
           ].include?(var)
-          next if self.class.read_only_attributes&.include?(var)
+          next if saving && self.class.read_only_attributes&.include?(var)
 
           var = var.to_s.delete("@")
           attribute = if @aliased_properties.value?(var)
@@ -283,10 +289,16 @@ module ShopifyAPI
           end.to_sym
 
           if self.class.has_many?(attribute)
-            hash[attribute.to_s] = get_property(attribute).map(&:to_hash).to_a if get_property(attribute)
+            hash[attribute.to_s] = get_property(attribute).map do |element|
+              data = element
+              data = self.class.has_many[attribute].create_instance(session: session, data: element) if data.is_a?(Hash)
+              data.to_hash(saving) unless data.nil?
+            end.to_a if get_property(attribute)
           elsif self.class.has_one?(attribute)
-            element_hash = get_property(attribute)&.to_hash
-            hash[attribute.to_s] = element_hash if element_hash || @forced_nils[attribute.to_s]
+            data = get_property(attribute)
+            data = self.class.has_one[attribute].create_instance(session: session, data: data) if data.is_a?(Hash)
+            data = data.to_hash(saving) if data
+            hash[attribute.to_s] = data if data || @forced_nils[attribute.to_s]
           elsif !get_property(attribute).nil? || @forced_nils[attribute.to_s]
             hash[attribute.to_s] =
               get_property(attribute)
@@ -313,7 +325,7 @@ module ShopifyAPI
 
       sig { params(update_object: T::Boolean).void }
       def save(update_object: false)
-        hash = HashDiff::Comparison.new(original_state, to_hash).left_diff
+        hash = HashDiff::Comparison.new(original_state, to_hash(true)).left_diff
         method = hash[self.class.primary_key] ? :put : :post
 
         path = self.class.get_path(http_method: method, operation: method, entity: self)
