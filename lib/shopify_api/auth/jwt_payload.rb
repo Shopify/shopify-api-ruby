@@ -35,8 +35,6 @@ module ShopifyAPI
 
         raise ShopifyAPI::Errors::InvalidJwtTokenError,
           "Session token had invalid API key" unless @aud == Context.api_key
-        raise ShopifyAPI::Errors::InvalidJwtTokenError,
-          "Session token had invalid shop" unless validate_shop(shop)
       end
 
       sig { returns(String) }
@@ -44,9 +42,14 @@ module ShopifyAPI
         @dest.gsub("https://", "")
       end
 
+      # TODO: Remove before releasing v11
       sig { params(shop: String).returns(T::Boolean) }
       def validate_shop(shop)
-        /\A[a-z0-9]+[a-z0-9\-\.]*[a-z0-9]+\.(myshopify\.(io|com)|spin\.dev)\z/.match?(shop)
+        Context.logger.warn(
+          "Deprecation notice: ShopifyAPI::Auth::JwtPayload.validate_shop no longer checks the given shop and always " \
+            "returns true. It will be removed in v11."
+        )
+        true
       end
 
       alias_method :eql?, :==

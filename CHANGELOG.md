@@ -3,8 +3,9 @@
 ## Unreleased
 
 ### Fixed
+
 - [#935](https://github.com/Shopify/shopify_api/pull/935) Fix issue [#931](https://github.com/Shopify/shopify_api/pull/931), weight of variant should be float
-- [#939](https://github.com/Shopify/shopify_api/pull/939) Hotfix for `.spin.dev` JWT validation.
+- [#944](https://github.com/Shopify/shopify_api/pull/944) Deprecated the `validate_shop` method from the JWT class since we can trust the token payload, since it comes from Shopify.
 
 ## Version 10.0.2
 

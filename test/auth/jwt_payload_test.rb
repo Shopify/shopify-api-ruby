@@ -83,15 +83,6 @@ module ShopifyAPITest
         end
       end
 
-      def test_decode_jwt_payload_fails_if_domain_is_invalid
-        payload = @jwt_payload.dup
-        payload[:dest] = "https://notadomain"
-        jwt_token = JWT.encode(payload, ShopifyAPI::Context.api_secret_key, "HS256")
-        assert_raises(ShopifyAPI::Errors::InvalidJwtTokenError) do
-          ShopifyAPI::Auth::JwtPayload.new(jwt_token)
-        end
-      end
-
       def test_decode_jwt_payload_fails_with_invalid_api_key
         jwt_token = JWT.encode(@jwt_payload, ShopifyAPI::Context.api_secret_key, "HS256")
 
