@@ -55,6 +55,12 @@ module ShopifyAPI
         sig { returns(T.nilable(String)) }
         attr_reader :custom_prefix
 
+        sig { returns(T::Hash[Symbol, Class]) }
+        attr_reader :has_many
+
+        sig { returns(T::Hash[Symbol, Class]) }
+        attr_reader :has_one
+
         sig do
           params(
             session: T.nilable(Auth::Session),
@@ -116,16 +122,10 @@ module ShopifyAPI
           @has_many.include?(attribute)
         end
 
-        sig { returns(T::Hash[Symbol, Class]) }
-        attr_reader :has_many
-
         sig { params(attribute: Symbol).returns(T::Boolean) }
         def has_one?(attribute)
           @has_one.include?(attribute)
         end
-
-        sig { returns(T::Hash[Symbol, Class]) }
-        attr_reader :has_one
 
         sig { returns(T.nilable(T::Array[Symbol])) }
         def read_only_attributes
@@ -289,16 +289,17 @@ module ShopifyAPI
           end.to_sym
 
           if self.class.has_many?(attribute)
+            attribute_class = self.class.has_many[attribute]
             hash[attribute.to_s] = get_property(attribute).map do |element|
-              data = element
-              data = self.class.has_many[attribute].create_instance(session: session, data: element) if data.is_a?(Hash)
-              data.to_hash(saving) unless data.nil?
+              get_element_hash(element, T.unsafe(attribute_class), saving)
             end.to_a if get_property(attribute)
           elsif self.class.has_one?(attribute)
-            data = get_property(attribute)
-            data = self.class.has_one[attribute].create_instance(session: session, data: data) if data.is_a?(Hash)
-            data = data.to_hash(saving) if data
-            hash[attribute.to_s] = data if data || @forced_nils[attribute.to_s]
+            element_hash = get_element_hash(
+              get_property(attribute),
+              T.unsafe(self.class.has_one[attribute]),
+              saving
+            )
+            hash[attribute.to_s] = element_hash if element_hash || @forced_nils[attribute.to_s]
           elsif !get_property(attribute).nil? || @forced_nils[attribute.to_s]
             hash[attribute.to_s] =
               get_property(attribute)
@@ -366,6 +367,20 @@ module ShopifyAPI
         clean_key = @aliased_properties.key?(key.to_s) ? @aliased_properties[key.to_s] : key
 
         instance_variable_get("@#{clean_key}")
+      end
+
+      sig do
+        params(
+          element: T.nilable(T.any(T::Hash[String, T.untyped], ShopifyAPI::Rest::Base)),
+          attribute_class: Class,
+          saving: T::Boolean,
+        ).returns(T.nilable(T::Hash[String, T.untyped]))
+      end
+      def get_element_hash(element, attribute_class, saving)
+        return nil if element.nil?
+        return element.to_hash(saving) unless element.is_a?(Hash)
+
+        T.unsafe(attribute_class).create_instance(session: @session, data: element).to_hash(saving)
       end
     end
   end
