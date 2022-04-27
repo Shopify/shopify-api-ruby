@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- [#941](https://github.com/Shopify/shopify_api/pull/941) Fix `to_hash` to return readonly attributes, unless being used for serialize the object for saving - fix issue [#930](https://github.com/Shopify/shopify_api/issues/930)
+
 ## Version 10.0.3
 
 ### Fixed

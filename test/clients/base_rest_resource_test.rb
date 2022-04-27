@@ -163,6 +163,24 @@ module ShopifyAPITest
         assert_nil(resource.id)
       end
 
+      def test_to_hash_includes_unsaveable_attributes
+        resource = TestHelpers::FakeResource.new(session: @session)
+        resource.attribute = "attribute"
+        resource.unsaveable_attribute = "this is an attribute"
+
+        assert_includes(resource.to_hash, "attribute")
+        assert_includes(resource.to_hash, "unsaveable_attribute")
+      end
+
+      def test_to_hash_for_saving_excludes_unsaveable_attributes
+        resource = TestHelpers::FakeResource.new(session: @session)
+        resource.attribute = "attribute"
+        resource.unsaveable_attribute = "this is an attribute"
+
+        assert_includes(resource.to_hash(true), "attribute")
+        refute_includes(resource.to_hash(true), "unsaveable_attribute")
+      end
+
       def test_deletes_existing_resource_and_fails_on_deleting_nonexistent_resource
         resource = TestHelpers::FakeResource.new(session: @session)
         resource.id = 1
