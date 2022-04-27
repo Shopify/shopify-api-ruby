@@ -30,7 +30,8 @@ module ShopifyAPI
       {http_method: :delete, operation: :delete, ids: [:theme_id], path: "themes/<theme_id>/assets.json"},
       {http_method: :get, operation: :get, ids: [:theme_id], path: "themes/<theme_id>/assets.json"},
       {http_method: :get, operation: :get, ids: [:theme_id], path: "themes/<theme_id>/assets.json"},
-      {http_method: :put, operation: :put, ids: [:theme_id], path: "themes/<theme_id>/assets.json"}
+      {http_method: :put, operation: :put, ids: [:theme_id], path: "themes/<theme_id>/assets.json"},
+      {http_method: :put, operation: :bulk, ids: [:theme_id], path: "themes/<theme_id>/assets/bulk.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
     sig { returns(T.nilable(String)) }
@@ -108,6 +109,26 @@ module ShopifyAPI
         T.cast(response, T::Array[Asset])
       end
 
+      sig do
+        params(
+          theme_id: T.nilable(T.any(Integer, String)),
+          assets: T::Array[T::Hash[T.untyped, T.untyped]],
+          session: Auth::Session
+        ).returns(T.untyped)
+      end
+      def bulk_update(
+        theme_id: nil,
+        assets: nil,
+        session: ShopifyAPI::Context.active_session
+      )
+        request(
+          http_method: :put,
+          operation: :bulk,
+          session: session,
+          ids: {theme_id: theme_id},
+          body: {assets: assets},
+        )
+      end
     end
 
   end

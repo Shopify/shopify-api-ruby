@@ -161,4 +161,195 @@ class Asset202204Test < Test::Unit::TestCase
     assert_requested(:delete, "https://test-shop.myshopify.io/admin/api/2022-04/themes/828155753/assets.json?asset%5Bkey%5D=assets%2Fbg-body.gif")
   end
 
+  sig do
+    void
+  end
+  def test_8
+    stub_request(:put, "https://test-shop.myshopify.io/admin/api/2022-04/themes/828155753/assets/bulk.json")
+      .with(
+        headers: { "X-Shopify-Access-Token" => "this_is_a_test_token", "Accept" => "application/json",
+                   "Content-Type" => "application/json", },
+        body: {
+          "assets" => [
+            hash_including({
+              "key" => "templates/index.liquid",
+              "value" => "<img src='backsoon-postit.png'><p>We are busy updating the store for you and will be back within the hour.</p>",
+            }),
+          ],
+        }
+      )
+      .to_return(
+        status: 200,
+        body: JSON.generate({
+          "results" => [
+            {
+              "key" => "templates/index.liquid",
+              "public_url" => nil,
+              "created_at" => "2010-07-12T15:31:50-04:00",
+              "updated_at" => "2022-04-05T13:20:45-04:00",
+              "content_type" => "application/x-liquid",
+              "size" => 110,
+              "checksum" => "cd71db2e14df976c8aa44b44c8dae77b",
+              "theme_id" => 828155753,
+            },
+          ],
+        }),
+        headers: {}
+      )
+
+    ShopifyAPI::Asset.bulk_update(
+      theme_id: 828155753,
+      assets: [
+        {
+          key: "templates/index.liquid",
+          value: "<img src='backsoon-postit.png'><p>We are busy updating the store for you and will be back within the hour.</p>",
+        },
+      ]
+    )
+
+    assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2022-04/themes/828155753/assets/bulk.json")
+  end
+
+  sig do
+    void
+  end
+  def test_9
+    stub_request(:put, "https://test-shop.myshopify.io/admin/api/2022-04/themes/828155753/assets/bulk.json")
+      .with(
+        headers: { "X-Shopify-Access-Token" => "this_is_a_test_token", "Accept" => "application/json",
+                   "Content-Type" => "application/json", },
+        body: {
+          "assets" => [
+            hash_including({
+              "key" => "assets/empty.gif",
+              "attachment" => "R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==\n",
+            }),
+          ],
+        }
+      )
+      .to_return(
+        status: 200,
+        body: JSON.generate({
+          "results" => [
+            {
+              "key" => "assets/empty.gif",
+              "public_url" => "https://cdn.shopify.com/s/files/1/0005/4838/0009/t/1/assets/empty.gif?v=1649179246",
+              "created_at" => "2022-04-05T13:20:46-04:00",
+              "updated_at" => "2022-04-05T13:20:46-04:00",
+              "content_type" => "image/gif",
+              "size" => 43, "checksum" => "45cf913e5d9d3c9b2058033056d3dd23",
+              "theme_id" => 828155753,
+            },
+          ],
+        }),
+        headers: {}
+      )
+
+    ShopifyAPI::Asset.bulk_update(
+      theme_id: 828155753,
+      assets: [
+        {
+          key: "assets/empty.gif",
+          attachment: "R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==\n",
+        },
+      ]
+    )
+
+    assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2022-04/themes/828155753/assets/bulk.json")
+  end
+
+  sig do
+    void
+  end
+  def test_10
+    stub_request(:put, "https://test-shop.myshopify.io/admin/api/2022-04/themes/828155753/assets/bulk.json")
+      .with(
+        headers: { "X-Shopify-Access-Token" => "this_is_a_test_token", "Accept" => "application/json",
+                   "Content-Type" => "application/json", },
+        body: {
+          "assets" => [
+            hash_including({
+              "key" => "assets/bg-body.gif",
+              "src" => "http://apple.com/new_bg.gif",
+            }),
+          ],
+        }
+      )
+      .to_return(
+        status: 200,
+        body: JSON.generate({
+          "results" => [
+            {
+              "key" => "assets/bg-body.gif",
+              "public_url" => "https://cdn.shopify.com/s/files/1/0005/4838/0009/t/1/assets/bg-body.gif?v=1649179248",
+              "created_at" => "2010-07-12T15:31:50-04:00",
+              "updated_at" => "2022-04-05T13:20:48-04:00",
+              "content_type" => "image/gif",
+              "size" => 43, "checksum" => "45cf913e5d9d3c9b2058033056d3dd23",
+              "theme_id" => 828155753,
+            },
+          ],
+        }),
+        headers: {}
+      )
+
+    ShopifyAPI::Asset.bulk_update(
+      theme_id: 828155753,
+      assets: [
+        {
+          key: "assets/bg-body.gif",
+          src: "http://apple.com/new_bg.gif",
+        },
+      ]
+    )
+
+    assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2022-04/themes/828155753/assets/bulk.json")
+  end
+
+  sig do
+    void
+  end
+  def test_11
+    stub_request(:put, "https://test-shop.myshopify.io/admin/api/2022-04/themes/828155753/assets/bulk.json")
+      .with(
+        headers: { "X-Shopify-Access-Token" => "this_is_a_test_token", "Accept" => "application/json",
+                   "Content-Type" => "application/json", },
+        body: {
+          "assets" => [
+            hash_including({
+              "key" => "layout/alternate.liquid",
+              "source_key" => "layout/theme.liquid",
+            }),
+          ],
+        }
+      )
+      .to_return(
+        status: 200,
+        body: JSON.generate({
+          "results" => [
+            {
+              "key" => "layout/alternate.liquid",
+              "public_url" => nil, "created_at" => "2022-04-05T13:20:49-04:00",
+              "updated_at" => "2022-04-05T13:20:49-04:00",
+              "content_type" => "application/x-liquid",
+              "size" => 3049, "checksum" => "1879a06996941b2ff1ff485a1fe60a97",
+              "theme_id" => 828155753,
+            },
+          ],
+        }),
+        headers: {}
+      )
+
+    ShopifyAPI::Asset.bulk_update(
+      theme_id: 828155753,
+      assets: [
+        {
+          key: "layout/alternate.liquid",
+          source_key: "layout/theme.liquid",
+        },
+      ]
+    )
+
+    assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2022-04/themes/828155753/assets/bulk.json")
+  end
 end
