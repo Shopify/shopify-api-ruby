@@ -173,6 +173,47 @@ module ShopifyAPITest
         assert_equal("Failed to delete webhook from Shopify: some error", exception.message)
       end
 
+      def test_get_webhook_id_success
+        stub_request(:post, @url)
+          .with(body: JSON.dump({ query: queries[:fetch_id_query], variables: nil }))
+          .to_return({ status: 200, body: JSON.dump(queries[:fetch_id_response]) })
+
+        webhook_id_response = ShopifyAPI::Webhooks::Registry.get_webhook_id(
+          topic: "some/topic",
+          client: ShopifyAPI::Clients::Graphql::Admin.new(session: @session)
+        )
+        assert_equal(
+          queries[:fetch_id_response]["data"]["webhookSubscriptions"]["edges"][0]["node"]["id"],
+          webhook_id_response
+        )
+      end
+
+      def test_get_webhook_id_not_found
+        stub_request(:post, @url)
+          .with(body: JSON.dump({ query: queries[:fetch_id_query], variables: nil }))
+          .to_return({ status: 200, body: JSON.dump(queries[:fetch_id_response_not_found]) })
+
+        webhook_id_response = ShopifyAPI::Webhooks::Registry.get_webhook_id(
+          topic: "some/topic",
+          client: ShopifyAPI::Clients::Graphql::Admin.new(session: @session)
+        )
+        assert_nil(webhook_id_response)
+      end
+
+      def test_get_webhook_id_with_graphql_errors
+        stub_request(:post, @url)
+          .with(body: JSON.dump({ query: queries[:fetch_id_query], variables: nil }))
+          .to_return({ status: 200, body: JSON.dump(queries[:fetch_id_response_with_errors]) })
+
+        exception = assert_raises(ShopifyAPI::Errors::WebhookRegistrationError) do
+          ShopifyAPI::Webhooks::Registry.get_webhook_id(
+            topic: "some/topic",
+            client: ShopifyAPI::Clients::Graphql::Admin.new(session: @session)
+          )
+        end
+        assert_equal("Failed to fetch webhook from Shopify: some error", exception.message)
+      end
+
       private
 
       def do_registration_test(delivery_method, path, fields: nil)
