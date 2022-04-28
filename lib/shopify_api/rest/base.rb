@@ -55,6 +55,12 @@ module ShopifyAPI
         sig { returns(T.nilable(String)) }
         attr_reader :custom_prefix
 
+        sig { returns(T::Hash[Symbol, Class]) }
+        attr_reader :has_many
+
+        sig { returns(T::Hash[Symbol, Class]) }
+        attr_reader :has_one
+
         sig do
           params(
             session: T.nilable(Auth::Session),
@@ -261,8 +267,8 @@ module ShopifyAPI
         match.nil? ? true : super
       end
 
-      sig { returns(T::Hash[String, T.untyped]) }
-      def to_hash
+      sig { params(saving: T::Boolean).returns(T::Hash[String, T.untyped]) }
+      def to_hash(saving = false)
         hash = {}
         instance_variables.each do |var|
           next if [
@@ -273,7 +279,7 @@ module ShopifyAPI
             :"@errors",
             :"@aliased_properties",
           ].include?(var)
-          next if self.class.read_only_attributes&.include?(var)
+          next if saving && self.class.read_only_attributes&.include?(var)
 
           var = var.to_s.delete("@")
           attribute = if @aliased_properties.value?(var)
@@ -283,9 +289,16 @@ module ShopifyAPI
           end.to_sym
 
           if self.class.has_many?(attribute)
-            hash[attribute.to_s] = get_property(attribute).map(&:to_hash).to_a if get_property(attribute)
+            attribute_class = self.class.has_many[attribute]
+            hash[attribute.to_s] = get_property(attribute).map do |element|
+              get_element_hash(element, T.unsafe(attribute_class), saving)
+            end.to_a if get_property(attribute)
           elsif self.class.has_one?(attribute)
-            element_hash = get_property(attribute)&.to_hash
+            element_hash = get_element_hash(
+              get_property(attribute),
+              T.unsafe(self.class.has_one[attribute]),
+              saving
+            )
             hash[attribute.to_s] = element_hash if element_hash || @forced_nils[attribute.to_s]
           elsif !get_property(attribute).nil? || @forced_nils[attribute.to_s]
             hash[attribute.to_s] =
@@ -313,7 +326,7 @@ module ShopifyAPI
 
       sig { params(update_object: T::Boolean).void }
       def save(update_object: false)
-        hash = HashDiff::Comparison.new(original_state, to_hash).left_diff
+        hash = HashDiff::Comparison.new(original_state, to_hash(true)).left_diff
         method = hash[self.class.primary_key] ? :put : :post
 
         path = self.class.get_path(http_method: method, operation: method, entity: self)
@@ -354,6 +367,20 @@ module ShopifyAPI
         clean_key = @aliased_properties.key?(key.to_s) ? @aliased_properties[key.to_s] : key
 
         instance_variable_get("@#{clean_key}")
+      end
+
+      sig do
+        params(
+          element: T.nilable(T.any(T::Hash[String, T.untyped], ShopifyAPI::Rest::Base)),
+          attribute_class: Class,
+          saving: T::Boolean,
+        ).returns(T.nilable(T::Hash[String, T.untyped]))
+      end
+      def get_element_hash(element, attribute_class, saving)
+        return nil if element.nil?
+        return element.to_hash(saving) unless element.is_a?(Hash)
+
+        T.unsafe(attribute_class).create_instance(session: @session, data: element).to_hash(saving)
       end
     end
   end
