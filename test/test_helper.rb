@@ -25,7 +25,7 @@ module Test
         ShopifyAPI::Context.setup(
           api_key: "API_KEY",
           api_secret_key: "API_SECRET_KEY",
-          api_version: "unstable",
+          api_version: ShopifyAPI::LATEST_SUPPORTED_ADMIN_VERSION,
           host_name: "app-address.com",
           scope: ["scope1", "scope2"],
           is_private: false,
@@ -80,6 +80,16 @@ module Test
           user_agent_prefix: user_agent_prefix ? user_agent_prefix : ShopifyAPI::Context.user_agent_prefix,
           old_api_secret_key: old_api_secret_key ? old_api_secret_key : ShopifyAPI::Context.old_api_secret_key,
         )
+      end
+
+      sig do
+        params(
+          name: String,
+          format: Symbol,
+        ).returns(T.nilable(String))
+      end
+      def load_fixture(name, format = :json)
+        File.read(File.dirname(__FILE__) + "/fixtures/#{name}.#{format}")
       end
     end
   end

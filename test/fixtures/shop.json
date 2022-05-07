@@ -1,0 +1,23 @@
+{
+  "shop": {
+    "id": 548380009,
+    "name": "John Smith Test Store",
+    "email": "j.smith@example.com",
+    "domain": "shop.apple.com",
+    "province": "California",
+    "country": "US",
+    "address1": "1 Infinite Loop",
+    "zip": "95014",
+    "city": "Cupertino",
+    "address2": "Suite 100",
+    "created_at": "2007-12-31T19:00:00-05:00",
+    "updated_at": "2022-04-05T12:52:43-04:00",
+    "country_code": "US",
+    "country_name": "United States",
+    "currency": "USD",
+    "customer_email": "customers@apple.com",
+    "timezone": "(GMT-05:00) Eastern Time (US & Canada)",
+    "iana_timezone": "America/New_York",
+    "shop_owner": "John Smith"
+  }
+}

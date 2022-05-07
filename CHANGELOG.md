@@ -25,6 +25,7 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 - [#933](https://github.com/Shopify/shopify-api-ruby/pull/933) Fix syntax of GraphQL query in `Webhooks.get_webhook_id` method by removing extra curly brace
 - [#941](https://github.com/Shopify/shopify-api-ruby/pull/941) Fix `to_hash` to return readonly attributes, unless being used for serialize the object for saving - fix issue [#930](https://github.com/Shopify/shopify-api-ruby/issues/930)
 - [#959](https://github.com/Shopify/shopify-api-ruby/pull/959) Update `LATEST_SUPPORTED_ADMIN_VERSION` to `2022-04` to align it with the current value
+- [#951](https://github.com/Shopify/shopify-api-ruby/pull/951) Adds utility methods to find current shop, current recurring application charge - fix for issue [#923](https://github.com/Shopify/shopify_api/issues/923)
 
 ## Version 10.0.3
 
