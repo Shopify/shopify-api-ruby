@@ -45,7 +45,7 @@ module ShopifyAPI
 
     sig { returns(T.nilable(Integer)) }
     attr_reader :api_client_id
-    sig { returns(T.nilable(Float)) }
+    sig { returns(T.any(T.nilable(Float), T.nilable(String))) }
     attr_reader :balance
     sig { returns(T.nilable(String)) }
     attr_reader :code
@@ -61,7 +61,7 @@ module ShopifyAPI
     attr_reader :expires_on
     sig { returns(T.nilable(Integer)) }
     attr_reader :id
-    sig { returns(T.nilable(Float)) }
+    sig { returns(T.any(T.nilable(Float), T.nilable(String))) }
     attr_reader :initial_value
     sig { returns(T.nilable(String)) }
     attr_reader :last_characters
