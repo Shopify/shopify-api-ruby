@@ -38,6 +38,7 @@ module ShopifyAPI
       {http_method: :get, operation: :get, ids: [:fulfillment_order_id], path: "fulfillment_orders/<fulfillment_order_id>/fulfillments.json"},
       {http_method: :get, operation: :get, ids: [:order_id], path: "orders/<order_id>/fulfillments.json"},
       {http_method: :get, operation: :get, ids: [:order_id, :id], path: "orders/<order_id>/fulfillments/<id>.json"},
+      {http_method: :post, operation: :post, ids: [:order_id], path: "orders/<order_id>/fulfillments.json"},
       {http_method: :post, operation: :update_tracking, ids: [:id], path: "fulfillments/<id>/update_tracking.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 

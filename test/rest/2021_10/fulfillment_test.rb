@@ -137,4 +137,20 @@ class Fulfillment202110Test < Test::Unit::TestCase
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2021-10/fulfillments/1069019865/update_tracking.json")
   end
 
+  sig do
+    void
+  end
+  def test_7()
+    stub_request(:post, "https://test-shop.myshopify.io/admin/api/2022-01/orders/450789469/fulfillments.json")
+      .with(
+        headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
+        body: { "fulfillment" => hash_including({"notify_customer" => true, "tracking_info" => {"number" => "1111", "url" => "http://www.my-url.com", "company" => "my-company"}}) }
+      )
+      .to_return(status: 200, body: JSON.generate({"fulfillment" => {"tracking_company" => "my-company", "location_id" => 24826418, "id" => 1069019865, "order_id" => 1073459963, "status" => "success", "created_at" => "2022-04-07T11:55:27-04:00", "service" => "manual", "updated_at" => "2022-04-07T11:56:13-04:00", "shipment_status" => nil, "line_items" => [{"id" => 1071823174, "variant_id" => 43729076, "title" => "Draft", "quantity" => 1, "sku" => "draft-151", "variant_title" => "151cm", "vendor" => nil, "fulfillment_service" => "manual", "product_id" => 108828309, "requires_shipping" => true, "taxable" => true, "gift_card" => false, "name" => "Draft - 151cm", "variant_inventory_management" => nil, "properties" => [], "product_exists" => true, "fulfillable_quantity" => 1, "grams" => 10, "price" => "10.00", "total_discount" => "0.00", "fulfillment_status" => nil, "price_set" => {"shop_money" => {"amount" => "10.00", "currency_code" => "USD"}, "presentment_money" => {"amount" => "10.00", "currency_code" => "USD"}}, "total_discount_set" => {"shop_money" => {"amount" => "0.00", "currency_code" => "USD"}, "presentment_money" => {"amount" => "0.00", "currency_code" => "USD"}}, "discount_allocations" => [], "admin_graphql_api_id" => "gid://shopify/LineItem/1071823174", "tax_lines" => []}], "tracking_number" => "1111", "tracking_numbers" => ["1111"], "tracking_url" => "http://www.my-url.com", "tracking_urls" => ["http://www.my-url.com"], "receipt" => {}, "name" => "#1033.1", "admin_graphql_api_id" => "gid://shopify/Fulfillment/1069019865"}}), headers: {})
+
+    fulfillment = ShopifyAPI::Fulfillment.new
+    fulfillment.save
+
+    assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-01/orders/450789469/fulfillments.json")
+  end
 end
