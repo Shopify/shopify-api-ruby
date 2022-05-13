@@ -96,6 +96,7 @@ class GiftCard202201Test < Test::Unit::TestCase
     gift_card.save(update_object: true)
 
     assert(gift_card.initial_value == "25.00")
+    assert(gift_card.balance == "25.00")
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-01/gift_cards.json")
   end
 
