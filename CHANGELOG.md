@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+- [#957](https://github.com/Shopify/shopify_api/pull/957) Allow GiftCard to have String `balance` and `initial_value` (because API response is String)
+
 - [#933](https://github.com/Shopify/shopify_api/pull/933) Fix syntax of GraphQL query in `Webhooks.get_webhook_id` method by removing extra curly brace
 
 - [#941](https://github.com/Shopify/shopify_api/pull/941) Fix `to_hash` to return readonly attributes, unless being used for serialize the object for saving - fix issue [#930](https://github.com/Shopify/shopify_api/issues/930)
