@@ -54,7 +54,7 @@ variables = {
   first: 3
 }
 
-response = client.query(data: query, variables: variables)
+response = client.query(query: query, variables: variables)
 
 ```
 
