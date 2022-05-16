@@ -1,11 +1,10 @@
 # Changelog
 
 ## Unreleased
-- [#956](https://github.com/Shopify/shopify_api/pull/956) Add path to create Fulfillment from ShopifyAPI::Fulfillment
-
 - [#933](https://github.com/Shopify/shopify_api/pull/933) Fix syntax of GraphQL query in `Webhooks.get_webhook_id` method by removing extra curly brace
-
 - [#941](https://github.com/Shopify/shopify_api/pull/941) Fix `to_hash` to return readonly attributes, unless being used for serialize the object for saving - fix issue [#930](https://github.com/Shopify/shopify_api/issues/930)
+- [#959](https://github.com/Shopify/shopify_api/pull/959) Update `LATEST_SUPPORTED_ADMIN_VERSION` to `2022-04` to align it with the current value
+- [#956](https://github.com/Shopify/shopify_api/pull/956) Add path to create Fulfillment from ShopifyAPI::Fulfillment
 
 ## Version 10.0.3
 
