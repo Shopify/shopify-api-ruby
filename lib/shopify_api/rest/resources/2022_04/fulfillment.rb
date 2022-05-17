@@ -1,6 +1,10 @@
 # typed: false
 # frozen_string_literal: true
 
+########################################################################################################################
+# This file is auto-generated. If you have an issue, please create a GitHub issue.                                     #
+########################################################################################################################
+
 module ShopifyAPI
   class Fulfillment < ShopifyAPI::Rest::Base
     extend T::Sig
@@ -38,7 +42,14 @@ module ShopifyAPI
       {http_method: :get, operation: :get, ids: [:fulfillment_order_id], path: "fulfillment_orders/<fulfillment_order_id>/fulfillments.json"},
       {http_method: :get, operation: :get, ids: [:order_id], path: "orders/<order_id>/fulfillments.json"},
       {http_method: :get, operation: :get, ids: [:order_id, :id], path: "orders/<order_id>/fulfillments/<id>.json"},
-      {http_method: :post, operation: :update_tracking, ids: [:id], path: "fulfillments/<id>/update_tracking.json"}
+      {http_method: :post, operation: :cancel, ids: [:id], path: "fulfillments/<id>/cancel.json"},
+      {http_method: :post, operation: :cancel, ids: [:order_id, :id], path: "orders/<order_id>/fulfillments/<id>/cancel.json"},
+      {http_method: :post, operation: :complete, ids: [:order_id, :id], path: "orders/<order_id>/fulfillments/<id>/complete.json"},
+      {http_method: :post, operation: :open, ids: [:order_id, :id], path: "orders/<order_id>/fulfillments/<id>/open.json"},
+      {http_method: :post, operation: :post, ids: [], path: "fulfillments.json"},
+      {http_method: :post, operation: :post, ids: [:order_id], path: "orders/<order_id>/fulfillments.json"},
+      {http_method: :post, operation: :update_tracking, ids: [:id], path: "fulfillments/<id>/update_tracking.json"},
+      {http_method: :put, operation: :put, ids: [:order_id, :id], path: "orders/<order_id>/fulfillments/<id>.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
     sig { returns(T.nilable(String)) }
@@ -167,6 +178,69 @@ module ShopifyAPI
         )
       end
 
+    end
+
+    sig do
+      params(
+        body: T.untyped,
+        kwargs: T.untyped
+      ).returns(T.untyped)
+    end
+    def cancel(
+      body: nil,
+      **kwargs
+    )
+      self.class.request(
+        http_method: :post,
+        operation: :cancel,
+        session: @session,
+        ids: {id: @id, order_id: @order_id},
+        params: {}.merge(kwargs).compact,
+        body: body,
+        entity: self,
+      )
+    end
+
+    sig do
+      params(
+        body: T.untyped,
+        kwargs: T.untyped
+      ).returns(T.untyped)
+    end
+    def complete(
+      body: nil,
+      **kwargs
+    )
+      self.class.request(
+        http_method: :post,
+        operation: :complete,
+        session: @session,
+        ids: {id: @id, order_id: @order_id},
+        params: {}.merge(kwargs).compact,
+        body: body,
+        entity: self,
+      )
+    end
+
+    sig do
+      params(
+        body: T.untyped,
+        kwargs: T.untyped
+      ).returns(T.untyped)
+    end
+    def open(
+      body: nil,
+      **kwargs
+    )
+      self.class.request(
+        http_method: :post,
+        operation: :open,
+        session: @session,
+        ids: {id: @id, order_id: @order_id},
+        params: {}.merge(kwargs).compact,
+        body: body,
+        entity: self,
+      )
     end
 
     sig do
