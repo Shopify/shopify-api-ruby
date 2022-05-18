@@ -1,6 +1,10 @@
 # typed: false
 # frozen_string_literal: true
 
+########################################################################################################################
+# This file is auto-generated. If you have an issue, please create a GitHub issue.                                     #
+########################################################################################################################
+
 module ShopifyAPI
   class Country < ShopifyAPI::Rest::Base
     extend T::Sig

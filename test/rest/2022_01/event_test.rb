@@ -1,6 +1,10 @@
 # typed: strict
 # frozen_string_literal: true
 
+########################################################################################################################
+# This file is auto-generated. If you have an issue, please create a GitHub issue.                                     #
+########################################################################################################################
+
 $VERBOSE = nil
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
 
