@@ -1,6 +1,10 @@
 # typed: strict
 # frozen_string_literal: true
 
+########################################################################################################################
+# This file is auto-generated. If you have an issue, please create a GitHub issue.                                     #
+########################################################################################################################
+
 $VERBOSE = nil
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
 
@@ -34,7 +38,7 @@ class Policy202110Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"policies" => [{"body" => "You have 30 days to get a refund", "created_at" => "2022-04-05T13:05:51-04:00", "updated_at" => "2022-04-05T13:05:51-04:00", "handle" => "refund-policy", "title" => "Refund policy", "url" => "https://jsmith.myshopify.com/548380009/policies/878590288"}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"policies" => [{"body" => "You have 30 days to get a refund", "created_at" => "2022-05-04T08:18:52-04:00", "updated_at" => "2022-05-04T08:18:52-04:00", "handle" => "refund-policy", "title" => "Refund policy", "url" => "https://jsmith.myshopify.com/548380009/policies/878590291"}]}), headers: {})
 
     ShopifyAPI::Policy.all()
 

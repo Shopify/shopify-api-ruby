@@ -140,7 +140,6 @@ module ShopifyAPI
                 edges {
                   node {
                     id
-                    }
                   }
                 }
               }

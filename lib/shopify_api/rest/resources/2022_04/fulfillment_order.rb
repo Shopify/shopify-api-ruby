@@ -1,6 +1,10 @@
 # typed: false
 # frozen_string_literal: true
 
+########################################################################################################################
+# This file is auto-generated. If you have an issue, please create a GitHub issue.                                     #
+########################################################################################################################
+
 module ShopifyAPI
   class FulfillmentOrder < ShopifyAPI::Rest::Base
     extend T::Sig
@@ -17,6 +21,7 @@ module ShopifyAPI
       @delivery_method = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
       @destination = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
       @fulfill_at = T.let(nil, T.nilable(String))
+      @fulfill_by = T.let(nil, T.nilable(String))
       @fulfillment_holds = T.let(nil, T.nilable(T::Array[T.untyped]))
       @id = T.let(nil, T.nilable(Integer))
       @international_duties = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
@@ -53,6 +58,8 @@ module ShopifyAPI
     attr_reader :destination
     sig { returns(T.nilable(String)) }
     attr_reader :fulfill_at
+    sig { returns(T.nilable(String)) }
+    attr_reader :fulfill_by
     sig { returns(T.nilable(T::Array[T::Hash[T.untyped, T.untyped]])) }
     attr_reader :fulfillment_holds
     sig { returns(T.nilable(Integer)) }

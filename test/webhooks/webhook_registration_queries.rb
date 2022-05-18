@@ -353,7 +353,6 @@ module ShopifyAPITest
                   edges {
                     node {
                       id
-                      }
                     }
                   }
                 }
@@ -369,6 +368,18 @@ module ShopifyAPITest
                 ],
               },
             },
+          },
+          fetch_id_response_not_found: {
+            "data" => {
+              "webhookSubscriptions" => {
+                "edges" => [],
+              },
+            },
+          },
+          fetch_id_response_with_errors: {
+            "errors" => [
+              "message" => "some error",
+            ],
           },
           delete_query:
               <<~QUERY,
