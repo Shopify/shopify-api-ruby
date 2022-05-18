@@ -1,6 +1,7 @@
 # Releasing ShopifyAPI
 
-1. Before releasing, make sure `sorbet` and `sorbet-runtime` are up to date
+1. Before releasing, make sure `sorbet` and related gems are up to date:
+   `bundle update sorbet sorbet-runtime sorbet-static tapioca --conservative`
 1. Check the Semantic Versioning page for info on how to version the new release: http://semver.org
 1. Update the version of ShopifyAPI in lib/shopify_api/version.rb
 1. Run `bundle`
