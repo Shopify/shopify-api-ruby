@@ -1,5 +1,7 @@
 # Changelog
 
+Note: For changes to the API, see https://shopify.dev/changelog?filter=api
+
 ## Unreleased
 
 ## Version 10.1.0
