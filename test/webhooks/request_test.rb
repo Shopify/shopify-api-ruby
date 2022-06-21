@@ -27,7 +27,7 @@ module ShopifyAPITest
           "HTTP_X_SHOPIFY_TOPIC" => "some/topic",
           "HTTP_X_SHOPIFY_HMAC_SHA256" => "some_hmac",
           "HTTP_X_SHOPIFY_SHOP_DOMAIN" => "shop.myshopify.com",
-          :clearance => "session"
+          :clearance => "session",
         }
 
         assert(ShopifyAPI::Webhooks::Request.new(raw_body: "{}", headers: headers))
