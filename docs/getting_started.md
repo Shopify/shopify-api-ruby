@@ -24,6 +24,7 @@ Start by initializing the `ShopifyAPI::Context` with the parameters of your app 
 ShopifyAPI::Context.setup(
   api_key: "<api-key>",
   api_secret_key: "<api-secret-key>",
+  old_api_secret_key: "<old-api-secret-key>",
   host_name: "<application-host-name>",
   scope: "read_orders,read_products,etc",
   session_storage: ShopifyAPI::Auth::FileSessionStorage.new, # This is only to be used for testing, more information in session docs

@@ -31,7 +31,8 @@ module Test
           is_private: false,
           is_embedded: false,
           session_storage: TestHelpers::FakeSessionStorage.new,
-          user_agent_prefix: nil
+          user_agent_prefix: nil,
+          old_api_secret_key: nil
         )
       end
 
@@ -47,7 +48,8 @@ module Test
           session_storage: T.nilable(ShopifyAPI::Auth::SessionStorage),
           logger: T.nilable(Logger),
           private_shop: T.nilable(String),
-          user_agent_prefix: T.nilable(String)
+          user_agent_prefix: T.nilable(String),
+          old_api_secret_key: T.nilable(String)
         ).void
       end
       def modify_context(
@@ -61,7 +63,8 @@ module Test
         session_storage: nil,
         logger: nil,
         private_shop: "do-not-set",
-        user_agent_prefix: nil
+        user_agent_prefix: nil,
+        old_api_secret_key: nil
       )
         ShopifyAPI::Context.setup(
           api_key: api_key ? api_key : ShopifyAPI::Context.api_key,
@@ -74,7 +77,8 @@ module Test
           session_storage: session_storage ? session_storage : ShopifyAPI::Context.session_storage,
           logger: logger ? logger : ShopifyAPI::Context.logger,
           private_shop: private_shop != "do-not-set" ? private_shop : ShopifyAPI::Context.private_shop,
-          user_agent_prefix: user_agent_prefix ? user_agent_prefix : ShopifyAPI::Context.user_agent_prefix
+          user_agent_prefix: user_agent_prefix ? user_agent_prefix : ShopifyAPI::Context.user_agent_prefix,
+          old_api_secret_key: old_api_secret_key ? old_api_secret_key : ShopifyAPI::Context.old_api_secret_key
         )
       end
     end

@@ -84,6 +84,31 @@ module ShopifyAPITest
         end
       end
 
+      def test_fails_if_authorization_header_be
+        modify_context(is_embedded: true)
+        jwt_header = create_jwt_header("UNKNOWN_API_SECRET_KEY")
+        assert_raises(ShopifyAPI::Errors::InvalidJwtTokenError) do
+          ShopifyAPI::Utils::SessionUtils.load_current_session(auth_header: jwt_header, is_online: true)
+        end
+      end
+
+      def test_decodes_jwt_token_signed_with_old_secret
+        modify_context(is_embedded: true)
+        modify_context(old_api_secret_key: "OLD_API_SECRET_KEY")
+        jwt_header = create_jwt_header(ShopifyAPI::Context.old_api_secret_key)
+        loaded_session = ShopifyAPI::Utils::SessionUtils.load_current_session(auth_header: jwt_header, is_online: true)
+        assert_equal(@online_embedded_session, loaded_session)
+      end
+
+      def test_fails_if_old_api_secret_key_is_invalid
+        modify_context(is_embedded: true)
+        modify_context(old_api_secret_key: "OLD_API_SECRET_KEY")
+        jwt_header = create_jwt_header("UNKNOWN_OLD_API_SECRET_KEY")
+        assert_raises(ShopifyAPI::Errors::InvalidJwtTokenError) do
+          ShopifyAPI::Utils::SessionUtils.load_current_session(auth_header: jwt_header, is_online: true)
+        end
+      end
+
       def test_fails_if_authorization_header_is_not_a_bearer_token
         modify_context(is_embedded: true)
         assert_raises(ShopifyAPI::Errors::MissingJwtTokenError) do
@@ -211,6 +236,11 @@ module ShopifyAPITest
       def add_session(is_online:)
         another_session = ShopifyAPI::Auth::Session.new(shop: @shop, is_online: is_online)
         ShopifyAPI::Context.session_storage.store_session(another_session)
+      end
+
+      def create_jwt_header(api_secret_key)
+        jwt_token = JWT.encode(@jwt_payload, api_secret_key, "HS256")
+        "Bearer #{jwt_token}"
       end
     end
   end
