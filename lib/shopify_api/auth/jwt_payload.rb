@@ -16,11 +16,12 @@ module ShopifyAPI
 
       sig { params(token: String).void }
       def initialize(token)
-        begin
-          payload_hash = JWT.decode(token, Context.api_secret_key, true,
-            { exp_leeway: JWT_EXPIRATION_LEEWAY, algorithm: "HS256" })[0]
-        rescue
-          raise ShopifyAPI::Errors::InvalidJwtTokenError, "Failed to parse session token '#{token}'"
+        payload_hash = begin
+          decode_token(token, Context.api_secret_key)
+        rescue ShopifyAPI::Errors::InvalidJwtTokenError
+          raise unless Context.old_api_secret_key
+
+          decode_token(token, T.must(Context.old_api_secret_key))
         end
 
         @iss = T.let(payload_hash["iss"], String)
@@ -66,6 +67,16 @@ module ShopifyAPI
           iat == other.iat &&
           jti == other.jti &&
           sid == other.sid
+      end
+
+      private
+
+      sig { params(token: String, api_secret_key: String).returns(T::Hash[String, T.untyped]) }
+      def decode_token(token, api_secret_key)
+        JWT.decode(token, api_secret_key, true,
+          { exp_leeway: JWT_EXPIRATION_LEEWAY, algorithm: "HS256" })[0]
+      rescue
+        raise ShopifyAPI::Errors::InvalidJwtTokenError, "Failed to parse session token '#{token}'"
       end
     end
   end

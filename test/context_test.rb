@@ -18,7 +18,8 @@ module ShopifyAPITest
         session_storage: ShopifyAPI::Auth::FileSessionStorage.new,
         logger: Logger.new(writer),
         private_shop: "privateshop.myshopify.com",
-        user_agent_prefix: "user_agent_prefix1"
+        user_agent_prefix: "user_agent_prefix1",
+        old_api_secret_key: "old_secret"
       )
     end
 
@@ -40,6 +41,7 @@ module ShopifyAPITest
       assert_match(/test log/, @reader.gets)
       assert_equal("privateshop.myshopify.com", ShopifyAPI::Context.private_shop)
       assert_equal("user_agent_prefix1", ShopifyAPI::Context.user_agent_prefix)
+      assert_equal("old_secret", ShopifyAPI::Context.old_api_secret_key)
     end
 
     def test_active_session_is_thread_safe
@@ -125,7 +127,8 @@ module ShopifyAPITest
         is_private: false,
         is_embedded: true,
         session_storage: ShopifyAPI::Auth::FileSessionStorage.new,
-        user_agent_prefix: nil
+        user_agent_prefix: nil,
+        old_api_secret_key: nil
       )
     end
   end

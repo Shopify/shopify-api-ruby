@@ -18,6 +18,7 @@ module ShopifyAPI
     @notified_missing_resources_folder = T.let({}, T::Hash[String, T::Boolean])
     @active_session = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @user_agent_prefix = T.let(nil, T.nilable(String))
+    @old_api_secret_key = T.let(nil, T.nilable(String))
 
     @rest_resource_loader = T.let(nil, T.nilable(Zeitwerk::Loader))
 
@@ -37,6 +38,7 @@ module ShopifyAPI
           logger: Logger,
           private_shop: T.nilable(String),
           user_agent_prefix: T.nilable(String),
+          old_api_secret_key: T.nilable(String),
         ).void
       end
       def setup(
@@ -50,7 +52,8 @@ module ShopifyAPI
         session_storage:,
         logger: Logger.new($stdout),
         private_shop: nil,
-        user_agent_prefix: nil
+        user_agent_prefix: nil,
+        old_api_secret_key: nil
       )
         unless ShopifyAPI::AdminVersions::SUPPORTED_ADMIN_VERSIONS.include?(api_version)
           raise Errors::UnsupportedVersionError,
@@ -68,6 +71,7 @@ module ShopifyAPI
         @logger = logger
         @private_shop = private_shop
         @user_agent_prefix = user_agent_prefix
+        @old_api_secret_key = old_api_secret_key
 
         load_rest_resources(api_version: api_version)
       end
@@ -118,7 +122,7 @@ module ShopifyAPI
       end
 
       sig { returns(T.nilable(String)) }
-      attr_reader :private_shop, :user_agent_prefix
+      attr_reader :private_shop, :user_agent_prefix, :old_api_secret_key
 
       sig { returns(T::Boolean) }
       def embedded?
