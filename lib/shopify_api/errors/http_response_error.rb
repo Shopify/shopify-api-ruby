@@ -9,10 +9,14 @@ module ShopifyAPI
       sig { returns(Integer) }
       attr_reader :code
 
-      sig { params(code: Integer).void }
-      def initialize(code:)
+      sig { returns(T.untyped) }
+      attr_reader :errors
+
+      sig { params(code: Integer, errors: T.untyped).void }
+      def initialize(code:, errors: {})
         super
         @code = code
+        @errors = errors
       end
     end
   end

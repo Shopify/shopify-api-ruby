@@ -114,7 +114,8 @@ module ShopifyAPITest
           .with(body: @request.body.to_json, query: @request.query, headers: @expected_headers)
           .to_return(body: { errors: "Something very not good" }.to_json, headers: @response_headers, status: 400)
 
-        assert_raises(ShopifyAPI::Errors::HttpResponseError) { @client.request(@request) }
+        error = assert_raises(ShopifyAPI::Errors::HttpResponseError) { @client.request(@request) }
+        assert_equal("Something very not good", error.errors)
       end
 
       def test_retriable_error_code_no_retries
@@ -122,7 +123,8 @@ module ShopifyAPITest
           .with(body: @request.body.to_json, query: @request.query, headers: @expected_headers)
           .to_return(body: { errors: "Something very not good" }.to_json, headers: @response_headers, status: 500)
 
-        assert_raises(ShopifyAPI::Errors::HttpResponseError) { @client.request(@request) }
+        error = assert_raises(ShopifyAPI::Errors::HttpResponseError) { @client.request(@request) }
+        assert_equal("Something very not good", error.errors)
       end
 
       def test_retry_throttle_error
