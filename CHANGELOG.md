@@ -4,6 +4,8 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
 
+## Version 11.0.0
+
 - [#987](https://github.com/Shopify/shopify_api/pull/987) ⚠️ [Breaking] Add REST resources for July 2022 API version, remove support and REST resources for July 2021 (`2021-07`) API version
 - [#979](https://github.com/Shopify/shopify_api/pull/979) Update `ShopifyAPI::Context.setup` to take `old_api_secret_key` to support API credentials rotation
 - [#977](https://github.com/Shopify/shopify_api/pull/977) Fix webhook requests when a header is present having a symbol key (e.g. `:clearance`)
