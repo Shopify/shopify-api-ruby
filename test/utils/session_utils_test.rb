@@ -84,7 +84,7 @@ module ShopifyAPITest
         end
       end
 
-      def test_fails_if_authorization_header_be
+      def test_fails_if_api_secret_key_is_invalid
         modify_context(is_embedded: true)
         jwt_header = create_jwt_header("UNKNOWN_API_SECRET_KEY")
         assert_raises(ShopifyAPI::Errors::InvalidJwtTokenError) do
