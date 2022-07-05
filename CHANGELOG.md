@@ -4,6 +4,10 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
 
+N/A
+
+## Version 11.0.1
+
 - [#990](https://github.com/Shopify/shopify-api-ruby/pull/991) Validate `hmac` signature of OAuth callback using both old and new API secrets
 
 ## Version 11.0.0
