@@ -12,71 +12,71 @@ N/A
 
 ## Version 11.0.0
 
-- [#987](https://github.com/Shopify/shopify_api/pull/987) ⚠️ [Breaking] Add REST resources for July 2022 API version, remove support and REST resources for July 2021 (`2021-07`) API version
-- [#979](https://github.com/Shopify/shopify_api/pull/979) Update `ShopifyAPI::Context.setup` to take `old_api_secret_key` to support API credentials rotation
-- [#977](https://github.com/Shopify/shopify_api/pull/977) Fix webhook requests when a header is present having a symbol key (e.g. `:clearance`)
+- [#987](https://github.com/Shopify/shopify-api-ruby/pull/987) ⚠️ [Breaking] Add REST resources for July 2022 API version, remove support and REST resources for July 2021 (`2021-07`) API version
+- [#979](https://github.com/Shopify/shopify-api-ruby/pull/979) Update `ShopifyAPI::Context.setup` to take `old_api_secret_key` to support API credentials rotation
+- [#977](https://github.com/Shopify/shopify-api-ruby/pull/977) Fix webhook requests when a header is present having a symbol key (e.g. `:clearance`)
 
 ## Version 10.1.0
 
-- [#933](https://github.com/Shopify/shopify_api/pull/933) Fix syntax of GraphQL query in `Webhooks.get_webhook_id` method by removing extra curly brace
-- [#941](https://github.com/Shopify/shopify_api/pull/941) Fix `to_hash` to return readonly attributes, unless being used for serialize the object for saving - fix issue [#930](https://github.com/Shopify/shopify_api/issues/930)
-- [#959](https://github.com/Shopify/shopify_api/pull/959) Update `LATEST_SUPPORTED_ADMIN_VERSION` to `2022-04` to align it with the current value
+- [#933](https://github.com/Shopify/shopify-api-ruby/pull/933) Fix syntax of GraphQL query in `Webhooks.get_webhook_id` method by removing extra curly brace
+- [#941](https://github.com/Shopify/shopify-api-ruby/pull/941) Fix `to_hash` to return readonly attributes, unless being used for serialize the object for saving - fix issue [#930](https://github.com/Shopify/shopify-api-ruby/issues/930)
+- [#959](https://github.com/Shopify/shopify-api-ruby/pull/959) Update `LATEST_SUPPORTED_ADMIN_VERSION` to `2022-04` to align it with the current value
 
 ## Version 10.0.3
 
 ### Fixed
 
-- [#935](https://github.com/Shopify/shopify_api/pull/935) Fix issue [#931](https://github.com/Shopify/shopify_api/pull/931), weight of variant should be float
-- [#944](https://github.com/Shopify/shopify_api/pull/944) Deprecated the `validate_shop` method from the JWT class since we can trust the token payload, since it comes from Shopify.
+- [#935](https://github.com/Shopify/shopify-api-ruby/pull/935) Fix issue [#931](https://github.com/Shopify/shopify-api-ruby/pull/931), weight of variant should be float
+- [#944](https://github.com/Shopify/shopify-api-ruby/pull/944) Deprecated the `validate_shop` method from the JWT class since we can trust the token payload, since it comes from Shopify.
 
 ## Version 10.0.2
 
-- [#929](https://github.com/Shopify/shopify_api/pull/929) Aligning sorbet dependencies
+- [#929](https://github.com/Shopify/shopify-api-ruby/pull/929) Aligning sorbet dependencies
 
 ## Version 10.0.1
 
 ### Fixed
 
-- [#919](https://github.com/Shopify/shopify_api/pull/919) Allow REST resources to configure a deny list of attributes to be excluded when saving
-- [#920](https://github.com/Shopify/shopify_api/pull/920) Set all values received from the API response to REST resource objects, and allow setting / getting attributes with special characters (such as `?`)
-- [#927](https://github.com/Shopify/shopify_api/pull/927) Fix the `ShopifyAPI::AdminVersions` module for backward compatibility
+- [#919](https://github.com/Shopify/shopify-api-ruby/pull/919) Allow REST resources to configure a deny list of attributes to be excluded when saving
+- [#920](https://github.com/Shopify/shopify-api-ruby/pull/920) Set all values received from the API response to REST resource objects, and allow setting / getting attributes with special characters (such as `?`)
+- [#927](https://github.com/Shopify/shopify-api-ruby/pull/927) Fix the `ShopifyAPI::AdminVersions` module for backward compatibility
 
 ## Version 10.0.0
 
-- Major update to the library to provide _all_ essential functions needed for a Shopify app, supporting embedded apps with session tokens. See the [full list of changes](https://github.com/Shopify/shopify_api#breaking-change-notice-for-version-1000) here
+- Major update to the library to provide _all_ essential functions needed for a Shopify app, supporting embedded apps with session tokens. See the [full list of changes](https://github.com/Shopify/shopify-api-ruby#breaking-change-notice-for-version-1000) here
 
 ## Version 9.5.1
 
-- [#891](https://github.com/Shopify/shopify_api/pull/891) Removed the upper bound on the `activeresource` dependency to allow apps to use the latest version
+- [#891](https://github.com/Shopify/shopify-api-ruby/pull/891) Removed the upper bound on the `activeresource` dependency to allow apps to use the latest version
 
 ## Version 9.5
 
-- [#883](https://github.com/Shopify/shopify_api/pull/883) Add support for Ruby 3.0
+- [#883](https://github.com/Shopify/shopify-api-ruby/pull/883) Add support for Ruby 3.0
 
 ## Version 9.4.1
 
-- [#847](https://github.com/Shopify/shopify_api/pull/847) Update `create_permission_url` method to use grant_options
-- [#852](https://github.com/Shopify/shopify_api/pull/852) Bumping kramdown to fix a security vulnerability
+- [#847](https://github.com/Shopify/shopify-api-ruby/pull/847) Update `create_permission_url` method to use grant_options
+- [#852](https://github.com/Shopify/shopify-api-ruby/pull/852) Bumping kramdown to fix a security vulnerability
 
 ## Version 9.4.0
 
-- [#843](https://github.com/Shopify/shopify_api/pull/843) Introduce a new `access_scopes` attribute on the Session class.
+- [#843](https://github.com/Shopify/shopify-api-ruby/pull/843) Introduce a new `access_scopes` attribute on the Session class.
   - Specifying this in the Session constructor is optional. By default, this attribute returns `nil`.
 
 ## Version 9.3.0
 
-- [#797](https://github.com/Shopify/shopify_api/pull/797) Release new Endpoint `fulfillment_order.open` and `fulfillment_order.reschedule`.
+- [#797](https://github.com/Shopify/shopify-api-ruby/pull/797) Release new Endpoint `fulfillment_order.open` and `fulfillment_order.reschedule`.
 
-- [#818](https://github.com/Shopify/shopify_api/pull/818) Avoid depending on ActiveSupport in Sesssion class.
+- [#818](https://github.com/Shopify/shopify-api-ruby/pull/818) Avoid depending on ActiveSupport in Sesssion class.
 
 - Freeze all string literals. This should have no impact unless your application is modifying ('monkeypatching') the internals of the library in an unusual way.
 
-- [#802](https://github.com/Shopify/shopify_api/pull/802) Made `inventory_quantity` a read-only field in Variant
+- [#802](https://github.com/Shopify/shopify-api-ruby/pull/802) Made `inventory_quantity` a read-only field in Variant
 
-- [#821](https://github.com/Shopify/shopify_api/pull/821) Add logging based on environment variable, move log subscriber out of `detailed_log_subscriber`.
+- [#821](https://github.com/Shopify/shopify-api-ruby/pull/821) Add logging based on environment variable, move log subscriber out of `detailed_log_subscriber`.
   The `ActiveResource::DetailedLogSubscriber` no longer automatically attaches when the class is loaded. If you were previously relying on that behaviour, you'll now need to call `ActiveResource::DetailedLogSubscriber.attach_to(:active_resource_detailed)`. (If using the new `SHOPIFY_LOG_PATH` environment setting then this is handled for you).
 
-- Provide `ApiAccess` value object to encapsulate scope operations [#829](https://github.com/Shopify/shopify_api/pull/829)
+- Provide `ApiAccess` value object to encapsulate scope operations [#829](https://github.com/Shopify/shopify-api-ruby/pull/829)
 
 ## Version 9.2.0
 
@@ -84,52 +84,52 @@ N/A
 
 ## Version 9.1.1
 
-- Make cursor based pagination return relative uri's when fetching next and previous pages. [#726](https://github.com/Shopify/shopify_api/pull/726)
+- Make cursor based pagination return relative uri's when fetching next and previous pages. [#726](https://github.com/Shopify/shopify-api-ruby/pull/726)
 
 ## Version 9.1.0
 
-- Implements equality operator on `Session` [#714](https://github.com/Shopify/shopify_api/pull/714)
+- Implements equality operator on `Session` [#714](https://github.com/Shopify/shopify-api-ruby/pull/714)
 
 ## Version 9.0.4
 
-- Contains [#708](https://github.com/Shopify/shopify_api/pull/708) which is a revert for [#655](https://github.com/shopify/shopify_api/pull/655) due to the deprecated inventory parameters not being removed correctly in some cases
+- Contains [#708](https://github.com/Shopify/shopify-api-ruby/pull/708) which is a revert for [#655](https://github.com/Shopify/shopify-api-ruby/pull/655) due to the deprecated inventory parameters not being removed correctly in some cases
 
 ## Version 9.0.3
 
-- We now raise a `ShopifyAPI::ValidationException` exception when clients try to use `Product` and `Variant` with deprecated inventory-related fields in API version `2019-10` or later. [#655](https://github.com/shopify/shopify_api/pull/655) Deprecation and migration information can be found in the following documents:
+- We now raise a `ShopifyAPI::ValidationException` exception when clients try to use `Product` and `Variant` with deprecated inventory-related fields in API version `2019-10` or later. [#655](https://github.com/Shopify/shopify-api-ruby/pull/655) Deprecation and migration information can be found in the following documents:
   - [Product Variant REST API Reference](https://shopify.dev/docs/admin-api/rest/reference/products/product-variant)
   - [Migrate your app to support multiple locations](https://shopify.dev/tutorials/migrate-your-app-to-support-multiple-locations)
   - [Manage product inventory with the Admin API](https://shopify.dev/tutorials/manage-product-inventory-with-admin-api)
-- Added support for the Discount Code API batch endpoints [#701](https://github.com/shopify/shopify_api/pull/701)
+- Added support for the Discount Code API batch endpoints [#701](https://github.com/Shopify/shopify-api-ruby/pull/701)
   - [Create](https://shopify.dev/docs/admin-api/rest/reference/discounts/discountcode#batch_create-2020-01)
   - [Show](https://shopify.dev/docs/admin-api/rest/reference/discounts/discountcode#batch_show-2020-01)
   - [List](https://shopify.dev/docs/admin-api/rest/reference/discounts/discountcode#batch_discount_codes_index-2020-01)
-- Fix issue in the README to explicitly say clients need to require the `shopify_api` gem [#700](https://github.com/Shopify/shopify_api/pull/700)
+- Fix issue in the README to explicitly say clients need to require the `shopify_api` gem [#700](https://github.com/Shopify/shopify-api-ruby/pull/700)
 
 ## Version 9.0.2
 
-- Added optional flag passed to `initialize_clients` to prevent from raising the `InvalidSchema` exception [#693](https://github.com/Shopify/shopify_api/pull/693)
+- Added optional flag passed to `initialize_clients` to prevent from raising the `InvalidSchema` exception [#693](https://github.com/Shopify/shopify-api-ruby/pull/693)
 
 ## Version 9.0.1
 
-- Added warning message if API version used is unsupported or soon to be unsupported [#685](https://github.com/Shopify/shopify_api/pull/685)
-- Take into account "errors" messages from response body [#677](https://github.com/Shopify/shopify_api/pull/677)
+- Added warning message if API version used is unsupported or soon to be unsupported [#685](https://github.com/Shopify/shopify-api-ruby/pull/685)
+- Take into account "errors" messages from response body [#677](https://github.com/Shopify/shopify-api-ruby/pull/677)
 
 ## Version 9.0.0
 
-- Breaking change: Improved GraphQL client [#672](https://github.com/Shopify/shopify_api/pull/672). See the [client docs](docs/graphql.md) for usage and a migration guide.
+- Breaking change: Improved GraphQL client [#672](https://github.com/Shopify/shopify-api-ruby/pull/672). See the [client docs](docs/graphql.md) for usage and a migration guide.
 
-- Added options hash to create_permission_url and makes redirect_uri required [#670](https://github.com/Shopify/shopify_api/pull/670)
+- Added options hash to create_permission_url and makes redirect_uri required [#670](https://github.com/Shopify/shopify-api-ruby/pull/670)
 
-- Release new Endpoint `fulfillment_order.locations_for_move` in 2020-01 REST API version [#669](https://github.com/Shopify/shopify_api/pull/669)
+- Release new Endpoint `fulfillment_order.locations_for_move` in 2020-01 REST API version [#669](https://github.com/Shopify/shopify-api-ruby/pull/669)
 
-- Release new Endpoints for `fulfillment` in 2020-01 REST API version [#639](https://github.com/Shopify/shopify_api/pull/639):
+- Release new Endpoints for `fulfillment` in 2020-01 REST API version [#639](https://github.com/Shopify/shopify-api-ruby/pull/639):
 
   - `fulfillment.create` with `line_items_by_fulfillment_order`
   - `fulfillment.update_tracking`
   - `fulfillment.cancel`
 
-- Release new Endpoints for `fulfillment_order` in 2020-01 REST API version [#637](https://github.com/Shopify/shopify_api/pull/637):
+- Release new Endpoints for `fulfillment_order` in 2020-01 REST API version [#637](https://github.com/Shopify/shopify-api-ruby/pull/637):
 
   - `fulfillment_order.fulfillment_request`
   - `fulfillment_order.fulfillment_request.accept`
@@ -138,35 +138,35 @@ N/A
   - `fulfillment_order.cancellation_request.accept`
   - `fulfillment_order.cancellation_request.reject`
 
-- Release new Endpoints `fulfillment_order.move`, `fulfillment_order.cancel` and `fulfillment_order.close` in 2020-01 REST API version [#635](https://github.com/Shopify/shopify_api/pull/635)
+- Release new Endpoints `fulfillment_order.move`, `fulfillment_order.cancel` and `fulfillment_order.close` in 2020-01 REST API version [#635](https://github.com/Shopify/shopify-api-ruby/pull/635)
 
-- Release new Endpoint `order.fulfillment_orders`, and active resources `AssignedFulfillmentOrder` and `FulfillmentOrder` in 2020-01 REST API version [#633](https://github.com/Shopify/shopify_api/pull/633)
+- Release new Endpoint `order.fulfillment_orders`, and active resources `AssignedFulfillmentOrder` and `FulfillmentOrder` in 2020-01 REST API version [#633](https://github.com/Shopify/shopify-api-ruby/pull/633)
 
 ## Version 8.1.0
 
-- Release 2020-01 REST ADMIN API VERSION [#656](https://github.com/Shopify/shopify_api/pull/656)
-- Release new Endpoint `collection.products` and `collection.find()` in 2020-01 REST API version [#657](https://github.com/Shopify/shopify_api/pull/657)
-- Enrich 4xx errors with error message from response body [#647](https://github.com/Shopify/shopify_api/pull/647)
-- Make relative cursor based pagination work across page loads [#625](https://github.com/Shopify/shopify_api/pull/625)
-- Small ruby compat fix [#623](https://github.com/Shopify/shopify_api/pull/623)
-- Small consistency change [#621](https://github.com/Shopify/shopify_api/pull/621)
+- Release 2020-01 REST ADMIN API VERSION [#656](https://github.com/Shopify/shopify-api-ruby/pull/656)
+- Release new Endpoint `collection.products` and `collection.find()` in 2020-01 REST API version [#657](https://github.com/Shopify/shopify-api-ruby/pull/657)
+- Enrich 4xx errors with error message from response body [#647](https://github.com/Shopify/shopify-api-ruby/pull/647)
+- Make relative cursor based pagination work across page loads [#625](https://github.com/Shopify/shopify-api-ruby/pull/625)
+- Small ruby compat fix [#623](https://github.com/Shopify/shopify-api-ruby/pull/623)
+- Small consistency change [#621](https://github.com/Shopify/shopify-api-ruby/pull/621)
 
 ## Version 8.0.0
 
-- Api Version changes [#600](https://github.com/Shopify/shopify_api/pull/600)
+- Api Version changes [#600](https://github.com/Shopify/shopify-api-ruby/pull/600)
   - Remove static Api Version definitions.
   - Introduces Api Version lookup modes: `:define_on_unknown` and `:raise_on_unknown`
   - See [migration notes](README.md#-breaking-change-notice-for-version-800-)
 - `Session.valid?` checks that api_version `is_a?(ApiVersion)` instead of `present?`
-- `ApiVersion::NullVersion` cannot be instantiated and now has a `match?` method [#615](https://github.com/Shopify/shopify_api/pull/615/files)
-- Introduces new Collection endpoint for looking up products without knowing collection type. Only available if ApiVersion is `:unstable` [#609](https://github.com/Shopify/shopify_api/pull/609)
+- `ApiVersion::NullVersion` cannot be instantiated and now has a `match?` method [#615](https://github.com/Shopify/shopify-api-ruby/pull/615/files)
+- Introduces new Collection endpoint for looking up products without knowing collection type. Only available if ApiVersion is `:unstable` [#609](https://github.com/Shopify/shopify-api-ruby/pull/609)
 
 ## Version 7.1.0
 
 - Add 2019-10 to known API versions
-- Add support for cursor pagination [#594](https://github.com/Shopify/shopify_api/pull/594) and
-  [#611](https://github.com/Shopify/shopify_api/pull/611)
-- `ShopifyAPI::Base.api_version` now defaults to `ShopifyAPI::ApiVersion::NullVersion` instead of `nil`. Making requests without first setting an ApiVersion raises `ApiVersionNotSetError` instead of `NoMethodError: undefined method 'construct_api_path' for nil:NilClass'` [#605](https://github.com/Shopify/shopify_api/pull/605)
+- Add support for cursor pagination [#594](https://github.com/Shopify/shopify-api-ruby/pull/594) and
+  [#611](https://github.com/Shopify/shopify-api-ruby/pull/611)
+- `ShopifyAPI::Base.api_version` now defaults to `ShopifyAPI::ApiVersion::NullVersion` instead of `nil`. Making requests without first setting an ApiVersion raises `ApiVersionNotSetError` instead of `NoMethodError: undefined method 'construct_api_path' for nil:NilClass'` [#605](https://github.com/Shopify/shopify-api-ruby/pull/605)
 
 ## Version 7.0.2
 
@@ -174,7 +174,7 @@ N/A
 
 ## Version 7.0.1
 
-- Support passing version string to `ShopifyAPI::Base.api_version` [#563](https://github.com/Shopify/shopify_api/pull/563)
+- Support passing version string to `ShopifyAPI::Base.api_version` [#563](https://github.com/Shopify/shopify-api-ruby/pull/563)
 
 ## Version 7.0.0
 
