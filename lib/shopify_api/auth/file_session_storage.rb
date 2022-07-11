@@ -1,6 +1,8 @@
 # typed: strict
 # frozen_string_literal: true
 
+require "fileutils"
+
 module ShopifyAPI
   module Auth
     class FileSessionStorage
