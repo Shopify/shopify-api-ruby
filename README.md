@@ -97,7 +97,7 @@ Here are the main features it provides:
 - Webhook management, with features for adding handlers and registering them with Shopify.
 - Storefront GraphQL API support
 
-Please refer to [the documentation](https://github.com/Shopify/shopify-api-ruby/blob/main/docs/getting_started.md) in this repository for instructions on how to use each of these components.
+Please refer to [the documentation](docs/getting_started.md) in this repository for instructions on how to use each of these components.
 
 With this, a lot changed in how apps access the library. Here are the updates you should make when migrating to v10:
 
