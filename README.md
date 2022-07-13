@@ -2,7 +2,7 @@
 
 <!-- ![Build Status]() -->
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-![Build Status](https://github.com/Shopify/shopify_api/workflows/CI/badge.svg?branch=main)
+![Build Status](https://github.com/Shopify/shopify-api-ruby/workflows/CI/badge.svg?branch=main)
 
 This library provides support for Ruby [Shopify apps](https://apps.shopify.com/) to access the [Shopify Admin API](https://shopify.dev/api/admin), by making it easier to perform the following actions:
 
@@ -15,7 +15,7 @@ In addition to the Admin API, this library also allows querying the [Storefront 
 
 You can use this library in any application that has a Ruby backend, since it doesn't rely on any specific framework — you can include it alongside your preferred stack and use the features that you need to build your app.
 
-**Note**: These instructions apply to v10 or later of this package. If you're running v9 in your app, you can find the documentation [in this branch](https://github.com/Shopify/shopify_api/tree/v9).
+**Note**: These instructions apply to v10 or later of this package. If you're running v9 in your app, you can find the documentation [in this branch](https://github.com/Shopify/shopify-api-ruby/tree/v9).
 
 ## Requirements
 
@@ -97,7 +97,7 @@ Here are the main features it provides:
 - Webhook management, with features for adding handlers and registering them with Shopify.
 - Storefront GraphQL API support
 
-Please refer to [the documentation](https://github.com/Shopify/shopify_api/blob/main/docs/getting_started.md) in this repository for instructions on how to use each of these components.
+Please refer to [the documentation](docs/getting_started.md) in this repository for instructions on how to use each of these components.
 
 With this, a lot changed in how apps access the library. Here are the updates you should make when migrating to v10:
 

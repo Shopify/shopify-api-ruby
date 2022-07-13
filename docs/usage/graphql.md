@@ -1,6 +1,6 @@
 # Make a GraphQL API call
 
-Once you have a [session](https://github.com/Shopify/shopify_api/blob/main/docs/usage/oauth.md#fetching-sessions) after completing oauth, you can make GraphQL queries to the Admin API with `ShopifyAPI::Clients::Graphql::Admin`
+Once you have a [session](oauth.md#fetching-sessions) after completing oauth, you can make GraphQL queries to the Admin API with `ShopifyAPI::Clients::Graphql::Admin`
 
 Below is an example
 
