@@ -4,7 +4,7 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
 
-N/A
+- [#xxx](https://github.com/Shopify/shopify-api-ruby/pull/xxx) Add new method to construct the host app URL
 
 ## Version 11.0.1
 
