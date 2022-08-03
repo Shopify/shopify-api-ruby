@@ -9,7 +9,7 @@ module ShopifyAPITest
       def setup
         super
         @host = "some-shopify-store.myshopify.com/admin"
-        @encoded_host = Base64.encode64(@host)
+        @encoded_host = Base64.strict_encode64(@host)
       end
 
       def test_valid_host

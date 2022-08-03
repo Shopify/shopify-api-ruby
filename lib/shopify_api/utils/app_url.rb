@@ -19,7 +19,7 @@ module ShopifyAPI
             raise Errors::MissingRequiredArgumentError, "host argument is required"
           end
 
-          decoded_host = Base64.decode64(host)
+          decoded_host = Base64.strict_decode64(host)
           "https://#{decoded_host}/apps/#{Context.api_key}"
         end
       end
