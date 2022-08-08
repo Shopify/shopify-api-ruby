@@ -4,7 +4,7 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
 
-N/A
+- [#1002](https://github.com/Shopify/shopify-api-ruby/pull/1002) Add new method to construct the host app URL for an embedded app, allowing for safer redirect to app inside appropriate shop admin
 
 ## Version 11.0.1
 
