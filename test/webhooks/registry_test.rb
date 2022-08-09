@@ -82,6 +82,14 @@ module ShopifyAPITest
         do_registration_test(:http, "test-webhooks")
       end
 
+      def test_http_registration_add_and_update_with_full_url
+        do_registration_test(:http, "https://app-address.com/test-webhooks")
+      end
+
+      def test_http_registration_add_and_update_with_schemeless_url
+        do_registration_test(:http, "app-address.com/test-webhooks")
+      end
+
       def test_http_registration_with_fields_add_and_update
         do_registration_test(:http, "test-webhooks", fields: "field1, field2")
       end
