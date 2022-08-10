@@ -99,7 +99,7 @@ module ShopifyAPI
       sig { params(other: T.nilable(Session)).returns(T::Boolean) }
       def ==(other)
         if other
-          T.must(
+          (
             id == other.id &&
             shop == other.shop &&
             state == other.state &&
