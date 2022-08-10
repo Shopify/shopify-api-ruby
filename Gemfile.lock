@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    shopify_api (11.0.1)
+    shopify_api (11.1.0)
       concurrent-ruby
       hash_diff
       httparty
@@ -45,7 +45,7 @@ GEM
     mocha (1.13.0)
     multi_xml (0.6.0)
     netrc (0.11.0)
-    oj (3.13.15)
+    oj (3.13.20)
     openssl (3.0.0)
     parallel (1.22.1)
     parser (3.1.2.1)
