@@ -83,6 +83,11 @@ module ShopifyAPI
             Context.activate_session(original_session)
           end
         end
+
+        sig { params(str: String).returns(Session) }
+        def deserialize(str)
+          Oj.load(str)
+        end
       end
 
       sig { returns(String) }
@@ -90,16 +95,11 @@ module ShopifyAPI
         Oj.dump(self)
       end
 
-      sig { params(str: String).returns(Session) }
-      def self.deserialize(str)
-        Oj.load(str)
-      end
-
       alias_method :eql?, :==
       sig { params(other: T.nilable(Session)).returns(T::Boolean) }
       def ==(other)
         if other
-          T.must(
+          (
             id == other.id &&
             shop == other.shop &&
             state == other.state &&
