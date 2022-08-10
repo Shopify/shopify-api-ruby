@@ -83,16 +83,16 @@ module ShopifyAPI
             Context.activate_session(original_session)
           end
         end
+
+        sig { params(str: String).returns(Session) }
+        def deserialize(str)
+          Oj.load(str)
+        end
       end
 
       sig { returns(String) }
       def serialize
         Oj.dump(self)
-      end
-
-      sig { params(str: String).returns(Session) }
-      def self.deserialize(str)
-        Oj.load(str)
       end
 
       alias_method :eql?, :==
