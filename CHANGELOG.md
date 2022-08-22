@@ -4,6 +4,8 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
 
+- [#1008](https://github.com/Shopify/shopify-api-ruby/pull/1008) Increase session token JWT validation leeway from 5s to 10s
+
 ## Version 11.1.0
 
 - [#1002](https://github.com/Shopify/shopify-api-ruby/pull/1002) Add new method to construct the host app URL for an embedded app, allowing for safer redirect to app inside appropriate shop admin

@@ -6,7 +6,7 @@ module ShopifyAPI
     class JwtPayload
       extend T::Sig
 
-      JWT_EXPIRATION_LEEWAY = 5
+      JWT_EXPIRATION_LEEWAY = 10
 
       sig { returns(String) }
       attr_reader :iss, :dest, :aud, :sub, :jti, :sid
