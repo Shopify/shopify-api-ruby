@@ -33,7 +33,8 @@ module ShopifyAPITest
         )
         .to_return(status: 200, body: load_fixture("shop"), headers: {})
 
-      current_shop = ShopifyAPI::Utils.current_shop()
+      # current_shop = ShopifyAPI::Utils.current_shop()
+      current_shop = ShopifyAPI::Shop.all.first
 
       assert_requested(:get, "https://test-shop.myshopify.io/admin/api/#{ShopifyAPI::Context.api_version}/shop.json")
       assert_equal(548380009, T.must(current_shop).id)
@@ -63,7 +64,8 @@ module ShopifyAPITest
         )
         .to_return(status: 200, body: JSON.generate(shop_with_fields_only), headers: {})
 
-      current_shop = ShopifyAPI::Utils.current_shop(fields: fields)
+      # current_shop = ShopifyAPI::Utils.current_shop(fields: fields)
+      current_shop = ShopifyAPI::Shop.all(fields: fields).first
 
       assert_requested(:get, "https://test-shop.myshopify.io/admin/api/#{ShopifyAPI::Context.api_version}/shop.json?fields=id%2Caddress1%2Caddress2%2Ccity%2Cprovince%2Ccountry")
       assert_equal("1 Infinite Loop", T.must(current_shop).address1)
@@ -88,7 +90,8 @@ module ShopifyAPITest
         )
         .to_return(status: 200, body: load_fixture("shop"), headers: {})
 
-      current_shop = ShopifyAPI::Utils.current_shop(session: different_session)
+      # current_shop = ShopifyAPI::Utils.current_shop(session: different_session)
+      current_shop = ShopifyAPI::Shop.all(session: different_session).first
 
       assert_requested(:get, "https://not-a-test-shop.myshopify.io/admin/api/#{ShopifyAPI::Context.api_version}/shop.json")
       assert_equal(548380009, T.must(current_shop).id)
@@ -112,7 +115,10 @@ module ShopifyAPITest
         )
         .to_return(status: 200, body: load_fixture("recurring_application_charges"), headers: {})
 
-      current_recurring_application_charge = ShopifyAPI::Utils.current_recurring_application_charge()
+      # current_recurring_application_charge = ShopifyAPI::Utils.current_recurring_application_charge()
+      current_recurring_application_charge = ShopifyAPI::RecurringApplicationCharge.all.find do |c|
+        c.status == "active"
+      end
 
       assert_requested(:get, "https://test-shop.myshopify.io/admin/api/#{ShopifyAPI::Context.api_version}/recurring_application_charges.json")
       assert_equal(455696194, T.must(current_recurring_application_charge).id)
@@ -134,7 +140,10 @@ module ShopifyAPITest
         )
         .to_return(status: 200, body: JSON.generate(no_active_recurring_application_charges), headers: {})
 
-      current_recurring_application_charge = ShopifyAPI::Utils.current_recurring_application_charge()
+      # current_recurring_application_charge = ShopifyAPI::Utils.current_recurring_application_charge()
+      current_recurring_application_charge = ShopifyAPI::RecurringApplicationCharge.all.find do |c|
+        c.status == "active"
+      end
 
       assert_requested(:get, "https://test-shop.myshopify.io/admin/api/#{ShopifyAPI::Context.api_version}/recurring_application_charges.json")
       assert_nil(current_recurring_application_charge)
