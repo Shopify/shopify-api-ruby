@@ -14,7 +14,7 @@ module ShopifyAPITest
     def test_valid_host
       assert_equal(
         ShopifyAPI::Auth.embedded_app_url(@encoded_host),
-        "https://#{@host}/apps/#{ShopifyAPI::Context.api_key}"
+        "https://#{@host}/apps/#{ShopifyAPI::Context.api_key}",
       )
     end
 

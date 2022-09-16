@@ -137,7 +137,7 @@ module ShopifyAPI
             http_method: Symbol,
             operation: Symbol,
             entity: T.nilable(Base),
-            ids: T::Hash[Symbol, T.any(Integer, String)]
+            ids: T::Hash[Symbol, T.any(Integer, String)],
           ).returns(T.nilable(String))
         end
         def get_path(http_method:, operation:, entity: nil, ids: {})
@@ -297,7 +297,7 @@ module ShopifyAPI
             element_hash = get_element_hash(
               get_property(attribute),
               T.unsafe(self.class.has_one[attribute]),
-              saving
+              saving,
             )
             hash[attribute.to_s] = element_hash if element_hash || @forced_nils[attribute.to_s]
           elsif !get_property(attribute).nil? || @forced_nils[attribute.to_s]
@@ -312,7 +312,7 @@ module ShopifyAPI
       def delete(params: {})
         @client.delete(
           path: T.must(self.class.get_path(http_method: :delete, operation: :delete, entity: self)),
-          query: params.compact
+          query: params.compact,
         )
       rescue ShopifyAPI::Errors::HttpResponseError => e
         @errors.errors << e

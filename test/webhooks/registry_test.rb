@@ -16,7 +16,7 @@ module ShopifyAPITest
         hmac = OpenSSL::HMAC.digest(
           OpenSSL::Digest.new("sha256"),
           ShopifyAPI::Context.api_secret_key,
-          "{}"
+          "{}",
         )
 
         @headers = {
@@ -45,11 +45,11 @@ module ShopifyAPITest
             assert_equal(@shop, shop)
             assert_equal({}, body)
             handler_called = true
-          end
+          end,
         )
 
         ShopifyAPI::Webhooks::Registry.add_registration(
-          topic: @topic, path: "path", delivery_method: :http, handler: handler
+          topic: @topic, path: "path", delivery_method: :http, handler: handler,
         )
 
         ShopifyAPI::Webhooks::Registry.process(@webhook_request)
@@ -139,7 +139,7 @@ module ShopifyAPITest
 
         delete_response = ShopifyAPI::Webhooks::Registry.unregister(
           topic: "some/topic",
-          session: @session
+          session: @session,
         )
 
         assert_equal(queries[:delete_response], delete_response)
@@ -157,7 +157,7 @@ module ShopifyAPITest
         exception = assert_raises(ShopifyAPI::Errors::WebhookRegistrationError) do
           ShopifyAPI::Webhooks::Registry.unregister(
             topic: "some/topic",
-            session: @session
+            session: @session,
           )
         end
         assert_equal("Failed to delete webhook from Shopify: some error", exception.message)
@@ -175,7 +175,7 @@ module ShopifyAPITest
         exception = assert_raises(ShopifyAPI::Errors::WebhookRegistrationError) do
           ShopifyAPI::Webhooks::Registry.unregister(
             topic: "some/topic",
-            session: @session
+            session: @session,
           )
         end
         assert_equal("Failed to delete webhook from Shopify: some error", exception.message)
@@ -188,11 +188,11 @@ module ShopifyAPITest
 
         webhook_id_response = ShopifyAPI::Webhooks::Registry.get_webhook_id(
           topic: "some/topic",
-          client: ShopifyAPI::Clients::Graphql::Admin.new(session: @session)
+          client: ShopifyAPI::Clients::Graphql::Admin.new(session: @session),
         )
         assert_equal(
           queries[:fetch_id_response]["data"]["webhookSubscriptions"]["edges"][0]["node"]["id"],
-          webhook_id_response
+          webhook_id_response,
         )
       end
 
@@ -203,7 +203,7 @@ module ShopifyAPITest
 
         webhook_id_response = ShopifyAPI::Webhooks::Registry.get_webhook_id(
           topic: "some/topic",
-          client: ShopifyAPI::Clients::Graphql::Admin.new(session: @session)
+          client: ShopifyAPI::Clients::Graphql::Admin.new(session: @session),
         )
         assert_nil(webhook_id_response)
       end
@@ -216,7 +216,7 @@ module ShopifyAPITest
         exception = assert_raises(ShopifyAPI::Errors::WebhookRegistrationError) do
           ShopifyAPI::Webhooks::Registry.get_webhook_id(
             topic: "some/topic",
-            client: ShopifyAPI::Clients::Graphql::Admin.new(session: @session)
+            client: ShopifyAPI::Clients::Graphql::Admin.new(session: @session),
           )
         end
         assert_equal("Failed to fetch webhook from Shopify: some error", exception.message)
@@ -245,12 +245,12 @@ module ShopifyAPITest
           path: path,
           handler: TestHelpers::FakeWebhookHandler.new(
             lambda do |topic, shop, body|
-            end
+            end,
           ),
-          fields: fields
+          fields: fields,
         )
         registration_response = ShopifyAPI::Webhooks::Registry.register_all(
-          session: @session
+          session: @session,
         )[0]
 
         assert(registration_response.success)
@@ -270,11 +270,11 @@ module ShopifyAPITest
           path: "#{path}-updated",
           handler: TestHelpers::FakeWebhookHandler.new(
             lambda do |topic, shop, body|
-            end
-          )
+            end,
+          ),
         )
         update_registration_response = ShopifyAPI::Webhooks::Registry.register_all(
-          session: @session
+          session: @session,
         )[0]
 
         assert(update_registration_response.success)
@@ -295,13 +295,13 @@ module ShopifyAPITest
           path: path,
           handler: TestHelpers::FakeWebhookHandler.new(
             lambda do |topic, shop, body|
-            end
-          )
+            end,
+          ),
         )
 
         assert_raises(StandardError) do
           ShopifyAPI::Webhooks::Registry.register_all(
-          session: @session
+          session: @session,
         )
         end
       end

@@ -11,7 +11,7 @@ module ShopifyAPI
             id: shop,
             shop: shop,
             access_token: "",
-            is_online: false
+            is_online: false,
           )
           super(session: session, base_path: "/api")
           @storefront_access_token = storefront_access_token
@@ -22,7 +22,7 @@ module ShopifyAPI
             query: String,
             variables: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             headers: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
-            tries: Integer
+            tries: Integer,
           ).returns(HttpResponse)
         end
         def query(query:, variables: nil, headers: {}, tries: 1)

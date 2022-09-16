@@ -12,7 +12,7 @@ module ShopifyAPI
             headers: T::Hash[String, T.untyped],
             body: String,
             cookies: T.nilable(T::Hash[String, String]),
-            tries: Integer
+            tries: Integer,
           ).returns(Clients::HttpResponse)
         end
         def proxy_query(headers:, body:, cookies: nil, tries: 1)
@@ -21,7 +21,7 @@ module ShopifyAPI
           normalized_headers = HttpUtils.normalize_headers(headers)
 
           session = Utils::SessionUtils.load_current_session(
-            auth_header: normalized_headers["authorization"], cookies: cookies, is_online: true
+            auth_header: normalized_headers["authorization"], cookies: cookies, is_online: true,
           )
 
           if session.nil? || !session.online?

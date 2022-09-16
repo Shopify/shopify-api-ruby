@@ -19,7 +19,7 @@ module ShopifyAPITest
         logger: Logger.new(writer),
         private_shop: "privateshop.myshopify.com",
         user_agent_prefix: "user_agent_prefix1",
-        old_api_secret_key: "old_secret"
+        old_api_secret_key: "old_secret",
       )
     end
 
@@ -32,7 +32,7 @@ module ShopifyAPITest
       assert(ShopifyAPI::Context.setup?)
       assert_equal("key", ShopifyAPI::Context.api_key)
       assert_equal("secret", ShopifyAPI::Context.api_secret_key)
-      assert_equal("unstable", ShopifyAPI::Context.api_version,)
+      assert_equal("unstable", ShopifyAPI::Context.api_version)
       assert_equal("host", ShopifyAPI::Context.host_name)
       assert_equal(ShopifyAPI::Auth::AuthScopes.new(["scope1", "scope2"]), ShopifyAPI::Context.scope)
       assert(ShopifyAPI::Context.private?)
@@ -128,7 +128,7 @@ module ShopifyAPITest
         is_embedded: true,
         session_storage: ShopifyAPI::Auth::FileSessionStorage.new,
         user_agent_prefix: nil,
-        old_api_secret_key: nil
+        old_api_secret_key: nil,
       )
     end
   end

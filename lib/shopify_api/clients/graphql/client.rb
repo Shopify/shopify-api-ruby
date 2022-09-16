@@ -17,7 +17,7 @@ module ShopifyAPI
             query: String,
             variables: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             headers: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
-            tries: Integer
+            tries: Integer,
           ).returns(HttpResponse)
         end
         def query(query:, variables: nil, headers: nil, tries: 1)
@@ -30,8 +30,8 @@ module ShopifyAPI
               query: nil,
               extra_headers: headers,
               body_type: "application/json",
-              tries: tries
-            )
+              tries: tries,
+            ),
           )
         end
       end

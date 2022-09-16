@@ -26,7 +26,7 @@ module ShopifyAPITest
             shop: @shop,
             state: @callback_state,
             timestamp: @callback_timestamp,
-          })
+          }),
         )
         @auth_query = ShopifyAPI::Auth::Oauth::AuthQuery.new(
           code: @callback_code,
@@ -34,7 +34,7 @@ module ShopifyAPITest
           timestamp: @callback_timestamp,
           host: ShopifyAPI::Context.host_name,
           state: @callback_state,
-          hmac: @callback_hmac
+          hmac: @callback_hmac,
         )
         @access_token_request = {
           client_id: ShopifyAPI::Context.api_key,
@@ -112,7 +112,7 @@ module ShopifyAPITest
           id: "offline_#{@shop}",
           shop: @shop,
           access_token: @offline_token_response[:access_token],
-          scope: @offline_token_response[:scope]
+          scope: @offline_token_response[:scope],
         )
         expected_cookie = ShopifyAPI::Auth::Oauth::SessionCookie.new(value: "offline_#{@shop}", expires: nil)
 
@@ -130,7 +130,7 @@ module ShopifyAPITest
           id: "offline_#{@shop}",
           shop: @shop,
           access_token: @offline_token_response[:access_token],
-          scope: @offline_token_response[:scope]
+          scope: @offline_token_response[:scope],
         )
         expected_cookie = ShopifyAPI::Auth::Oauth::SessionCookie.new(value: "", expires: @stubbed_time_now)
 
@@ -138,7 +138,7 @@ module ShopifyAPITest
         ShopifyAPI::Context.session_storage.store_session(ShopifyAPI::Auth::Session.new(
           shop: @shop,
           id: @session_cookie,
-          state: @callback_state
+          state: @callback_state,
         ))
 
         got = Time.stub(:now, @stubbed_time_now) do
@@ -160,7 +160,7 @@ module ShopifyAPITest
           scope: @online_token_response[:scope],
           associated_user_scope: @online_token_response[:associated_user_scope],
           expires: @stubbed_time_now + @online_token_response[:expires_in].to_i,
-          associated_user: @expected_associated_user
+          associated_user: @expected_associated_user,
         )
         expected_cookie = ShopifyAPI::Auth::Oauth::SessionCookie.new(value: expected_session.id,
           expires: expected_session.expires)
@@ -169,7 +169,7 @@ module ShopifyAPITest
           shop: @shop,
           id: @session_cookie,
           state: @callback_state,
-          is_online: true
+          is_online: true,
         ))
         got = Time.stub(:now, @stubbed_time_now) do
           ShopifyAPI::Auth::Oauth.validate_auth_callback(cookies: @cookies, auth_query: @auth_query)
@@ -190,11 +190,11 @@ module ShopifyAPITest
           scope: @online_token_response[:scope],
           associated_user_scope: @online_token_response[:associated_user_scope],
           expires: @stubbed_time_now + @online_token_response[:expires_in].to_i,
-          associated_user: @expected_associated_user
+          associated_user: @expected_associated_user,
         )
         expected_cookie = ShopifyAPI::Auth::Oauth::SessionCookie.new(
           value: "",
-          expires: @stubbed_time_now
+          expires: @stubbed_time_now,
         )
 
         modify_context(is_embedded: true)
@@ -202,7 +202,7 @@ module ShopifyAPITest
           shop: @shop,
           id: @session_cookie,
           state: @callback_state,
-          is_online: true
+          is_online: true,
         ))
         got = Time.stub(:now, @stubbed_time_now) do
           ShopifyAPI::Auth::Oauth.validate_auth_callback(cookies: @cookies, auth_query: @auth_query)
@@ -246,7 +246,7 @@ module ShopifyAPITest
         assert_raises(ShopifyAPI::Errors::InvalidOauthError) do
           ShopifyAPI::Auth::Oauth.validate_auth_callback(
             cookies: { ShopifyAPI::Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME => "invalid" },
-            auth_query: @auth_query
+            auth_query: @auth_query,
           )
         end
       end
@@ -257,7 +257,7 @@ module ShopifyAPITest
         ShopifyAPI::Context.session_storage.store_session(ShopifyAPI::Auth::Session.new(
           shop: @shop,
           id: @session_cookie,
-          state: @callback_state
+          state: @callback_state,
         ))
         assert_raises(ShopifyAPI::Errors::RequestAccessTokenError) do
           ShopifyAPI::Auth::Oauth.validate_auth_callback(cookies: @cookies, auth_query: @auth_query)

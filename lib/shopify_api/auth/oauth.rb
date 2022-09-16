@@ -15,7 +15,7 @@ module ShopifyAPI
           params(
             shop: String,
             redirect_path: String,
-            is_online: T.nilable(T::Boolean)
+            is_online: T.nilable(T::Boolean),
           ).returns(T::Hash[Symbol, T.any(String, SessionCookie)])
         end
         def begin_auth(shop:, redirect_path:, is_online: true)
@@ -45,7 +45,7 @@ module ShopifyAPI
         sig do
           params(
             cookies: T::Hash[String, String],
-            auth_query: AuthQuery
+            auth_query: AuthQuery,
           ).returns(T::Hash[Symbol, T.any(Session, SessionCookie)])
         end
         def validate_auth_callback(cookies:, auth_query:)
@@ -75,12 +75,12 @@ module ShopifyAPI
           cookie = if Context.embedded?
             SessionCookie.new(
               value: "",
-              expires: Time.now
+              expires: Time.now,
             )
           else
             SessionCookie.new(
               value: session.id,
-              expires: session.online? ? session.expires : nil
+              expires: session.online? ? session.expires : nil,
             )
           end
 
@@ -120,7 +120,7 @@ module ShopifyAPI
             associated_user_scope: associated_user_scope,
             associated_user: associated_user,
             expires: expires,
-            shopify_session_id: session_params[:session]
+            shopify_session_id: session_params[:session],
           )
         end
       end

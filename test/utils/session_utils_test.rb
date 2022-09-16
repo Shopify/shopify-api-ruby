@@ -53,7 +53,7 @@ module ShopifyAPITest
         assert_nil(ShopifyAPI::Utils::SessionUtils.load_current_session(
           auth_header: @jwt_header,
           cookies: @cookies,
-          is_online: true
+          is_online: true,
         ))
       end
 

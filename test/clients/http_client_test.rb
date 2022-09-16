@@ -20,7 +20,7 @@ module ShopifyAPITest
           body: { foo: "bar" },
           body_type: "application/json",
           query: { id: 1234 },
-          extra_headers: { extra: "header" }
+          extra_headers: { extra: "header" },
         )
 
         @expected_headers = {

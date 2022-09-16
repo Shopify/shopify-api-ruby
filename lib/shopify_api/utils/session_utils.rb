@@ -13,7 +13,7 @@ module ShopifyAPI
           params(
             auth_header: T.nilable(String),
             cookies: T.nilable(T::Hash[String, String]),
-            is_online: T::Boolean
+            is_online: T::Boolean,
           ).returns(T.nilable(Auth::Session))
         end
         def load_current_session(auth_header: nil, cookies: nil, is_online: false)
@@ -29,7 +29,7 @@ module ShopifyAPI
           params(
             auth_header: T.nilable(String),
             cookies: T.nilable(T::Hash[String, String]),
-            is_online: T::Boolean
+            is_online: T::Boolean,
           ).returns(T::Boolean)
         end
         def delete_current_session(auth_header: nil, cookies: nil, is_online: false)
@@ -55,7 +55,7 @@ module ShopifyAPI
 
         sig do
           params(
-            shop: String
+            shop: String,
           ).returns(T::Boolean)
         end
         def delete_offline_session(shop:)
@@ -74,7 +74,7 @@ module ShopifyAPI
           Auth::Session.new(
             shop: T.must(Context.private_shop),
             access_token: Context.api_secret_key,
-            scope: Context.scope.to_a
+            scope: Context.scope.to_a,
           )
         end
 
@@ -82,7 +82,7 @@ module ShopifyAPI
           params(
             auth_header: T.nilable(String),
             cookies: T.nilable(T::Hash[String, String]),
-            online: T::Boolean
+            online: T::Boolean,
           ).returns(T.nilable(String))
         end
         def current_session_id(auth_header, cookies, online)

@@ -9,7 +9,7 @@ module ShopifyAPITest
       def test_valid_request
         ShopifyAPI::Clients::HttpRequest.new(
           http_method: :get,
-          path: "path"
+          path: "path",
         ).verify
       end
 
@@ -17,7 +17,7 @@ module ShopifyAPITest
         assert_raises(ShopifyAPI::Errors::InvalidHttpRequestError) do
           ShopifyAPI::Clients::HttpRequest.new(
             http_method: :bad,
-            path: "path"
+            path: "path",
           ).verify
         end
       end
@@ -27,7 +27,7 @@ module ShopifyAPITest
           ShopifyAPI::Clients::HttpRequest.new(
             http_method: :get,
             path: "path",
-            body: {}
+            body: {},
           ).verify
         end
       end
