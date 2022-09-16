@@ -74,21 +74,6 @@ module ShopifyAPITest
     end
 
     sig { void }
-    def test_current_recurring_application_charge
-      stub_request(:get, "https://test-shop.myshopify.io/admin/api/#{ShopifyAPI::Context.api_version}/recurring_application_charges.json")
-        .with(
-          headers: { "X-Shopify-Access-Token" => "this_is_a_test_token", "Accept" => "application/json" },
-          body: {},
-        )
-        .to_return(status: 200, body: load_fixture("recurring_application_charges"), headers: {})
-
-      current_recurring_application_charge = ShopifyAPI::Utils.current_recurring_application_charge()
-
-      assert_requested(:get, "https://test-shop.myshopify.io/admin/api/#{ShopifyAPI::Context.api_version}/recurring_application_charges.json")
-      assert_equal(455696194, T.must(current_recurring_application_charge).id)
-    end
-
-    sig { void }
     def test_current_shop_passed_session
       different_session = ShopifyAPI::Auth::Session.new(
         id: "id",
@@ -116,6 +101,21 @@ module ShopifyAPITest
       assert_equal("California", T.must(current_shop).province)
       assert_equal("US", T.must(current_shop).country)
       assert_equal("95014", T.must(current_shop).zip)
+    end
+
+    sig { void }
+    def test_current_recurring_application_charge
+      stub_request(:get, "https://test-shop.myshopify.io/admin/api/#{ShopifyAPI::Context.api_version}/recurring_application_charges.json")
+        .with(
+          headers: { "X-Shopify-Access-Token" => "this_is_a_test_token", "Accept" => "application/json" },
+          body: {},
+        )
+        .to_return(status: 200, body: load_fixture("recurring_application_charges"), headers: {})
+
+      current_recurring_application_charge = ShopifyAPI::Utils.current_recurring_application_charge()
+
+      assert_requested(:get, "https://test-shop.myshopify.io/admin/api/#{ShopifyAPI::Context.api_version}/recurring_application_charges.json")
+      assert_equal(455696194, T.must(current_recurring_application_charge).id)
     end
 
     sig { void }
