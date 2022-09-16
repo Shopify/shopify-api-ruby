@@ -18,7 +18,7 @@ module ShopifyAPI
             timestamp: String,
             state: String,
             host: String,
-            hmac: String
+            hmac: String,
           ).void
         end
         def initialize(code:, shop:, timestamp:, state:, host:, hmac:)

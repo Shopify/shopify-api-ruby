@@ -25,7 +25,7 @@ module ShopifyAPITest
           timestamp: @query[:timestamp],
           state: @query[:state],
           host: @query[:host],
-          hmac: "invalid"
+          hmac: "invalid",
         )
         refute(ShopifyAPI::Utils::HmacValidator.validate(auth_query))
       end
@@ -37,7 +37,7 @@ module ShopifyAPITest
           timestamp: @query[:timestamp],
           state: @query[:state],
           host: @query[:host],
-          hmac: hmac(@query, ShopifyAPI::Context.api_secret_key)
+          hmac: hmac(@query, ShopifyAPI::Context.api_secret_key),
         )
         assert(ShopifyAPI::Utils::HmacValidator.validate(auth_query))
       end
@@ -50,7 +50,7 @@ module ShopifyAPITest
           timestamp: @query[:timestamp],
           state: @query[:state],
           host: @query[:host],
-          hmac: hmac(@query, ShopifyAPI::Context.old_api_secret_key)
+          hmac: hmac(@query, ShopifyAPI::Context.old_api_secret_key),
         )
         assert(ShopifyAPI::Utils::HmacValidator.validate(auth_query))
       end
@@ -61,7 +61,7 @@ module ShopifyAPITest
         OpenSSL::HMAC.hexdigest(
           OpenSSL::Digest.new("sha256"),
           secret,
-          URI.encode_www_form(query_to_sign)
+          URI.encode_www_form(query_to_sign),
         )
       end
     end

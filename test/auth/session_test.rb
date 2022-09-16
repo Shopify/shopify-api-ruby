@@ -27,7 +27,7 @@ module ShopifyAPITest
           email_verified: true,
           account_owner: true,
           locale: "en",
-          collaborator: true
+          collaborator: true,
         )
 
         session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop", associated_user: user)
