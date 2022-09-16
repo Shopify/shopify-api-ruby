@@ -9,7 +9,13 @@ module ShopifyAPI
 
         sig { override.returns(String) }
         def callback_address
-          "https://#{Context.host_name}/#{@path}"
+          if @path.match?(%r{^https://})
+            @path
+          elsif @path.match?(/^#{Context.host_name}/)
+            "https://#{@path}"
+          else
+            "https://#{Context.host_name}/#{@path}"
+          end
         end
 
         sig { override.returns(T::Hash[Symbol, String]) }
