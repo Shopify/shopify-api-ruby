@@ -9,7 +9,7 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Version 11.1.0
 
 - [#1002](https://github.com/Shopify/shopify-api-ruby/pull/1002) Add new method to construct the host app URL for an embedded app, allowing for safer redirect to app inside appropriate shop admin
-- [#1004](https://github.com/Shopify/shopify-api-ruby/pull/1004) Support full URL and schemeless URL when register HTTP webhooks
+- [#1004](https://github.com/Shopify/shopify-api-ruby/pull/1004) Support full URL and scheme-less URL when registering HTTP webhooks
 
 ## Version 11.0.1
 
