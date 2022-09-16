@@ -15,7 +15,7 @@ module ShopifyAPITest
         @write_products = ShopifyAPI::Auth::AuthScopes.new(["write_products"])
         @write_products_and_orders = ShopifyAPI::Auth::AuthScopes.new(["write_products,", "write_orders"])
         @write_products_orders_customers = ShopifyAPI::Auth::AuthScopes.new(
-          ["write_products", "write_orders", "write_customers"]
+          ["write_products", "write_orders", "write_customers"],
         )
       end
 
@@ -25,7 +25,7 @@ module ShopifyAPITest
 
       def test_write_is_the_same_access_as_read_write_on_the_same_unauthenticated_resource
         unauthenticated_read_write_orders = ShopifyAPI::Auth::AuthScopes.new(
-          ["unauthenticated_read_orders", "unauthenticated_write_orders"]
+          ["unauthenticated_read_orders", "unauthenticated_write_orders"],
         )
         unauthenticated_write_orders = ShopifyAPI::Auth::AuthScopes.new(["unauthenticated_write_orders"])
 
@@ -97,7 +97,7 @@ module ShopifyAPITest
 
       def test_duplicate_scopes_resolve_to_one_scope
         read_orders_duplicated = ShopifyAPI::Auth::AuthScopes.new(
-          ["read_orders", "read_orders", "read_orders", "read_orders"]
+          ["read_orders", "read_orders", "read_orders", "read_orders"],
         )
 
         assert_equal(@read_orders, read_orders_duplicated)
@@ -119,7 +119,7 @@ module ShopifyAPITest
 
       def test_creating_scopes_removes_extra_whitespace_from_scope_name_and_blank_scope_names
         deserialized_read_products_write_orders = ShopifyAPI::Auth::AuthScopes.new(
-          [" read_products", "  ", "write_orders "]
+          [" read_products", "  ", "write_orders "],
         )
         serialized_read_products_write_orders = deserialized_read_products_write_orders.to_s
         expected_read_products_write_orders = ShopifyAPI::Auth::AuthScopes.new(["read_products", "write_orders"])

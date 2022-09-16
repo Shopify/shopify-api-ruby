@@ -45,7 +45,7 @@ module ShopifyAPI
             request_url(request),
             headers: headers,
             query: request.query,
-            body: request.body.class == Hash ? T.unsafe(request.body).to_json : request.body
+            body: request.body.class == Hash ? T.unsafe(request.body).to_json : request.body,
           ), HTTParty::Response)
 
           body = res.body.empty? ? {} : JSON.parse(res.body)

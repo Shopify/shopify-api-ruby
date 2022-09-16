@@ -11,7 +11,7 @@ module ShopifyAPITest
 
         @access_token = SecureRandom.alphanumeric(10)
         @session = ShopifyAPI::Auth::Session.new(
-          id: "id", shop: "testshop.myshopify.com", access_token: @access_token, is_online: true
+          id: "id", shop: "testshop.myshopify.com", access_token: @access_token, is_online: true,
         )
         @cookies = { "shopify_app_session" => "id" }
         ShopifyAPI::Context.session_storage.store_session(@session)
@@ -29,7 +29,7 @@ module ShopifyAPITest
           .returns(ShopifyAPI::Clients::HttpResponse.new(code: 200, body: "", headers: {}))
 
         ShopifyAPI::Utils::GraphqlProxy.proxy_query(
-          headers: { "content_type" => "application/json" }, body: body, cookies: @cookies
+          headers: { "content_type" => "application/json" }, body: body, cookies: @cookies,
         )
       end
 
@@ -40,7 +40,7 @@ module ShopifyAPITest
           .returns(ShopifyAPI::Clients::HttpResponse.new(code: 200, body: "", headers: {}))
 
         ShopifyAPI::Utils::GraphqlProxy.proxy_query(
-          headers: { "content_type" => "application/graphql" }, body: "query string", cookies: @cookies
+          headers: { "content_type" => "application/graphql" }, body: "query string", cookies: @cookies,
         )
       end
 
@@ -62,7 +62,7 @@ module ShopifyAPITest
       def test_proxy_query_missing_from_json_body
         assert_raises(ShopifyAPI::Errors::InvalidGraphqlRequestError) do
           ShopifyAPI::Utils::GraphqlProxy.proxy_query(
-            headers: { "content_type" => "application/json" }, body: "{}", cookies: @cookies
+            headers: { "content_type" => "application/json" }, body: "{}", cookies: @cookies,
           )
         end
       end
@@ -70,7 +70,7 @@ module ShopifyAPITest
       def test_proxy_query_invalid_content_type
         assert_raises(ShopifyAPI::Errors::InvalidGraphqlRequestError) do
           ShopifyAPI::Utils::GraphqlProxy.proxy_query(
-            headers: { "content_type" => "application/bad" }, body: "", cookies: @cookies
+            headers: { "content_type" => "application/bad" }, body: "", cookies: @cookies,
           )
         end
       end

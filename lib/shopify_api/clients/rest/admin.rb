@@ -18,13 +18,13 @@ module ShopifyAPI
             body: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             query: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             headers: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
-            tries: T.nilable(Integer)
+            tries: T.nilable(Integer),
           ).returns(HttpResponse)
         end
         def get(path:, body: nil, query: nil, headers: nil, tries: 1)
           request(
             make_request(http_method: :get, path: path, body: body, query: query, headers: headers,
-              tries: T.must(tries))
+              tries: T.must(tries)),
           )
         end
 
@@ -34,13 +34,13 @@ module ShopifyAPI
             body: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             query: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             headers: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
-            tries: T.nilable(Integer)
+            tries: T.nilable(Integer),
           ).returns(HttpResponse)
         end
         def delete(path:, body: nil, query: nil, headers: nil, tries: 1)
           request(
             make_request(http_method: :delete, path: path, body: body, query: query, headers: headers,
-              tries: T.must(tries))
+              tries: T.must(tries)),
           )
         end
 
@@ -50,13 +50,13 @@ module ShopifyAPI
             body: T::Hash[T.any(Symbol, String), T.untyped],
             query: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             headers: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
-            tries: T.nilable(Integer)
+            tries: T.nilable(Integer),
           ).returns(HttpResponse)
         end
         def put(path:, body:, query: nil, headers: nil, tries: 1)
           request(
             make_request(http_method: :put, path: path, body: body, query: query, headers: headers,
-              tries: T.must(tries))
+              tries: T.must(tries)),
           )
         end
 
@@ -66,13 +66,13 @@ module ShopifyAPI
             body: T::Hash[T.any(Symbol, String), T.untyped],
             query: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             headers: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
-            tries: T.nilable(Integer)
+            tries: T.nilable(Integer),
           ).returns(HttpResponse)
         end
         def post(path:, body:, query: nil, headers: nil, tries: 1)
           request(
             make_request(http_method: :post, path: path, body: body, query: query, headers: headers,
-              tries: T.must(tries))
+              tries: T.must(tries)),
           )
         end
 
@@ -98,7 +98,7 @@ module ShopifyAPI
             body: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             query: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             headers: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
-            tries: Integer
+            tries: Integer,
           ).returns(HttpRequest)
         end
         def make_request(http_method:, path:, body:, query:, headers:, tries:)
@@ -109,7 +109,7 @@ module ShopifyAPI
             query: query,
             extra_headers: headers,
             body_type: body.nil? ? nil : "application/json",
-            tries: tries
+            tries: tries,
           )
         end
       end

@@ -41,7 +41,7 @@ module ShopifyAPI
         sig do
           params(
             topic: String,
-            session: Auth::Session
+            session: Auth::Session,
           ).returns(RegisterResult)
         end
         def register(topic:, session:)
@@ -61,11 +61,11 @@ module ShopifyAPI
             register_body = send_register_request(
               client,
               registration,
-              register_check_result[:webhook_id]
+              register_check_result[:webhook_id],
             )
             registered = registration_sucessful?(
               register_body,
-              registration.mutation_name(register_check_result[:webhook_id])
+              registration.mutation_name(register_check_result[:webhook_id]),
             )
           end
 
@@ -74,7 +74,7 @@ module ShopifyAPI
 
         sig do
           params(
-            session: Auth::Session
+            session: Auth::Session,
           ).returns(T::Array[RegisterResult])
         end
         def register_all(session:)
@@ -83,7 +83,7 @@ module ShopifyAPI
           topics.each do |topic|
             register_response = register(
               topic: topic,
-              session: session
+              session: session,
             )
             result.push(register_response)
           end
@@ -93,7 +93,7 @@ module ShopifyAPI
         sig do
           params(
             topic: String,
-            session: T.nilable(Auth::Session)
+            session: T.nilable(Auth::Session),
           ).returns(T::Hash[String, T.untyped])
         end
         def unregister(topic:, session:)
@@ -130,7 +130,7 @@ module ShopifyAPI
         sig do
           params(
             topic: String,
-            client: Clients::Graphql::Admin
+            client: Clients::Graphql::Admin,
           ).returns(T.nilable(String))
         end
         def get_webhook_id(topic:, client:)
@@ -194,7 +194,7 @@ module ShopifyAPI
           params(
             client: Clients::Graphql::Admin,
             registration: Registration,
-            webhook_id: T.nilable(String)
+            webhook_id: T.nilable(String),
           ).returns(T::Hash[String, T.untyped])
         end
         def send_register_request(client, registration, webhook_id)

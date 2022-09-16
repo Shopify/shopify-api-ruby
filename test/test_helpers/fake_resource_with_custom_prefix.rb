@@ -37,7 +37,7 @@ module TestHelpers
       def find(id:, session:, param: nil, **kwargs)
         T.cast(
           base_find(params: { param: param }.merge(kwargs), session: session, ids: { id: id })[0],
-          FakeResourceWithCustomPrefix
+          FakeResourceWithCustomPrefix,
         )
       end
 
@@ -47,7 +47,7 @@ module TestHelpers
       def all(session:, **kwargs)
         T.cast(
           base_find(session: session, params: kwargs),
-          T::Array[FakeResourceWithCustomPrefix]
+          T::Array[FakeResourceWithCustomPrefix],
         )
       end
     end

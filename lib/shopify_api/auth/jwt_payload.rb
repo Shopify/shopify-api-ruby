@@ -48,7 +48,7 @@ module ShopifyAPI
       def validate_shop(shop)
         Context.logger.warn(
           "Deprecation notice: ShopifyAPI::Auth::JwtPayload.validate_shop no longer checks the given shop and always " \
-            "returns true. It will be removed in v11."
+            "returns true. It will be removed in v11.",
         )
         true
       end

@@ -12,7 +12,7 @@ module TestHelpers
         email_verified: true,
         account_owner: true,
         locale: "en-us",
-        collaborator: true
+        collaborator: true,
       )
       ShopifyAPI::Auth::Session.new(
         id: "id",
@@ -22,7 +22,7 @@ module TestHelpers
         scope: ["test-scope"],
         expires: Time.now,
         is_online: true,
-        associated_user: associated_user
+        associated_user: associated_user,
       )
     end
 

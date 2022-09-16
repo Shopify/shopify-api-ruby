@@ -12,7 +12,7 @@ module ShopifyAPITest
             state: "1234",
             timestamp: "123456",
             host: "host",
-            hmac: "hmac"
+            hmac: "hmac",
           )
 
           alphabetical_encoded_string = URI.encode_www_form({

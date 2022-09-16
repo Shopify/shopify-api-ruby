@@ -46,7 +46,7 @@ module ShopifyAPI
           expires: T.nilable(Time),
           is_online: T.nilable(T::Boolean),
           associated_user: T.nilable(AssociatedUser),
-          shopify_session_id: T.nilable(String)
+          shopify_session_id: T.nilable(String),
         ).void
       end
       def initialize(shop:, id: nil, state: nil, access_token: "", scope: [], associated_user_scope: nil, expires: nil,
