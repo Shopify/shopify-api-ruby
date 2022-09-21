@@ -63,7 +63,7 @@ module ShopifyAPI
 
           # TODO: replace this call with the HTTP client once it is built
           body = { client_id: Context.api_key, client_secret: Context.api_secret_key, code: auth_query.code }
-          response = HTTParty.post("#{ShopifyAPI::Context.host_scheme}#{auth_query.shop}/admin/oauth/access_token",
+          response = HTTParty.post("https://#{auth_query.shop}/admin/oauth/access_token",
             body: body)
           unless response.ok?
             raise Errors::RequestAccessTokenError,
