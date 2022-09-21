@@ -38,7 +38,7 @@ module ShopifyAPI
 
           query_string = URI.encode_www_form(query)
 
-          auth_route = "#{ShopifyAPI::Context.host_scheme}#{shop}/admin/oauth/authorize?#{query_string}"
+          auth_route = "https://#{shop}/admin/oauth/authorize?#{query_string}"
           { auth_route: auth_route, cookie: cookie }
         end
 
@@ -63,8 +63,7 @@ module ShopifyAPI
 
           # TODO: replace this call with the HTTP client once it is built
           body = { client_id: Context.api_key, client_secret: Context.api_secret_key, code: auth_query.code }
-          response = HTTParty.post("https://#{auth_query.shop}/admin/oauth/access_token",
-            body: body)
+          response = HTTParty.post("https://#{auth_query.shop}/admin/oauth/access_token", body: body)
           unless response.ok?
             raise Errors::RequestAccessTokenError,
               "Cannot complete OAuth process. Received a #{response.code} error while requesting access token."
