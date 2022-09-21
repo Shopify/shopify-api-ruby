@@ -122,7 +122,7 @@ module ShopifyAPITest
         is_private: true,
         is_embedded: true,
         session_storage: ShopifyAPI::Auth::FileSessionStorage.new,
-        host_scheme: "http://",
+        is_https: false,
         private_shop: "privateshop.myshopify.com",
         user_agent_prefix: "user_agent_prefix1",
         old_api_secret_key: "old_secret",

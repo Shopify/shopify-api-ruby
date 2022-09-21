@@ -9,7 +9,7 @@ module ShopifyAPI
     @api_secret_key = T.let("", String)
     @api_version = T.let(LATEST_SUPPORTED_ADMIN_VERSION, String)
     @host_name = T.let("", String)
-    @host_scheme = T.let("https://", String)
+    @is_https = T.let(true, T::Boolean)
     @scope = T.let(Auth::AuthScopes.new, Auth::AuthScopes)
     @session_storage = T.let(ShopifyAPI::Auth::FileSessionStorage.new, ShopifyAPI::Auth::SessionStorage)
     @is_private = T.let(false, T::Boolean)
@@ -37,7 +37,7 @@ module ShopifyAPI
           is_embedded: T::Boolean,
           session_storage: ShopifyAPI::Auth::SessionStorage,
           logger: Logger,
-          host_scheme: String,
+          is_https: T::Boolean,
           private_shop: T.nilable(String),
           user_agent_prefix: T.nilable(String),
           old_api_secret_key: T.nilable(String),
@@ -53,7 +53,7 @@ module ShopifyAPI
         is_embedded:,
         session_storage:,
         logger: Logger.new($stdout),
-        host_scheme: "https://",
+        is_https: true,
         private_shop: nil,
         user_agent_prefix: nil,
         old_api_secret_key: nil
@@ -72,7 +72,7 @@ module ShopifyAPI
         @is_embedded = is_embedded
         @session_storage = session_storage
         @logger = logger
-        @host_scheme = host_scheme
+        @is_https = is_https
         @private_shop = private_shop
         @user_agent_prefix = user_agent_prefix
         @old_api_secret_key = old_api_secret_key
@@ -109,7 +109,7 @@ module ShopifyAPI
       end
 
       sig { returns(String) }
-      attr_reader :api_key, :api_secret_key, :api_version, :host_name, :host_scheme
+      attr_reader :api_key, :api_secret_key, :api_version, :host_name
 
       sig { returns(Auth::AuthScopes) }
       attr_reader :scope
@@ -119,6 +119,9 @@ module ShopifyAPI
 
       sig { returns(Logger) }
       attr_reader :logger
+
+      sig { returns(T::Boolean) }
+      attr_reader :is_https
 
       sig { returns(T::Boolean) }
       def private?
@@ -153,6 +156,11 @@ module ShopifyAPI
       sig { void }
       def deactivate_session
         @active_session.value = nil
+      end
+
+      sig { returns(String) }
+      def host_scheme
+        is_https ? "https://" : "http://"
       end
     end
   end
