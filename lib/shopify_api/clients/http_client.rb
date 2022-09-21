@@ -13,7 +13,7 @@ module ShopifyAPI
         session ||= Context.active_session
         raise Errors::NoActiveSessionError, "No passed or active session" unless session
 
-        @base_uri = T.let("https://#{session.shop}", String)
+        @base_uri = T.let("#{Context.host_scheme}#{session.shop}", String)
         @base_uri_and_path = T.let("#{@base_uri}#{base_path}", String)
 
         user_agent_prefix = Context.user_agent_prefix.nil? ? "" : "#{Context.user_agent_prefix} | "
