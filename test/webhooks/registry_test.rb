@@ -27,7 +27,7 @@ module ShopifyAPITest
 
         @webhook_request = ShopifyAPI::Webhooks::Request.new(raw_body: "{}", headers: @headers)
         @session = ShopifyAPI::Auth::Session.new(shop: ShopifyAPI::Context.host_name, access_token: "access_token")
-        @url = "https://#{ShopifyAPI::Context.host_name}/admin/api/#{ShopifyAPI::Context.api_version}/graphql.json"
+        @url = "#{ShopifyAPI::Context.host}/admin/api/#{ShopifyAPI::Context.api_version}/graphql.json"
       end
 
       def test_add_http_registration_without_handler

@@ -36,6 +36,7 @@ module ShopifyAPI
           is_embedded: T::Boolean,
           session_storage: ShopifyAPI::Auth::SessionStorage,
           logger: Logger,
+          host: T.nilable(String),
           private_shop: T.nilable(String),
           user_agent_prefix: T.nilable(String),
           old_api_secret_key: T.nilable(String),
@@ -51,6 +52,7 @@ module ShopifyAPI
         is_embedded:,
         session_storage:,
         logger: Logger.new($stdout),
+        host: ENV["HOST"] || "https://#{host_name}",
         private_shop: nil,
         user_agent_prefix: nil,
         old_api_secret_key: nil
@@ -64,6 +66,7 @@ module ShopifyAPI
         @api_secret_key = api_secret_key
         @api_version = api_version
         @host_name = host_name
+        @host = T.let(host, T.nilable(String))
         @is_private = is_private
         @scope = Auth::AuthScopes.new(scope)
         @is_embedded = is_embedded
@@ -122,7 +125,7 @@ module ShopifyAPI
       end
 
       sig { returns(T.nilable(String)) }
-      attr_reader :private_shop, :user_agent_prefix, :old_api_secret_key
+      attr_reader :private_shop, :user_agent_prefix, :old_api_secret_key, :host
 
       sig { returns(T::Boolean) }
       def embedded?
@@ -131,7 +134,7 @@ module ShopifyAPI
 
       sig { returns(T::Boolean) }
       def setup?
-        !(api_key.empty? || api_secret_key.empty? || host_name.empty?)
+        !(api_key.empty? || api_secret_key.empty? || host_name.empty? || T.must(host).empty?)
       end
 
       sig { returns(T.nilable(Auth::Session)) }
@@ -153,10 +156,7 @@ module ShopifyAPI
 
       sig { returns(String) }
       def host_scheme
-        return "https://" unless ENV["HOST"]
-
-        host_uri = T.let(URI.parse(T.must(ENV["HOST"])), URI::Generic)
-        "#{host_uri.scheme}://"
+        T.must(URI.parse(T.must(host)).scheme)
       end
     end
   end

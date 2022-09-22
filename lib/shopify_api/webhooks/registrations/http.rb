@@ -12,9 +12,9 @@ module ShopifyAPI
           if @path.match?(%r{^https?://})
             @path
           elsif @path.match?(/^#{Context.host_name}/)
-            "#{Context.host_scheme}#{@path}"
+            "#{Context.host_scheme}://#{@path}"
           else
-            "#{Context.host_scheme}#{Context.host_name}/#{@path}"
+            "#{Context.host}/#{@path}"
           end
         end
 
