@@ -9,7 +9,6 @@ module ShopifyAPI
     @api_secret_key = T.let("", String)
     @api_version = T.let(LATEST_SUPPORTED_ADMIN_VERSION, String)
     @host_name = T.let("", String)
-    @is_https = T.let(true, T::Boolean)
     @scope = T.let(Auth::AuthScopes.new, Auth::AuthScopes)
     @session_storage = T.let(ShopifyAPI::Auth::FileSessionStorage.new, ShopifyAPI::Auth::SessionStorage)
     @is_private = T.let(false, T::Boolean)
@@ -37,7 +36,6 @@ module ShopifyAPI
           is_embedded: T::Boolean,
           session_storage: ShopifyAPI::Auth::SessionStorage,
           logger: Logger,
-          is_https: T::Boolean,
           private_shop: T.nilable(String),
           user_agent_prefix: T.nilable(String),
           old_api_secret_key: T.nilable(String),
@@ -53,7 +51,6 @@ module ShopifyAPI
         is_embedded:,
         session_storage:,
         logger: Logger.new($stdout),
-        is_https: true,
         private_shop: nil,
         user_agent_prefix: nil,
         old_api_secret_key: nil
@@ -72,7 +69,6 @@ module ShopifyAPI
         @is_embedded = is_embedded
         @session_storage = session_storage
         @logger = logger
-        @is_https = is_https
         @private_shop = private_shop
         @user_agent_prefix = user_agent_prefix
         @old_api_secret_key = old_api_secret_key
@@ -121,9 +117,6 @@ module ShopifyAPI
       attr_reader :logger
 
       sig { returns(T::Boolean) }
-      attr_reader :is_https
-
-      sig { returns(T::Boolean) }
       def private?
         @is_private
       end
@@ -160,7 +153,10 @@ module ShopifyAPI
 
       sig { returns(String) }
       def host_scheme
-        is_https ? "https://" : "http://"
+        return "https://" unless ENV["HOST"]
+
+        host_uri = T.let(URI.parse(T.must(ENV["HOST"])), URI::Generic)
+        "#{host_uri.scheme}://"
       end
     end
   end

@@ -9,7 +9,7 @@ module ShopifyAPI
 
         sig { override.returns(String) }
         def callback_address
-          if @path.match?(%r{^https://}) || @path.match?(%r{^http://})
+          if @path.match?(%r{^https?://})
             @path
           elsif @path.match?(/^#{Context.host_name}/)
             "#{Context.host_scheme}#{@path}"

@@ -112,7 +112,12 @@ module ShopifyAPITest
       end
     end
 
-    def test_host_scheme
+    def test_host_scheme_with_localhost
+      clear_context
+
+      old_host = ENV["HOST"]
+      ENV["HOST"] = "http://localhost:3000"
+
       ShopifyAPI::Context.setup(
         api_key: "key",
         api_secret_key: "secret",
@@ -122,12 +127,12 @@ module ShopifyAPITest
         is_private: true,
         is_embedded: true,
         session_storage: ShopifyAPI::Auth::FileSessionStorage.new,
-        is_https: false,
         private_shop: "privateshop.myshopify.com",
         user_agent_prefix: "user_agent_prefix1",
         old_api_secret_key: "old_secret",
       )
       assert_equal("http://", ShopifyAPI::Context.host_scheme)
+      ENV["HOST"] = old_host
     end
 
     def teardown
