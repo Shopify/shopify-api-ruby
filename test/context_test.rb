@@ -133,6 +133,7 @@ module ShopifyAPITest
         old_api_secret_key: "old_secret",
       )
       assert_equal("http", ShopifyAPI::Context.host_scheme)
+      assert_equal("http://localhost:3000", ShopifyAPI::Context.host)
       ENV["HOST"] = old_host
     end
 
