@@ -61,6 +61,8 @@ ShopifyAPI::Context.setup(
 )
 ```
 
+*Important*: If you are using custom apps you will need to use the value of your access_token instead of api_secret_key
+
 ### Setup a Session Store
 
 In order for the Shopify API gem to properly store sessions it needs an implementation of `ShopifyAPI::Auth::SessionStorage`. We provide one implementation in the gem, `ShopifyAPI::Auth::FileSessionStorage`, which is suitable for testing/development, but isn't intended for production apps. See the [Session Storage doc](docs/usage/session_storage.md) for instructions on how to create a custom session store for a production application.
