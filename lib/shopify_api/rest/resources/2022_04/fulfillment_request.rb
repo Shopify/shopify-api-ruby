@@ -59,12 +59,16 @@ module ShopifyAPI
     sig do
       params(
         message: T.untyped,
+        reason: T.untyped,
+        line_items: T.untyped,
         body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end
     def reject(
       message: nil,
+      reason: nil,
+      line_items: nil,
       body: nil,
       **kwargs
     )
@@ -73,7 +77,7 @@ module ShopifyAPI
         operation: :reject,
         session: @session,
         ids: {fulfillment_order_id: @fulfillment_order_id},
-        params: {message: message}.merge(kwargs).compact,
+        params: {message: message, reason: reason, line_items: line_items}.merge(kwargs).compact,
         body: body,
         entity: self,
       )

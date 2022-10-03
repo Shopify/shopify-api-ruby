@@ -38,9 +38,9 @@ class Policy202204Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"policies" => [{"body" => "You have 30 days to get a refund", "created_at" => "2022-05-04T08:18:52-04:00", "updated_at" => "2022-05-04T08:18:52-04:00", "handle" => "refund-policy", "title" => "Refund policy", "url" => "https://jsmith.myshopify.com/548380009/policies/878590291"}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"policies" => [{"body" => "You have 30 days to get a refund", "created_at" => "2022-10-03T12:52:45-04:00", "updated_at" => "2022-10-03T12:52:45-04:00", "handle" => "refund-policy", "title" => "Refund policy", "url" => "https://jsmith.myshopify.com/548380009/policies/878590288"}]}), headers: {})
 
-    ShopifyAPI::Policy.all()
+    ShopifyAPI::Policy.all
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-04/policies.json")
   end
