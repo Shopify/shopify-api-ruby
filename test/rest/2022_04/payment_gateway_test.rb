@@ -33,28 +33,12 @@ class PaymentGateway202204Test < Test::Unit::TestCase
     void
   end
   def test_1()
-    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-04/payment_gateways.json")
-      .with(
-        headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
-        body: {}
-      )
-      .to_return(status: 200, body: JSON.generate({"payment_gateways" => [{"disabled" => true, "id" => 170508070, "name" => "Cash on Delivery (COD)", "provider_id" => 140, "sandbox" => false, "supports_network_tokenization" => nil, "type" => "ManualPaymentGateway", "enabled_card_brands" => [], "processing_method" => "manual", "service_name" => "Cash on Delivery (COD)", "metadata" => {}, "created_at" => "2022-03-11T11:02:04-05:00", "updated_at" => "2022-03-11T11:02:04-05:00"}, {"disabled" => false, "id" => 431363653, "name" => "shopify_payments", "provider_id" => 87, "sandbox" => false, "supports_network_tokenization" => nil, "type" => "DirectPaymentGateway", "enabled_card_brands" => ["visa", "master", "american_express", "discover", "diners_club"], "processing_method" => "direct", "service_name" => "Shopify Payments", "metadata" => {"google_pay_merchant_id" => 548380009}, "created_at" => "2011-12-31T19:00:00-05:00", "updated_at" => "2022-03-11T11:14:44-05:00", "credential4" => nil, "attachment" => nil}]}), headers: {})
-
-    ShopifyAPI::PaymentGateway.all()
-
-    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-04/payment_gateways.json")
-  end
-
-  sig do
-    void
-  end
-  def test_2()
     stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-04/payment_gateways.json?disabled=false")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"payment_gateways" => [{"disabled" => false, "id" => 431363653, "name" => "shopify_payments", "provider_id" => 87, "sandbox" => false, "supports_network_tokenization" => nil, "type" => "DirectPaymentGateway", "enabled_card_brands" => ["visa", "master", "american_express", "discover", "diners_club"], "processing_method" => "direct", "service_name" => "Shopify Payments", "metadata" => {"google_pay_merchant_id" => 548380009}, "created_at" => "2011-12-31T19:00:00-05:00", "updated_at" => "2022-03-11T11:14:45-05:00", "credential4" => nil, "attachment" => nil}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"payment_gateways" => [{"disabled" => false, "id" => 431363653, "name" => "shopify_payments", "provider_id" => 87, "sandbox" => false, "supports_network_tokenization" => nil, "type" => "DirectPaymentGateway", "enabled_card_brands" => ["visa", "master", "american_express", "discover", "diners_club"], "processing_method" => "direct", "service_name" => "Shopify Payments", "metadata" => {"google_pay_merchant_id" => 548380009}, "created_at" => "2011-12-31T19:00:00-05:00", "updated_at" => "2022-10-03T12:24:45-04:00", "credential4" => nil, "attachment" => nil}]}), headers: {})
 
     ShopifyAPI::PaymentGateway.all(
       disabled: "false",
@@ -66,32 +50,29 @@ class PaymentGateway202204Test < Test::Unit::TestCase
   sig do
     void
   end
-  def test_3()
-    stub_request(:post, "https://test-shop.myshopify.io/admin/api/2022-04/payment_gateways.json")
+  def test_2()
+    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-04/payment_gateways.json")
       .with(
-        headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "payment_gateway" => hash_including({"credential1" => "someone@example.com", "provider_id" => 7}) }
+        headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
+        body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"payment_gateway" => {"disabled" => false, "id" => 1048196722, "name" => "authorize_net", "provider_id" => 7, "sandbox" => false, "supports_network_tokenization" => nil, "type" => "DirectPaymentGateway", "enabled_card_brands" => ["visa", "master", "american_express", "discover", "diners_club", "jcb"], "processing_method" => "direct", "service_name" => "Authorize.net", "metadata" => {}, "created_at" => "2022-03-11T11:14:51-05:00", "updated_at" => "2022-03-11T11:14:51-05:00", "credential1" => "someone@example.com", "credential3" => nil, "credential4" => nil, "attachment" => nil}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"payment_gateways" => [{"disabled" => false, "id" => 431363653, "name" => "shopify_payments", "provider_id" => 87, "sandbox" => false, "supports_network_tokenization" => nil, "type" => "DirectPaymentGateway", "enabled_card_brands" => ["visa", "master", "american_express", "discover", "diners_club"], "processing_method" => "direct", "service_name" => "Shopify Payments", "metadata" => {"google_pay_merchant_id" => 548380009}, "created_at" => "2011-12-31T19:00:00-05:00", "updated_at" => "2022-10-03T12:24:52-04:00", "credential4" => nil, "attachment" => nil}, {"disabled" => true, "id" => 170508070, "name" => "Cash on Delivery (COD)", "provider_id" => 140, "sandbox" => false, "supports_network_tokenization" => nil, "type" => "ManualPaymentGateway", "enabled_card_brands" => [], "processing_method" => "manual", "service_name" => "Cash on Delivery (COD)", "metadata" => {}, "created_at" => "2022-10-03T12:15:55-04:00", "updated_at" => "2022-10-03T12:15:55-04:00"}]}), headers: {})
 
-    payment_gateway = ShopifyAPI::PaymentGateway.new
-    payment_gateway.credential1 = "someone@example.com"
-    payment_gateway.provider_id = 7
-    payment_gateway.save()
+    ShopifyAPI::PaymentGateway.all
 
-    assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-04/payment_gateways.json")
+    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-04/payment_gateways.json")
   end
 
   sig do
     void
   end
-  def test_4()
+  def test_3()
     stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-04/payment_gateways/431363653.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"payment" => {"disabled" => false, "id" => 431363653, "name" => "shopify_payments", "provider_id" => 87, "sandbox" => false, "supports_network_tokenization" => nil, "type" => "DirectPaymentGateway", "enabled_card_brands" => ["visa", "master", "american_express", "discover", "diners_club"], "processing_method" => "direct", "service_name" => "Shopify Payments", "metadata" => {"google_pay_merchant_id" => 548380009}, "created_at" => "2011-12-31T19:00:00-05:00", "updated_at" => "2022-03-11T11:14:47-05:00", "credential4" => nil, "attachment" => nil}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"payment" => {"disabled" => false, "id" => 431363653, "name" => "shopify_payments", "provider_id" => 87, "sandbox" => false, "supports_network_tokenization" => nil, "type" => "DirectPaymentGateway", "enabled_card_brands" => ["visa", "master", "american_express", "discover", "diners_club"], "processing_method" => "direct", "service_name" => "Shopify Payments", "metadata" => {"google_pay_merchant_id" => 548380009}, "created_at" => "2011-12-31T19:00:00-05:00", "updated_at" => "2022-10-03T12:24:50-04:00", "credential4" => nil, "attachment" => nil}}), headers: {})
 
     ShopifyAPI::PaymentGateway.find(
       id: 431363653,
@@ -103,18 +84,18 @@ class PaymentGateway202204Test < Test::Unit::TestCase
   sig do
     void
   end
-  def test_5()
+  def test_4()
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2022-04/payment_gateways/170508070.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "payment_gateway" => hash_including({"id" => 170508070, "sandbox" => true}) }
+        body: { "payment_gateway" => hash_including({"sandbox" => true}) }
       )
-      .to_return(status: 200, body: JSON.generate({"payment_gateway" => {"disabled" => false, "id" => 170508070, "name" => "Cash on Delivery (COD)", "provider_id" => 140, "sandbox" => true, "supports_network_tokenization" => nil, "type" => "ManualPaymentGateway", "enabled_card_brands" => [], "processing_method" => "manual", "service_name" => "Cash on Delivery (COD)", "metadata" => {}, "created_at" => "2022-03-11T11:02:04-05:00", "updated_at" => "2022-03-11T11:14:41-05:00"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"payment_gateway" => {"disabled" => false, "id" => 170508070, "name" => "Cash on Delivery (COD)", "provider_id" => 140, "sandbox" => true, "supports_network_tokenization" => nil, "type" => "ManualPaymentGateway", "enabled_card_brands" => [], "processing_method" => "manual", "service_name" => "Cash on Delivery (COD)", "metadata" => {}, "created_at" => "2022-10-03T12:15:55-04:00", "updated_at" => "2022-10-03T12:24:52-04:00"}}), headers: {})
 
     payment_gateway = ShopifyAPI::PaymentGateway.new
     payment_gateway.id = 170508070
     payment_gateway.sandbox = true
-    payment_gateway.save()
+    payment_gateway.save
 
     assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2022-04/payment_gateways/170508070.json")
   end
@@ -122,7 +103,7 @@ class PaymentGateway202204Test < Test::Unit::TestCase
   sig do
     void
   end
-  def test_6()
+  def test_5()
     stub_request(:delete, "https://test-shop.myshopify.io/admin/api/2022-04/payment_gateways/170508070.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
@@ -135,6 +116,25 @@ class PaymentGateway202204Test < Test::Unit::TestCase
     )
 
     assert_requested(:delete, "https://test-shop.myshopify.io/admin/api/2022-04/payment_gateways/170508070.json")
+  end
+
+  sig do
+    void
+  end
+  def test_6()
+    stub_request(:post, "https://test-shop.myshopify.io/admin/api/2022-04/payment_gateways.json")
+      .with(
+        headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
+        body: { "payment_gateway" => hash_including({"credential1" => "someone@example.com", "provider_id" => 7}) }
+      )
+      .to_return(status: 200, body: JSON.generate({"payment_gateway" => {"disabled" => false, "id" => 1048196722, "name" => "authorize_net", "provider_id" => 7, "sandbox" => false, "supports_network_tokenization" => nil, "type" => "DirectPaymentGateway", "enabled_card_brands" => ["visa", "master", "american_express", "discover", "diners_club", "jcb"], "processing_method" => "direct", "service_name" => "Authorize.net", "metadata" => {}, "created_at" => "2022-10-03T12:24:47-04:00", "updated_at" => "2022-10-03T12:24:47-04:00", "credential1" => "someone@example.com", "credential3" => nil, "credential4" => nil, "attachment" => nil}}), headers: {})
+
+    payment_gateway = ShopifyAPI::PaymentGateway.new
+    payment_gateway.credential1 = "someone@example.com"
+    payment_gateway.provider_id = 7
+    payment_gateway.save
+
+    assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-04/payment_gateways.json")
   end
 
 end

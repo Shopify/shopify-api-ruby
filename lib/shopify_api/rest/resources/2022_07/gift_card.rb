@@ -157,6 +157,10 @@ module ShopifyAPI
           query: T.untyped,
           limit: T.untyped,
           fields: T.untyped,
+          created_at_min: T.untyped,
+          created_at_max: T.untyped,
+          updated_at_min: T.untyped,
+          updated_at_max: T.untyped,
           session: Auth::Session,
           kwargs: T.untyped
         ).returns(T.untyped)
@@ -166,6 +170,10 @@ module ShopifyAPI
         query: nil,
         limit: nil,
         fields: nil,
+        created_at_min: nil,
+        created_at_max: nil,
+        updated_at_min: nil,
+        updated_at_max: nil,
         session: ShopifyAPI::Context.active_session,
         **kwargs
       )
@@ -174,7 +182,7 @@ module ShopifyAPI
           operation: :search,
           session: session,
           ids: {},
-          params: {order: order, query: query, limit: limit, fields: fields}.merge(kwargs).compact,
+          params: {order: order, query: query, limit: limit, fields: fields, created_at_min: created_at_min, created_at_max: created_at_max, updated_at_min: updated_at_min, updated_at_max: updated_at_max}.merge(kwargs).compact,
           body: {},
           entity: nil,
         )
