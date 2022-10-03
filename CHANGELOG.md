@@ -4,6 +4,8 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
 
+## Version 12.0.0
+
 - [#1008](https://github.com/Shopify/shopify-api-ruby/pull/1008) Increase session token JWT validation leeway from 5s to 10s
 
 ## Version 11.1.0
