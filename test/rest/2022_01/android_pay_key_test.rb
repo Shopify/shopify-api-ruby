@@ -42,7 +42,7 @@ class AndroidPayKey202201Test < Test::Unit::TestCase
 
     android_pay_key = ShopifyAPI::AndroidPayKey.new
 
-    android_pay_key.save()
+    android_pay_key.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-01/android_pay_keys.json")
   end

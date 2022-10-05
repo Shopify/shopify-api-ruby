@@ -248,12 +248,14 @@ module ShopifyAPI
 
     sig do
       params(
+        payment_gateway_id: T.untyped,
         payment_pending: T.untyped,
         body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end
     def complete(
+      payment_gateway_id: nil,
       payment_pending: nil,
       body: nil,
       **kwargs
@@ -263,7 +265,7 @@ module ShopifyAPI
         operation: :complete,
         session: @session,
         ids: {id: @id},
-        params: {payment_pending: payment_pending}.merge(kwargs).compact,
+        params: {payment_gateway_id: payment_gateway_id, payment_pending: payment_pending}.merge(kwargs).compact,
         body: body,
         entity: self,
       )

@@ -40,7 +40,7 @@ class MarketingEvent202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"marketing_events" => [{"id" => 998730532, "event_type" => "post", "remote_id" => "12345678", "started_at" => "2022-01-15T10:56:18-05:00", "ended_at" => nil, "scheduled_to_end_at" => nil, "budget" => "10.11", "currency" => "GBP", "manage_url" => nil, "preview_url" => nil, "utm_campaign" => "1234567890", "utm_source" => "facebook", "utm_medium" => "facebook-post", "budget_type" => "daily", "description" => nil, "marketing_channel" => "social", "paid" => false, "referring_domain" => "facebook.com", "breadcrumb_id" => nil, "marketing_activity_id" => nil, "admin_graphql_api_id" => "gid://shopify/MarketingEvent/998730532", "marketed_resources" => []}]}), headers: {})
 
-    ShopifyAPI::MarketingEvent.all()
+    ShopifyAPI::MarketingEvent.all
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-01/marketing_events.json")
   end
@@ -54,7 +54,7 @@ class MarketingEvent202201Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "marketing_event" => hash_including({"started_at" => "2022-12-15", "utm_campaign" => "Christmas2022", "utm_source" => "facebook", "utm_medium" => "cpc", "event_type" => "ad", "referring_domain" => "facebook.com", "marketing_channel" => "social", "paid" => true}) }
       )
-      .to_return(status: 200, body: JSON.generate({"marketing_event" => {"id" => 1065859216, "event_type" => "ad", "remote_id" => nil, "started_at" => "2022-12-14T19:00:00-05:00", "ended_at" => nil, "scheduled_to_end_at" => nil, "budget" => nil, "currency" => nil, "manage_url" => nil, "preview_url" => nil, "utm_campaign" => "Christmas2022", "utm_source" => "facebook", "utm_medium" => "cpc", "budget_type" => nil, "description" => nil, "marketing_channel" => "social", "paid" => true, "referring_domain" => "facebook.com", "breadcrumb_id" => nil, "marketing_activity_id" => 1063897333, "admin_graphql_api_id" => "gid://shopify/MarketingEvent/1065859216", "marketed_resources" => []}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"marketing_event" => {"id" => 1069063883, "event_type" => "ad", "remote_id" => nil, "started_at" => "2022-12-15T00:00:00-05:00", "ended_at" => nil, "scheduled_to_end_at" => nil, "budget" => nil, "currency" => nil, "manage_url" => nil, "preview_url" => nil, "utm_campaign" => "Christmas2022", "utm_source" => "facebook", "utm_medium" => "cpc", "budget_type" => nil, "description" => nil, "marketing_channel" => "social", "paid" => true, "referring_domain" => "facebook.com", "breadcrumb_id" => nil, "marketing_activity_id" => 1063897333, "admin_graphql_api_id" => "gid://shopify/MarketingEvent/1069063883", "marketed_resources" => []}}), headers: {})
 
     marketing_event = ShopifyAPI::MarketingEvent.new
     marketing_event.started_at = "2022-12-15"
@@ -65,7 +65,7 @@ class MarketingEvent202201Test < Test::Unit::TestCase
     marketing_event.referring_domain = "facebook.com"
     marketing_event.marketing_channel = "social"
     marketing_event.paid = true
-    marketing_event.save()
+    marketing_event.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-01/marketing_events.json")
   end
@@ -81,7 +81,7 @@ class MarketingEvent202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"count" => 1}), headers: {})
 
-    ShopifyAPI::MarketingEvent.count()
+    ShopifyAPI::MarketingEvent.count
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-01/marketing_events/count.json")
   end
@@ -129,7 +129,7 @@ class MarketingEvent202201Test < Test::Unit::TestCase
     marketing_event.utm_medium = "other"
     marketing_event.event_type = "ad"
     marketing_event.referring_domain = "instagram.com"
-    marketing_event.save()
+    marketing_event.save
 
     assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2022-01/marketing_events/998730532.json")
   end

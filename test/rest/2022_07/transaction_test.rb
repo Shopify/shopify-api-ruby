@@ -38,7 +38,7 @@ class Transaction202207Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"transactions" => [{"id" => 179259969, "order_id" => 450789469, "kind" => "refund", "gateway" => "bogus", "status" => "success", "message" => nil, "created_at" => "2005-08-05T12:59:12-04:00", "test" => false, "authorization" => "authorization-key", "location_id" => nil, "user_id" => nil, "parent_id" => 801038806, "processed_at" => "2005-08-05T12:59:12-04:00", "device_id" => nil, "error_code" => nil, "source_name" => "web", "receipt" => {}, "currency_exchange_adjustment" => nil, "amount" => "209.00", "currency" => "USD", "admin_graphql_api_id" => "gid://shopify/OrderTransaction/179259969"}, {"id" => 389404469, "order_id" => 450789469, "kind" => "authorization", "gateway" => "bogus", "status" => "success", "message" => nil, "created_at" => "2005-08-01T11:57:11-04:00", "test" => false, "authorization" => "authorization-key", "location_id" => nil, "user_id" => nil, "parent_id" => nil, "processed_at" => "2005-08-01T11:57:11-04:00", "device_id" => nil, "error_code" => nil, "source_name" => "web", "payment_details" => {"credit_card_bin" => nil, "avs_result_code" => nil, "cvv_result_code" => nil, "credit_card_number" => "\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 4242", "credit_card_company" => "Visa", "credit_card_name" => nil, "credit_card_wallet" => nil, "credit_card_expiration_month" => nil, "credit_card_expiration_year" => nil}, "receipt" => {"testcase" => true, "authorization" => "123456"}, "currency_exchange_adjustment" => nil, "amount" => "598.94", "currency" => "USD", "admin_graphql_api_id" => "gid://shopify/OrderTransaction/389404469"}, {"id" => 801038806, "order_id" => 450789469, "kind" => "capture", "gateway" => "bogus", "status" => "success", "message" => nil, "created_at" => "2005-08-05T10:22:51-04:00", "test" => false, "authorization" => "authorization-key", "location_id" => nil, "user_id" => nil, "parent_id" => 389404469, "processed_at" => "2005-08-05T10:22:51-04:00", "device_id" => nil, "error_code" => nil, "source_name" => "web", "receipt" => {}, "currency_exchange_adjustment" => nil, "amount" => "250.94", "currency" => "USD", "admin_graphql_api_id" => "gid://shopify/OrderTransaction/801038806"}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"transactions" => [{"id" => 179259969, "order_id" => 450789469, "kind" => "refund", "gateway" => "bogus", "status" => "success", "message" => nil, "created_at" => "2005-08-05T12:59:12-04:00", "test" => false, "authorization" => "authorization-key", "location_id" => nil, "user_id" => nil, "parent_id" => 801038806, "processed_at" => "2005-08-05T12:59:12-04:00", "device_id" => nil, "error_code" => nil, "source_name" => "web", "receipt" => {}, "currency_exchange_adjustment" => nil, "amount" => "209.00", "currency" => "USD", "payment_id" => "c901414060.3", "admin_graphql_api_id" => "gid://shopify/OrderTransaction/179259969"}, {"id" => 389404469, "order_id" => 450789469, "kind" => "authorization", "gateway" => "bogus", "status" => "success", "message" => nil, "created_at" => "2005-08-01T11:57:11-04:00", "test" => false, "authorization" => "authorization-key", "location_id" => nil, "user_id" => nil, "parent_id" => nil, "processed_at" => "2005-08-01T11:57:11-04:00", "device_id" => nil, "error_code" => nil, "source_name" => "web", "payment_details" => {"credit_card_bin" => nil, "avs_result_code" => nil, "cvv_result_code" => nil, "credit_card_number" => "\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 4242", "credit_card_company" => "Visa", "credit_card_name" => nil, "credit_card_wallet" => nil, "credit_card_expiration_month" => nil, "credit_card_expiration_year" => nil}, "receipt" => {"testcase" => true, "authorization" => "123456"}, "currency_exchange_adjustment" => nil, "amount" => "598.94", "currency" => "USD", "payment_id" => "c901414060.1", "admin_graphql_api_id" => "gid://shopify/OrderTransaction/389404469"}, {"id" => 801038806, "order_id" => 450789469, "kind" => "capture", "gateway" => "bogus", "status" => "success", "message" => nil, "created_at" => "2005-08-05T10:22:51-04:00", "test" => false, "authorization" => "authorization-key", "location_id" => nil, "user_id" => nil, "parent_id" => 389404469, "processed_at" => "2005-08-05T10:22:51-04:00", "device_id" => nil, "error_code" => nil, "source_name" => "web", "receipt" => {}, "currency_exchange_adjustment" => nil, "amount" => "250.94", "currency" => "USD", "payment_id" => "c901414060.2", "admin_graphql_api_id" => "gid://shopify/OrderTransaction/801038806"}]}), headers: {})
 
     ShopifyAPI::Transaction.all(
       order_id: 450789469,
@@ -56,7 +56,7 @@ class Transaction202207Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"transactions" => [{"id" => 1068278467, "order_id" => 450789469, "kind" => "capture", "gateway" => "bogus", "status" => "success", "message" => "Bogus Gateway: Forced success", "created_at" => "2022-07-02T02:04:28-04:00", "test" => true, "authorization" => nil, "location_id" => nil, "user_id" => nil, "parent_id" => 389404469, "processed_at" => "2022-07-02T02:04:28-04:00", "device_id" => nil, "error_code" => nil, "source_name" => "755357713", "payment_details" => {"credit_card_bin" => nil, "avs_result_code" => nil, "cvv_result_code" => nil, "credit_card_number" => "\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 4242", "credit_card_company" => "Visa", "credit_card_name" => nil, "credit_card_wallet" => nil, "credit_card_expiration_month" => nil, "credit_card_expiration_year" => nil}, "receipt" => {}, "currency_exchange_adjustment" => nil, "amount" => "10.00", "currency" => "USD", "admin_graphql_api_id" => "gid://shopify/OrderTransaction/1068278467"}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"transactions" => [{"id" => 1068278468, "order_id" => 450789469, "kind" => "capture", "gateway" => "bogus", "status" => "success", "message" => "Bogus Gateway: Forced success", "created_at" => "2022-10-03T12:51:21-04:00", "test" => true, "authorization" => nil, "location_id" => nil, "user_id" => nil, "parent_id" => 389404469, "processed_at" => "2022-10-03T12:51:21-04:00", "device_id" => nil, "error_code" => nil, "source_name" => "755357713", "payment_details" => {"credit_card_bin" => nil, "avs_result_code" => nil, "cvv_result_code" => nil, "credit_card_number" => "\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 4242", "credit_card_company" => "Visa", "credit_card_name" => nil, "credit_card_wallet" => nil, "credit_card_expiration_month" => nil, "credit_card_expiration_year" => nil}, "receipt" => {}, "currency_exchange_adjustment" => nil, "amount" => "10.00", "currency" => "USD", "payment_id" => "c901414060.1", "admin_graphql_api_id" => "gid://shopify/OrderTransaction/1068278468"}]}), headers: {})
 
     ShopifyAPI::Transaction.all(
       order_id: 450789469,
@@ -75,7 +75,7 @@ class Transaction202207Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "transaction" => hash_including({"currency" => "USD", "amount" => "10.00", "kind" => "capture", "parent_id" => 389404469}) }
       )
-      .to_return(status: 200, body: JSON.generate({"transaction" => {"id" => 1068278468, "order_id" => 450789469, "kind" => "capture", "gateway" => "bogus", "status" => "success", "message" => "Bogus Gateway: Forced success", "created_at" => "2022-07-02T02:04:33-04:00", "test" => true, "authorization" => nil, "location_id" => nil, "user_id" => nil, "parent_id" => 389404469, "processed_at" => "2022-07-02T02:04:33-04:00", "device_id" => nil, "error_code" => nil, "source_name" => "755357713", "payment_details" => {"credit_card_bin" => nil, "avs_result_code" => nil, "cvv_result_code" => nil, "credit_card_number" => "\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 4242", "credit_card_company" => "Visa", "credit_card_name" => nil, "credit_card_wallet" => nil, "credit_card_expiration_month" => nil, "credit_card_expiration_year" => nil}, "receipt" => {}, "currency_exchange_adjustment" => nil, "amount" => "10.00", "currency" => "USD", "admin_graphql_api_id" => "gid://shopify/OrderTransaction/1068278468"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"transaction" => {"id" => 1068278465, "order_id" => 450789469, "kind" => "capture", "gateway" => "bogus", "status" => "success", "message" => "Bogus Gateway: Forced success", "created_at" => "2022-10-03T12:51:12-04:00", "test" => true, "authorization" => nil, "location_id" => nil, "user_id" => nil, "parent_id" => 389404469, "processed_at" => "2022-10-03T12:51:12-04:00", "device_id" => nil, "error_code" => nil, "source_name" => "755357713", "payment_details" => {"credit_card_bin" => nil, "avs_result_code" => nil, "cvv_result_code" => nil, "credit_card_number" => "\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 4242", "credit_card_company" => "Visa", "credit_card_name" => nil, "credit_card_wallet" => nil, "credit_card_expiration_month" => nil, "credit_card_expiration_year" => nil}, "receipt" => {}, "currency_exchange_adjustment" => nil, "amount" => "10.00", "currency" => "USD", "payment_id" => "c901414060.1", "admin_graphql_api_id" => "gid://shopify/OrderTransaction/1068278465"}}), headers: {})
 
     transaction = ShopifyAPI::Transaction.new
     transaction.order_id = 450789469
@@ -83,7 +83,7 @@ class Transaction202207Test < Test::Unit::TestCase
     transaction.amount = "10.00"
     transaction.kind = "capture"
     transaction.parent_id = 389404469
-    transaction.save()
+    transaction.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-07/orders/450789469/transactions.json")
   end
@@ -95,17 +95,15 @@ class Transaction202207Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2022-07/orders/450789469/transactions.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "transaction" => hash_including({"currency" => "USD", "amount" => "10.00", "kind" => "void", "parent_id" => 389404469}) }
+        body: { "transaction" => hash_including({"kind" => "capture", "authorization" => "authorization-key"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"transaction" => {"id" => 1068278469, "order_id" => 450789469, "kind" => "void", "gateway" => "bogus", "status" => "success", "message" => "Bogus Gateway: Forced success", "created_at" => "2022-07-02T02:04:35-04:00", "test" => true, "authorization" => nil, "location_id" => nil, "user_id" => nil, "parent_id" => 389404469, "processed_at" => "2022-07-02T02:04:35-04:00", "device_id" => nil, "error_code" => nil, "source_name" => "755357713", "payment_details" => {"credit_card_bin" => nil, "avs_result_code" => nil, "cvv_result_code" => nil, "credit_card_number" => "\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 4242", "credit_card_company" => "Visa", "credit_card_name" => nil, "credit_card_wallet" => nil, "credit_card_expiration_month" => nil, "credit_card_expiration_year" => nil}, "receipt" => {}, "currency_exchange_adjustment" => nil, "amount" => "0.00", "currency" => "USD", "admin_graphql_api_id" => "gid://shopify/OrderTransaction/1068278469"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"transaction" => {"id" => 1068278466, "order_id" => 450789469, "kind" => "capture", "gateway" => "bogus", "status" => "success", "message" => "Bogus Gateway: Forced success", "created_at" => "2022-10-03T12:51:16-04:00", "test" => true, "authorization" => nil, "location_id" => nil, "user_id" => nil, "parent_id" => 389404469, "processed_at" => "2022-10-03T12:51:16-04:00", "device_id" => nil, "error_code" => nil, "source_name" => "755357713", "payment_details" => {"credit_card_bin" => nil, "avs_result_code" => nil, "cvv_result_code" => nil, "credit_card_number" => "\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 4242", "credit_card_company" => "Visa", "credit_card_name" => nil, "credit_card_wallet" => nil, "credit_card_expiration_month" => nil, "credit_card_expiration_year" => nil}, "receipt" => {}, "currency_exchange_adjustment" => nil, "amount" => "598.94", "currency" => "USD", "payment_id" => "c901414060.1", "admin_graphql_api_id" => "gid://shopify/OrderTransaction/1068278466"}}), headers: {})
 
     transaction = ShopifyAPI::Transaction.new
     transaction.order_id = 450789469
-    transaction.currency = "USD"
-    transaction.amount = "10.00"
-    transaction.kind = "void"
-    transaction.parent_id = 389404469
-    transaction.save()
+    transaction.kind = "capture"
+    transaction.authorization = "authorization-key"
+    transaction.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-07/orders/450789469/transactions.json")
   end
@@ -119,7 +117,7 @@ class Transaction202207Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "transaction" => hash_including({"currency" => "USD", "amount" => "10.00", "kind" => "capture", "parent_id" => 389404469, "test" => true}) }
       )
-      .to_return(status: 200, body: JSON.generate({"transaction" => {"id" => 1068278470, "order_id" => 450789469, "kind" => "capture", "gateway" => "bogus", "status" => "success", "message" => "Bogus Gateway: Forced success", "created_at" => "2022-07-02T02:04:37-04:00", "test" => true, "authorization" => nil, "location_id" => nil, "user_id" => nil, "parent_id" => 389404469, "processed_at" => "2022-07-02T02:04:37-04:00", "device_id" => nil, "error_code" => nil, "source_name" => "755357713", "payment_details" => {"credit_card_bin" => nil, "avs_result_code" => nil, "cvv_result_code" => nil, "credit_card_number" => "\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 4242", "credit_card_company" => "Visa", "credit_card_name" => nil, "credit_card_wallet" => nil, "credit_card_expiration_month" => nil, "credit_card_expiration_year" => nil}, "receipt" => {}, "currency_exchange_adjustment" => nil, "amount" => "10.00", "currency" => "USD", "admin_graphql_api_id" => "gid://shopify/OrderTransaction/1068278470"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"transaction" => {"id" => 1068278467, "order_id" => 450789469, "kind" => "capture", "gateway" => "bogus", "status" => "success", "message" => "Bogus Gateway: Forced success", "created_at" => "2022-10-03T12:51:19-04:00", "test" => true, "authorization" => nil, "location_id" => nil, "user_id" => nil, "parent_id" => 389404469, "processed_at" => "2022-10-03T12:51:19-04:00", "device_id" => nil, "error_code" => nil, "source_name" => "755357713", "payment_details" => {"credit_card_bin" => nil, "avs_result_code" => nil, "cvv_result_code" => nil, "credit_card_number" => "\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 4242", "credit_card_company" => "Visa", "credit_card_name" => nil, "credit_card_wallet" => nil, "credit_card_expiration_month" => nil, "credit_card_expiration_year" => nil}, "receipt" => {}, "currency_exchange_adjustment" => nil, "amount" => "10.00", "currency" => "USD", "payment_id" => "c901414060.1", "admin_graphql_api_id" => "gid://shopify/OrderTransaction/1068278467"}}), headers: {})
 
     transaction = ShopifyAPI::Transaction.new
     transaction.order_id = 450789469
@@ -128,7 +126,7 @@ class Transaction202207Test < Test::Unit::TestCase
     transaction.kind = "capture"
     transaction.parent_id = 389404469
     transaction.test = true
-    transaction.save()
+    transaction.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-07/orders/450789469/transactions.json")
   end
@@ -140,15 +138,17 @@ class Transaction202207Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2022-07/orders/450789469/transactions.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "transaction" => hash_including({"kind" => "capture", "authorization" => "authorization-key"}) }
+        body: { "transaction" => hash_including({"currency" => "USD", "amount" => "10.00", "kind" => "void", "parent_id" => 389404469}) }
       )
-      .to_return(status: 200, body: JSON.generate({"transaction" => {"id" => 1068278471, "order_id" => 450789469, "kind" => "capture", "gateway" => "bogus", "status" => "success", "message" => "Bogus Gateway: Forced success", "created_at" => "2022-07-02T02:04:39-04:00", "test" => true, "authorization" => nil, "location_id" => nil, "user_id" => nil, "parent_id" => 389404469, "processed_at" => "2022-07-02T02:04:39-04:00", "device_id" => nil, "error_code" => nil, "source_name" => "755357713", "payment_details" => {"credit_card_bin" => nil, "avs_result_code" => nil, "cvv_result_code" => nil, "credit_card_number" => "\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 4242", "credit_card_company" => "Visa", "credit_card_name" => nil, "credit_card_wallet" => nil, "credit_card_expiration_month" => nil, "credit_card_expiration_year" => nil}, "receipt" => {}, "currency_exchange_adjustment" => nil, "amount" => "598.94", "currency" => "USD", "admin_graphql_api_id" => "gid://shopify/OrderTransaction/1068278471"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"transaction" => {"id" => 1068278469, "order_id" => 450789469, "kind" => "void", "gateway" => "bogus", "status" => "success", "message" => "Bogus Gateway: Forced success", "created_at" => "2022-10-03T12:51:33-04:00", "test" => true, "authorization" => nil, "location_id" => nil, "user_id" => nil, "parent_id" => 389404469, "processed_at" => "2022-10-03T12:51:33-04:00", "device_id" => nil, "error_code" => nil, "source_name" => "755357713", "payment_details" => {"credit_card_bin" => nil, "avs_result_code" => nil, "cvv_result_code" => nil, "credit_card_number" => "\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 4242", "credit_card_company" => "Visa", "credit_card_name" => nil, "credit_card_wallet" => nil, "credit_card_expiration_month" => nil, "credit_card_expiration_year" => nil}, "receipt" => {}, "currency_exchange_adjustment" => nil, "amount" => "0.00", "currency" => "USD", "payment_id" => "c901414060.1", "admin_graphql_api_id" => "gid://shopify/OrderTransaction/1068278469"}}), headers: {})
 
     transaction = ShopifyAPI::Transaction.new
     transaction.order_id = 450789469
-    transaction.kind = "capture"
-    transaction.authorization = "authorization-key"
-    transaction.save()
+    transaction.currency = "USD"
+    transaction.amount = "10.00"
+    transaction.kind = "void"
+    transaction.parent_id = 389404469
+    transaction.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-07/orders/450789469/transactions.json")
   end
