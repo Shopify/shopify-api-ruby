@@ -134,7 +134,7 @@ module ShopifyAPI
 
       sig { returns(T::Boolean) }
       def setup?
-        !(api_key.empty? || api_secret_key.empty? || host_name.empty? || T.must(host).empty?)
+        [api_key, api_secret_key, host_name, T.must(host)].none?(&:empty?)
       end
 
       sig { returns(T.nilable(Auth::Session)) }
