@@ -19,7 +19,7 @@ module ShopifyAPI
         end
 
         decoded_host = Base64.decode64(host)
-        "#{Context.host_scheme}://#{decoded_host}/apps/#{Context.api_key}"
+        "https://#{decoded_host}/apps/#{Context.api_key}"
       end
     end
   end
