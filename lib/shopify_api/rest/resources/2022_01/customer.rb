@@ -33,6 +33,8 @@ module ShopifyAPI
       @multipass_identifier = T.let(nil, T.nilable(String))
       @note = T.let(nil, T.nilable(String))
       @orders_count = T.let(nil, T.nilable(Integer))
+      @password = T.let(nil, T.nilable(String))
+      @password_confirmation = T.let(nil, T.nilable(String))
       @phone = T.let(nil, T.nilable(String))
       @sms_marketing_consent = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
       @state = T.let(nil, T.nilable(String))
@@ -49,6 +51,7 @@ module ShopifyAPI
     }, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
     @paths = T.let([
+      {http_method: :delete, operation: :delete, ids: [:id], path: "customers/<id>.json"},
       {http_method: :get, operation: :count, ids: [], path: "customers/count.json"},
       {http_method: :get, operation: :get, ids: [], path: "customers.json"},
       {http_method: :get, operation: :get, ids: [:id], path: "customers/<id>.json"},
@@ -95,6 +98,10 @@ module ShopifyAPI
     sig { returns(T.nilable(Integer)) }
     attr_reader :orders_count
     sig { returns(T.nilable(String)) }
+    attr_reader :password
+    sig { returns(T.nilable(String)) }
+    attr_reader :password_confirmation
+    sig { returns(T.nilable(String)) }
     attr_reader :phone
     sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :sms_marketing_consent
@@ -132,6 +139,25 @@ module ShopifyAPI
           params: {fields: fields},
         )
         T.cast(result[0], T.nilable(Customer))
+      end
+
+      sig do
+        params(
+          id: T.any(Integer, String),
+          session: Auth::Session
+        ).returns(T.untyped)
+      end
+      def delete(
+        id:,
+        session: ShopifyAPI::Context.active_session
+      )
+        request(
+          http_method: :delete,
+          operation: :delete,
+          session: session,
+          ids: {id: id},
+          params: {},
+        )
       end
 
       sig do

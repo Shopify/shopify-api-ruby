@@ -52,6 +52,7 @@ module ShopifyAPI
     }, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
     @paths = T.let([
+      {http_method: :delete, operation: :delete, ids: [:id], path: "customers/<id>.json"},
       {http_method: :get, operation: :count, ids: [], path: "customers/count.json"},
       {http_method: :get, operation: :get, ids: [], path: "customers.json"},
       {http_method: :get, operation: :get, ids: [:id], path: "customers/<id>.json"},
@@ -141,6 +142,25 @@ module ShopifyAPI
           params: {fields: fields},
         )
         T.cast(result[0], T.nilable(Customer))
+      end
+
+      sig do
+        params(
+          id: T.any(Integer, String),
+          session: Auth::Session
+        ).returns(T.untyped)
+      end
+      def delete(
+        id:,
+        session: ShopifyAPI::Context.active_session
+      )
+        request(
+          http_method: :delete,
+          operation: :delete,
+          session: session,
+          ids: {id: id},
+          params: {},
+        )
       end
 
       sig do

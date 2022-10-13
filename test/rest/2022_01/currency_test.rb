@@ -40,7 +40,7 @@ class Currency202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"currencies" => [{"currency" => "CAD", "rate_updated_at" => "2018-01-23T19:01:01-05:00", "enabled" => true}, {"currency" => "EUR", "rate_updated_at" => "2018-01-23T19:01:01-05:00", "enabled" => true}, {"currency" => "JPY", "rate_updated_at" => "2018-01-23T19:01:01-05:00", "enabled" => true}]}), headers: {})
 
-    ShopifyAPI::Currency.all()
+    ShopifyAPI::Currency.all
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-01/currencies.json")
   end

@@ -36,14 +36,15 @@ class ApplicationCredit202201Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2022-01/application_credits.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "application_credit" => hash_including({"description" => "application credit for refund", "amount" => 5.0}) }
+        body: { "application_credit" => hash_including({"description" => "application credit for refund", "amount" => 5.0, "test" => true}) }
       )
-      .to_return(status: 200, body: JSON.generate({"application_credit" => {"id" => 1031636127, "amount" => "5.00", "description" => "application credit for refund", "test" => nil}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"application_credit" => {"id" => 1031636125, "amount" => "5.00", "description" => "application credit for refund", "test" => true}}), headers: {})
 
     application_credit = ShopifyAPI::ApplicationCredit.new
     application_credit.description = "application credit for refund"
     application_credit.amount = 5.0
-    application_credit.save()
+    application_credit.test = true
+    application_credit.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-01/application_credits.json")
   end
@@ -55,15 +56,14 @@ class ApplicationCredit202201Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2022-01/application_credits.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "application_credit" => hash_including({"description" => "application credit for refund", "amount" => 5.0, "test" => true}) }
+        body: { "application_credit" => hash_including({"description" => "application credit for refund", "amount" => 5.0}) }
       )
-      .to_return(status: 200, body: JSON.generate({"application_credit" => {"id" => 1031636128, "amount" => "5.00", "description" => "application credit for refund", "test" => true}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"application_credit" => {"id" => 1031636127, "amount" => "5.00", "description" => "application credit for refund", "test" => nil}}), headers: {})
 
     application_credit = ShopifyAPI::ApplicationCredit.new
     application_credit.description = "application credit for refund"
     application_credit.amount = 5.0
-    application_credit.test = true
-    application_credit.save()
+    application_credit.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-01/application_credits.json")
   end
@@ -79,7 +79,7 @@ class ApplicationCredit202201Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"application_credits" => [{"id" => 140583599, "amount" => "5.00", "description" => "credit for application refund", "test" => nil}]}), headers: {})
 
-    ShopifyAPI::ApplicationCredit.all()
+    ShopifyAPI::ApplicationCredit.all
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-01/application_credits.json")
   end

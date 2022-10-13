@@ -40,7 +40,7 @@ class AccessScope202204Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"access_scopes" => [{"handle" => "read_products"}, {"handle" => "write_orders"}, {"handle" => "read_orders"}]}), headers: {})
 
-    ShopifyAPI::AccessScope.all()
+    ShopifyAPI::AccessScope.all
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/oauth/access_scopes.json")
   end

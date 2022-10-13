@@ -118,7 +118,7 @@ class Province202201Test < Test::Unit::TestCase
     province.country_id = 879921427
     province.id = 224293623
     province.tax = 0.09
-    province.save()
+    province.save
 
     assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2022-01/countries/879921427/provinces/224293623.json")
   end

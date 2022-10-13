@@ -38,9 +38,9 @@ class Balance202207Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"balance" => [{"currency" => "USD", "amount" => "53.99"}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"balance" => [{"amount" => "53.99", "currency" => "USD"}]}), headers: {})
 
-    ShopifyAPI::Balance.all()
+    ShopifyAPI::Balance.all
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-07/shopify_payments/balance.json")
   end
