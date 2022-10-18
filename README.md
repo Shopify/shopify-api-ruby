@@ -6,7 +6,7 @@
 
 This library provides support for Ruby [Shopify apps](https://apps.shopify.com/) to access the [Shopify Admin API](https://shopify.dev/api/admin), by making it easier to perform the following actions:
 
-- Creating [online](https://shopify.dev/concepts/about-apis/authentication#online-access) or [offline](https://shopify.dev/concepts/about-apis/authentication#offline-access) access tokens for the Admin API via OAuth
+- Creating [online](https://shopify.dev/apps/auth/oauth/access-modes#online-access) or [offline](https://shopify.dev/apps/auth/oauth/access-modes#offline-access) access tokens for the Admin API via OAuth
 - Making requests to the [REST API](https://shopify.dev/api/admin-rest)
 - Making requests to the [GraphQL API](https://shopify.dev/api/admin-graphql)
 - Registering/processing webhooks
@@ -25,8 +25,7 @@ To follow these usage guides, you will need to:
 - have a Shopify Partner account and development store
 - _OR_ have a test store where you can create a private app
 - have an app already set up in your test store or partner account
-- use [ngrok](https://ngrok.com/download) to create a secure tunnel to your app running on your localhost
-- add the `ngrok` URL and the appropriate redirect for your OAuth callback route to your app settings
+- add the URL and the appropriate redirect for your OAuth callback route to your app settings
 
 ## Installation
 

@@ -31,7 +31,7 @@ module ShopifyAPI
           query = {
             client_id: ShopifyAPI::Context.api_key,
             scope: ShopifyAPI::Context.scope.to_s,
-            redirect_uri: "https://#{ShopifyAPI::Context.host_name}#{redirect_path}",
+            redirect_uri: "#{ShopifyAPI::Context.host}#{redirect_path}",
             state: state,
             "grant_options[]": is_online ? "per-user" : "",
           }
