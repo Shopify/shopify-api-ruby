@@ -4,6 +4,8 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
 
+- [#1023](https://github.com/Shopify/shopify-api-ruby/pull/1023) Allow custom scopes during the OAuth process
+
 ## Version 12.1.0
 
 - [#1017](https://github.com/Shopify/shopify-api-ruby/pull/1017) Add support for `http` with localhost development without using a TLS tunnel
