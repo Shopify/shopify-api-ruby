@@ -85,6 +85,27 @@ module ShopifyAPITest
         verify_oauth_begin(auth_route: result[:auth_route], cookie: result[:cookie], is_online: true)
       end
 
+      def test_custom_scope_with_auth_scopes
+        result = ShopifyAPI::Auth::Oauth.begin_auth(shop: @shop, redirect_path: "/redirect",
+          scope_override: ShopifyAPI::Auth::AuthScopes.new("read_orders,write_products"))
+        verify_oauth_begin(auth_route: result[:auth_route], cookie: result[:cookie], is_online: true,
+          scope: "read_orders,write_products")
+      end
+
+      def test_custom_scope_with_array_of_strings
+        result = ShopifyAPI::Auth::Oauth.begin_auth(shop: @shop, redirect_path: "/redirect",
+          scope_override: ["read_orders", "write_products"])
+        verify_oauth_begin(auth_route: result[:auth_route], cookie: result[:cookie], is_online: true,
+          scope: "read_orders,write_products")
+      end
+
+      def test_custom_scope_with_a_comma_separated_string
+        result = ShopifyAPI::Auth::Oauth.begin_auth(shop: @shop, redirect_path: "/redirect",
+          scope_override: ["read_orders,write_products"])
+        verify_oauth_begin(auth_route: result[:auth_route], cookie: result[:cookie], is_online: true,
+          scope: "read_orders,write_products")
+      end
+
       def test_begin_auth_context_not_setup
         modify_context(api_key: "", api_secret_key: "", host_name: "")
 
@@ -280,10 +301,10 @@ module ShopifyAPITest
 
       private
 
-      def verify_oauth_begin(auth_route:, cookie:, is_online:)
+      def verify_oauth_begin(auth_route:, cookie:, is_online:, scope: ShopifyAPI::Context.scope)
         expected_query_params = {
           client_id: ShopifyAPI::Context.api_key,
-          scope: ShopifyAPI::Context.scope.to_s,
+          scope: scope.to_s,
           redirect_uri: "https://#{ShopifyAPI::Context.host_name}/redirect",
           "grant_options[]": is_online ? "per-user" : "",
         }
