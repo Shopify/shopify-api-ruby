@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    shopify_api (12.1.0)
+    shopify_api (12.2.0)
       concurrent-ruby
       hash_diff
       httparty
@@ -37,7 +37,7 @@ GEM
     i18n (1.8.11)
       concurrent-ruby (~> 1.0)
     json (2.6.2)
-    jwt (2.4.1)
+    jwt (2.5.0)
     language_server-protocol (3.17.0.1)
     method_source (1.0.0)
     mime-types (3.4.1)
@@ -102,7 +102,7 @@ GEM
       thor (>= 0.19.2)
     syntax_tree (3.6.1)
       prettier_print
-    tapioca (0.10.1)
+    tapioca (0.10.2)
       bundler (>= 1.17.3)
       netrc (>= 0.11.0)
       parallel (>= 1.21.0)
