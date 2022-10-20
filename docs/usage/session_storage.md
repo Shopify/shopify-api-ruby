@@ -5,7 +5,7 @@ The implementation of session storage that you pass in `ShopifyAPI::Context.setu
 
 ## Create a New Session Storage Class
 
-You can create a session storage class that includes `ShopifyAPI::Auth::SessionStore` and override the methods as shown in the table and example below:
+You can create a session storage class that includes `ShopifyAPI::Auth::SessionStorage` and override the methods as shown in the table and example below:
 
 |       Method Name      |             Input Type            |           Return Type          |
 | ---------------------- | --------------------------------- | ------------------------------ |
