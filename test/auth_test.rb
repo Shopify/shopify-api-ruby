@@ -25,7 +25,7 @@ module ShopifyAPITest
     end
 
     def test_context_not_setup
-      modify_context(api_key: "", api_secret_key: "", host_name: "")
+      modify_context(api_key: "", api_secret_key: "", host: "")
 
       assert_raises(ShopifyAPI::Errors::ContextNotSetupError) do
         ShopifyAPI::Auth.embedded_app_url(@encoded_host)

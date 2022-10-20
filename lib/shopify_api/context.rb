@@ -8,7 +8,6 @@ module ShopifyAPI
     @api_key = T.let("", String)
     @api_secret_key = T.let("", String)
     @api_version = T.let(LATEST_SUPPORTED_ADMIN_VERSION, String)
-    @host_name = T.let("", String)
     @scope = T.let(Auth::AuthScopes.new, Auth::AuthScopes)
     @session_storage = T.let(ShopifyAPI::Auth::FileSessionStorage.new, ShopifyAPI::Auth::SessionStorage)
     @is_private = T.let(false, T::Boolean)
@@ -30,12 +29,12 @@ module ShopifyAPI
           api_key: String,
           api_secret_key: String,
           api_version: String,
-          host_name: String,
           scope: T.any(T::Array[String], String),
           is_private: T::Boolean,
           is_embedded: T::Boolean,
           session_storage: ShopifyAPI::Auth::SessionStorage,
           logger: Logger,
+          host_name: T.nilable(String),
           host: T.nilable(String),
           private_shop: T.nilable(String),
           user_agent_prefix: T.nilable(String),
@@ -46,12 +45,12 @@ module ShopifyAPI
         api_key:,
         api_secret_key:,
         api_version:,
-        host_name:,
         scope:,
         is_private:,
         is_embedded:,
         session_storage:,
         logger: Logger.new($stdout),
+        host_name: nil,
         host: ENV["HOST"] || "https://#{host_name}",
         private_shop: nil,
         user_agent_prefix: nil,
@@ -65,7 +64,6 @@ module ShopifyAPI
         @api_key = api_key
         @api_secret_key = api_secret_key
         @api_version = api_version
-        @host_name = host_name
         @host = T.let(host, T.nilable(String))
         @is_private = is_private
         @scope = Auth::AuthScopes.new(scope)
@@ -108,7 +106,7 @@ module ShopifyAPI
       end
 
       sig { returns(String) }
-      attr_reader :api_key, :api_secret_key, :api_version, :host_name
+      attr_reader :api_key, :api_secret_key, :api_version
 
       sig { returns(Auth::AuthScopes) }
       attr_reader :scope
@@ -134,7 +132,7 @@ module ShopifyAPI
 
       sig { returns(T::Boolean) }
       def setup?
-        [api_key, api_secret_key, host_name, T.must(host)].none?(&:empty?)
+        [api_key, api_secret_key, T.must(host)].none?(&:empty?)
       end
 
       sig { returns(T.nilable(Auth::Session)) }
@@ -157,6 +155,11 @@ module ShopifyAPI
       sig { returns(String) }
       def host_scheme
         T.must(URI.parse(T.must(host)).scheme)
+      end
+
+      sig { returns(String) }
+      def host_name
+        T.must(URI(T.must(host)).host)
       end
     end
   end

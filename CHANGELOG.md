@@ -3,6 +3,7 @@
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
+- [#1045](https://github.com/Shopify/shopify-api-ruby/pull/1045) Fixes bug with host/host_name requirement.
 
 ## Version 12.2.0
 

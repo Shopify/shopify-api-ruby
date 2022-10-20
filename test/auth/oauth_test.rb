@@ -107,7 +107,7 @@ module ShopifyAPITest
       end
 
       def test_begin_auth_context_not_setup
-        modify_context(api_key: "", api_secret_key: "", host_name: "")
+        modify_context(api_key: "", api_secret_key: "", host: "")
 
         assert_raises(ShopifyAPI::Errors::ContextNotSetupError) do
           ShopifyAPI::Auth::Oauth.begin_auth(shop: @shop, redirect_path: "/redirect")
@@ -242,7 +242,7 @@ module ShopifyAPITest
       end
 
       def test_validate_auth_context_not_setup
-        modify_context(api_key: "", api_secret_key: "", host_name: "")
+        modify_context(api_key: "", api_secret_key: "", host: "")
 
         assert_raises(ShopifyAPI::Errors::ContextNotSetupError) do
           ShopifyAPI::Auth::Oauth.validate_auth_callback(cookies: @cookies, auth_query: @auth_query)

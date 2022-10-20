@@ -10,6 +10,7 @@ require "mocha"
 require "mocha/minitest"
 
 require "shopify_api"
+require "pry-byebug"
 
 require_relative("./test_helpers/constants.rb")
 
@@ -26,7 +27,7 @@ module Test
           api_key: "API_KEY",
           api_secret_key: "API_SECRET_KEY",
           api_version: "unstable",
-          host_name: "app-address.com",
+          host: "https://app-address.com",
           scope: ["scope1", "scope2"],
           is_private: false,
           is_embedded: false,
@@ -41,7 +42,7 @@ module Test
           api_key: T.nilable(String),
           api_secret_key: T.nilable(String),
           api_version: T.nilable(String),
-          host_name: T.nilable(String),
+          host: T.nilable(String),
           scope: T.nilable(T.any(T::Array[String], String)),
           is_private: T.nilable(T::Boolean),
           is_embedded: T.nilable(T::Boolean),
@@ -56,7 +57,7 @@ module Test
         api_key: nil,
         api_secret_key: nil,
         api_version: nil,
-        host_name: nil,
+        host: nil,
         scope: nil,
         is_private: nil,
         is_embedded: nil,
@@ -70,7 +71,7 @@ module Test
           api_key: api_key ? api_key : ShopifyAPI::Context.api_key,
           api_secret_key: api_secret_key ? api_secret_key : ShopifyAPI::Context.api_secret_key,
           api_version: api_version ? api_version : ShopifyAPI::Context.api_version,
-          host_name: host_name ? host_name : ShopifyAPI::Context.host_name,
+          host: host ? host : ShopifyAPI::Context.host,
           scope: scope ? scope : ShopifyAPI::Context.scope.to_s,
           is_private: !is_private.nil? ? is_private : ShopifyAPI::Context.private?,
           is_embedded: !is_embedded.nil? ? is_embedded : ShopifyAPI::Context.embedded?,
