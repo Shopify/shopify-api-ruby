@@ -56,6 +56,8 @@ GEM
     pry (0.14.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
+    pry-nav (1.0.0)
+      pry (>= 0.9.10, < 0.15)
     public_suffix (4.0.6)
     rainbow (3.1.1)
     rake (13.0.6)
@@ -140,6 +142,7 @@ DEPENDENCIES
   fakefs
   minitest
   mocha
+  pry-nav
   rake
   rubocop
   rubocop-shopify

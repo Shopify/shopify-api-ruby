@@ -10,6 +10,7 @@ require "mocha"
 require "mocha/minitest"
 
 require "shopify_api"
+require "pry-nav"
 
 require_relative("./test_helpers/constants.rb")
 

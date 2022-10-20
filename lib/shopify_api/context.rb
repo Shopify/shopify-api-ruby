@@ -30,12 +30,12 @@ module ShopifyAPI
           api_key: String,
           api_secret_key: String,
           api_version: String,
-          host_name: String,
           scope: T.any(T::Array[String], String),
           is_private: T::Boolean,
           is_embedded: T::Boolean,
           session_storage: ShopifyAPI::Auth::SessionStorage,
           logger: Logger,
+          host_name: T.nilable(String),
           host: T.nilable(String),
           private_shop: T.nilable(String),
           user_agent_prefix: T.nilable(String),
@@ -46,12 +46,12 @@ module ShopifyAPI
         api_key:,
         api_secret_key:,
         api_version:,
-        host_name:,
         scope:,
         is_private:,
         is_embedded:,
         session_storage:,
         logger: Logger.new($stdout),
+        host_name: nil,
         host: ENV["HOST"] || "https://#{host_name}",
         private_shop: nil,
         user_agent_prefix: nil,
@@ -134,7 +134,7 @@ module ShopifyAPI
 
       sig { returns(T::Boolean) }
       def setup?
-        [api_key, api_secret_key, host_name, T.must(host)].none?(&:empty?)
+        [api_key, api_secret_key, T.must(host)].none?(&:empty?)
       end
 
       sig { returns(T.nilable(Auth::Session)) }
