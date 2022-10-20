@@ -65,7 +65,7 @@ module ShopifyAPI
         @api_key = api_key
         @api_secret_key = api_secret_key
         @api_version = api_version
-        @host_name = host_name
+        @host_name = T.must(host_name)
         @host = T.let(host, T.nilable(String))
         @is_private = is_private
         @scope = Auth::AuthScopes.new(scope)
@@ -108,7 +108,7 @@ module ShopifyAPI
       end
 
       sig { returns(String) }
-      attr_reader :api_key, :api_secret_key, :api_version, :host_name
+      attr_reader :api_key, :api_secret_key, :api_version
 
       sig { returns(Auth::AuthScopes) }
       attr_reader :scope
@@ -157,6 +157,11 @@ module ShopifyAPI
       sig { returns(String) }
       def host_scheme
         T.must(URI.parse(T.must(host)).scheme)
+      end
+
+      sig { returns(String) }
+      def host_name
+        T.must(URI(T.must(host)).host)
       end
     end
   end

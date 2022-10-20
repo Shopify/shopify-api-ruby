@@ -44,6 +44,7 @@ module ShopifyAPITest
       assert_equal("user_agent_prefix1", ShopifyAPI::Context.user_agent_prefix)
       assert_equal("old_secret", ShopifyAPI::Context.old_api_secret_key)
       assert_equal("http", ShopifyAPI::Context.host_scheme)
+      assert_equal("localhost", ShopifyAPI::Context.host_name)
     end
 
     def test_active_session_is_thread_safe
