@@ -51,7 +51,7 @@ Start by initializing the `ShopifyAPI::Context` with the parameters of your app 
 ShopifyAPI::Context.setup(
   api_key: "<api-key>",
   api_secret_key: "<api-secret-key>",
-  host_name: "<application-host-name>",
+  host: "<https://application-host-name.com>",
   scope: "read_orders,read_products,etc",
   session_storage: ShopifyAPI::Auth::FileSessionStorage.new, # See more details below
   is_embedded: true, # Set to true if you are building an embedded app
