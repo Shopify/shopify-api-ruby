@@ -8,7 +8,6 @@ module ShopifyAPI
     @api_key = T.let("", String)
     @api_secret_key = T.let("", String)
     @api_version = T.let(LATEST_SUPPORTED_ADMIN_VERSION, String)
-    @host_name = T.let("", String)
     @scope = T.let(Auth::AuthScopes.new, Auth::AuthScopes)
     @session_storage = T.let(ShopifyAPI::Auth::FileSessionStorage.new, ShopifyAPI::Auth::SessionStorage)
     @is_private = T.let(false, T::Boolean)
@@ -65,7 +64,6 @@ module ShopifyAPI
         @api_key = api_key
         @api_secret_key = api_secret_key
         @api_version = api_version
-        @host_name = T.must(host_name)
         @host = T.let(host, T.nilable(String))
         @is_private = is_private
         @scope = Auth::AuthScopes.new(scope)
