@@ -4,6 +4,13 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
 
+## Version 12.2.1
+- [#1045](https://github.com/Shopify/shopify-api-ruby/pull/1045) Fixes bug with host/host_name requirement.
+
+## Version 12.2.0
+
+- [#1023](https://github.com/Shopify/shopify-api-ruby/pull/1023) Allow custom scopes during the OAuth process
+
 ## Version 12.1.0
 
 - [#1017](https://github.com/Shopify/shopify-api-ruby/pull/1017) Add support for `http` with localhost development without using a TLS tunnel

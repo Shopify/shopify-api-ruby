@@ -43,6 +43,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency("zeitwerk", "~> 2.5")
 
   s.add_development_dependency("activesupport")
+  s.add_development_dependency("pry-byebug")
   s.add_development_dependency("rake")
   s.add_development_dependency("rubocop")
   s.add_development_dependency("rubocop-shopify")

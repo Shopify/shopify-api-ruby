@@ -7,11 +7,12 @@ module ShopifyAPITest
   class ContextTest < Minitest::Test
     def setup
       @reader, writer = IO.pipe
+      ENV["HOST"] = "http://localhost:3000"
+
       ShopifyAPI::Context.setup(
         api_key: "key",
         api_secret_key: "secret",
         api_version: "unstable",
-        host_name: "host",
         scope: ["scope1", "scope2"],
         is_private: true,
         is_embedded: true,
@@ -33,7 +34,7 @@ module ShopifyAPITest
       assert_equal("key", ShopifyAPI::Context.api_key)
       assert_equal("secret", ShopifyAPI::Context.api_secret_key)
       assert_equal("unstable", ShopifyAPI::Context.api_version)
-      assert_equal("host", ShopifyAPI::Context.host_name)
+      assert_equal("http://localhost:3000", ShopifyAPI::Context.host)
       assert_equal(ShopifyAPI::Auth::AuthScopes.new(["scope1", "scope2"]), ShopifyAPI::Context.scope)
       assert(ShopifyAPI::Context.private?)
       assert_equal(ShopifyAPI::Auth::FileSessionStorage.new, ShopifyAPI::Context.session_storage)
@@ -42,8 +43,8 @@ module ShopifyAPITest
       assert_equal("privateshop.myshopify.com", ShopifyAPI::Context.private_shop)
       assert_equal("user_agent_prefix1", ShopifyAPI::Context.user_agent_prefix)
       assert_equal("old_secret", ShopifyAPI::Context.old_api_secret_key)
-      assert_equal("https", ShopifyAPI::Context.host_scheme)
-      assert_equal("https://host", ShopifyAPI::Context.host)
+      assert_equal("http", ShopifyAPI::Context.host_scheme)
+      assert_equal("localhost", ShopifyAPI::Context.host_name)
     end
 
     def test_active_session_is_thread_safe
@@ -113,17 +114,16 @@ module ShopifyAPITest
       end
     end
 
-    def test_host_scheme_with_localhost
+    def test_with_host_name_and_no_host_env
       clear_context
-
       old_host = ENV["HOST"]
-      ENV["HOST"] = "http://localhost:3000"
+      ENV["HOST"] = nil
 
       ShopifyAPI::Context.setup(
         api_key: "key",
         api_secret_key: "secret",
         api_version: "unstable",
-        host_name: "host",
+        host_name: "tunnel-o-security.com",
         scope: ["scope1", "scope2"],
         is_private: true,
         is_embedded: true,
@@ -132,8 +132,9 @@ module ShopifyAPITest
         user_agent_prefix: "user_agent_prefix1",
         old_api_secret_key: "old_secret",
       )
-      assert_equal("http", ShopifyAPI::Context.host_scheme)
-      assert_equal("http://localhost:3000", ShopifyAPI::Context.host)
+      assert_equal("https", ShopifyAPI::Context.host_scheme)
+      assert_equal("https://tunnel-o-security.com", ShopifyAPI::Context.host)
+      assert_equal("tunnel-o-security.com", ShopifyAPI::Context.host_name)
       ENV["HOST"] = old_host
     end
 

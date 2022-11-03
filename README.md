@@ -6,7 +6,7 @@
 
 This library provides support for Ruby [Shopify apps](https://apps.shopify.com/) to access the [Shopify Admin API](https://shopify.dev/api/admin), by making it easier to perform the following actions:
 
-- Creating [online](https://shopify.dev/concepts/about-apis/authentication#online-access) or [offline](https://shopify.dev/concepts/about-apis/authentication#offline-access) access tokens for the Admin API via OAuth
+- Creating [online](https://shopify.dev/apps/auth/oauth/access-modes#online-access) or [offline](https://shopify.dev/apps/auth/oauth/access-modes#offline-access) access tokens for the Admin API via OAuth
 - Making requests to the [REST API](https://shopify.dev/api/admin-rest)
 - Making requests to the [GraphQL API](https://shopify.dev/api/admin-graphql)
 - Registering/processing webhooks
@@ -51,7 +51,7 @@ Start by initializing the `ShopifyAPI::Context` with the parameters of your app 
 ShopifyAPI::Context.setup(
   api_key: "<api-key>",
   api_secret_key: "<api-secret-key>",
-  host_name: "<application-host-name>",
+  host: "<https://application-host-name.com>",
   scope: "read_orders,read_products,etc",
   session_storage: ShopifyAPI::Auth::FileSessionStorage.new, # See more details below
   is_embedded: true, # Set to true if you are building an embedded app
