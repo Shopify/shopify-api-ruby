@@ -15,7 +15,7 @@ module ShopifyAPI
       sig { params(response: ShopifyAPI::Clients::HttpResponse).void }
       def initialize(response:)
         super
-        @code = response.code.to_i
+        @code = T.let(response.code, Integer)
         @response = response
       end
     end
