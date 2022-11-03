@@ -163,6 +163,20 @@ class Blog202210Test < Test::Unit::TestCase
   sig do
     void
   end
+  def test_marshall()
+    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-10/blogs/241253187.json")
+      .with(
+        headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
+        body: {}
+      )
+      .to_return(status: 200, body: JSON.generate({"blog" => {"id" => 241253187, "handle" => "apple-blog", "title" => "Mah Blog", "updated_at" => "2006-02-01T19:00:00-05:00", "commentable" => "no", "feedburner" => nil, "feedburner_location" => nil, "created_at" => "2022-10-03T12:44:45-04:00", "template_suffix" => nil, "tags" => "Announcing, Mystery", "admin_graphql_api_id" => "gid://shopify/OnlineStoreBlog/241253187"}}), headers: {})
+
+    Marshal.load(Marshal.dump(ShopifyAPI::Blog.find(id: 241253187)))
+  end
+
+  sig do
+    void
+  end
   def test_8()
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2022-10/blogs/241253187.json")
       .with(
