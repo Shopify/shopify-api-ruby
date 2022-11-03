@@ -162,7 +162,8 @@ module ShopifyAPITest
           .with(body: @request.body.to_json, query: @request.query, headers: @expected_headers)
           .to_return(body: { errors: "Something very not good" }.to_json, headers: @response_headers, status: 500)
 
-        assert_raises(ShopifyAPI::Errors::MaxHttpRetriesExceededError) { @client.request(@request) }
+        error = assert_raises(ShopifyAPI::Errors::MaxHttpRetriesExceededError) { @client.request(@request) }
+        assert_instance_of(ShopifyAPI::Clients::HttpResponse, error.response)
       end
 
       def test_throttle_error_no_retry_after_header
