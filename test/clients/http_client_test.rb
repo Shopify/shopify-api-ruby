@@ -179,7 +179,6 @@ module ShopifyAPITest
         verify_http_request
       end
 
-
       def test_throttle_error_with_retry_after_header_in_error_object
         stub_request(@request.http_method, "https://#{@shop}#{@base_path}/#{@request.path}")
           .with(body: @request.body.to_json, query: @request.query, headers: @expected_headers)
