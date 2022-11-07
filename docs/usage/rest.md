@@ -54,10 +54,10 @@ body = {
 }
 
 # Use `client.post` to send your request to the specified Shopify Admin REST API endpoint.
-client.post({
+client.post(
   path: "products",
   body: body,
-});
+)
 ```
 
 _for more information on the `products` endpoint, [check out our API reference guide](https://shopify.dev/api/admin-rest/unstable/resources/product)._
