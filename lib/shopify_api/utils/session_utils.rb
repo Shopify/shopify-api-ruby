@@ -22,7 +22,7 @@ module ShopifyAPI
           session_id = current_session_id(auth_header, cookies, is_online)
           return nil unless session_id
 
-          Context.session_storage.load_session(session_id)
+          T.must(Context.session_storage).load_session(session_id)
         end
 
         sig do
@@ -36,7 +36,7 @@ module ShopifyAPI
           session_id = current_session_id(auth_header, cookies, is_online)
           return false unless session_id
 
-          Context.session_storage.delete_session(session_id)
+          T.must(Context.session_storage).delete_session(session_id)
         end
 
         sig do
@@ -47,7 +47,7 @@ module ShopifyAPI
         end
         def load_offline_session(shop:, include_expired: false)
           session_id = offline_session_id(shop)
-          session = Context.session_storage.load_session(session_id)
+          session = T.must(Context.session_storage).load_session(session_id)
           return nil if session && !include_expired && session.expires && T.must(session.expires) < Time.now
 
           session
@@ -60,7 +60,7 @@ module ShopifyAPI
         end
         def delete_offline_session(shop:)
           session_id = offline_session_id(shop)
-          Context.session_storage.delete_session(session_id)
+          T.must(Context.session_storage).delete_session(session_id)
         end
 
         private

@@ -9,11 +9,11 @@ module ShopifyAPI
     @api_secret_key = T.let("", String)
     @api_version = T.let(LATEST_SUPPORTED_ADMIN_VERSION, String)
     @scope = T.let(Auth::AuthScopes.new, Auth::AuthScopes)
-    @session_storage = T.let(ShopifyAPI::Auth::FileSessionStorage.new, ShopifyAPI::Auth::SessionStorage)
     @is_private = T.let(false, T::Boolean)
     @private_shop = T.let(nil, T.nilable(String))
     @is_embedded = T.let(true, T::Boolean)
     @logger = T.let(Logger.new($stdout), Logger)
+    @session_storage = T.let(ShopifyAPI::Auth::FileSessionStorage.new, T.nilable(ShopifyAPI::Auth::SessionStorage))
     @notified_missing_resources_folder = T.let({}, T::Hash[String, T::Boolean])
     @active_session = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @user_agent_prefix = T.let(nil, T.nilable(String))
@@ -32,8 +32,8 @@ module ShopifyAPI
           scope: T.any(T::Array[String], String),
           is_private: T::Boolean,
           is_embedded: T::Boolean,
-          session_storage: ShopifyAPI::Auth::SessionStorage,
           logger: Logger,
+          session_storage: T.nilable(ShopifyAPI::Auth::SessionStorage),
           host_name: T.nilable(String),
           host: T.nilable(String),
           private_shop: T.nilable(String),
@@ -48,8 +48,8 @@ module ShopifyAPI
         scope:,
         is_private:,
         is_embedded:,
-        session_storage:,
         logger: Logger.new($stdout),
+        session_storage: nil,
         host_name: nil,
         host: ENV["HOST"] || "https://#{host_name}",
         private_shop: nil,
@@ -111,7 +111,7 @@ module ShopifyAPI
       sig { returns(Auth::AuthScopes) }
       attr_reader :scope
 
-      sig { returns(ShopifyAPI::Auth::SessionStorage) }
+      sig { returns(T.nilable(ShopifyAPI::Auth::SessionStorage)) }
       attr_reader :session_storage
 
       sig { returns(Logger) }

@@ -26,20 +26,20 @@ module ShopifyAPITest
         @cookie_id = "1234-this-is-a-cookie-session-id"
         @cookies = { ShopifyAPI::Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME => @cookie_id }
         @online_session = ShopifyAPI::Auth::Session.new(id: @cookie_id, shop: @shop, is_online: true)
-        ShopifyAPI::Context.session_storage.store_session(@online_session)
+        T.must(ShopifyAPI::Context.session_storage).store_session(@online_session)
 
         @online_embedded_session_id = "#{@shop}_#{@jwt_payload[:sub]}"
         @online_embedded_session = ShopifyAPI::Auth::Session.new(id: @online_embedded_session_id, shop: @shop,
           is_online: true)
-        ShopifyAPI::Context.session_storage.store_session(@online_embedded_session)
+        T.must(ShopifyAPI::Context.session_storage).store_session(@online_embedded_session)
 
         @offline_cookie_id = "offline_#{@shop}"
         @offline_cookies = { ShopifyAPI::Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME => @offline_cookie_id }
         @offline_session = ShopifyAPI::Auth::Session.new(id: @offline_cookie_id, shop: @shop, is_online: false)
-        ShopifyAPI::Context.session_storage.store_session(@offline_session)
+        T.must(ShopifyAPI::Context.session_storage).store_session(@offline_session)
 
         @offline_embedded_session = ShopifyAPI::Auth::Session.new(id: "offline_#{@shop}", shop: @shop, is_online: false)
-        ShopifyAPI::Context.session_storage.store_session(@offline_embedded_session)
+        T.must(ShopifyAPI::Context.session_storage).store_session(@offline_embedded_session)
       end
 
       def test_gets_the_current_session_from_cookies_for_non_embedded_apps
@@ -148,7 +148,7 @@ module ShopifyAPITest
       def test_returns_nil_for_expired_offline_session
         offline_session = ShopifyAPI::Auth::Session.new(id: "offline_#{@shop}", shop: @shop, is_online: false,
           expires: Time.now - 60)
-        ShopifyAPI::Context.session_storage.store_session(offline_session)
+        T.must(ShopifyAPI::Context.session_storage).store_session(offline_session)
         loaded_session = ShopifyAPI::Utils::SessionUtils.load_offline_session(shop: @shop)
         assert_nil(loaded_session)
       end
@@ -156,7 +156,7 @@ module ShopifyAPITest
       def test_loads_expired_offline_session_if_requested
         offline_session = ShopifyAPI::Auth::Session.new(id: "offline_#{@shop}", shop: @shop, is_online: false,
           expires: Time.now - 60)
-        ShopifyAPI::Context.session_storage.store_session(offline_session)
+        T.must(ShopifyAPI::Context.session_storage).store_session(offline_session)
         loaded_session = ShopifyAPI::Utils::SessionUtils.load_offline_session(shop: @shop, include_expired: true)
         assert_equal(offline_session, loaded_session)
       end
@@ -235,7 +235,7 @@ module ShopifyAPITest
 
       def add_session(is_online:)
         another_session = ShopifyAPI::Auth::Session.new(shop: @shop, is_online: is_online)
-        ShopifyAPI::Context.session_storage.store_session(another_session)
+        T.must(ShopifyAPI::Context.session_storage).store_session(another_session)
       end
 
       def create_jwt_header(api_secret_key)
