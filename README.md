@@ -83,7 +83,7 @@ Once your app can perform OAuth, it can now make authenticated Shopify API calls
 
 ### Breaking change notice for version 10.0.0
 
-We've rewritten this library for v10, so that it provides all essential features for a Shopify app without requiring any other packages.
+We've rewritten this library for v10, so that it provides all essential features for a Shopify app without depending on the [Active Resource](https://github.com/rails/activeresource) or [graphql-client](https://github.com/github/graphql-client) libraries.
 
 Here are the main features it provides:
 
@@ -107,12 +107,12 @@ With this, a lot changed in how apps access the library. Here are the updates yo
 
     Please see below a (non-exhaustive) list of common replacements to guide you in your updates, using the `Order` resource as an example.
 
-    | Before | After |
-    | --- | --- |
-    | `Order.find(:all, params: {param1: value1})` | `Order.all(param1: value1, session:)` |
-    | `Order.find(<id>)` | `Order.find(id: <id>, session:)` |
+    | Before                                             | After |
+    | ---                                                | --- |
+    | `Order.find(:all, params: {param1: value1})`       | `Order.all(param1: value1, session:)` |
+    | `Order.find(<id>)`                                 | `Order.find(id: <id>, session:)` |
     | `order = Order.new(<id>)`<br/>`order.post(:close)` | `order = Order.new(session:)`<br/>`order.close()` |
-    | `order = Order.new(<id>)`<br/>`order.delete` | `Order.delete(id: <id>, session:)` |
+    | `order = Order.new(<id>)`<br/>`order.delete`       | `Order.delete(id: <id>, session:)` |
 
 ## Breaking changes for older versions
 
