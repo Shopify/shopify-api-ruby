@@ -13,9 +13,9 @@ module ShopifyAPI
     @private_shop = T.let(nil, T.nilable(String))
     @is_embedded = T.let(true, T::Boolean)
     @logger = T.let(Logger.new($stdout), Logger)
-    @session_storage = T.let(ShopifyAPI::Auth::FileSessionStorage.new, T.nilable(ShopifyAPI::Auth::SessionStorage))
     @notified_missing_resources_folder = T.let({}, T::Hash[String, T::Boolean])
     @active_session = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+    @session_storage = T.let(nil, T.nilable(ShopifyAPI::Auth::SessionStorage))
     @user_agent_prefix = T.let(nil, T.nilable(String))
     @old_api_secret_key = T.let(nil, T.nilable(String))
 

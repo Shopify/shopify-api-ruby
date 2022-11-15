@@ -93,9 +93,7 @@ module ShopifyAPI
             )
           end
 
-          if (Context.session_storage)
-            Context.session_storage.store_session(session)
-          end
+          Context.session_storage&.store_session(session)
 
           { session: session, cookie: cookie }
         end
