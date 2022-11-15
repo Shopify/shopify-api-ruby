@@ -71,7 +71,9 @@ module ShopifyAPI
         @session_storage = session_storage
         if @session_storage
           # rubocop:disable Layout/LineLength
-          ::ShopifyAPI::Context.logger.warn("SessionStorage has been deprecated. The ShopifyAPI will no longer have responsibility for session persistence. Consider using the `shopify_app` gem which now owns this responsiblity.")
+          ::ShopifyAPI::Context.logger.warn("SessionStorage has been deprecated. " \
+            "The ShopifyAPI will no longer have responsibility for session persistence. " \
+            "Consider using the `shopify_app` gem which now owns this responsiblity.")
           # rubocop:enable Layout/LineLength
         end
         @logger = logger
