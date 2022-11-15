@@ -5,7 +5,7 @@ This page will outline everything you need to know and the steps you need to fol
 ## Requirements
 
 - A working knowledge of ruby and a web framework such as Rails or Sinatra
-- A private or custom app already set up in your test store or partner account
+- A custom app already set up in your test store or partner account
 - We recommend `ngrok` to tunnel traffic to your localhost for testing
 
 ## Installation
@@ -28,7 +28,6 @@ ShopifyAPI::Context.setup(
   scope: "read_orders,read_products,etc",
   session_storage: ShopifyAPI::Auth::FileSessionStorage.new, # This is only to be used for testing, more information in session docs
   is_embedded: true, # Set to true if you are building an embedded app
-  is_private: false, # Set to true if you are building a private app
   api_version: "2021-01" # The vesion of the API you would like to use
 )
 ```
