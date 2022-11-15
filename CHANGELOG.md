@@ -4,6 +4,7 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
 - [#1055](https://github.com/Shopify/shopify-api-ruby/pull/1055) Makes session_storage optional. Configuring the API with session_storage is now deprecated.  Session persistence is handled by the [shopify_app gem](https://github.com/Shopify/shopify_app) if using Rails.
+- [#1063](https://github.com/Shopify/shopify-api-ruby/pull/1063) Fix ActiveSupport inflector dependency
 
 ## Version 12.2.1
 - [#1045](https://github.com/Shopify/shopify-api-ruby/pull/1045) Fixes bug with host/host_name requirement.
