@@ -19,7 +19,7 @@ module ShopifyAPI
           ).returns(T.nilable(Auth::Session))
         end
         def load_current_session(auth_header: nil, cookies: nil, is_online: false)
-          ::ShopifyAPI::Context.logger.warn("ShopifyAPI::Utils::SessionUtils.load_current_session has been deprecated. The ShopifyAPI  will no longer have responsibility for session persistence. Consider using the `shopify_app` gem which now owns this responsiblity.")
+          ::ShopifyAPI::Context.logger.warn("ShopifyAPI::Utils::SessionUtils.load_current_session has been deprecated. The ShopifyAPI will no longer have responsibility for session persistence. Consider using the `shopify_app` gem which now implements this responsibility.")
 
           return load_private_session if Context.private?
 
