@@ -1,8 +1,6 @@
 # typed: strict
 # frozen_string_literal: true
 
-# rubocop:disable Layout/LineLength
-
 module ShopifyAPI
   module Utils
     class SessionUtils
@@ -19,8 +17,6 @@ module ShopifyAPI
           ).returns(T.nilable(Auth::Session))
         end
         def load_current_session(auth_header: nil, cookies: nil, is_online: false)
-          ::ShopifyAPI::Context.logger.warn("ShopifyAPI::Utils::SessionUtils.load_current_session has been deprecated. The ShopifyAPI will no longer have responsibility for session persistence. Consider using the `shopify_app` gem which now implements this responsibility.")
-
           return load_private_session if Context.private?
 
           session_id = current_session_id(auth_header, cookies, is_online)
@@ -37,8 +33,6 @@ module ShopifyAPI
           ).returns(T::Boolean)
         end
         def delete_current_session(auth_header: nil, cookies: nil, is_online: false)
-          ::ShopifyAPI::Context.logger.warn("ShopifyAPI::Utils::SessionUtils.delete_current_session has been deprecated. The ShopifyAPI  will no longer have responsibility for session persistence. Consider using the `shopify_app` gem which now owns this responsiblity.")
-
           session_id = current_session_id(auth_header, cookies, is_online)
           return false unless session_id
 
@@ -52,8 +46,6 @@ module ShopifyAPI
           ).returns(T.nilable(Auth::Session))
         end
         def load_offline_session(shop:, include_expired: false)
-          ::ShopifyAPI::Context.logger.warn("ShopifyAPI::Utils::SessionUtils.load_offline_session has been deprecated. The ShopifyAPI  will no longer have responsibility for session persistence. Consider using the `shopify_app` gem which now owns this responsiblity.")
-
           session_id = offline_session_id(shop)
           session = T.must(Context.session_storage).load_session(session_id)
           return nil if session && !include_expired && session.expires && T.must(session.expires) < Time.now
@@ -67,8 +59,6 @@ module ShopifyAPI
           ).returns(T::Boolean)
         end
         def delete_offline_session(shop:)
-          ::ShopifyAPI::Context.logger.warn("ShopifyAPI::Utils::SessionUtils.delete_offline_session has been deprecated. The ShopifyAPI  will no longer have responsibility for session persistence. Consider using the `shopify_app` gem which now owns this responsiblity.")
-
           session_id = offline_session_id(shop)
           T.must(Context.session_storage).delete_session(session_id)
         end
@@ -143,4 +133,3 @@ module ShopifyAPI
     end
   end
 end
-# rubocop:enable Layout/LineLength
