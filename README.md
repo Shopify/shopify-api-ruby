@@ -109,10 +109,10 @@ With this, a lot changed in how apps access the library. Here are the updates yo
 
     | Before                                             | After |
     | ---                                                | --- |
-    | `Order.find(:all, params: {param1: value1})`       | `Order.all(param1: value1, session:)` |
-    | `Order.find(<id>)`                                 | `Order.find(id: <id>, session:)` |
-    | `order = Order.new(<id>)`<br/>`order.post(:close)` | `order = Order.new(session:)`<br/>`order.close()` |
-    | `order = Order.new(<id>)`<br/>`order.delete`       | `Order.delete(id: <id>, session:)` |
+    | `Order.find(:all, params: {param1: value1})`       | `Order.all(param1: value1)` |
+    | `Order.find(<id>)`                                 | `Order.find(id: <id>)` |
+    | `order = Order.new(<id>)`<br/>`order.post(:close)` | `order = Order.new`<br/>`order.close` |
+    | `order = Order.new(<id>)`<br/>`order.delete`       | `Order.delete(id: <id>)` |
 
 ## Breaking changes for older versions
 
