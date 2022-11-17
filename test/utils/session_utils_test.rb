@@ -57,6 +57,37 @@ module ShopifyAPITest
         ))
       end
 
+      def test_raise_error_when_session_storage_missing_when_using_deprecated_session_utils
+        ShopifyAPI::Context.stubs(:session_storage).returns(nil)
+
+        assert_raises(ShopifyAPI::Errors::SessionStorageError) do
+          ShopifyAPI::Utils::SessionUtils.load_current_session(
+            auth_header: @jwt_header,
+            is_online: true
+          )
+        end
+
+        assert_raises(ShopifyAPI::Errors::SessionStorageError) do
+          ShopifyAPI::Utils::SessionUtils.delete_current_session(
+            auth_header: @jwt_header,
+            cookies: @cookies,
+            is_online: true,
+          )
+        end
+
+        assert_raises(ShopifyAPI::Errors::SessionStorageError) do
+          ShopifyAPI::Utils::SessionUtils.load_offline_session(
+            shop: @shop,
+          )
+        end
+
+        assert_raises(ShopifyAPI::Errors::SessionStorageError) do
+          ShopifyAPI::Utils::SessionUtils.delete_offline_session(
+            shop: @shop,
+          )
+        end
+      end
+
       def test_gets_the_current_session_from_auth_header_for_embedded_apps
         modify_context(is_embedded: true)
         add_session(is_online: true)

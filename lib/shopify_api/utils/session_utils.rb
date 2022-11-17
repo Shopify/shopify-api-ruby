@@ -17,6 +17,7 @@ module ShopifyAPI
           ).returns(T.nilable(Auth::Session))
         end
         def load_current_session(auth_header: nil, cookies: nil, is_online: false)
+          raise ShopifyAPI::Errors::SessionStorageError.new("session_storage is required in ShopifyAPI::Context when using deprecated SessionUtils") if Context.session_storage.nil?
           return load_private_session if Context.private?
 
           session_id = current_session_id(auth_header, cookies, is_online)
@@ -33,6 +34,7 @@ module ShopifyAPI
           ).returns(T::Boolean)
         end
         def delete_current_session(auth_header: nil, cookies: nil, is_online: false)
+          raise ShopifyAPI::Errors::SessionStorageError.new("session_storage is required in ShopifyAPI::Context when using deprecated SessionUtils") if Context.session_storage.nil?
           session_id = current_session_id(auth_header, cookies, is_online)
           return false unless session_id
 
@@ -46,6 +48,7 @@ module ShopifyAPI
           ).returns(T.nilable(Auth::Session))
         end
         def load_offline_session(shop:, include_expired: false)
+          raise ShopifyAPI::Errors::SessionStorageError.new("session_storage is required in ShopifyAPI::Context when using deprecated SessionUtils") if Context.session_storage.nil?
           session_id = offline_session_id(shop)
           session = T.must(Context.session_storage).load_session(session_id)
           return nil if session && !include_expired && session.expires && T.must(session.expires) < Time.now
@@ -59,6 +62,7 @@ module ShopifyAPI
           ).returns(T::Boolean)
         end
         def delete_offline_session(shop:)
+          raise ShopifyAPI::Errors::SessionStorageError.new("session_storage is required in ShopifyAPI::Context when using deprecated SessionUtils") if Context.session_storage.nil?
           session_id = offline_session_id(shop)
           T.must(Context.session_storage).delete_session(session_id)
         end
