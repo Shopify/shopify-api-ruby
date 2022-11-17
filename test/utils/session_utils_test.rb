@@ -63,7 +63,7 @@ module ShopifyAPITest
         assert_raises(ShopifyAPI::Errors::SessionStorageError) do
           ShopifyAPI::Utils::SessionUtils.load_current_session(
             auth_header: @jwt_header,
-            is_online: true
+            is_online: true,
           )
         end
 
