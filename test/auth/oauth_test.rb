@@ -285,20 +285,6 @@ module ShopifyAPITest
         end
       end
 
-      def test_validate_auth_callback_save_session_fails
-        stub_request(:post, "https://#{@shop}/admin/oauth/access_token")
-          .with(body: @access_token_request)
-          .to_return(body: @offline_token_response.to_json, headers: { content_type: "application/json" })
-
-        modify_context(is_embedded: true, session_storage: TestHelpers::FakeSessionStorage.new(
-          sessions: { @session_cookie => ShopifyAPI::Auth::Session.new(shop: @shop, id: @session_cookie,
-            state: @callback_state) }, error_on_save: true
-        ))
-        assert_raises(ShopifyAPI::Errors::SessionStorageError) do
-          ShopifyAPI::Auth::Oauth.validate_auth_callback(cookies: @cookies, auth_query: @auth_query)
-        end
-      end
-
       private
 
       def verify_oauth_begin(auth_route:, cookie:, is_online:, scope: ShopifyAPI::Context.scope)
