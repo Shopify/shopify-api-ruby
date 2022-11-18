@@ -72,7 +72,7 @@ module ShopifyAPI
         if @session_storage
           ::ShopifyAPI::Context.logger.warn("SessionStorage has been deprecated. " \
             "The ShopifyAPI will no longer have responsibility for session persistence. " \
-            "Upgrading to `shopify_app` 21.3 or greater will allow you to remove session_storage from your context setup.")
+            "Upgrading to `shopify_app` 21.3 will allow you to remove session_storage.")
         end
         @logger = logger
         @private_shop = private_shop
