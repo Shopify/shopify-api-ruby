@@ -70,7 +70,7 @@ module ShopifyAPI
         @is_embedded = is_embedded
         @session_storage = session_storage
         if @session_storage
-          ::ShopifyAPI::Context.logger.warn("SessionStorage has been deprecated. " \
+          ::ShopifyAPI::Context.logger.warn("The use of SessionStorage in the API library has been deprecated. " \
             "The ShopifyAPI will no longer have responsibility for session persistence. " \
             "Upgrading to `shopify_app` 21.3 will allow you to remove session_storage.")
         end
