@@ -17,6 +17,7 @@ module ShopifyAPITest
         is_private: true,
         is_embedded: true,
         session_storage: ShopifyAPI::Auth::FileSessionStorage.new,
+        log_level: :warn,
         logger: Logger.new(writer),
         private_shop: "privateshop.myshopify.com",
         user_agent_prefix: "user_agent_prefix1",
