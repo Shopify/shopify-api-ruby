@@ -17,7 +17,7 @@ module ShopifyAPITest
         is_private: true,
         is_embedded: true,
         session_storage: ShopifyAPI::Auth::FileSessionStorage.new,
-        log_level: :warn,
+        log_level: :off,
         logger: Logger.new(writer),
         private_shop: "privateshop.myshopify.com",
         user_agent_prefix: "user_agent_prefix1",
@@ -132,6 +132,7 @@ module ShopifyAPITest
         private_shop: "privateshop.myshopify.com",
         user_agent_prefix: "user_agent_prefix1",
         old_api_secret_key: "old_secret",
+        log_level: :off,
       )
       assert_equal("https", ShopifyAPI::Context.host_scheme)
       assert_equal("https://tunnel-o-security.com", ShopifyAPI::Context.host)
@@ -157,6 +158,7 @@ module ShopifyAPITest
         session_storage: ShopifyAPI::Auth::FileSessionStorage.new,
         user_agent_prefix: nil,
         old_api_secret_key: nil,
+        log_level: :off,
       )
     end
   end

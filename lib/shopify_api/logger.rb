@@ -47,7 +47,7 @@ module ShopifyAPI
       def enabled_for_log_level?(log_level)
         raise(Errors::LogLevelNotFoundError,
           "Invalid Log Level - #{log_level}") unless LOG_LEVELS.keys.include?(log_level)
-        LOG_LEVELS[log_level] >= LOG_LEVELS[ShopifyAPI::Context.log_level || DEFAULT_LOG_LEVEL]
+        LOG_LEVELS[log_level] >= (LOG_LEVELS[ShopifyAPI::Context.log_level] || LOG_LEVELS[DEFAULT_LOG_LEVEL])
       end
     end
   end

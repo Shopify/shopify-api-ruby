@@ -13,7 +13,7 @@ module ShopifyAPI
     @private_shop = T.let(nil, T.nilable(String))
     @is_embedded = T.let(true, T::Boolean)
     @logger = T.let(::Logger.new($stdout), ::Logger)
-    @log_level = T.let(:error, Symbol)
+    @log_level = T.let(:info, Symbol)
     @notified_missing_resources_folder = T.let({}, T::Hash[String, T::Boolean])
     @active_session = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @session_storage = T.let(nil, T.nilable(ShopifyAPI::Auth::SessionStorage))
@@ -50,7 +50,7 @@ module ShopifyAPI
         scope:,
         is_private:,
         is_embedded:,
-        log_level: :error,
+        log_level: :info,
         logger: ::Logger.new($stdout),
         session_storage: nil,
         host_name: nil,
@@ -72,17 +72,18 @@ module ShopifyAPI
         @scope = Auth::AuthScopes.new(scope)
         @is_embedded = is_embedded
         @session_storage = session_storage
+        @logger = logger
+        @private_shop = private_shop
+        @user_agent_prefix = user_agent_prefix
+        @old_api_secret_key = old_api_secret_key
+        @log_level = log_level
+
         if @session_storage
           ::ShopifyAPI::Logger.deprecated("The use of SessionStorage in the API library has been deprecated. " \
             "The ShopifyAPI will no longer have responsibility for session persistence. " \
             "Upgrading to `shopify_app` 21.3 will allow you to remove session_storage" \
             " from the API library Context configuration.", "13.0.0")
         end
-        @logger = logger
-        @private_shop = private_shop
-        @user_agent_prefix = user_agent_prefix
-        @old_api_secret_key = old_api_secret_key
-        @log_level = log_level
 
         load_rest_resources(api_version: api_version)
       end
