@@ -76,7 +76,11 @@ module ShopifyAPI
         @private_shop = private_shop
         @user_agent_prefix = user_agent_prefix
         @old_api_secret_key = old_api_secret_key
-        @log_level = log_level
+        @log_level = if valid_log_level?(log_level)
+          log_level
+        else
+          :info
+        end
 
         if @session_storage
           ::ShopifyAPI::Logger.deprecated("The use of SessionStorage in the API library has been deprecated. " \
@@ -130,11 +134,6 @@ module ShopifyAPI
 
       sig { returns(Symbol) }
       attr_reader :log_level
-
-      sig { params(level: Symbol).void }
-      def log_level=(level)
-        @log_level = level if valid_log_level?(level)
-      end
 
       sig { returns(T::Boolean) }
       def private?

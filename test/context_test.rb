@@ -141,9 +141,22 @@ module ShopifyAPITest
     end
 
     def test_send_a_warning_if_log_level_is_invalid
+      ShopifyAPI::Context.stubs(:log_level).returns(:warn)
       ShopifyAPI::Logger.expects(:warn).with("not_a_level is not a valid log_level. "\
         "Valid options are #{::ShopifyAPI::Logger::LOG_LEVELS.keys.join(", ")}")
-      ShopifyAPI::Context.log_level = :not_a_level
+      ShopifyAPI::Context.setup(
+        api_key: "",
+        api_secret_key: "",
+        api_version: "unstable",
+        host_name: "",
+        scope: [],
+        is_private: false,
+        is_embedded: true,
+        session_storage: ShopifyAPI::Auth::FileSessionStorage.new,
+        user_agent_prefix: nil,
+        old_api_secret_key: nil,
+        log_level: :not_a_level,
+      )
     end
 
     def teardown
