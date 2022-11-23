@@ -33,7 +33,7 @@ module ShopifyAPI
       def deprecated(message, version)
         return unless enabled_for_log_level?(:warn)
 
-        raise Errors::FeatureDeprecatedError unless ShopifyAPI::VERSION < version
+        raise Errors::FeatureDeprecatedError unless valid_version(version)
 
         send_to_logger(:warn, message)
       end
@@ -69,6 +69,13 @@ module ShopifyAPI
       def enabled_for_log_level?(log_level)
         T.must(LOG_LEVELS[log_level]) >= T.must(LOG_LEVELS[ShopifyAPI::Context.log_level] ||
           LOG_LEVELS[DEFAULT_LOG_LEVEL])
+      end
+
+      sig { params(version: String).returns(T::Boolean) }
+      def valid_version(version)
+        current_version = Gem::Version.create(ShopifyAPI::VERSION)
+        deprecate_version = Gem::Version.create(version)
+        current_version < deprecate_version
       end
     end
   end
