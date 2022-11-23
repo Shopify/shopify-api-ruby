@@ -140,6 +140,12 @@ module ShopifyAPITest
       ENV["HOST"] = old_host
     end
 
+    def test_send_a_warning_if_log_level_is_invalid
+      ShopifyAPI::Logger.expects(:warn).with("not_a_level is not a valid log_level. "\
+        "Valid options are #{::ShopifyAPI::Logger::LOG_LEVELS.keys.join(", ")}")
+      ShopifyAPI::Context.log_level = :not_a_level
+    end
+
     def teardown
       ShopifyAPI::Context.deactivate_session
     end

@@ -129,7 +129,12 @@ module ShopifyAPI
       attr_reader :logger
 
       sig { returns(Symbol) }
-      attr_accessor :log_level
+      attr_reader :log_level
+
+      sig { params(level: Symbol).void }
+      def log_level=(level)
+        @log_level = level if valid_log_level?(level)
+      end
 
       sig { returns(T::Boolean) }
       def private?
@@ -174,6 +179,18 @@ module ShopifyAPI
       sig { returns(String) }
       def host_name
         T.must(URI(T.must(host)).host)
+      end
+
+      private
+
+      sig { params(log_level: Symbol).returns(T::Boolean) }
+      def valid_log_level?(log_level)
+        return true if ::ShopifyAPI::Logger::LOG_LEVELS.keys.include?(log_level)
+
+        ShopifyAPI::Logger.warn("#{log_level} is not a valid log_level. "\
+          "Valid options are #{::ShopifyAPI::Logger::LOG_LEVELS.keys.join(", ")}")
+
+        false
       end
     end
   end

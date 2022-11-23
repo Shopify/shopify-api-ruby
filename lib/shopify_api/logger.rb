@@ -43,7 +43,7 @@ module ShopifyAPI
         current_shop = ShopifyAPI::Context.active_session&.shop
 
         if current_shop.nil?
-          "[ ShopifyAPI | #{log_level.to_s.upcase}]"
+          "[ ShopifyAPI | #{log_level.to_s.upcase} ]"
         else
           "[ ShopifyAPI | #{log_level.to_s.upcase} | #{current_shop} ]"
         end
@@ -62,8 +62,6 @@ module ShopifyAPI
 
       sig { params(log_level: Symbol).returns(T::Boolean) }
       def enabled_for_log_level?(log_level)
-        raise(Errors::LogLevelNotFoundError,
-          "Invalid Log Level - #{log_level}") unless LOG_LEVELS.keys.include?(log_level)
         T.must(LOG_LEVELS[log_level]) >= T.must(LOG_LEVELS[ShopifyAPI::Context.log_level] ||
           LOG_LEVELS[DEFAULT_LOG_LEVEL])
       end
