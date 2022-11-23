@@ -184,10 +184,10 @@ module ShopifyAPI
 
       sig { params(log_level: Symbol).returns(T::Boolean) }
       def valid_log_level?(log_level)
-        return true if ::ShopifyAPI::Logger::LOG_LEVELS.keys.include?(log_level)
+        return true if ::ShopifyAPI::Logger.levels.include?(log_level)
 
         ShopifyAPI::Logger.warn("#{log_level} is not a valid log_level. "\
-          "Valid options are #{::ShopifyAPI::Logger::LOG_LEVELS.keys.join(", ")}")
+          "Valid options are #{::ShopifyAPI::Logger.levels.join(", ")}")
 
         false
       end

@@ -49,6 +49,11 @@ module ShopifyAPI
         end
       end
 
+      sig { returns(T::Array[Symbol]) }
+      def levels
+        LOG_LEVELS.keys
+      end
+
       private
 
       sig { params(log_level: Symbol, message: String).void }
