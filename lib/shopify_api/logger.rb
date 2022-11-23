@@ -9,15 +9,6 @@ module ShopifyAPI
     class << self
       extend T::Sig
 
-      sig { params(log_level: Symbol, message: String).void }
-      def send_to_logger(log_level, message)
-        return unless enabled_for_log_level?(log_level)
-
-        full_message = "#{context(log_level)} #{message}"
-
-        ShopifyAPI::Context.logger.send(log_level, full_message)
-      end
-
       sig { params(message: String).void }
       def debug(message)
         send_to_logger(:debug, message)
@@ -51,6 +42,17 @@ module ShopifyAPI
       def context(log_level)
         current_shop = ShopifyAPI::Context.active_session&.shop || "Shop Not Found"
         "[ ShopifyAPI | #{log_level.to_s.upcase} | #{current_shop} ]"
+      end
+
+      private
+
+      sig { params(log_level: Symbol, message: String).void }
+      def send_to_logger(log_level, message)
+        return unless enabled_for_log_level?(log_level)
+
+        full_message = "#{context(log_level)} #{message}"
+
+        ShopifyAPI::Context.logger.send(log_level, full_message)
       end
 
       sig { params(log_level: Symbol).returns(T::Boolean) }
