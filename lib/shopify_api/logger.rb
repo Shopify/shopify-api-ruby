@@ -40,8 +40,13 @@ module ShopifyAPI
 
       sig { params(log_level: Symbol).returns(String) }
       def context(log_level)
-        current_shop = ShopifyAPI::Context.active_session&.shop || "Shop Not Found"
-        "[ ShopifyAPI | #{log_level.to_s.upcase} | #{current_shop} ]"
+        current_shop = ShopifyAPI::Context.active_session&.shop
+
+        if current_shop.nil?
+          "[ ShopifyAPI | #{log_level.to_s.upcase}]"
+        else
+          "[ ShopifyAPI | #{log_level.to_s.upcase} | #{current_shop} ]"
+        end
       end
 
       private
