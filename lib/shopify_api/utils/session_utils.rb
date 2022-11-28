@@ -82,7 +82,7 @@ module ShopifyAPI
             if auth_header
               matches = auth_header.match(/^Bearer (.+)$/)
               unless matches
-                ShopifyAPI::Logger.info("Missing Bearer token in authorization header")
+                ShopifyAPI::Logger.warn("Missing Bearer token in authorization header")
                 raise Errors::MissingJwtTokenError, "Missing Bearer token in authorization header"
               end
 
