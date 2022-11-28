@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     shopify_api (12.2.1)
+      activesupport
       concurrent-ruby
       hash_diff
       httparty
@@ -140,7 +141,6 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  activesupport
   fakefs
   minitest
   mocha

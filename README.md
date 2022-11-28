@@ -23,7 +23,6 @@ To follow these usage guides, you will need to:
 
 - have a working knowledge of ruby and a web framework such as Rails or Sinatra
 - have a Shopify Partner account and development store
-- _OR_ have a test store where you can create a private app
 - have an app already set up in your test store or partner account
 - add the URL and the appropriate redirect for your OAuth callback route to your app settings
 
@@ -55,8 +54,8 @@ ShopifyAPI::Context.setup(
   scope: "read_orders,read_products,etc",
   session_storage: ShopifyAPI::Auth::FileSessionStorage.new, # See more details below
   is_embedded: true, # Set to true if you are building an embedded app
-  is_private: false, # Set to true if you are building a private app
   api_version: "2022-01" # The version of the API you would like to use
+  is_private: false, # Set to true if you have an existing private app
 )
 ```
 
@@ -68,7 +67,7 @@ Session information would is typically stored in cookies on the browser. However
 
 ### Performing OAuth
 
-Next, unless you are making a private app, you need to go through OAuth as described [here](https://shopify.dev/apps/auth/oauth) to create sessions for shops using your app.
+You need to go through OAuth as described [here](https://shopify.dev/apps/auth/oauth) to create sessions for shops using your app.
 The Shopify API gem tries to make this easy by providing functions to begin and complete the OAuth process. See the [Oauth doc](docs/usage/oauth.md) for instructions on how to use these.
 
 ### Register Webhooks and a Webhook Handler
