@@ -3,8 +3,7 @@
 Once the library is set up for your project, you'll be able to use it to start adding functionality to your app. The first thing your app will need to do is to obtain an access token to the Admin API by performing the OAuth process.
 
 To do this, you can follow the steps below.
-
-**Note:** You do not need to go through the OAuth process if you are creating a private app. In this case you can simply set your `<key+password>` as the `api_secret_key` in `ShopifyAPI::Context.setup`. For more information on authenticating a Shopify app please see the [Types of Authentication](https://shopify.dev/apps/auth#types-of-authentication) page.
+For more information on authenticating a Shopify app please see the [Types of Authentication](https://shopify.dev/apps/auth#types-of-authentication) page.
 
 ## Add a route to start OAuth
 
@@ -53,7 +52,7 @@ def callback
       cookies: cookies.to_h,
       auth_query: ShopifyAPI::Auth::Oauth::AuthQuery.new(request.parameters.symbolize_keys.except(:controller, :action))
     )
-    
+
     cookies[auth_result[:cookie].name] = {
       expires: auth_result[:cookie].expires,
       secure: true,
@@ -66,7 +65,7 @@ def callback
     head 307
     response.set_header("Location", "<some-redirect-url>")
   rescue => e
-    puts(e.message)  
+    puts(e.message)
     head 500
   end
 end

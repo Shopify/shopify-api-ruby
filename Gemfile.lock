@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     shopify_api (12.2.1)
+      activesupport
       concurrent-ruby
       hash_diff
       httparty
@@ -10,7 +11,7 @@ PATH
       openssl
       securerandom
       sorbet-runtime
-      zeitwerk (~> 2.5)
+      zeitwerk (~> 2.5, < 2.6.5)
 
 GEM
   remote: https://rubygems.org/
@@ -140,7 +141,6 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  activesupport
   fakefs
   minitest
   mocha

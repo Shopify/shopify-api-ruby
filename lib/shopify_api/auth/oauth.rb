@@ -93,10 +93,7 @@ module ShopifyAPI
             )
           end
 
-          unless Context.session_storage.store_session(session)
-            raise Errors::SessionStorageError,
-              "Session could not be saved. Please check your session storage implementation."
-          end
+          Context.session_storage&.store_session(session)
 
           { session: session, cookie: cookie }
         end
