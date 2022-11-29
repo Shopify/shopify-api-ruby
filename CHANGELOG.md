@@ -4,6 +4,8 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
 
+- [#1071](https://github.com/Shopify/shopify-api-ruby/issues/1071) Fix FulfillmentEvent class types
+
 ## Version 12.4.0
 
 - [#1092](https://github.com/Shopify/shopify-api-ruby/pull/1092) Add support for 2023-01 API version.
