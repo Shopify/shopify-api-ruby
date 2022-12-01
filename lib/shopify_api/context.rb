@@ -33,7 +33,7 @@ module ShopifyAPI
           scope: T.any(T::Array[String], String),
           is_private: T::Boolean,
           is_embedded: T::Boolean,
-          log_level: Symbol,
+          log_level: T.any(String, Symbol),
           logger: ::Logger,
           session_storage: T.nilable(ShopifyAPI::Auth::SessionStorage),
           host_name: T.nilable(String),
@@ -77,7 +77,7 @@ module ShopifyAPI
         @user_agent_prefix = user_agent_prefix
         @old_api_secret_key = old_api_secret_key
         @log_level = if valid_log_level?(log_level)
-          log_level
+          log_level.to_sym
         else
           :info
         end
@@ -182,9 +182,9 @@ module ShopifyAPI
 
       private
 
-      sig { params(log_level: Symbol).returns(T::Boolean) }
+      sig { params(log_level: T.any(Symbol, String)).returns(T::Boolean) }
       def valid_log_level?(log_level)
-        return true if ::ShopifyAPI::Logger.levels.include?(log_level)
+        return true if ::ShopifyAPI::Logger.levels.include?(log_level.to_sym)
 
         ShopifyAPI::Logger.warn("#{log_level} is not a valid log_level. "\
           "Valid options are #{::ShopifyAPI::Logger.levels.join(", ")}")
