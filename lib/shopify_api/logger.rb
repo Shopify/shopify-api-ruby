@@ -38,6 +38,13 @@ module ShopifyAPI
         send_to_logger(:warn, message)
       end
 
+      sig { returns(T::Array[Symbol]) }
+      def levels
+        LOG_LEVELS.keys
+      end
+
+      private
+
       sig { params(log_level: Symbol).returns(String) }
       def context(log_level)
         current_shop = ShopifyAPI::Context.active_session&.shop
@@ -49,20 +56,13 @@ module ShopifyAPI
         end
       end
 
-      sig { returns(T::Array[Symbol]) }
-      def levels
-        LOG_LEVELS.keys
-      end
-
-      private
-
       sig { params(log_level: Symbol, message: String).void }
       def send_to_logger(log_level, message)
         return unless enabled_for_log_level?(log_level)
 
         full_message = "#{context(log_level)} #{message}"
 
-        ShopifyAPI::Context.logger.send(log_level, full_message)
+        ShopifyAPI::Context.logger.public_send(log_level, full_message)
       end
 
       sig { params(log_level: Symbol).returns(T::Boolean) }
