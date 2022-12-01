@@ -17,6 +17,7 @@ module ShopifyAPITest
         is_private: true,
         is_embedded: true,
         session_storage: ShopifyAPI::Auth::FileSessionStorage.new,
+        log_level: :off,
         logger: Logger.new(writer),
         private_shop: "privateshop.myshopify.com",
         user_agent_prefix: "user_agent_prefix1",
@@ -131,11 +132,31 @@ module ShopifyAPITest
         private_shop: "privateshop.myshopify.com",
         user_agent_prefix: "user_agent_prefix1",
         old_api_secret_key: "old_secret",
+        log_level: :off,
       )
       assert_equal("https", ShopifyAPI::Context.host_scheme)
       assert_equal("https://tunnel-o-security.com", ShopifyAPI::Context.host)
       assert_equal("tunnel-o-security.com", ShopifyAPI::Context.host_name)
       ENV["HOST"] = old_host
+    end
+
+    def test_send_a_warning_if_log_level_is_invalid
+      ShopifyAPI::Context.stubs(:log_level).returns(:warn)
+      ShopifyAPI::Logger.expects(:warn).with("not_a_level is not a valid log_level. "\
+        "Valid options are #{::ShopifyAPI::Logger::LOG_LEVELS.keys.join(", ")}")
+      ShopifyAPI::Context.setup(
+        api_key: "",
+        api_secret_key: "",
+        api_version: "unstable",
+        host_name: "",
+        scope: [],
+        is_private: false,
+        is_embedded: true,
+        session_storage: ShopifyAPI::Auth::FileSessionStorage.new,
+        user_agent_prefix: nil,
+        old_api_secret_key: nil,
+        log_level: :not_a_level,
+      )
     end
 
     def teardown
@@ -156,6 +177,7 @@ module ShopifyAPITest
         session_storage: ShopifyAPI::Auth::FileSessionStorage.new,
         user_agent_prefix: nil,
         old_api_secret_key: nil,
+        log_level: :off,
       )
     end
   end

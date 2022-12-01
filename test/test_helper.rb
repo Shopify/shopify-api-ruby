@@ -34,6 +34,7 @@ module Test
           session_storage: TestHelpers::FakeSessionStorage.new,
           user_agent_prefix: nil,
           old_api_secret_key: nil,
+          log_level: :off,
         )
       end
 
@@ -80,6 +81,7 @@ module Test
           private_shop: private_shop != "do-not-set" ? private_shop : ShopifyAPI::Context.private_shop,
           user_agent_prefix: user_agent_prefix ? user_agent_prefix : ShopifyAPI::Context.user_agent_prefix,
           old_api_secret_key: old_api_secret_key ? old_api_secret_key : ShopifyAPI::Context.old_api_secret_key,
+          log_level: :off,
         )
       end
     end
