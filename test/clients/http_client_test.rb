@@ -162,7 +162,8 @@ module ShopifyAPITest
           .with(body: @request.body.to_json, query: @request.query, headers: @expected_headers)
           .to_return(body: { errors: "Something very not good" }.to_json, headers: @response_headers, status: 500)
 
-        assert_raises(ShopifyAPI::Errors::MaxHttpRetriesExceededError) { @client.request(@request) }
+        error = assert_raises(ShopifyAPI::Errors::MaxHttpRetriesExceededError) { @client.request(@request) }
+        assert_instance_of(ShopifyAPI::Clients::HttpResponse, error.response)
       end
 
       def test_throttle_error_no_retry_after_header
@@ -177,6 +178,17 @@ module ShopifyAPITest
           .then.to_return(body: @success_body.to_json, headers: @response_headers)
 
         verify_http_request
+      end
+
+      def test_throttle_error_with_retry_after_header_in_error_object
+        stub_request(@request.http_method, "https://#{@shop}#{@base_path}/#{@request.path}")
+          .with(body: @request.body.to_json, query: @request.query, headers: @expected_headers)
+          .to_return(body: { errors: "Call limit exceeded" }.to_json,
+            headers: @response_headers.merge("Retry-After" => "2.0"), status: 429)
+
+        error = assert_raises(ShopifyAPI::Errors::HttpResponseError) { @client.request(@request) }
+        assert_equal(429, error.code)
+        assert_equal("2.0", error.response.headers["retry-after"][0])
       end
 
       def test_warns_on_deprecation_header

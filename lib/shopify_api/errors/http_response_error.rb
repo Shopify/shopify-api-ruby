@@ -9,10 +9,14 @@ module ShopifyAPI
       sig { returns(Integer) }
       attr_reader :code
 
-      sig { params(code: Integer).void }
-      def initialize(code:)
+      sig { returns(ShopifyAPI::Clients::HttpResponse) }
+      attr_reader :response
+
+      sig { params(response: ShopifyAPI::Clients::HttpResponse).void }
+      def initialize(response:)
         super
-        @code = code
+        @code = T.let(response.code, Integer)
+        @response = response
       end
     end
   end
