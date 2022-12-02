@@ -81,8 +81,10 @@ module ShopifyAPI
           if Context.embedded?
             if auth_header
               matches = auth_header.match(/^Bearer (.+)$/)
-              raise Errors::MissingJwtTokenError,
-                "Missing Bearer token in authorization header" unless matches
+              unless matches
+                ShopifyAPI::Logger.warn("Missing Bearer token in authorization header")
+                raise Errors::MissingJwtTokenError, "Missing Bearer token in authorization header"
+              end
 
               jwt_payload = Auth::JwtPayload.new(T.must(matches[1]))
               shop = jwt_payload.shop
