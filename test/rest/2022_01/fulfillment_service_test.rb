@@ -33,22 +33,6 @@ class FulfillmentService202201Test < Test::Unit::TestCase
     void
   end
   def test_1()
-    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-01/fulfillment_services.json")
-      .with(
-        headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
-        body: {}
-      )
-      .to_return(status: 200, body: JSON.generate({"fulfillment_services" => [{"id" => 755357713, "name" => "Mars Fulfillment", "email" => nil, "service_name" => "Mars Fulfillment", "handle" => "mars-fulfillment", "fulfillment_orders_opt_in" => true, "include_pending_stock" => false, "provider_id" => nil, "location_id" => 24826418, "callback_url" => "http://google.com/", "tracking_support" => true, "inventory_management" => true, "admin_graphql_api_id" => "gid://shopify/ApiFulfillmentService/755357713"}]}), headers: {})
-
-    ShopifyAPI::FulfillmentService.all
-
-    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-01/fulfillment_services.json")
-  end
-
-  sig do
-    void
-  end
-  def test_2()
     stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-01/fulfillment_services.json?scope=all")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
@@ -66,13 +50,29 @@ class FulfillmentService202201Test < Test::Unit::TestCase
   sig do
     void
   end
+  def test_2()
+    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-01/fulfillment_services.json")
+      .with(
+        headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
+        body: {}
+      )
+      .to_return(status: 200, body: JSON.generate({"fulfillment_services" => [{"id" => 755357713, "name" => "Mars Fulfillment", "email" => nil, "service_name" => "Mars Fulfillment", "handle" => "mars-fulfillment", "fulfillment_orders_opt_in" => true, "include_pending_stock" => false, "provider_id" => nil, "location_id" => 24826418, "callback_url" => "http://google.com/", "tracking_support" => true, "inventory_management" => true, "admin_graphql_api_id" => "gid://shopify/ApiFulfillmentService/755357713"}]}), headers: {})
+
+    ShopifyAPI::FulfillmentService.all
+
+    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-01/fulfillment_services.json")
+  end
+
+  sig do
+    void
+  end
   def test_3()
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2022-01/fulfillment_services.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "fulfillment_service" => hash_including({"name" => "Jupiter Fulfillment", "callback_url" => "http://google.com", "inventory_management" => true, "tracking_support" => true, "requires_shipping_method" => true, "format" => "json"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"fulfillment_service" => {"id" => 1061774487, "name" => "Jupiter Fulfillment", "email" => nil, "service_name" => "Jupiter Fulfillment", "handle" => "jupiter-fulfillment", "fulfillment_orders_opt_in" => false, "include_pending_stock" => false, "provider_id" => nil, "location_id" => 1072404542, "callback_url" => "http://google.com/", "tracking_support" => true, "inventory_management" => true, "admin_graphql_api_id" => "gid://shopify/ApiFulfillmentService/1061774487"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"fulfillment_service" => {"id" => 1061774523, "name" => "Jupiter Fulfillment", "email" => nil, "service_name" => "Jupiter Fulfillment", "handle" => "jupiter-fulfillment", "fulfillment_orders_opt_in" => false, "include_pending_stock" => false, "provider_id" => nil, "location_id" => 1072404578, "callback_url" => "http://google.com/", "tracking_support" => true, "inventory_management" => true, "admin_graphql_api_id" => "gid://shopify/ApiFulfillmentService/1061774523"}}), headers: {})
 
     fulfillment_service = ShopifyAPI::FulfillmentService.new
     fulfillment_service.name = "Jupiter Fulfillment"

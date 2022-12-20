@@ -38,7 +38,7 @@ class MobilePlatformApplication202207Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"mobile_platform_applications" => [{"id" => 1066176000, "application_id" => "X1Y2.ca.domain.app", "platform" => "ios", "created_at" => "2022-10-03T13:14:18-04:00", "updated_at" => "2022-10-03T13:14:18-04:00", "sha256_cert_fingerprints" => [], "enabled_universal_or_app_links" => true, "enabled_shared_webcredentials" => true}, {"id" => 1066176001, "application_id" => "com.example", "platform" => "android", "created_at" => "2022-10-03T13:14:18-04:00", "updated_at" => "2022-10-03T13:14:18-04:00", "sha256_cert_fingerprints" => ["14:6D:E9:83:C5:73:06:50:D8:EE:B9:95:2F:34:FC:64:16:A0:83:42:E6:1D:BE:A8:8A:04:96:B2:3F:CF:44:E5"], "enabled_universal_or_app_links" => true, "enabled_shared_webcredentials" => false}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"mobile_platform_applications" => [{"id" => 1066176058, "application_id" => "X1Y2.ca.domain.app", "platform" => "ios", "created_at" => "2022-11-29T17:07:58-05:00", "updated_at" => "2022-11-29T17:07:58-05:00", "sha256_cert_fingerprints" => [], "enabled_universal_or_app_links" => true, "enabled_shared_webcredentials" => true}, {"id" => 1066176059, "application_id" => "com.example", "platform" => "android", "created_at" => "2022-11-29T17:07:58-05:00", "updated_at" => "2022-11-29T17:07:58-05:00", "sha256_cert_fingerprints" => ["14:6D:E9:83:C5:73:06:50:D8:EE:B9:95:2F:34:FC:64:16:A0:83:42:E6:1D:BE:A8:8A:04:96:B2:3F:CF:44:E5"], "enabled_universal_or_app_links" => true, "enabled_shared_webcredentials" => false}]}), headers: {})
 
     ShopifyAPI::MobilePlatformApplication.all
 
@@ -52,30 +52,9 @@ class MobilePlatformApplication202207Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2022-07/mobile_platform_applications.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "mobile_platform_application" => hash_including({"platform" => "ios", "application_id" => "X1Y2.ca.domain.app", "enabled_universal_or_app_links" => true, "enabled_shared_webcredentials" => true}) }
-      )
-      .to_return(status: 200, body: JSON.generate({"mobile_platform_application" => {"id" => 1066175998, "application_id" => "X1Y2.ca.domain.app", "platform" => "ios", "created_at" => "2022-10-03T13:14:13-04:00", "updated_at" => "2022-10-03T13:14:13-04:00", "sha256_cert_fingerprints" => [], "enabled_universal_or_app_links" => true, "enabled_shared_webcredentials" => true}}), headers: {})
-
-    mobile_platform_application = ShopifyAPI::MobilePlatformApplication.new
-    mobile_platform_application.platform = "ios"
-    mobile_platform_application.application_id = "X1Y2.ca.domain.app"
-    mobile_platform_application.enabled_universal_or_app_links = true
-    mobile_platform_application.enabled_shared_webcredentials = true
-    mobile_platform_application.save
-
-    assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-07/mobile_platform_applications.json")
-  end
-
-  sig do
-    void
-  end
-  def test_3()
-    stub_request(:post, "https://test-shop.myshopify.io/admin/api/2022-07/mobile_platform_applications.json")
-      .with(
-        headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "mobile_platform_application" => hash_including({"platform" => "android", "application_id" => "com.example", "sha256_cert_fingerprints" => ["14:6D:E9:83:C5:73:06:50:D8:EE:B9:95:2F:34:FC:64:16:A0:83:42:E6:1D:BE:A8:8A:04:96:B2:3F:CF:44:E5"], "enabled_universal_or_app_links" => true}) }
       )
-      .to_return(status: 200, body: JSON.generate({"mobile_platform_application" => {"id" => 1066175999, "application_id" => "com.example", "platform" => "android", "created_at" => "2022-10-03T13:14:16-04:00", "updated_at" => "2022-10-03T13:14:16-04:00", "sha256_cert_fingerprints" => ["14:6D:E9:83:C5:73:06:50:D8:EE:B9:95:2F:34:FC:64:16:A0:83:42:E6:1D:BE:A8:8A:04:96:B2:3F:CF:44:E5"], "enabled_universal_or_app_links" => true, "enabled_shared_webcredentials" => false}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"mobile_platform_application" => {"id" => 1066176055, "application_id" => "com.example", "platform" => "android", "created_at" => "2022-11-29T17:07:53-05:00", "updated_at" => "2022-11-29T17:07:53-05:00", "sha256_cert_fingerprints" => ["14:6D:E9:83:C5:73:06:50:D8:EE:B9:95:2F:34:FC:64:16:A0:83:42:E6:1D:BE:A8:8A:04:96:B2:3F:CF:44:E5"], "enabled_universal_or_app_links" => true, "enabled_shared_webcredentials" => false}}), headers: {})
 
     mobile_platform_application = ShopifyAPI::MobilePlatformApplication.new
     mobile_platform_application.platform = "android"
@@ -92,63 +71,59 @@ class MobilePlatformApplication202207Test < Test::Unit::TestCase
   sig do
     void
   end
+  def test_3()
+    stub_request(:post, "https://test-shop.myshopify.io/admin/api/2022-07/mobile_platform_applications.json")
+      .with(
+        headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
+        body: { "mobile_platform_application" => hash_including({"platform" => "ios", "application_id" => "X1Y2.ca.domain.app", "enabled_universal_or_app_links" => true, "enabled_shared_webcredentials" => true}) }
+      )
+      .to_return(status: 200, body: JSON.generate({"mobile_platform_application" => {"id" => 1066176052, "application_id" => "X1Y2.ca.domain.app", "platform" => "ios", "created_at" => "2022-11-29T17:07:49-05:00", "updated_at" => "2022-11-29T17:07:49-05:00", "sha256_cert_fingerprints" => [], "enabled_universal_or_app_links" => true, "enabled_shared_webcredentials" => true}}), headers: {})
+
+    mobile_platform_application = ShopifyAPI::MobilePlatformApplication.new
+    mobile_platform_application.platform = "ios"
+    mobile_platform_application.application_id = "X1Y2.ca.domain.app"
+    mobile_platform_application.enabled_universal_or_app_links = true
+    mobile_platform_application.enabled_shared_webcredentials = true
+    mobile_platform_application.save
+
+    assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-07/mobile_platform_applications.json")
+  end
+
+  sig do
+    void
+  end
   def test_4()
-    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-07/mobile_platform_applications/1066175996.json")
+    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-07/mobile_platform_applications/1066176053.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"mobile_platform_application" => {"id" => 1066175996, "application_id" => "X1Y2.ca.domain.app", "platform" => "ios", "created_at" => "2022-10-03T13:14:05-04:00", "updated_at" => "2022-10-03T13:14:05-04:00", "sha256_cert_fingerprints" => [], "enabled_universal_or_app_links" => true, "enabled_shared_webcredentials" => true}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"mobile_platform_application" => {"id" => 1066176053, "application_id" => "X1Y2.ca.domain.app", "platform" => "ios", "created_at" => "2022-11-29T17:07:49-05:00", "updated_at" => "2022-11-29T17:07:49-05:00", "sha256_cert_fingerprints" => [], "enabled_universal_or_app_links" => true, "enabled_shared_webcredentials" => true}}), headers: {})
 
     ShopifyAPI::MobilePlatformApplication.find(
-      id: 1066175996,
+      id: 1066176053,
     )
 
-    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-07/mobile_platform_applications/1066175996.json")
+    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-07/mobile_platform_applications/1066176053.json")
   end
 
   sig do
     void
   end
   def test_5()
-    stub_request(:put, "https://test-shop.myshopify.io/admin/api/2022-07/mobile_platform_applications/1066175997.json")
+    stub_request(:put, "https://test-shop.myshopify.io/admin/api/2022-07/mobile_platform_applications/1066176057.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "mobile_platform_application" => hash_including({"application_id" => "A1B2.ca.domain.app", "platform" => "ios", "created_at" => "2022-10-03T13:14:07-04:00", "updated_at" => "2022-10-03T13:14:07-04:00", "sha256_cert_fingerprints" => [], "enabled_universal_or_app_links" => true, "enabled_shared_webcredentials" => true}) }
+        body: { "mobile_platform_application" => hash_including({"application_id" => "com.example.news.app", "platform" => "android", "created_at" => "2022-11-29T17:07:56-05:00", "updated_at" => "2022-11-29T17:07:56-05:00", "sha256_cert_fingerprints" => ["14:6D:E9:83:C5:73:06:50:D8:EE:B9:95:2F:34:FC:64:16:A0:83:42:E6:1D:BE:A8:8A:04:96:B2:3F:CF:44:E5"], "enabled_universal_or_app_links" => true, "enabled_shared_webcredentials" => false}) }
       )
-      .to_return(status: 200, body: JSON.generate({"mobile_platform_application" => {"application_id" => "A1B2.ca.domain.app", "platform" => "ios", "sha256_cert_fingerprints" => [], "enabled_universal_or_app_links" => true, "enabled_shared_webcredentials" => true, "id" => 1066175997, "created_at" => "2022-10-03T13:14:07-04:00", "updated_at" => "2022-10-03T13:14:08-04:00"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"mobile_platform_application" => {"application_id" => "com.example.news.app", "platform" => "android", "sha256_cert_fingerprints" => ["14:6D:E9:83:C5:73:06:50:D8:EE:B9:95:2F:34:FC:64:16:A0:83:42:E6:1D:BE:A8:8A:04:96:B2:3F:CF:44:E5"], "enabled_universal_or_app_links" => true, "enabled_shared_webcredentials" => false, "id" => 1066176057, "created_at" => "2022-11-29T17:07:56-05:00", "updated_at" => "2022-11-29T17:07:58-05:00"}}), headers: {})
 
     mobile_platform_application = ShopifyAPI::MobilePlatformApplication.new
-    mobile_platform_application.id = 1066175997
-    mobile_platform_application.application_id = "A1B2.ca.domain.app"
-    mobile_platform_application.platform = "ios"
-    mobile_platform_application.created_at = "2022-10-03T13:14:07-04:00"
-    mobile_platform_application.updated_at = "2022-10-03T13:14:07-04:00"
-    mobile_platform_application.sha256_cert_fingerprints = []
-    mobile_platform_application.enabled_universal_or_app_links = true
-    mobile_platform_application.enabled_shared_webcredentials = true
-    mobile_platform_application.save
-
-    assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2022-07/mobile_platform_applications/1066175997.json")
-  end
-
-  sig do
-    void
-  end
-  def test_6()
-    stub_request(:put, "https://test-shop.myshopify.io/admin/api/2022-07/mobile_platform_applications/1066176002.json")
-      .with(
-        headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "mobile_platform_application" => hash_including({"application_id" => "com.example.news.app", "platform" => "android", "created_at" => "2022-10-03T13:14:21-04:00", "updated_at" => "2022-10-03T13:14:21-04:00", "sha256_cert_fingerprints" => ["14:6D:E9:83:C5:73:06:50:D8:EE:B9:95:2F:34:FC:64:16:A0:83:42:E6:1D:BE:A8:8A:04:96:B2:3F:CF:44:E5"], "enabled_universal_or_app_links" => true, "enabled_shared_webcredentials" => false}) }
-      )
-      .to_return(status: 200, body: JSON.generate({"mobile_platform_application" => {"application_id" => "com.example.news.app", "platform" => "android", "sha256_cert_fingerprints" => ["14:6D:E9:83:C5:73:06:50:D8:EE:B9:95:2F:34:FC:64:16:A0:83:42:E6:1D:BE:A8:8A:04:96:B2:3F:CF:44:E5"], "enabled_universal_or_app_links" => true, "enabled_shared_webcredentials" => false, "id" => 1066176002, "created_at" => "2022-10-03T13:14:21-04:00", "updated_at" => "2022-10-03T13:14:23-04:00"}}), headers: {})
-
-    mobile_platform_application = ShopifyAPI::MobilePlatformApplication.new
-    mobile_platform_application.id = 1066176002
+    mobile_platform_application.id = 1066176057
     mobile_platform_application.application_id = "com.example.news.app"
     mobile_platform_application.platform = "android"
-    mobile_platform_application.created_at = "2022-10-03T13:14:21-04:00"
-    mobile_platform_application.updated_at = "2022-10-03T13:14:21-04:00"
+    mobile_platform_application.created_at = "2022-11-29T17:07:56-05:00"
+    mobile_platform_application.updated_at = "2022-11-29T17:07:56-05:00"
     mobile_platform_application.sha256_cert_fingerprints = [
       "14:6D:E9:83:C5:73:06:50:D8:EE:B9:95:2F:34:FC:64:16:A0:83:42:E6:1D:BE:A8:8A:04:96:B2:3F:CF:44:E5"
     ]
@@ -156,14 +131,39 @@ class MobilePlatformApplication202207Test < Test::Unit::TestCase
     mobile_platform_application.enabled_shared_webcredentials = false
     mobile_platform_application.save
 
-    assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2022-07/mobile_platform_applications/1066176002.json")
+    assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2022-07/mobile_platform_applications/1066176057.json")
+  end
+
+  sig do
+    void
+  end
+  def test_6()
+    stub_request(:put, "https://test-shop.myshopify.io/admin/api/2022-07/mobile_platform_applications/1066176054.json")
+      .with(
+        headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
+        body: { "mobile_platform_application" => hash_including({"application_id" => "A1B2.ca.domain.app", "platform" => "ios", "created_at" => "2022-11-29T17:07:50-05:00", "updated_at" => "2022-11-29T17:07:50-05:00", "sha256_cert_fingerprints" => [], "enabled_universal_or_app_links" => true, "enabled_shared_webcredentials" => true}) }
+      )
+      .to_return(status: 200, body: JSON.generate({"mobile_platform_application" => {"application_id" => "A1B2.ca.domain.app", "platform" => "ios", "sha256_cert_fingerprints" => [], "enabled_universal_or_app_links" => true, "enabled_shared_webcredentials" => true, "id" => 1066176054, "created_at" => "2022-11-29T17:07:50-05:00", "updated_at" => "2022-11-29T17:07:52-05:00"}}), headers: {})
+
+    mobile_platform_application = ShopifyAPI::MobilePlatformApplication.new
+    mobile_platform_application.id = 1066176054
+    mobile_platform_application.application_id = "A1B2.ca.domain.app"
+    mobile_platform_application.platform = "ios"
+    mobile_platform_application.created_at = "2022-11-29T17:07:50-05:00"
+    mobile_platform_application.updated_at = "2022-11-29T17:07:50-05:00"
+    mobile_platform_application.sha256_cert_fingerprints = []
+    mobile_platform_application.enabled_universal_or_app_links = true
+    mobile_platform_application.enabled_shared_webcredentials = true
+    mobile_platform_application.save
+
+    assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2022-07/mobile_platform_applications/1066176054.json")
   end
 
   sig do
     void
   end
   def test_7()
-    stub_request(:delete, "https://test-shop.myshopify.io/admin/api/2022-07/mobile_platform_applications/1066176003.json")
+    stub_request(:delete, "https://test-shop.myshopify.io/admin/api/2022-07/mobile_platform_applications/1066176056.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
@@ -171,10 +171,10 @@ class MobilePlatformApplication202207Test < Test::Unit::TestCase
       .to_return(status: 200, body: JSON.generate({}), headers: {})
 
     ShopifyAPI::MobilePlatformApplication.delete(
-      id: 1066176003,
+      id: 1066176056,
     )
 
-    assert_requested(:delete, "https://test-shop.myshopify.io/admin/api/2022-07/mobile_platform_applications/1066176003.json")
+    assert_requested(:delete, "https://test-shop.myshopify.io/admin/api/2022-07/mobile_platform_applications/1066176056.json")
   end
 
 end

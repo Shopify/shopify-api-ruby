@@ -51,6 +51,13 @@ module ShopifyAPI
 
     class << self
       sig do
+        returns(String)
+      end
+      def json_response_body_name()
+        "fulfillment_order"
+      end
+
+      sig do
         params(
           assignment_status: T.untyped,
           location_ids: T.nilable(T.any(T::Array[T.untyped], Integer, String)),

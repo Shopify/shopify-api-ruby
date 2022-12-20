@@ -198,11 +198,15 @@ module ShopifyAPI
 
     sig do
       params(
+        notify_customer: T.untyped,
+        tracking_info: T.untyped,
         body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end
     def update_tracking(
+      notify_customer: nil,
+      tracking_info: nil,
       body: nil,
       **kwargs
     )
@@ -211,7 +215,7 @@ module ShopifyAPI
         operation: :update_tracking,
         session: @session,
         ids: {id: @id},
-        params: {}.merge(kwargs).compact,
+        params: {notify_customer: notify_customer, tracking_info: tracking_info}.merge(kwargs).compact,
         body: body,
         entity: self,
       )
