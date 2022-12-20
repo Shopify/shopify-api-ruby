@@ -4,7 +4,10 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
 
+- [#1081](https://github.com/Shopify/shopify-api-ruby/pull/1081) Fixed an error when parsing the JSON response body for the AssignedFulfillmentOrder resource.
+
 ## Version 12.2.1
+
 - [#1045](https://github.com/Shopify/shopify-api-ruby/pull/1045) Fixes bug with host/host_name requirement.
 
 ## Version 12.2.0

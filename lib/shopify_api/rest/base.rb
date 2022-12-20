@@ -97,6 +97,11 @@ module ShopifyAPI
           class_name.underscore
         end
 
+        sig { returns(String) }
+        def json_response_body_name
+          class_name
+        end
+
         sig { returns(T.nilable(String)) }
         def prev_page_info
           instance_variable_get(:"@prev_page_info").value
@@ -205,12 +210,14 @@ module ShopifyAPI
 
           body = T.cast(response.body, T::Hash[String, T.untyped])
 
-          if body.key?(class_name.pluralize) || (body.key?(class_name) && body[class_name].is_a?(Array))
-            (body[class_name.pluralize] || body[class_name]).each do |entry|
+          response_name = json_response_body_name
+
+          if body.key?(response_name.pluralize) || (body.key?(response_name) && body[response_name].is_a?(Array))
+            (body[response_name.pluralize] || body[response_name]).each do |entry|
               objects << create_instance(data: entry, session: session)
             end
-          elsif body.key?(class_name)
-            objects << create_instance(data: body[class_name], session: session)
+          elsif body.key?(response_name)
+            objects << create_instance(data: body[response_name], session: session)
           end
 
           objects
