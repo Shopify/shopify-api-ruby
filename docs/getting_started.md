@@ -5,7 +5,7 @@ This page will outline everything you need to know and the steps you need to fol
 ## Requirements
 
 - A working knowledge of ruby and a web framework such as Rails or Sinatra
-- A private or custom app already set up in your test store or partner account
+- A custom app already set up in your test store or partner account
 - We recommend `ngrok` to tunnel traffic to your localhost for testing
 
 ## Installation
