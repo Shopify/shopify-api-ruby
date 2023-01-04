@@ -196,13 +196,13 @@ module ShopifyAPI
 
     sig do
       params(
-        new_location_id: T.untyped,
+        fulfillment_order: T.untyped,
         body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end
     def move(
-      new_location_id: nil,
+      fulfillment_order: nil,
       body: nil,
       **kwargs
     )
@@ -211,7 +211,7 @@ module ShopifyAPI
         operation: :move,
         session: @session,
         ids: {id: @id},
-        params: {new_location_id: new_location_id}.merge(kwargs).compact,
+        params: {fulfillment_order: fulfillment_order}.merge(kwargs).compact,
         body: body,
         entity: self,
       )
