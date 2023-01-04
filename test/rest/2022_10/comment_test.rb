@@ -33,12 +33,30 @@ class Comment202210Test < Test::Unit::TestCase
     void
   end
   def test_1()
+    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-10/comments.json?since_id=118373535")
+      .with(
+        headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
+        body: {}
+      )
+      .to_return(status: 200, body: JSON.generate({"comments" => [{"id" => 653537639, "body" => "Hi author, I really _like_ what you're doing there.", "body_html" => "<p>Hi author, I really <em>like</em> what you're doing there.</p>", "author" => "Soleone", "email" => "soleone@example.net", "status" => "unapproved", "article_id" => 134645308, "blog_id" => 241253187, "created_at" => "2023-01-03T12:05:09-05:00", "updated_at" => "2023-01-03T12:05:09-05:00", "ip" => "127.0.0.1", "user_agent" => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_4; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1", "published_at" => nil}]}), headers: {})
+
+    ShopifyAPI::Comment.all(
+      since_id: "118373535",
+    )
+
+    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-10/comments.json?since_id=118373535")
+  end
+
+  sig do
+    void
+  end
+  def test_2()
     stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-10/comments.json?article_id=134645308&blog_id=241253187")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"comments" => [{"id" => 653537639, "body" => "Hi author, I really _like_ what you're doing there.", "body_html" => "<p>Hi author, I really <em>like</em> what you're doing there.</p>", "author" => "Soleone", "email" => "soleone@example.net", "status" => "unapproved", "article_id" => 134645308, "blog_id" => 241253187, "created_at" => "2022-10-03T12:44:45-04:00", "updated_at" => "2022-10-03T12:44:45-04:00", "ip" => "127.0.0.1", "user_agent" => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_4; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1", "published_at" => nil}, {"id" => 118373535, "body" => "Hi author, I really _like_ what you're doing there.", "body_html" => "<p>Hi author, I really <em>like</em> what you're doing there.</p>", "author" => "Soleone", "email" => "soleone@example.net", "status" => "published", "article_id" => 134645308, "blog_id" => 241253187, "created_at" => "2022-10-03T12:44:45-04:00", "updated_at" => "2022-10-03T12:44:45-04:00", "ip" => "127.0.0.1", "user_agent" => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_4; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1", "published_at" => nil}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"comments" => [{"id" => 653537639, "body" => "Hi author, I really _like_ what you're doing there.", "body_html" => "<p>Hi author, I really <em>like</em> what you're doing there.</p>", "author" => "Soleone", "email" => "soleone@example.net", "status" => "unapproved", "article_id" => 134645308, "blog_id" => 241253187, "created_at" => "2023-01-03T12:05:09-05:00", "updated_at" => "2023-01-03T12:05:09-05:00", "ip" => "127.0.0.1", "user_agent" => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_4; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1", "published_at" => nil}, {"id" => 118373535, "body" => "Hi author, I really _like_ what you're doing there.", "body_html" => "<p>Hi author, I really <em>like</em> what you're doing there.</p>", "author" => "Soleone", "email" => "soleone@example.net", "status" => "published", "article_id" => 134645308, "blog_id" => 241253187, "created_at" => "2023-01-03T12:05:09-05:00", "updated_at" => "2023-01-03T12:05:09-05:00", "ip" => "127.0.0.1", "user_agent" => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_4; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1", "published_at" => nil}]}), headers: {})
 
     ShopifyAPI::Comment.all(
       article_id: "134645308",
@@ -51,29 +69,13 @@ class Comment202210Test < Test::Unit::TestCase
   sig do
     void
   end
-  def test_2()
-    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-10/comments.json")
-      .with(
-        headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
-        body: {}
-      )
-      .to_return(status: 200, body: JSON.generate({"comments" => [{"id" => 653537639, "body" => "Hi author, I really _like_ what you're doing there.", "body_html" => "<p>Hi author, I really <em>like</em> what you're doing there.</p>", "author" => "Soleone", "email" => "soleone@example.net", "status" => "unapproved", "article_id" => 134645308, "blog_id" => 241253187, "created_at" => "2022-10-03T12:44:45-04:00", "updated_at" => "2022-10-03T12:44:45-04:00", "ip" => "127.0.0.1", "user_agent" => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_4; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1", "published_at" => nil}, {"id" => 118373535, "body" => "Hi author, I really _like_ what you're doing there.", "body_html" => "<p>Hi author, I really <em>like</em> what you're doing there.</p>", "author" => "Soleone", "email" => "soleone@example.net", "status" => "published", "article_id" => 134645308, "blog_id" => 241253187, "created_at" => "2022-10-03T12:44:45-04:00", "updated_at" => "2022-10-03T12:44:45-04:00", "ip" => "127.0.0.1", "user_agent" => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_4; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1", "published_at" => nil}]}), headers: {})
-
-    ShopifyAPI::Comment.all
-
-    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-10/comments.json")
-  end
-
-  sig do
-    void
-  end
   def test_3()
     stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-10/comments.json?blog_id=241253187")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"comments" => [{"id" => 653537639, "body" => "Hi author, I really _like_ what you're doing there.", "body_html" => "<p>Hi author, I really <em>like</em> what you're doing there.</p>", "author" => "Soleone", "email" => "soleone@example.net", "status" => "unapproved", "article_id" => 134645308, "blog_id" => 241253187, "created_at" => "2022-10-03T12:44:45-04:00", "updated_at" => "2022-10-03T12:44:45-04:00", "ip" => "127.0.0.1", "user_agent" => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_4; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1", "published_at" => nil}, {"id" => 118373535, "body" => "Hi author, I really _like_ what you're doing there.", "body_html" => "<p>Hi author, I really <em>like</em> what you're doing there.</p>", "author" => "Soleone", "email" => "soleone@example.net", "status" => "published", "article_id" => 134645308, "blog_id" => 241253187, "created_at" => "2022-10-03T12:44:45-04:00", "updated_at" => "2022-10-03T12:44:45-04:00", "ip" => "127.0.0.1", "user_agent" => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_4; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1", "published_at" => nil}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"comments" => [{"id" => 653537639, "body" => "Hi author, I really _like_ what you're doing there.", "body_html" => "<p>Hi author, I really <em>like</em> what you're doing there.</p>", "author" => "Soleone", "email" => "soleone@example.net", "status" => "unapproved", "article_id" => 134645308, "blog_id" => 241253187, "created_at" => "2023-01-03T12:05:09-05:00", "updated_at" => "2023-01-03T12:05:09-05:00", "ip" => "127.0.0.1", "user_agent" => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_4; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1", "published_at" => nil}, {"id" => 118373535, "body" => "Hi author, I really _like_ what you're doing there.", "body_html" => "<p>Hi author, I really <em>like</em> what you're doing there.</p>", "author" => "Soleone", "email" => "soleone@example.net", "status" => "published", "article_id" => 134645308, "blog_id" => 241253187, "created_at" => "2023-01-03T12:05:09-05:00", "updated_at" => "2023-01-03T12:05:09-05:00", "ip" => "127.0.0.1", "user_agent" => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_4; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1", "published_at" => nil}]}), headers: {})
 
     ShopifyAPI::Comment.all(
       blog_id: "241253187",
@@ -86,18 +88,16 @@ class Comment202210Test < Test::Unit::TestCase
     void
   end
   def test_4()
-    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-10/comments.json?since_id=118373535")
+    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-10/comments.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"comments" => [{"id" => 653537639, "body" => "Hi author, I really _like_ what you're doing there.", "body_html" => "<p>Hi author, I really <em>like</em> what you're doing there.</p>", "author" => "Soleone", "email" => "soleone@example.net", "status" => "unapproved", "article_id" => 134645308, "blog_id" => 241253187, "created_at" => "2022-10-03T12:44:45-04:00", "updated_at" => "2022-10-03T12:44:45-04:00", "ip" => "127.0.0.1", "user_agent" => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_4; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1", "published_at" => nil}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"comments" => [{"id" => 653537639, "body" => "Hi author, I really _like_ what you're doing there.", "body_html" => "<p>Hi author, I really <em>like</em> what you're doing there.</p>", "author" => "Soleone", "email" => "soleone@example.net", "status" => "unapproved", "article_id" => 134645308, "blog_id" => 241253187, "created_at" => "2023-01-03T12:05:09-05:00", "updated_at" => "2023-01-03T12:05:09-05:00", "ip" => "127.0.0.1", "user_agent" => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_4; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1", "published_at" => nil}, {"id" => 118373535, "body" => "Hi author, I really _like_ what you're doing there.", "body_html" => "<p>Hi author, I really <em>like</em> what you're doing there.</p>", "author" => "Soleone", "email" => "soleone@example.net", "status" => "published", "article_id" => 134645308, "blog_id" => 241253187, "created_at" => "2023-01-03T12:05:09-05:00", "updated_at" => "2023-01-03T12:05:09-05:00", "ip" => "127.0.0.1", "user_agent" => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_4; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1", "published_at" => nil}]}), headers: {})
 
-    ShopifyAPI::Comment.all(
-      since_id: "118373535",
-    )
+    ShopifyAPI::Comment.all
 
-    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-10/comments.json?since_id=118373535")
+    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-10/comments.json")
   end
 
   sig do
@@ -162,7 +162,7 @@ class Comment202210Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"comment" => {"id" => 118373535, "body" => "Hi author, I really _like_ what you're doing there.", "body_html" => "<p>Hi author, I really <em>like</em> what you're doing there.</p>", "author" => "Soleone", "email" => "soleone@example.net", "status" => "published", "article_id" => 134645308, "blog_id" => 241253187, "created_at" => "2022-10-03T12:44:45-04:00", "updated_at" => "2022-10-03T12:44:45-04:00", "ip" => "127.0.0.1", "user_agent" => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_4; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1", "published_at" => nil}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"comment" => {"id" => 118373535, "body" => "Hi author, I really _like_ what you're doing there.", "body_html" => "<p>Hi author, I really <em>like</em> what you're doing there.</p>", "author" => "Soleone", "email" => "soleone@example.net", "status" => "published", "article_id" => 134645308, "blog_id" => 241253187, "created_at" => "2023-01-03T12:05:09-05:00", "updated_at" => "2023-01-03T12:05:09-05:00", "ip" => "127.0.0.1", "user_agent" => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_4; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1", "published_at" => nil}}), headers: {})
 
     ShopifyAPI::Comment.find(
       id: 118373535,
@@ -178,16 +178,16 @@ class Comment202210Test < Test::Unit::TestCase
     stub_request(:put, "https://test-shop.myshopify.io/admin/api/2022-10/comments/118373535.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "comment" => hash_including({"body" => "You can even update through a web service.", "author" => "Your new name", "email" => "your@updated-email.com", "published_at" => "2022-10-03T17:05:08.150Z"}) }
+        body: { "comment" => hash_including({"body" => "You can even update through a web service.", "author" => "Your new name", "email" => "your@updated-email.com", "published_at" => "2023-01-03T17:06:05.929Z"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"comment" => {"author" => "Your new name", "body" => "You can even update through a web service.", "email" => "your@updated-email.com", "published_at" => "2022-10-03T13:05:08-04:00", "id" => 118373535, "body_html" => "<p>You can even update through a web service.</p>", "status" => "published", "article_id" => 134645308, "blog_id" => 241253187, "created_at" => "2022-10-03T12:44:45-04:00", "updated_at" => "2022-10-03T13:05:08-04:00", "ip" => "127.0.0.1", "user_agent" => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_4; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"comment" => {"author" => "Your new name", "body" => "You can even update through a web service.", "email" => "your@updated-email.com", "published_at" => "2023-01-03T12:06:05-05:00", "id" => 118373535, "body_html" => "<p>You can even update through a web service.</p>", "status" => "published", "article_id" => 134645308, "blog_id" => 241253187, "created_at" => "2023-01-03T12:05:09-05:00", "updated_at" => "2023-01-03T12:06:06-05:00", "ip" => "127.0.0.1", "user_agent" => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_4; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1"}}), headers: {})
 
     comment = ShopifyAPI::Comment.new
     comment.id = 118373535
     comment.body = "You can even update through a web service."
     comment.author = "Your new name"
     comment.email = "your@updated-email.com"
-    comment.published_at = "2022-10-03T17:05:08.150Z"
+    comment.published_at = "2023-01-03T17:06:05.929Z"
     comment.save
 
     assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2022-10/comments/118373535.json")
@@ -202,7 +202,7 @@ class Comment202210Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "comment" => hash_including({"body" => "I like comments\nAnd I like posting them *RESTfully*.", "author" => "Your name", "email" => "your@email.com", "ip" => "107.20.160.121", "blog_id" => 241253187, "article_id" => 134645308}) }
       )
-      .to_return(status: 200, body: JSON.generate({"comment" => {"id" => 757536352, "body" => "I like comments\nAnd I like posting them *RESTfully*.", "body_html" => "<p>I like comments<br>\nAnd I like posting them <strong>RESTfully</strong>.</p>", "author" => "Your name", "email" => "your@email.com", "status" => "pending", "article_id" => 134645308, "blog_id" => 241253187, "created_at" => "2022-10-03T13:05:29-04:00", "updated_at" => "2022-10-03T13:05:29-04:00", "ip" => "107.20.160.121", "user_agent" => nil, "published_at" => nil}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"comment" => {"id" => 757536352, "body" => "I like comments\nAnd I like posting them *RESTfully*.", "body_html" => "<p>I like comments<br>\nAnd I like posting them <strong>RESTfully</strong>.</p>", "author" => "Your name", "email" => "your@email.com", "status" => "pending", "article_id" => 134645308, "blog_id" => 241253187, "created_at" => "2023-01-03T12:06:09-05:00", "updated_at" => "2023-01-03T12:06:09-05:00", "ip" => "107.20.160.121", "user_agent" => nil, "published_at" => nil}}), headers: {})
 
     comment = ShopifyAPI::Comment.new
     comment.body = "I like comments\nAnd I like posting them *RESTfully*."
@@ -225,7 +225,7 @@ class Comment202210Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"published_at" => nil, "status" => "spam", "id" => 653537639, "body" => "Hi author, I really _like_ what you're doing there.", "body_html" => "<p>Hi author, I really <em>like</em> what you're doing there.</p>", "author" => "Soleone", "email" => "soleone@example.net", "article_id" => 134645308, "blog_id" => 241253187, "created_at" => "2022-10-03T12:44:45-04:00", "updated_at" => "2022-10-03T13:05:02-04:00", "ip" => "127.0.0.1", "user_agent" => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_4; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1"}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"published_at" => nil, "status" => "spam", "id" => 653537639, "body" => "Hi author, I really _like_ what you're doing there.", "body_html" => "<p>Hi author, I really <em>like</em> what you're doing there.</p>", "author" => "Soleone", "email" => "soleone@example.net", "article_id" => 134645308, "blog_id" => 241253187, "created_at" => "2023-01-03T12:05:09-05:00", "updated_at" => "2023-01-03T12:05:59-05:00", "ip" => "127.0.0.1", "user_agent" => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_4; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1"}), headers: {})
 
     comment = ShopifyAPI::Comment.new
     comment.id = 653537639
@@ -243,7 +243,7 @@ class Comment202210Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"published_at" => "2022-10-03T13:05:06-04:00", "status" => "published", "id" => 653537639, "body" => "Hi author, I really _like_ what you're doing there.", "body_html" => "<p>Hi author, I really <em>like</em> what you're doing there.</p>", "author" => "Soleone", "email" => "soleone@example.net", "article_id" => 134645308, "blog_id" => 241253187, "created_at" => "2022-10-03T12:44:45-04:00", "updated_at" => "2022-10-03T13:05:06-04:00", "ip" => "127.0.0.1", "user_agent" => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_4; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1"}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"published_at" => "2023-01-03T12:06:19-05:00", "status" => "published", "id" => 653537639, "body" => "Hi author, I really _like_ what you're doing there.", "body_html" => "<p>Hi author, I really <em>like</em> what you're doing there.</p>", "author" => "Soleone", "email" => "soleone@example.net", "article_id" => 134645308, "blog_id" => 241253187, "created_at" => "2023-01-03T12:05:09-05:00", "updated_at" => "2023-01-03T12:06:19-05:00", "ip" => "127.0.0.1", "user_agent" => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_4; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1"}), headers: {})
 
     comment = ShopifyAPI::Comment.new
     comment.id = 653537639
@@ -261,7 +261,7 @@ class Comment202210Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"published_at" => "2022-10-03T13:05:53-04:00", "status" => "published", "id" => 653537639, "body" => "Hi author, I really _like_ what you're doing there.", "body_html" => "<p>Hi author, I really <em>like</em> what you're doing there.</p>", "author" => "Soleone", "email" => "soleone@example.net", "article_id" => 134645308, "blog_id" => 241253187, "created_at" => "2022-10-03T12:44:45-04:00", "updated_at" => "2022-10-03T13:05:53-04:00", "ip" => "127.0.0.1", "user_agent" => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_4; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1"}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"published_at" => "2023-01-03T12:06:30-05:00", "status" => "published", "id" => 653537639, "body" => "Hi author, I really _like_ what you're doing there.", "body_html" => "<p>Hi author, I really <em>like</em> what you're doing there.</p>", "author" => "Soleone", "email" => "soleone@example.net", "article_id" => 134645308, "blog_id" => 241253187, "created_at" => "2023-01-03T12:05:09-05:00", "updated_at" => "2023-01-03T12:06:30-05:00", "ip" => "127.0.0.1", "user_agent" => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_4; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1"}), headers: {})
 
     comment = ShopifyAPI::Comment.new
     comment.id = 653537639
@@ -279,7 +279,7 @@ class Comment202210Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"published_at" => nil, "status" => "removed", "id" => 653537639, "body" => "Hi author, I really _like_ what you're doing there.", "body_html" => "<p>Hi author, I really <em>like</em> what you're doing there.</p>", "author" => "Soleone", "email" => "soleone@example.net", "article_id" => 134645308, "blog_id" => 241253187, "created_at" => "2022-10-03T12:44:45-04:00", "updated_at" => "2022-10-03T13:05:04-04:00", "ip" => "127.0.0.1", "user_agent" => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_4; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1"}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"published_at" => nil, "status" => "removed", "id" => 653537639, "body" => "Hi author, I really _like_ what you're doing there.", "body_html" => "<p>Hi author, I really <em>like</em> what you're doing there.</p>", "author" => "Soleone", "email" => "soleone@example.net", "article_id" => 134645308, "blog_id" => 241253187, "created_at" => "2023-01-03T12:05:09-05:00", "updated_at" => "2023-01-03T12:06:12-05:00", "ip" => "127.0.0.1", "user_agent" => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_4; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1"}), headers: {})
 
     comment = ShopifyAPI::Comment.new
     comment.id = 653537639
@@ -297,7 +297,7 @@ class Comment202210Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"published_at" => "2022-10-03T13:05:15-04:00", "status" => "published", "id" => 653537639, "body" => "Hi author, I really _like_ what you're doing there.", "body_html" => "<p>Hi author, I really <em>like</em> what you're doing there.</p>", "author" => "Soleone", "email" => "soleone@example.net", "article_id" => 134645308, "blog_id" => 241253187, "created_at" => "2022-10-03T12:44:45-04:00", "updated_at" => "2022-10-03T13:05:15-04:00", "ip" => "127.0.0.1", "user_agent" => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_4; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1"}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"published_at" => "2023-01-03T12:05:56-05:00", "status" => "published", "id" => 653537639, "body" => "Hi author, I really _like_ what you're doing there.", "body_html" => "<p>Hi author, I really <em>like</em> what you're doing there.</p>", "author" => "Soleone", "email" => "soleone@example.net", "article_id" => 134645308, "blog_id" => 241253187, "created_at" => "2023-01-03T12:05:09-05:00", "updated_at" => "2023-01-03T12:05:56-05:00", "ip" => "127.0.0.1", "user_agent" => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_4; en-us) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.20.1"}), headers: {})
 
     comment = ShopifyAPI::Comment.new
     comment.id = 653537639

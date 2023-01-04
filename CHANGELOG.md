@@ -11,6 +11,7 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 - [#1069](https://github.com/Shopify/shopify-api-ruby/pull/1069) Adds a custom Logger to help write uniform logs across the api and the [shopify_app gem](https://github.com/Shopify/shopify_app)
 
 - [#1081](https://github.com/Shopify/shopify-api-ruby/pull/1081) Fixed an error when parsing the JSON response body for the AssignedFulfillmentOrder resource.
+- [#1092](https://github.com/Shopify/shopify-api-ruby/pull/1092) Add support for 2023-01 API version.
 
 ## Version 12.2.1
 
