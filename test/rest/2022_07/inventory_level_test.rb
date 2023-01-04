@@ -38,7 +38,7 @@ class InventoryLevel202207Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"inventory_levels" => [{"inventory_item_id" => 49148385, "location_id" => 655441491, "available" => 2, "updated_at" => "2022-10-03T13:07:13-04:00", "admin_graphql_api_id" => "gid://shopify/InventoryLevel/655441491?inventory_item_id=49148385"}, {"inventory_item_id" => 808950810, "location_id" => 655441491, "available" => 1, "updated_at" => "2022-10-03T13:07:13-04:00", "admin_graphql_api_id" => "gid://shopify/InventoryLevel/655441491?inventory_item_id=808950810"}, {"inventory_item_id" => 457924702, "location_id" => 655441491, "available" => 4, "updated_at" => "2022-10-03T13:07:13-04:00", "admin_graphql_api_id" => "gid://shopify/InventoryLevel/655441491?inventory_item_id=457924702"}, {"inventory_item_id" => 39072856, "location_id" => 655441491, "available" => 3, "updated_at" => "2022-10-03T13:07:13-04:00", "admin_graphql_api_id" => "gid://shopify/InventoryLevel/655441491?inventory_item_id=39072856"}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"inventory_levels" => [{"inventory_item_id" => 49148385, "location_id" => 655441491, "available" => 2, "updated_at" => "2023-01-03T12:56:35-05:00", "admin_graphql_api_id" => "gid://shopify/InventoryLevel/655441491?inventory_item_id=49148385"}, {"inventory_item_id" => 808950810, "location_id" => 655441491, "available" => 1, "updated_at" => "2023-01-03T12:56:35-05:00", "admin_graphql_api_id" => "gid://shopify/InventoryLevel/655441491?inventory_item_id=808950810"}, {"inventory_item_id" => 457924702, "location_id" => 655441491, "available" => 4, "updated_at" => "2023-01-03T12:56:35-05:00", "admin_graphql_api_id" => "gid://shopify/InventoryLevel/655441491?inventory_item_id=457924702"}, {"inventory_item_id" => 39072856, "location_id" => 655441491, "available" => 3, "updated_at" => "2023-01-03T12:56:35-05:00", "admin_graphql_api_id" => "gid://shopify/InventoryLevel/655441491?inventory_item_id=39072856"}]}), headers: {})
 
     ShopifyAPI::InventoryLevel.all(
       location_ids: "655441491",
@@ -51,12 +51,30 @@ class InventoryLevel202207Test < Test::Unit::TestCase
     void
   end
   def test_2()
+    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-07/inventory_levels.json?inventory_item_ids=808950810")
+      .with(
+        headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
+        body: {}
+      )
+      .to_return(status: 200, body: JSON.generate({"inventory_levels" => [{"inventory_item_id" => 808950810, "location_id" => 487838322, "available" => 9, "updated_at" => "2023-01-03T12:56:35-05:00", "admin_graphql_api_id" => "gid://shopify/InventoryLevel/548380009?inventory_item_id=808950810"}, {"inventory_item_id" => 808950810, "location_id" => 655441491, "available" => 1, "updated_at" => "2023-01-03T12:56:35-05:00", "admin_graphql_api_id" => "gid://shopify/InventoryLevel/655441491?inventory_item_id=808950810"}]}), headers: {})
+
+    ShopifyAPI::InventoryLevel.all(
+      inventory_item_ids: "808950810",
+    )
+
+    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-07/inventory_levels.json?inventory_item_ids=808950810")
+  end
+
+  sig do
+    void
+  end
+  def test_3()
     stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-07/inventory_levels.json?inventory_item_ids=808950810%2C39072856&location_ids=655441491%2C487838322")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"inventory_levels" => [{"inventory_item_id" => 808950810, "location_id" => 487838322, "available" => 9, "updated_at" => "2022-10-03T13:07:13-04:00", "admin_graphql_api_id" => "gid://shopify/InventoryLevel/548380009?inventory_item_id=808950810"}, {"inventory_item_id" => 39072856, "location_id" => 487838322, "available" => 27, "updated_at" => "2022-10-03T13:07:13-04:00", "admin_graphql_api_id" => "gid://shopify/InventoryLevel/548380009?inventory_item_id=39072856"}, {"inventory_item_id" => 808950810, "location_id" => 655441491, "available" => 1, "updated_at" => "2022-10-03T13:07:13-04:00", "admin_graphql_api_id" => "gid://shopify/InventoryLevel/655441491?inventory_item_id=808950810"}, {"inventory_item_id" => 39072856, "location_id" => 655441491, "available" => 3, "updated_at" => "2022-10-03T13:07:13-04:00", "admin_graphql_api_id" => "gid://shopify/InventoryLevel/655441491?inventory_item_id=39072856"}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"inventory_levels" => [{"inventory_item_id" => 808950810, "location_id" => 487838322, "available" => 9, "updated_at" => "2023-01-03T12:56:35-05:00", "admin_graphql_api_id" => "gid://shopify/InventoryLevel/548380009?inventory_item_id=808950810"}, {"inventory_item_id" => 39072856, "location_id" => 487838322, "available" => 27, "updated_at" => "2023-01-03T12:56:35-05:00", "admin_graphql_api_id" => "gid://shopify/InventoryLevel/548380009?inventory_item_id=39072856"}, {"inventory_item_id" => 808950810, "location_id" => 655441491, "available" => 1, "updated_at" => "2023-01-03T12:56:35-05:00", "admin_graphql_api_id" => "gid://shopify/InventoryLevel/655441491?inventory_item_id=808950810"}, {"inventory_item_id" => 39072856, "location_id" => 655441491, "available" => 3, "updated_at" => "2023-01-03T12:56:35-05:00", "admin_graphql_api_id" => "gid://shopify/InventoryLevel/655441491?inventory_item_id=39072856"}]}), headers: {})
 
     ShopifyAPI::InventoryLevel.all(
       inventory_item_ids: "808950810,39072856",
@@ -69,31 +87,13 @@ class InventoryLevel202207Test < Test::Unit::TestCase
   sig do
     void
   end
-  def test_3()
-    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-07/inventory_levels.json?inventory_item_ids=808950810")
-      .with(
-        headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
-        body: {}
-      )
-      .to_return(status: 200, body: JSON.generate({"inventory_levels" => [{"inventory_item_id" => 808950810, "location_id" => 487838322, "available" => 9, "updated_at" => "2022-10-03T13:07:13-04:00", "admin_graphql_api_id" => "gid://shopify/InventoryLevel/548380009?inventory_item_id=808950810"}, {"inventory_item_id" => 808950810, "location_id" => 655441491, "available" => 1, "updated_at" => "2022-10-03T13:07:13-04:00", "admin_graphql_api_id" => "gid://shopify/InventoryLevel/655441491?inventory_item_id=808950810"}]}), headers: {})
-
-    ShopifyAPI::InventoryLevel.all(
-      inventory_item_ids: "808950810",
-    )
-
-    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-07/inventory_levels.json?inventory_item_ids=808950810")
-  end
-
-  sig do
-    void
-  end
   def test_4()
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2022-07/inventory_levels/adjust.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: hash_including({"location_id" => 655441491, "inventory_item_id" => 808950810, "available_adjustment" => 5})
       )
-      .to_return(status: 200, body: JSON.generate({"inventory_level" => {"inventory_item_id" => 808950810, "location_id" => 655441491, "available" => 6, "updated_at" => "2022-10-03T13:14:39-04:00", "admin_graphql_api_id" => "gid://shopify/InventoryLevel/655441491?inventory_item_id=808950810"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"inventory_level" => {"inventory_item_id" => 808950810, "location_id" => 655441491, "available" => 6, "updated_at" => "2023-01-03T13:03:33-05:00", "admin_graphql_api_id" => "gid://shopify/InventoryLevel/655441491?inventory_item_id=808950810"}}), headers: {})
 
     inventory_level = ShopifyAPI::InventoryLevel.new
 
@@ -132,7 +132,7 @@ class InventoryLevel202207Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: hash_including({"location_id" => 844681632, "inventory_item_id" => 457924702})
       )
-      .to_return(status: 200, body: JSON.generate({"inventory_level" => {"inventory_item_id" => 457924702, "location_id" => 844681632, "available" => 0, "updated_at" => "2022-10-03T13:14:35-04:00", "admin_graphql_api_id" => "gid://shopify/InventoryLevel/844681632?inventory_item_id=457924702"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"inventory_level" => {"inventory_item_id" => 457924702, "location_id" => 844681632, "available" => 0, "updated_at" => "2023-01-03T13:03:42-05:00", "admin_graphql_api_id" => "gid://shopify/InventoryLevel/844681632?inventory_item_id=457924702"}}), headers: {})
 
     inventory_level = ShopifyAPI::InventoryLevel.new
 
@@ -152,7 +152,7 @@ class InventoryLevel202207Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: hash_including({"location_id" => 655441491, "inventory_item_id" => 808950810, "available" => 42})
       )
-      .to_return(status: 200, body: JSON.generate({"inventory_level" => {"inventory_item_id" => 808950810, "location_id" => 655441491, "available" => 42, "updated_at" => "2022-10-03T13:14:50-04:00", "admin_graphql_api_id" => "gid://shopify/InventoryLevel/655441491?inventory_item_id=808950810"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"inventory_level" => {"inventory_item_id" => 808950810, "location_id" => 655441491, "available" => 42, "updated_at" => "2023-01-03T13:03:52-05:00", "admin_graphql_api_id" => "gid://shopify/InventoryLevel/655441491?inventory_item_id=808950810"}}), headers: {})
 
     inventory_level = ShopifyAPI::InventoryLevel.new
 
