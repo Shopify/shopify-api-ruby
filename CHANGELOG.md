@@ -3,6 +3,12 @@
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
+## Version 12.3.0
+
+- [#1040](https://github.com/Shopify/shopify-api-ruby/pull/1040) `ShopifyAPI::Clients::HttpResponse` as argument for `ShopifyAPI::Errors::HttpResponseError`
+- [#1055](https://github.com/Shopify/shopify-api-ruby/pull/1055) Makes session_storage optional. Configuring the API with session_storage is now deprecated.  Session persistence is handled by the [shopify_app gem](https://github.com/Shopify/shopify_app) if using Rails.
+- [#1063](https://github.com/Shopify/shopify-api-ruby/pull/1063) Fix ActiveSupport inflector dependency
+- [#1069](https://github.com/Shopify/shopify-api-ruby/pull/1069) Adds a custom Logger to help write uniform logs across the api and the [shopify_app gem](https://github.com/Shopify/shopify_app)
 
 - [#1081](https://github.com/Shopify/shopify-api-ruby/pull/1081) Fixed an error when parsing the JSON response body for the AssignedFulfillmentOrder resource.
 

@@ -17,12 +17,13 @@ module ShopifyAPI
           ).returns(T.nilable(Auth::Session))
         end
         def load_current_session(auth_header: nil, cookies: nil, is_online: false)
+          validate_session_storage_for_deprecated_utils
           return load_private_session if Context.private?
 
           session_id = current_session_id(auth_header, cookies, is_online)
           return nil unless session_id
 
-          Context.session_storage.load_session(session_id)
+          T.must(Context.session_storage).load_session(session_id)
         end
 
         sig do
@@ -33,10 +34,12 @@ module ShopifyAPI
           ).returns(T::Boolean)
         end
         def delete_current_session(auth_header: nil, cookies: nil, is_online: false)
+          validate_session_storage_for_deprecated_utils
+
           session_id = current_session_id(auth_header, cookies, is_online)
           return false unless session_id
 
-          Context.session_storage.delete_session(session_id)
+          T.must(Context.session_storage).delete_session(session_id)
         end
 
         sig do
@@ -46,8 +49,10 @@ module ShopifyAPI
           ).returns(T.nilable(Auth::Session))
         end
         def load_offline_session(shop:, include_expired: false)
+          validate_session_storage_for_deprecated_utils
+
           session_id = offline_session_id(shop)
-          session = Context.session_storage.load_session(session_id)
+          session = T.must(Context.session_storage).load_session(session_id)
           return nil if session && !include_expired && session.expires && T.must(session.expires) < Time.now
 
           session
@@ -59,23 +64,10 @@ module ShopifyAPI
           ).returns(T::Boolean)
         end
         def delete_offline_session(shop:)
+          validate_session_storage_for_deprecated_utils
+
           session_id = offline_session_id(shop)
-          Context.session_storage.delete_session(session_id)
-        end
-
-        private
-
-        sig { returns(Auth::Session) }
-        def load_private_session
-          unless Context.private_shop
-            raise Errors::SessionNotFoundError, "Could not load private shop, Context.private_shop is nil."
-          end
-
-          Auth::Session.new(
-            shop: T.must(Context.private_shop),
-            access_token: Context.api_secret_key,
-            scope: Context.scope.to_a,
-          )
+          T.must(Context.session_storage).delete_session(session_id)
         end
 
         sig do
@@ -89,8 +81,10 @@ module ShopifyAPI
           if Context.embedded?
             if auth_header
               matches = auth_header.match(/^Bearer (.+)$/)
-              raise Errors::MissingJwtTokenError,
-                "Missing Bearer token in authorization header" unless matches
+              unless matches
+                ShopifyAPI::Logger.warn("Missing Bearer token in authorization header")
+                raise Errors::MissingJwtTokenError, "Missing Bearer token in authorization header"
+              end
 
               jwt_payload = Auth::JwtPayload.new(T.must(matches[1]))
               shop = jwt_payload.shop
@@ -128,6 +122,29 @@ module ShopifyAPI
         sig { params(cookies: T::Hash[String, String]).returns(T.nilable(String)) }
         def cookie_session_id(cookies)
           cookies[Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME]
+        end
+
+        private
+
+        sig { void }
+        def validate_session_storage_for_deprecated_utils
+          unless Context.session_storage
+            raise ShopifyAPI::Errors::SessionStorageError,
+              "session_storage is required in ShopifyAPI::Context when using deprecated Session utility methods."
+          end
+        end
+
+        sig { returns(Auth::Session) }
+        def load_private_session
+          unless Context.private_shop
+            raise Errors::SessionNotFoundError, "Could not load private shop, Context.private_shop is nil."
+          end
+
+          Auth::Session.new(
+            shop: T.must(Context.private_shop),
+            access_token: Context.api_secret_key,
+            scope: Context.scope.to_a,
+          )
         end
       end
     end

@@ -15,8 +15,12 @@ module ShopifyAPITest
 
     def test_outputs_error_code
       errors = ShopifyAPI::Rest::BaseErrors.new
-      errors.errors << ShopifyAPI::Errors::HttpResponseError.new(code: 404)
-      errors.errors << ShopifyAPI::Errors::HttpResponseError.new(code: 405)
+
+      response = ShopifyAPI::Clients::HttpResponse.new(code: 404, body: {}, headers: {})
+      errors.errors << ShopifyAPI::Errors::HttpResponseError.new(response: response)
+
+      response = ShopifyAPI::Clients::HttpResponse.new(code: 405, body: {}, headers: {})
+      errors.errors << ShopifyAPI::Errors::HttpResponseError.new(response: response)
 
       assert_equal(errors.codes, [404, 405])
     end
