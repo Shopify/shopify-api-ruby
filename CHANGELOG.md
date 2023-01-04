@@ -5,6 +5,7 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
 
 - [#1081](https://github.com/Shopify/shopify-api-ruby/pull/1081) Fixed an error when parsing the JSON response body for the AssignedFulfillmentOrder resource.
+- [#1092](https://github.com/Shopify/shopify-api-ruby/pull/1092) Add support for 2023-01 API version.
 
 ## Version 12.2.1
 
