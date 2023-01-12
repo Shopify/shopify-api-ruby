@@ -4,6 +4,8 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
 
+- [#1098](https://github.com/Shopify/shopify-api-ruby/pull/1098) Gracefully handle HTTP 204 repsonse bodies
+
 ## Version 12.4.0
 
 - [#1092](https://github.com/Shopify/shopify-api-ruby/pull/1092) Add support for 2023-01 API version.
