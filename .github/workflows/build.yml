@@ -16,9 +16,6 @@ jobs:
           - 3.1
     steps:
       - uses: actions/checkout@v2
-      - name: Remove Gemfile.lock
-        run: |
-          rm -f ${GITHUB_WORKSPACE}/Gemfile.lock
       - name: Set up Ruby ${{ matrix.version }}
         uses: ruby/setup-ruby@v1
         with:

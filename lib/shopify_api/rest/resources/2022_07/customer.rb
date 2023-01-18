@@ -200,11 +200,19 @@ module ShopifyAPI
 
       sig do
         params(
+          created_at_min: T.untyped,
+          created_at_max: T.untyped,
+          updated_at_min: T.untyped,
+          updated_at_max: T.untyped,
           session: Auth::Session,
           kwargs: T.untyped
         ).returns(T.untyped)
       end
       def count(
+        created_at_min: nil,
+        created_at_max: nil,
+        updated_at_min: nil,
+        updated_at_max: nil,
         session: ShopifyAPI::Context.active_session,
         **kwargs
       )
@@ -213,7 +221,7 @@ module ShopifyAPI
           operation: :count,
           session: session,
           ids: {},
-          params: {}.merge(kwargs).compact,
+          params: {created_at_min: created_at_min, created_at_max: created_at_max, updated_at_min: updated_at_min, updated_at_max: updated_at_max}.merge(kwargs).compact,
           body: {},
           entity: nil,
         )
