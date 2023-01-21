@@ -23,11 +23,12 @@ module ShopifyAPI
             variables: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             headers: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             tries: Integer,
+            api_version: T.nilable(String),
           ).returns(HttpResponse)
         end
-        def query(query:, variables: nil, headers: {}, tries: 1)
+        def query(query:, variables: nil, headers: {}, tries: 1, api_version: nil)
           T.must(headers).merge!({ "X-Shopify-Storefront-Access-Token": @storefront_access_token })
-          super(query: query, variables: variables, headers: headers, tries: tries)
+          super(query: query, variables: variables, headers: headers, tries: tries, api_version: api_version)
         end
       end
     end

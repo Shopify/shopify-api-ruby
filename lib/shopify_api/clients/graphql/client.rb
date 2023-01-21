@@ -18,14 +18,16 @@ module ShopifyAPI
             variables: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             headers: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             tries: Integer,
+            api_version: T.nilable(String),
           ).returns(HttpResponse)
         end
-        def query(query:, variables: nil, headers: nil, tries: 1)
+        def query(query:, variables: nil, headers: nil, tries: 1, api_version: nil)
           body = { query: query, variables: variables }
+          api_version ||= Context.api_version
           @http_client.request(
             HttpRequest.new(
               http_method: :post,
-              path: "#{Context.api_version}/graphql.json",
+              path: "#{api_version}/graphql.json",
               body: body,
               query: nil,
               extra_headers: headers,
