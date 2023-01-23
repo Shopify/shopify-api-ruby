@@ -55,6 +55,7 @@ module TestHelpers
     end
 
     def test_can_override_api_version
+      @api_version = "2022-01"
       query = <<~QUERY
         query myTestQuery($first: Int) {
           products (first: $first) {
@@ -72,16 +73,15 @@ module TestHelpers
         first: 10,
       }
       setup
-      api_version = "2022-01"
       body = { query: query, variables: variables }
       success_body = { "success" => true }
       response_headers = { "content-type" => "application/json" }
 
-      stub_request(:post, "https://test-shop.myshopify.com/#{@path}/#{api_version}/graphql.json")
+      stub_request(:post, "https://test-shop.myshopify.com/#{@path}/#{@api_version}/graphql.json")
         .with(body: body, headers: @expected_headers)
         .to_return(body: success_body.to_json, headers: response_headers)
 
-      @client.query(query: query, variables: variables, api_version: api_version)
+      @client.query(query: query, variables: variables)
     end
   end
 end

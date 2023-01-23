@@ -7,9 +7,10 @@ module ShopifyAPI
       class Admin < HttpClient
         extend T::Sig
 
-        sig { params(session: T.nilable(Auth::Session)).void }
-        def initialize(session: nil)
-          super(session: session, base_path: "/admin/api/#{Context.api_version}")
+        sig { params(session: T.nilable(Auth::Session), api_version: T.nilable(String)).void }
+        def initialize(session: nil, api_version: nil)
+          @api_version = T.let(api_version || Context.api_version, String)
+          super(session: session, base_path: "/admin/api/#{@api_version}")
         end
 
         sig do
