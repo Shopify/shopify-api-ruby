@@ -10,6 +10,16 @@ module ShopifyAPI
         sig { params(session: T.nilable(Auth::Session), api_version: T.nilable(String)).void }
         def initialize(session: nil, api_version: nil)
           @api_version = T.let(api_version || Context.api_version, String)
+          if api_version
+            if api_version == Context.api_version
+              Context.logger.debug("Rest client has a redundant API version override "\
+                "to the default #{Context.api_version}")
+            else
+              Context.logger.debug("Rest client overriding default API version "\
+                "#{Context.api_version} with #{api_version}")
+            end
+          end
+
           super(session: session, base_path: "/admin/api/#{@api_version}")
         end
 

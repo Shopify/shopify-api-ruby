@@ -39,7 +39,7 @@ response = client.query(query: query)
 # do something with the returned data
 ```
 
-To experiment with prerelease features, pass the api_version unstable when initializing the client.
+By default, the client uses the API version configured in `ShopifyAPI`.  To use a different API version, set the optional `api_version` parameter.  To experiment with prerelease API features, use `"unstable"` for the API version.
 
 ```ruby
 client = ShopifyAPI::Clients::Graphql::Storefront.new(shop_url, storefront_access_token, api_version: "unstable")

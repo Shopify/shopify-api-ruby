@@ -11,6 +11,15 @@ module ShopifyAPI
         def initialize(session:, base_path:, api_version: nil)
           @http_client = T.let(HttpClient.new(session: session, base_path: base_path), HttpClient)
           @api_version = T.let(api_version || Context.api_version, String)
+          if api_version
+            if api_version == Context.api_version
+              Context.logger.debug("Graphql client has a redundant API version override "\
+                "to the default #{Context.api_version}")
+            else
+              Context.logger.debug("Graphql client overriding default API version "\
+                "#{Context.api_version} with #{api_version}")
+            end
+          end
         end
 
         sig do
