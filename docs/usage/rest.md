@@ -62,6 +62,13 @@ client.post({
 
 _for more information on the `products` endpoint, [check out our API reference guide](https://shopify.dev/api/admin-rest/unstable/resources/product)._
 
+### Override the `api_version`:
+
+```ruby
+# To experiment with prerelease features, pass the api_version "unstable".
+client = ShopifyAPI::Clients::Rest::Admin.new(session: session, api_version: "unstable")
+```
+
 ## Pagination
 
 This library also supports cursor-based pagination for REST Admin API requests. [Learn more about REST request pagination](https://shopify.dev/api/usage/pagination-rest).

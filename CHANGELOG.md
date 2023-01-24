@@ -3,6 +3,7 @@
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
+- [#1104](https://github.com/Shopify/shopify-api-ruby/pull/1104) Allow api version overrides.
 
 ## Version 12.4.0
 

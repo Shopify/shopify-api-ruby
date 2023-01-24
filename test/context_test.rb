@@ -152,6 +152,7 @@ module ShopifyAPITest
         scope: [],
         is_private: false,
         is_embedded: true,
+        logger: ::Logger.new(T.let(StringIO.new, StringIO)),
         session_storage: ShopifyAPI::Auth::FileSessionStorage.new,
         user_agent_prefix: nil,
         old_api_secret_key: nil,

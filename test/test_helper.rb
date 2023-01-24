@@ -31,6 +31,7 @@ module Test
           scope: ["scope1", "scope2"],
           is_private: false,
           is_embedded: false,
+          logger: ::Logger.new(T.let(StringIO.new, StringIO)), # comment line to see logging on stdout
           session_storage: TestHelpers::FakeSessionStorage.new,
           user_agent_prefix: nil,
           old_api_secret_key: nil,
