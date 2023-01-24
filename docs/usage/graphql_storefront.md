@@ -39,4 +39,10 @@ response = client.query(query: query)
 # do something with the returned data
 ```
 
+By default, the client uses the API version configured in `ShopifyAPI`.  To use a different API version, set the optional `api_version` parameter.  To experiment with prerelease API features, use `"unstable"` for the API version.
+
+```ruby
+client = ShopifyAPI::Clients::Graphql::Storefront.new(shop_url, storefront_access_token, api_version: "unstable")
+```
+
 Want to make calls to the Admin API? Click [here](graphql.md)
