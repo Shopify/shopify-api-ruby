@@ -90,7 +90,7 @@ To process an http webhook, you need to listen on the route(s) you provided duri
 class WebhookController < ApplicationController
   def webhook
     ShopifyAPI::Webhooks::Registry.process(
-      ShopifyAPI::Webhooks::WebhookRequest.new(raw_body: request.raw_post, headers: request.headers.to_h)
+      ShopifyAPI::Webhooks::Request.new(raw_body: request.raw_post, headers: request.headers.to_h)
     )
     render json: {success: true}.to_json
   end
