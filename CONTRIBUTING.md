@@ -2,7 +2,7 @@
 Submitting Issues
 -----------------
 
-Please open an issue here if you encounter a specific bug with this API client library or if something is documented here https://shopify.dev/apps but is missing from this package.
+Please open an issue here if you encounter a specific bug with this API client library or if something is documented here https://shopify.dev/docs/apps but is missing from this package.
 
 General questions about the Shopify API and usage of this package (not necessarily a bug) should be posted on the [Shopify forums](https://community.shopify.com/c/partners-and-developers/ct-p/appdev).
 
