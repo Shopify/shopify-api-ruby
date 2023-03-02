@@ -1,8 +1,8 @@
 # Make a Storefront API call
 
-The library also allows you to send GraphQL requests to the [Shopify Storefront API](https://shopify.dev/docs/storefront-api). To do that, you can use `ShopifyAPI::Clients::Graphql::Storefront` with the current session and a `storefrontAccessToken`.
+The library also allows you to send GraphQL requests to the [Shopify Storefront API](https://shopify.dev/docs/api/storefront). To do that, you can use `ShopifyAPI::Clients::Graphql::Storefront` with the current session and a `storefrontAccessToken`.
 
-You can obtain Storefront API access tokens for both private apps and sales channels. Please read [our documentation](https://shopify.dev/docs/storefront-api/getting-started) to learn more about Storefront Access Tokens.
+You can obtain Storefront API access tokens for both private apps and sales channels. Please read [our documentation](https://shopify.dev/docs/custom-storefronts/building-with-the-storefront-api/getting-started) to learn more about Storefront Access Tokens.
 
 Below is an example of how you may query the Storefront API:
 
