@@ -16,7 +16,7 @@ module ShopifyAPI
     def initialize(session: ShopifyAPI::Context.active_session)
       super(session: session)
 
-      @amount = T.let(nil, T.nilable(Float))
+      @amount = T.let(nil, T.nilable(String))
       @api_client_id = T.let(nil, T.nilable(Integer))
       @created_at = T.let(nil, T.nilable(String))
       @gift_card_id = T.let(nil, T.nilable(Integer))
@@ -38,7 +38,7 @@ module ShopifyAPI
       {http_method: :post, operation: :post, ids: [:gift_card_id], path: "gift_cards/<gift_card_id>/adjustments.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
-    sig { returns(T.nilable(Float)) }
+    sig { returns(T.nilable(String)) }
     attr_reader :amount
     sig { returns(T.nilable(Integer)) }
     attr_reader :api_client_id
