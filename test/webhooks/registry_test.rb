@@ -128,6 +128,25 @@ module ShopifyAPITest
         end
       end
 
+      def test_register_when_mandatory_webhook_topic
+        ["customers/redact", "customers/data_request", "shop/redact"].each do |topic|
+          ShopifyAPI::Webhooks::Registry.add_registration(
+            topic: topic,
+            delivery_method: :http,
+            path: "test-webhooks",
+            handler: TestHelpers::FakeWebhookHandler.new(
+              lambda do |_|
+              end,
+            ),
+            fields: nil,
+          )
+          response = ShopifyAPI::Webhooks::Registry.register(topic: topic, session: @session)
+          assert_equal(topic, response.topic)
+          assert(response.success)
+          assert_nil(response.body)
+        end
+      end
+
       def test_unregister_success
         stub_request(:post, @url)
           .with(body: JSON.dump({ query: queries[:fetch_id_query], variables: nil }))
@@ -181,6 +200,16 @@ module ShopifyAPITest
         assert_equal("Failed to delete webhook from Shopify: some error", exception.message)
       end
 
+      def test_unregister_when_mandatory_webhook_topic
+        ["customers/redact", "customers/data_request", "shop/redact"].each do |topic|
+          response = ShopifyAPI::Webhooks::Registry.unregister(
+            topic: topic,
+            session: @session,
+          )
+          assert_equal({}, response)
+        end
+      end
+
       def test_get_webhook_id_success
         stub_request(:post, @url)
           .with(body: JSON.dump({ query: queries[:fetch_id_query], variables: nil }))
@@ -220,6 +249,16 @@ module ShopifyAPITest
           )
         end
         assert_equal("Failed to fetch webhook from Shopify: some error", exception.message)
+      end
+
+      def test_get_webhook_id_when_mandatory_webhook_topic
+        ["customers/redact", "customers/data_request", "shop/redact"].each do |topic|
+          webhook_id_response = ShopifyAPI::Webhooks::Registry.get_webhook_id(
+            topic: topic,
+            client: ShopifyAPI::Clients::Graphql::Admin.new(session: @session),
+          )
+          assert_nil(webhook_id_response)
+        end
       end
 
       private

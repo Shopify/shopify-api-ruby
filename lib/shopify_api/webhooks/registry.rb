@@ -4,6 +4,8 @@
 module ShopifyAPI
   module Webhooks
     class Registry
+      SUBSCRIPTION_NOT_REQUIRED_TOPICS = ["CUSTOMERS_DATA_REQUEST", "CUSTOMERS_REDACT", "SHOP_REDACT"]
+
       @registry = T.let({}, T::Hash[String, Registration])
 
       class << self
@@ -49,6 +51,10 @@ module ShopifyAPI
 
           unless registration
             raise Errors::InvalidWebhookRegistrationError, "Webhook topic #{topic} has not been added to the registry."
+          end
+
+          if subscription_not_required_topic?(topic)
+            return RegisterResult.new(topic: topic, success: true)
           end
 
           client = Clients::Graphql::Admin.new(session: session)
@@ -134,6 +140,8 @@ module ShopifyAPI
           ).returns(T.nilable(String))
         end
         def get_webhook_id(topic:, client:)
+          return nil if subscription_not_required_topic?(topic)
+
           fetch_id_query = <<~QUERY
             {
               webhookSubscriptions(first: 1, topics: #{topic.gsub("/", "_").upcase}) {
@@ -173,6 +181,15 @@ module ShopifyAPI
         end
 
         private
+
+        sig do
+          params(
+            topic: String,
+          ).returns(T::Boolean)
+        end
+        def subscription_not_required_topic?(topic)
+          SUBSCRIPTION_NOT_REQUIRED_TOPICS.include?(topic.gsub("/", "_").upcase)
+        end
 
         sig do
           params(
