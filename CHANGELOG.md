@@ -4,6 +4,7 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
 - [#1104](https://github.com/Shopify/shopify-api-ruby/pull/1104) Allow api version overrides.
+- [#1124](https://github.com/Shopify/shopify-api-ruby/pull/1124) Fixed skipping subscription for mandatory webhooks.
 
 ## Version 12.4.0
 
