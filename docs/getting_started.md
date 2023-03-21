@@ -37,11 +37,11 @@ ShopifyAPI::Context.setup(
 
 In order for the Shopify API gem to properly store sessions it needs an implementation of `ShopifyAPI::Auth::SessionStorage`. There is one provided in the gem, `ShopifyAPI::Auth::FileSessionStorage`, this is suitable for testing, however it is not intended for production apps. See the [Session Storage doc](usage/session_storage.md) for instructions on how to create a custom session store for a production application.
 
-Normally session information would be stored in cookies on the browser. However, due to restrictions with modern browsers we highly discourage using cookies for embedded apps. For this reason, an app needs to define a storage implementation that can be used to store and retrieve a session given an ID. In a non embedded app this ID will come from a cookie however, in an embedded app this ID will come from [App Bridge](https://shopify.dev/apps/tools/app-bridge)
+Normally session information would be stored in cookies on the browser. However, due to restrictions with modern browsers we highly discourage using cookies for embedded apps. For this reason, an app needs to define a storage implementation that can be used to store and retrieve a session given an ID. In a non embedded app this ID will come from a cookie however, in an embedded app this ID will come from [App Bridge](https://shopify.dev/docs/apps/tools/app-bridge)
 
 ### Performing OAuth
 
-Next, unless you are making a private app, you need to go through OAuth as described [here](https://shopify.dev/apps/auth/oauth) to create sessions for shops using your app.
+Next, unless you are making a private app, you need to go through OAuth as described [here](https://shopify.dev/docs/apps/auth/oauth) to create sessions for shops using your app.
 The Shopify API gem tries to make this easy by providing functions to begin and complete the OAuth process. See the [Oauth doc](usage/oauth.md) for instructions on how to use these.
 
 ### Register Webhooks and a Webhook Handler

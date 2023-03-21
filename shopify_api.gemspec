@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
     section of Shopify stores.
   HERE
   s.email = "developers@shopify.com"
-  s.homepage = "https://shopify.dev/apps"
+  s.homepage = "https://shopify.dev/docs/apps"
 
   s.metadata["allowed_push_host"] = "https://rubygems.org"
 
