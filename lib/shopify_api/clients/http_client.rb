@@ -48,7 +48,7 @@ module ShopifyAPI
             body: request.body.class == Hash ? T.unsafe(request.body).to_json : request.body,
           ), HTTParty::Response)
 
-          body = res.body.empty? ? {} : JSON.parse(res.body)
+          body = res.body.nil? || res.body.empty? ? {} : JSON.parse(res.body)
           response = HttpResponse.new(code: res.code.to_i, headers: res.headers.to_h, body: body)
 
           if response.headers["x-shopify-api-deprecated-reason"]
