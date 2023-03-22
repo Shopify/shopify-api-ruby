@@ -3,14 +3,24 @@
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
+
+- [#1098](https://github.com/Shopify/shopify-api-ruby/pull/1098) Gracefully handle HTTP 204 repsonse bodies
+- [#1104](https://github.com/Shopify/shopify-api-ruby/pull/1104) Allow api version overrides.
+
+## Version 12.4.0
+
+- [#1092](https://github.com/Shopify/shopify-api-ruby/pull/1092) Add support for 2023-01 API version.
+- [#1081](https://github.com/Shopify/shopify-api-ruby/pull/1081) Fixed an error when parsing the JSON response body for the AssignedFulfillmentOrder resource.
+
 ## Version 12.3.0
 
 - [#1040](https://github.com/Shopify/shopify-api-ruby/pull/1040) `ShopifyAPI::Clients::HttpResponse` as argument for `ShopifyAPI::Errors::HttpResponseError`
-- [#1055](https://github.com/Shopify/shopify-api-ruby/pull/1055) Makes session_storage optional. Configuring the API with session_storage is now deprecated.  Session persistence is handled by the [shopify_app gem](https://github.com/Shopify/shopify_app) if using Rails.
+- [#1055](https://github.com/Shopify/shopify-api-ruby/pull/1055) Makes session_storage optional. Configuring the API with session_storage is now deprecated. Session persistence is handled by the [shopify_app gem](https://github.com/Shopify/shopify_app) if using Rails.
 - [#1063](https://github.com/Shopify/shopify-api-ruby/pull/1063) Fix ActiveSupport inflector dependency
 - [#1069](https://github.com/Shopify/shopify-api-ruby/pull/1069) Adds a custom Logger to help write uniform logs across the api and the [shopify_app gem](https://github.com/Shopify/shopify_app)
 
 ## Version 12.2.1
+
 - [#1045](https://github.com/Shopify/shopify-api-ruby/pull/1045) Fixes bug with host/host_name requirement.
 
 ## Version 12.2.0
@@ -122,13 +132,13 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Version 9.0.3
 
 - We now raise a `ShopifyAPI::ValidationException` exception when clients try to use `Product` and `Variant` with deprecated inventory-related fields in API version `2019-10` or later. [#655](https://github.com/Shopify/shopify-api-ruby/pull/655) Deprecation and migration information can be found in the following documents:
-  - [Product Variant REST API Reference](https://shopify.dev/docs/admin-api/rest/reference/products/product-variant)
+  - [Product Variant REST API Reference](https://shopify.dev/docs/api/admin-rest/reference/resources/product-variant)
   - [Migrate your app to support multiple locations](https://shopify.dev/tutorials/migrate-your-app-to-support-multiple-locations)
   - [Manage product inventory with the Admin API](https://shopify.dev/tutorials/manage-product-inventory-with-admin-api)
 - Added support for the Discount Code API batch endpoints [#701](https://github.com/Shopify/shopify-api-ruby/pull/701)
-  - [Create](https://shopify.dev/docs/admin-api/rest/reference/discounts/discountcode#batch_create-2020-01)
-  - [Show](https://shopify.dev/docs/admin-api/rest/reference/discounts/discountcode#batch_show-2020-01)
-  - [List](https://shopify.dev/docs/admin-api/rest/reference/discounts/discountcode#batch_discount_codes_index-2020-01)
+  - [Create](https://shopify.dev/docs/api/admin-rest/reference/resources/discountcode#batch_create-2020-01)
+  - [Show](https://shopify.dev/docs/api/admin-rest/reference/resources/discountcode#batch_show-2020-01)
+  - [List](https://shopify.dev/docs/api/admin-rest/reference/resources/discountcode#batch_discount_codes_index-2020-01)
 - Fix issue in the README to explicitly say clients need to require the `shopify_api` gem [#700](https://github.com/Shopify/shopify-api-ruby/pull/700)
 
 ## Version 9.0.2

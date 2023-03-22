@@ -36,16 +36,16 @@ class ResourceFeedback202204Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2022-04/resource_feedback.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "resource_feedback" => hash_including({"state" => "requires_action", "messages" => ["is not connected. Connect your account to use this sales channel."], "feedback_generated_at" => "2022-10-03T16:45:51.594730Z"}) }
+        body: { "resource_feedback" => hash_including({"state" => "requires_action", "messages" => ["is not connected. Connect your account to use this sales channel."], "feedback_generated_at" => "2023-01-03T17:53:46.212756Z"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"resource_feedback" => {"created_at" => "2022-10-03T12:45:53-04:00", "updated_at" => "2022-10-03T12:45:53-04:00", "resource_id" => 548380009, "resource_type" => "Shop", "resource_updated_at" => nil, "messages" => ["is not connected. Connect your account to use this sales channel."], "feedback_generated_at" => "2022-10-03T12:45:51-04:00", "state" => "requires_action"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"resource_feedback" => {"created_at" => "2023-01-03T12:53:47-05:00", "updated_at" => "2023-01-03T12:53:47-05:00", "resource_id" => 548380009, "resource_type" => "Shop", "resource_updated_at" => nil, "messages" => ["is not connected. Connect your account to use this sales channel."], "feedback_generated_at" => "2023-01-03T12:53:46-05:00", "state" => "requires_action"}}), headers: {})
 
     resource_feedback = ShopifyAPI::ResourceFeedback.new
     resource_feedback.state = "requires_action"
     resource_feedback.messages = [
       "is not connected. Connect your account to use this sales channel."
     ]
-    resource_feedback.feedback_generated_at = "2022-10-03T16:45:51.594730Z"
+    resource_feedback.feedback_generated_at = "2023-01-03T17:53:46.212756Z"
     resource_feedback.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-04/resource_feedback.json")
@@ -58,13 +58,13 @@ class ResourceFeedback202204Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2022-04/resource_feedback.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "resource_feedback" => hash_including({"state" => "success", "feedback_generated_at" => "2022-10-03T16:45:53.872041Z"}) }
+        body: { "resource_feedback" => hash_including({"state" => "success", "feedback_generated_at" => "2023-01-03T17:53:49.185362Z"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"resource_feedback" => {"created_at" => "2022-10-03T12:45:55-04:00", "updated_at" => "2022-10-03T12:45:55-04:00", "resource_id" => 548380009, "resource_type" => "Shop", "resource_updated_at" => nil, "messages" => [], "feedback_generated_at" => "2022-10-03T12:45:53-04:00", "state" => "success"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"resource_feedback" => {"created_at" => "2023-01-03T12:53:50-05:00", "updated_at" => "2023-01-03T12:53:50-05:00", "resource_id" => 548380009, "resource_type" => "Shop", "resource_updated_at" => nil, "messages" => [], "feedback_generated_at" => "2023-01-03T12:53:49-05:00", "state" => "success"}}), headers: {})
 
     resource_feedback = ShopifyAPI::ResourceFeedback.new
     resource_feedback.state = "success"
-    resource_feedback.feedback_generated_at = "2022-10-03T16:45:53.872041Z"
+    resource_feedback.feedback_generated_at = "2023-01-03T17:53:49.185362Z"
     resource_feedback.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-04/resource_feedback.json")
@@ -79,7 +79,7 @@ class ResourceFeedback202204Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"resource_feedback" => [{"created_at" => "2022-10-03T12:45:57-04:00", "updated_at" => "2022-10-03T12:45:57-04:00", "resource_id" => 548380009, "resource_type" => "Shop", "resource_updated_at" => nil, "messages" => ["is not connected. Connect your account to use this sales channel."], "feedback_generated_at" => "2022-10-03T11:45:57-04:00", "state" => "requires_action"}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"resource_feedback" => [{"created_at" => "2023-01-03T12:53:44-05:00", "updated_at" => "2023-01-03T12:53:44-05:00", "resource_id" => 548380009, "resource_type" => "Shop", "resource_updated_at" => nil, "messages" => ["is not connected. Connect your account to use this sales channel."], "feedback_generated_at" => "2023-01-03T11:53:44-05:00", "state" => "requires_action"}]}), headers: {})
 
     ShopifyAPI::ResourceFeedback.all
 

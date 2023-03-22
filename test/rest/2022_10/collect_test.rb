@@ -38,7 +38,7 @@ class Collect202210Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "collect" => hash_including({"product_id" => 921728736, "collection_id" => 841564295}) }
       )
-      .to_return(status: 200, body: JSON.generate({"collect" => {"id" => 1071559580, "collection_id" => 841564295, "product_id" => 921728736, "created_at" => "2022-10-03T13:19:30-04:00", "updated_at" => "2022-10-03T13:19:30-04:00", "position" => 2, "sort_value" => "0000000002"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"collect" => {"id" => 1071559576, "collection_id" => 841564295, "product_id" => 921728736, "created_at" => "2023-01-03T12:45:21-05:00", "updated_at" => "2023-01-03T12:45:21-05:00", "position" => 2, "sort_value" => "0000000002"}}), headers: {})
 
     collect = ShopifyAPI::Collect.new
     collect.product_id = 921728736
@@ -52,36 +52,34 @@ class Collect202210Test < Test::Unit::TestCase
     void
   end
   def test_2()
-    stub_request(:delete, "https://test-shop.myshopify.io/admin/api/2022-10/collects/455204334.json")
+    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-10/collects.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"collects" => [{"id" => 358268117, "collection_id" => 482865238, "product_id" => 632910392, "created_at" => nil, "updated_at" => nil, "position" => 1, "sort_value" => "0000000001"}, {"id" => 455204334, "collection_id" => 841564295, "product_id" => 632910392, "created_at" => nil, "updated_at" => nil, "position" => 1, "sort_value" => "0000000001"}, {"id" => 773559378, "collection_id" => 395646240, "product_id" => 632910392, "created_at" => nil, "updated_at" => nil, "position" => 1, "sort_value" => "0000000001"}, {"id" => 800915878, "collection_id" => 482865238, "product_id" => 921728736, "created_at" => nil, "updated_at" => nil, "position" => 1, "sort_value" => "0000000001"}]}), headers: {})
 
-    ShopifyAPI::Collect.delete(
-      id: 455204334,
-    )
+    ShopifyAPI::Collect.all
 
-    assert_requested(:delete, "https://test-shop.myshopify.io/admin/api/2022-10/collects/455204334.json")
+    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-10/collects.json")
   end
 
   sig do
     void
   end
   def test_3()
-    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-10/collects/455204334.json")
+    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-10/collects.json?collection_id=841564295")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"collect" => {"id" => 455204334, "collection_id" => 841564295, "product_id" => 632910392, "created_at" => nil, "updated_at" => nil, "position" => 1, "sort_value" => "0000000001"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"collects" => [{"id" => 455204334, "collection_id" => 841564295, "product_id" => 632910392, "created_at" => nil, "updated_at" => nil, "position" => 1, "sort_value" => "0000000001"}, {"id" => 1071559574, "collection_id" => 841564295, "product_id" => 921728736, "created_at" => "2023-01-03T12:45:12-05:00", "updated_at" => "2023-01-03T12:45:12-05:00", "position" => 2, "sort_value" => "0000000002"}]}), headers: {})
 
-    ShopifyAPI::Collect.find(
-      id: 455204334,
+    ShopifyAPI::Collect.all(
+      collection_id: "841564295",
     )
 
-    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-10/collects/455204334.json")
+    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-10/collects.json?collection_id=841564295")
   end
 
   sig do
@@ -106,40 +104,58 @@ class Collect202210Test < Test::Unit::TestCase
     void
   end
   def test_5()
-    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-10/collects.json")
+    stub_request(:delete, "https://test-shop.myshopify.io/admin/api/2022-10/collects/455204334.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"collects" => [{"id" => 358268117, "collection_id" => 482865238, "product_id" => 632910392, "created_at" => nil, "updated_at" => nil, "position" => 1, "sort_value" => "0000000001"}, {"id" => 455204334, "collection_id" => 841564295, "product_id" => 632910392, "created_at" => nil, "updated_at" => nil, "position" => 1, "sort_value" => "0000000001"}, {"id" => 773559378, "collection_id" => 395646240, "product_id" => 632910392, "created_at" => nil, "updated_at" => nil, "position" => 1, "sort_value" => "0000000001"}, {"id" => 800915878, "collection_id" => 482865238, "product_id" => 921728736, "created_at" => nil, "updated_at" => nil, "position" => 1, "sort_value" => "0000000001"}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({}), headers: {})
 
-    ShopifyAPI::Collect.all
+    ShopifyAPI::Collect.delete(
+      id: 455204334,
+    )
 
-    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-10/collects.json")
+    assert_requested(:delete, "https://test-shop.myshopify.io/admin/api/2022-10/collects/455204334.json")
   end
 
   sig do
     void
   end
   def test_6()
-    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-10/collects.json?collection_id=841564295")
+    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-10/collects/455204334.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"collects" => [{"id" => 455204334, "collection_id" => 841564295, "product_id" => 632910392, "created_at" => nil, "updated_at" => nil, "position" => 1, "sort_value" => "0000000001"}, {"id" => 1071559581, "collection_id" => 841564295, "product_id" => 921728736, "created_at" => "2022-10-03T13:19:33-04:00", "updated_at" => "2022-10-03T13:19:33-04:00", "position" => 2, "sort_value" => "0000000002"}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"collect" => {"id" => 455204334, "collection_id" => 841564295, "product_id" => 632910392, "created_at" => nil, "updated_at" => nil, "position" => 1, "sort_value" => "0000000001"}}), headers: {})
 
-    ShopifyAPI::Collect.all(
-      collection_id: "841564295",
+    ShopifyAPI::Collect.find(
+      id: 455204334,
     )
 
-    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-10/collects.json?collection_id=841564295")
+    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-10/collects/455204334.json")
   end
 
   sig do
     void
   end
   def test_7()
+    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-10/collects/count.json")
+      .with(
+        headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
+        body: {}
+      )
+      .to_return(status: 200, body: JSON.generate({"count" => 2}), headers: {})
+
+    ShopifyAPI::Collect.count
+
+    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-10/collects/count.json")
+  end
+
+  sig do
+    void
+  end
+  def test_8()
     stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-10/collects/count.json?collection_id=841564295")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
@@ -157,7 +173,7 @@ class Collect202210Test < Test::Unit::TestCase
   sig do
     void
   end
-  def test_8()
+  def test_9()
     stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-10/collects/count.json?product_id=632910392")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
@@ -170,22 +186,6 @@ class Collect202210Test < Test::Unit::TestCase
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-10/collects/count.json?product_id=632910392")
-  end
-
-  sig do
-    void
-  end
-  def test_9()
-    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-10/collects/count.json")
-      .with(
-        headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
-        body: {}
-      )
-      .to_return(status: 200, body: JSON.generate({"count" => 2}), headers: {})
-
-    ShopifyAPI::Collect.count
-
-    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-10/collects/count.json")
   end
 
 end

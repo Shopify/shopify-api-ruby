@@ -4,14 +4,14 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 ![Build Status](https://github.com/Shopify/shopify-api-ruby/workflows/CI/badge.svg?branch=main)
 
-This library provides support for Ruby [Shopify apps](https://apps.shopify.com/) to access the [Shopify Admin API](https://shopify.dev/api/admin), by making it easier to perform the following actions:
+This library provides support for Ruby [Shopify apps](https://apps.shopify.com/) to access the [Shopify Admin API](https://shopify.dev/docs/api/admin), by making it easier to perform the following actions:
 
-- Creating [online](https://shopify.dev/apps/auth/oauth/access-modes#online-access) or [offline](https://shopify.dev/apps/auth/oauth/access-modes#offline-access) access tokens for the Admin API via OAuth
-- Making requests to the [REST API](https://shopify.dev/api/admin-rest)
-- Making requests to the [GraphQL API](https://shopify.dev/api/admin-graphql)
+- Creating [online](https://shopify.dev/docs/apps/auth/oauth/access-modes#online-access) or [offline](https://shopify.dev/docs/apps/auth/oauth/access-modes#offline-access) access tokens for the Admin API via OAuth
+- Making requests to the [REST API](https://shopify.dev/docs/api/admin-rest)
+- Making requests to the [GraphQL API](https://shopify.dev/docs/api/admin-graphql)
 - Registering/processing webhooks
 
-In addition to the Admin API, this library also allows querying the [Storefront API](https://shopify.dev/docs/storefront-api).
+In addition to the Admin API, this library also allows querying the [Storefront API](https://shopify.dev/docs/api/storefront).
 
 You can use this library in any application that has a Ruby backend, since it doesn't rely on any specific framework — you can include it alongside your preferred stack and use the features that you need to build your app.
 
@@ -63,11 +63,11 @@ ShopifyAPI::Context.setup(
 
 In order for the Shopify API gem to properly store sessions it needs an implementation of `ShopifyAPI::Auth::SessionStorage`. We provide one implementation in the gem, `ShopifyAPI::Auth::FileSessionStorage`, which is suitable for testing/development, but isn't intended for production apps. See the [Session Storage doc](docs/usage/session_storage.md) for instructions on how to create a custom session store for a production application.
 
-Session information would is typically stored in cookies on the browser. However, due to restrictions with modern browsers we highly discourage using cookies for embedded apps. For this reason, an app needs to define a storage implementation that the library can use to store and retrieve a session given its ID. In a non-embedded app this ID will come from a cookie, whereas in an embedded app this ID will come from [App Bridge](https://shopify.dev/apps/tools/app-bridge).
+Session information would is typically stored in cookies on the browser. However, due to restrictions with modern browsers we highly discourage using cookies for embedded apps. For this reason, an app needs to define a storage implementation that the library can use to store and retrieve a session given its ID. In a non-embedded app this ID will come from a cookie, whereas in an embedded app this ID will come from [App Bridge](https://shopify.dev/docs/apps/tools/app-bridge).
 
 ### Performing OAuth
 
-You need to go through OAuth as described [here](https://shopify.dev/apps/auth/oauth) to create sessions for shops using your app.
+You need to go through OAuth as described [here](https://shopify.dev/docs/apps/auth/oauth) to create sessions for shops using your app.
 The Shopify API gem tries to make this easy by providing functions to begin and complete the OAuth process. See the [Oauth doc](docs/usage/oauth.md) for instructions on how to use these.
 
 ### Register Webhooks and a Webhook Handler
@@ -90,7 +90,7 @@ Here are the main features it provides:
 - Full, transparent support for JWT sessions for embedded apps and cookies for non-embedded ones.
   - Removal of support for 3rd party cookies which are increasingly more difficult to use with modern browsers.
 - Admin API support
-  - Auto-generated, version-specific REST resources which are similar to `ActiveResource` (though not identical), that provide methods for all endpoints defined in our [REST API reference](https://shopify.dev/api/admin-rest), as well as direct definition of known attributes.
+  - Auto-generated, version-specific REST resources which are similar to `ActiveResource` (though not identical), that provide methods for all endpoints defined in our [REST API reference](https://shopify.dev/docs/api/admin-rest), as well as direct definition of known attributes.
   - A GraphQL client that doesn't rely on the ActiveResource implementation for REST.
 - Webhook management, with features for adding handlers and registering them with Shopify.
 - Storefront GraphQL API support
@@ -102,7 +102,7 @@ With this, a lot changed in how apps access the library. Here are the updates yo
 - Call `ShopifyAPI::Context.setup` when setting up your app. This class holds global configurations for your app and defines how the library behaves.
 - If not using the `shopify_app` gem, your app needs to provide an implementation of `ShopifyAPI::Auth::SessionStorage` for production. Read more about this [in our documentation](docs/usage/session_storage.md).
 - To change the `User-Agent` header, use `user_agent_prefix` in `ShopifyAPI::Context.setup`.
-- Usages of the `ActiveResource` classes for REST API requests need to be refactored into the new format. You can find detailed examples on how each of the endpoints work in our [reference documentation](https://shopify.dev/api/admin-rest).
+- Usages of the `ActiveResource` classes for REST API requests need to be refactored into the new format. You can find detailed examples on how each of the endpoints work in our [reference documentation](https://shopify.dev/docs/api/admin-rest).
 
     Please see below a (non-exhaustive) list of common replacements to guide you in your updates, using the `Order` resource as an example.
 
