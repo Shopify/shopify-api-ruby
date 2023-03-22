@@ -71,6 +71,20 @@ module ShopifyAPITest
         verify_http_request
       end
 
+      # It doesn't really make sense for an HTTP body to ever be `nil`, but
+      # the underlying HTTParty library seems to use `nil` for the response
+      # body in situations where it doesn't need to parse it, e.g. when the
+      # response status is 204.
+      def test_request_with_nil_response_body
+        @success_body = {}
+
+        stub_request(@request.http_method, "https://#{@shop}#{@base_path}/#{@request.path}")
+          .with(body: @request.body.to_json, query: @request.query, headers: @expected_headers)
+          .to_return(body: "", headers: @response_headers, status: 204)
+
+        verify_http_request
+      end
+
       def test_request_with_no_access_token
         @session = ShopifyAPI::Auth::Session.new(shop: @shop)
         @client = ShopifyAPI::Clients::HttpClient.new(session: @session, base_path: @base_path)
