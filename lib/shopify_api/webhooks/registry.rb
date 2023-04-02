@@ -4,7 +4,9 @@
 module ShopifyAPI
   module Webhooks
     class Registry
-      SUBSCRIPTION_NOT_REQUIRED_TOPICS = T.let(["CUSTOMERS_DATA_REQUEST", "CUSTOMERS_REDACT", "SHOP_REDACT"], T::Array[String])
+      SUBSCRIPTION_NOT_REQUIRED_TOPICS = T.let(
+        ["CUSTOMERS_DATA_REQUEST", "CUSTOMERS_REDACT", "SHOP_REDACT"], T::Array[String]
+      )
 
       @registry = T.let({}, T::Hash[String, Registration])
 
