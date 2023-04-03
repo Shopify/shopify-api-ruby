@@ -4,6 +4,7 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
 
+- [#1113](https://github.com/Shopify/shopify-api-ruby/pull/1113) Handle JSON::ParserError when http response is HTML and raise ShopifyAPI::Errors::HttpResponseError
 - [#1098](https://github.com/Shopify/shopify-api-ruby/pull/1098) Gracefully handle HTTP 204 repsonse bodies
 - [#1104](https://github.com/Shopify/shopify-api-ruby/pull/1104) Allow api version overrides.
 

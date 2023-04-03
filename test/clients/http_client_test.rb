@@ -218,6 +218,15 @@ module ShopifyAPITest
         assert_match(/#{@request.path}.*#{deprecate_reason}/, reader.gets)
       end
 
+      def test_json_parser_error
+        stub_request(@request.http_method, "https://#{@shop}#{@base_path}/#{@request.path}")
+          .with(body: @request.body.to_json, query: @request.query, headers: @expected_headers)
+          .to_return(body: "<html>Some HTML</html>", status: 502)
+
+        error = assert_raises(ShopifyAPI::Errors::HttpResponseError) { @client.request(@request) }
+        assert_equal(502, error.code)
+      end
+
       private
 
       def simple_http_test(http_method)
