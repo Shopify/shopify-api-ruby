@@ -52,7 +52,7 @@ module ShopifyAPI
             body = res.body.nil? || res.body.empty? ? {} : JSON.parse(res.body)
           rescue JSON::ParserError
             raise if res.code.to_i < 500
-            
+
             body = res.body
           end
 
