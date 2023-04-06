@@ -73,7 +73,7 @@ module ShopifyAPI
       @source_identifier = T.let(nil, T.nilable(String))
       @source_name = T.let(nil, T.nilable(String))
       @source_url = T.let(nil, T.nilable(String))
-      @subtotal_price = T.let(nil, T.nilable(Float))
+      @subtotal_price = T.let(nil, T.nilable(String))
       @subtotal_price_set = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
       @tags = T.let(nil, T.nilable(String))
       @tax_lines = T.let(nil, T.nilable(T::Array[T.untyped]))
@@ -230,7 +230,7 @@ module ShopifyAPI
     attr_reader :source_name
     sig { returns(T.nilable(String)) }
     attr_reader :source_url
-    sig { returns(T.nilable(Float)) }
+    sig { returns(T.nilable(String)) }
     attr_reader :subtotal_price
     sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :subtotal_price_set

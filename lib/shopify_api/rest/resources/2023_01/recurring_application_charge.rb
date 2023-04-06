@@ -22,6 +22,7 @@ module ShopifyAPI
       @capped_amount = T.let(nil, T.nilable(T.any(String, Integer)))
       @confirmation_url = T.let(nil, T.nilable(String))
       @created_at = T.let(nil, T.nilable(String))
+      @currency = T.let(nil, T.nilable(Currency))
       @id = T.let(nil, T.nilable(Integer))
       @name = T.let(nil, T.nilable(String))
       @price = T.let(nil, T.nilable(T.any(String, Float)))
@@ -34,7 +35,9 @@ module ShopifyAPI
       @updated_at = T.let(nil, T.nilable(String))
     end
 
-    @has_one = T.let({}, T::Hash[Symbol, Class])
+    @has_one = T.let({
+      currency: Currency
+    }, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
     @paths = T.let([
       {http_method: :delete, operation: :delete, ids: [:id], path: "recurring_application_charges/<id>.json"},
@@ -56,6 +59,8 @@ module ShopifyAPI
     attr_reader :confirmation_url
     sig { returns(T.nilable(String)) }
     attr_reader :created_at
+    sig { returns(T.nilable(Currency)) }
+    attr_reader :currency
     sig { returns(T.nilable(Integer)) }
     attr_reader :id
     sig { returns(T.nilable(String)) }

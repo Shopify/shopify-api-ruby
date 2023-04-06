@@ -38,7 +38,7 @@ class ScriptTag202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"script_tags" => [{"id" => 421379493, "src" => "https://js.example.org/bar.js", "event" => "onload", "created_at" => "2023-01-03T12:21:36-05:00", "updated_at" => "2023-01-03T12:21:36-05:00", "display_scope" => "all"}, {"id" => 596726825, "src" => "https://js.example.org/foo.js", "event" => "onload", "created_at" => "2023-01-03T12:21:36-05:00", "updated_at" => "2023-01-03T12:21:36-05:00", "display_scope" => "all"}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"script_tags" => [{"id" => 421379493, "src" => "https://js.example.org/bar.js", "event" => "onload", "created_at" => "2023-02-02T09:09:49-05:00", "updated_at" => "2023-02-02T09:09:49-05:00", "display_scope" => "all"}, {"id" => 596726825, "src" => "https://js.example.org/foo.js", "event" => "onload", "created_at" => "2023-02-02T09:09:49-05:00", "updated_at" => "2023-02-02T09:09:49-05:00", "display_scope" => "all"}]}), headers: {})
 
     ShopifyAPI::ScriptTag.all
 
@@ -54,7 +54,7 @@ class ScriptTag202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"script_tags" => [{"id" => 596726825, "src" => "https://js.example.org/foo.js", "event" => "onload", "created_at" => "2023-01-03T12:21:36-05:00", "updated_at" => "2023-01-03T12:21:36-05:00", "display_scope" => "all"}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"script_tags" => [{"id" => 596726825, "src" => "https://js.example.org/foo.js", "event" => "onload", "created_at" => "2023-02-02T09:09:49-05:00", "updated_at" => "2023-02-02T09:09:49-05:00", "display_scope" => "all"}]}), headers: {})
 
     ShopifyAPI::ScriptTag.all(
       since_id: "421379493",
@@ -72,7 +72,7 @@ class ScriptTag202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"script_tags" => [{"id" => 596726825, "src" => "https://js.example.org/foo.js", "event" => "onload", "created_at" => "2023-01-03T12:21:36-05:00", "updated_at" => "2023-01-03T12:21:36-05:00", "display_scope" => "all"}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"script_tags" => [{"id" => 596726825, "src" => "https://js.example.org/foo.js", "event" => "onload", "created_at" => "2023-02-02T09:09:49-05:00", "updated_at" => "2023-02-02T09:09:49-05:00", "display_scope" => "all"}]}), headers: {})
 
     ShopifyAPI::ScriptTag.all(
       src: "https://js.example.org/foo.js",
@@ -90,7 +90,7 @@ class ScriptTag202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "script_tag" => hash_including({"event" => "onload", "src" => "https://example.com/my_script.js"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"script_tag" => {"id" => 870402688, "src" => "https://example.com/my_script.js", "event" => "onload", "created_at" => "2023-01-03T12:54:19-05:00", "updated_at" => "2023-01-03T12:54:19-05:00", "display_scope" => "all", "cache" => false}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"script_tag" => {"id" => 870402688, "src" => "https://example.com/my_script.js", "event" => "onload", "created_at" => "2023-02-02T09:14:37-05:00", "updated_at" => "2023-02-02T09:14:37-05:00", "display_scope" => "all", "cache" => false}}), headers: {})
 
     script_tag = ShopifyAPI::ScriptTag.new
     script_tag.event = "onload"
@@ -125,7 +125,7 @@ class ScriptTag202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"script_tag" => {"id" => 596726825, "src" => "https://js.example.org/foo.js", "event" => "onload", "created_at" => "2023-01-03T12:21:36-05:00", "updated_at" => "2023-01-03T12:21:36-05:00", "display_scope" => "all", "cache" => false}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"script_tag" => {"id" => 596726825, "src" => "https://js.example.org/foo.js", "event" => "onload", "created_at" => "2023-02-02T09:09:49-05:00", "updated_at" => "2023-02-02T09:09:49-05:00", "display_scope" => "all", "cache" => false}}), headers: {})
 
     ShopifyAPI::ScriptTag.find(
       id: 596726825,
@@ -143,7 +143,7 @@ class ScriptTag202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "script_tag" => hash_including({"src" => "https://somewhere-else.com/another.js"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"script_tag" => {"src" => "https://somewhere-else.com/another.js", "cache" => false, "id" => 596726825, "event" => "onload", "created_at" => "2023-01-03T12:21:36-05:00", "updated_at" => "2023-01-03T12:54:18-05:00", "display_scope" => "all"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"script_tag" => {"src" => "https://somewhere-else.com/another.js", "cache" => false, "id" => 596726825, "event" => "onload", "created_at" => "2023-02-02T09:09:49-05:00", "updated_at" => "2023-02-02T09:14:53-05:00", "display_scope" => "all"}}), headers: {})
 
     script_tag = ShopifyAPI::ScriptTag.new
     script_tag.id = 596726825

@@ -17,6 +17,7 @@ module ShopifyAPI
       super(session: session)
 
       @created_at = T.let(nil, T.nilable(String))
+      @currency = T.let(nil, T.nilable(Currency))
       @description = T.let(nil, T.nilable(String))
       @id = T.let(nil, T.nilable(Integer))
       @price = T.let(nil, T.nilable(Integer))
@@ -24,7 +25,9 @@ module ShopifyAPI
       @updated_at = T.let(nil, T.nilable(String))
     end
 
-    @has_one = T.let({}, T::Hash[Symbol, Class])
+    @has_one = T.let({
+      currency: Currency
+    }, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
     @paths = T.let([
       {http_method: :get, operation: :get, ids: [:recurring_application_charge_id], path: "recurring_application_charges/<recurring_application_charge_id>/usage_charges.json"},
@@ -34,6 +37,8 @@ module ShopifyAPI
 
     sig { returns(T.nilable(String)) }
     attr_reader :created_at
+    sig { returns(T.nilable(Currency)) }
+    attr_reader :currency
     sig { returns(T.nilable(String)) }
     attr_reader :description
     sig { returns(T.nilable(Integer)) }

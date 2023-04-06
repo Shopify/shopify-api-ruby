@@ -38,7 +38,7 @@ class Collect202210Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "collect" => hash_including({"product_id" => 921728736, "collection_id" => 841564295}) }
       )
-      .to_return(status: 200, body: JSON.generate({"collect" => {"id" => 1071559576, "collection_id" => 841564295, "product_id" => 921728736, "created_at" => "2023-01-03T12:45:21-05:00", "updated_at" => "2023-01-03T12:45:21-05:00", "position" => 2, "sort_value" => "0000000002"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"collect" => {"id" => 1071559579, "collection_id" => 841564295, "product_id" => 921728736, "created_at" => "2023-02-02T09:37:22-05:00", "updated_at" => "2023-02-02T09:37:22-05:00", "position" => 2, "sort_value" => "0000000002"}}), headers: {})
 
     collect = ShopifyAPI::Collect.new
     collect.product_id = 921728736
@@ -73,7 +73,7 @@ class Collect202210Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"collects" => [{"id" => 455204334, "collection_id" => 841564295, "product_id" => 632910392, "created_at" => nil, "updated_at" => nil, "position" => 1, "sort_value" => "0000000001"}, {"id" => 1071559574, "collection_id" => 841564295, "product_id" => 921728736, "created_at" => "2023-01-03T12:45:12-05:00", "updated_at" => "2023-01-03T12:45:12-05:00", "position" => 2, "sort_value" => "0000000002"}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"collects" => [{"id" => 455204334, "collection_id" => 841564295, "product_id" => 632910392, "created_at" => nil, "updated_at" => nil, "position" => 1, "sort_value" => "0000000001"}, {"id" => 1071559580, "collection_id" => 841564295, "product_id" => 921728736, "created_at" => "2023-02-02T09:37:24-05:00", "updated_at" => "2023-02-02T09:37:24-05:00", "position" => 2, "sort_value" => "0000000002"}]}), headers: {})
 
     ShopifyAPI::Collect.all(
       collection_id: "841564295",

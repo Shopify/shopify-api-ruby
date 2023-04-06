@@ -21,10 +21,10 @@ module ShopifyAPI
       @id = T.let(nil, T.nilable(Integer))
       @location_group_id = T.let(nil, T.nilable(Integer))
       @name = T.let(nil, T.nilable(String))
-      @price_based_shipping_rates = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
-      @profile_id = T.let(nil, T.nilable(Integer))
+      @price_based_shipping_rates = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @profile_id = T.let(nil, T.nilable(String))
       @provinces = T.let(nil, T.nilable(T::Array[T.untyped]))
-      @weight_based_shipping_rates = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @weight_based_shipping_rates = T.let(nil, T.nilable(T::Array[T.untyped]))
     end
 
     @has_one = T.let({}, T::Hash[Symbol, Class])
@@ -46,13 +46,13 @@ module ShopifyAPI
     attr_reader :location_group_id
     sig { returns(T.nilable(String)) }
     attr_reader :name
-    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
+    sig { returns(T.nilable(T::Array[T::Hash[T.untyped, T.untyped]])) }
     attr_reader :price_based_shipping_rates
-    sig { returns(T.nilable(Integer)) }
+    sig { returns(T.nilable(String)) }
     attr_reader :profile_id
     sig { returns(T.nilable(T::Array[Province])) }
     attr_reader :provinces
-    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
+    sig { returns(T.nilable(T::Array[T::Hash[T.untyped, T.untyped]])) }
     attr_reader :weight_based_shipping_rates
 
     class << self

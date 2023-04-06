@@ -240,8 +240,9 @@ module ShopifyAPI
               end
               instance.public_send("#{attribute}=", attr_list)
             elsif has_one?(attr_sym) && value
+              data_hash = value.is_a?(Hash) ? value : { "#{attribute}" => value } # force a hash if core returns values that instantiate objects like "USD"
               instance.public_send("#{attribute}=",
-                T.unsafe(@has_one[attr_sym]).create_instance(data: value, session: session))
+                T.unsafe(@has_one[attr_sym]).create_instance(data: data_hash, session: session))
             else
               instance.public_send("#{attribute}=", value)
               instance.original_state[attr_sym] = value

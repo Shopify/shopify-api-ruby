@@ -38,7 +38,7 @@ class GiftCard202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"gift_cards" => [{"id" => 766118925, "balance" => "25.00", "created_at" => "2023-01-03T12:21:36-05:00", "updated_at" => "2023-01-03T12:21:36-05:00", "currency" => "USD", "initial_value" => "50.00", "disabled_at" => nil, "line_item_id" => nil, "api_client_id" => nil, "user_id" => nil, "customer_id" => nil, "note" => nil, "expires_on" => "2022-01-03", "template_suffix" => nil, "last_characters" => "0e0e", "order_id" => nil}, {"id" => 10274553, "balance" => "0.00", "created_at" => "2023-01-03T12:21:36-05:00", "updated_at" => "2023-01-03T12:21:36-05:00", "currency" => "USD", "initial_value" => "50.00", "disabled_at" => nil, "line_item_id" => nil, "api_client_id" => nil, "user_id" => nil, "customer_id" => nil, "note" => nil, "expires_on" => nil, "template_suffix" => nil, "last_characters" => "0y0y", "order_id" => nil}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"gift_cards" => [{"id" => 766118925, "balance" => "25.00", "created_at" => "2023-04-06T06:34:03-04:00", "updated_at" => "2023-04-06T06:34:03-04:00", "currency" => "USD", "initial_value" => "50.00", "disabled_at" => nil, "line_item_id" => nil, "api_client_id" => nil, "user_id" => nil, "customer_id" => nil, "note" => nil, "expires_on" => "2022-04-06", "template_suffix" => nil, "last_characters" => "0e0e", "order_id" => nil}, {"id" => 10274553, "balance" => "0.00", "created_at" => "2023-04-06T06:34:03-04:00", "updated_at" => "2023-04-06T06:34:03-04:00", "currency" => "USD", "initial_value" => "50.00", "disabled_at" => nil, "line_item_id" => nil, "api_client_id" => nil, "user_id" => nil, "customer_id" => nil, "note" => nil, "expires_on" => nil, "template_suffix" => nil, "last_characters" => "0y0y", "order_id" => nil}]}), headers: {})
 
     ShopifyAPI::GiftCard.all(
       status: "enabled",
@@ -56,7 +56,7 @@ class GiftCard202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"gift_cards" => [{"id" => 1035197676, "balance" => "100.00", "created_at" => "2023-01-03T12:21:36-05:00", "updated_at" => "2023-01-03T12:21:36-05:00", "currency" => "USD", "initial_value" => "100.00", "disabled_at" => nil, "line_item_id" => nil, "api_client_id" => nil, "user_id" => nil, "customer_id" => nil, "note" => nil, "expires_on" => nil, "template_suffix" => nil, "last_characters" => "0d0d", "order_id" => nil}, {"id" => 766118925, "balance" => "25.00", "created_at" => "2023-01-03T12:21:36-05:00", "updated_at" => "2023-01-03T12:21:36-05:00", "currency" => "USD", "initial_value" => "50.00", "disabled_at" => nil, "line_item_id" => nil, "api_client_id" => nil, "user_id" => nil, "customer_id" => nil, "note" => nil, "expires_on" => "2022-01-03", "template_suffix" => nil, "last_characters" => "0e0e", "order_id" => nil}, {"id" => 10274553, "balance" => "0.00", "created_at" => "2023-01-03T12:21:36-05:00", "updated_at" => "2023-01-03T12:21:36-05:00", "currency" => "USD", "initial_value" => "50.00", "disabled_at" => nil, "line_item_id" => nil, "api_client_id" => nil, "user_id" => nil, "customer_id" => nil, "note" => nil, "expires_on" => nil, "template_suffix" => nil, "last_characters" => "0y0y", "order_id" => nil}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"gift_cards" => [{"id" => 1035197676, "balance" => "100.00", "created_at" => "2023-04-06T06:34:03-04:00", "updated_at" => "2023-04-06T06:34:03-04:00", "currency" => "USD", "initial_value" => "100.00", "disabled_at" => nil, "line_item_id" => nil, "api_client_id" => nil, "user_id" => nil, "customer_id" => nil, "note" => nil, "expires_on" => nil, "template_suffix" => nil, "last_characters" => "0d0d", "order_id" => nil}, {"id" => 766118925, "balance" => "25.00", "created_at" => "2023-04-06T06:34:03-04:00", "updated_at" => "2023-04-06T06:34:03-04:00", "currency" => "USD", "initial_value" => "50.00", "disabled_at" => nil, "line_item_id" => nil, "api_client_id" => nil, "user_id" => nil, "customer_id" => nil, "note" => nil, "expires_on" => "2022-04-06", "template_suffix" => nil, "last_characters" => "0e0e", "order_id" => nil}, {"id" => 10274553, "balance" => "0.00", "created_at" => "2023-04-06T06:34:03-04:00", "updated_at" => "2023-04-06T06:34:03-04:00", "currency" => "USD", "initial_value" => "50.00", "disabled_at" => nil, "line_item_id" => nil, "api_client_id" => nil, "user_id" => nil, "customer_id" => nil, "note" => nil, "expires_on" => nil, "template_suffix" => nil, "last_characters" => "0y0y", "order_id" => nil}]}), headers: {})
 
     ShopifyAPI::GiftCard.all
 
@@ -72,7 +72,7 @@ class GiftCard202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"gift_card" => {"id" => 1035197676, "balance" => "100.00", "created_at" => "2023-01-03T12:21:36-05:00", "updated_at" => "2023-01-03T12:21:36-05:00", "currency" => "USD", "initial_value" => "100.00", "disabled_at" => nil, "line_item_id" => nil, "api_client_id" => nil, "user_id" => nil, "customer_id" => nil, "note" => nil, "expires_on" => nil, "template_suffix" => nil, "last_characters" => "0d0d", "order_id" => nil}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"gift_card" => {"id" => 1035197676, "balance" => "100.00", "created_at" => "2023-04-06T06:34:03-04:00", "updated_at" => "2023-04-06T06:34:03-04:00", "currency" => "USD", "initial_value" => "100.00", "disabled_at" => nil, "line_item_id" => nil, "api_client_id" => nil, "user_id" => nil, "customer_id" => nil, "note" => nil, "expires_on" => nil, "template_suffix" => nil, "last_characters" => "0d0d", "order_id" => nil}}), headers: {})
 
     ShopifyAPI::GiftCard.find(
       id: 1035197676,
@@ -90,7 +90,7 @@ class GiftCard202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "gift_card" => hash_including({"expires_on" => "2020-01-01"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"gift_card" => {"expires_on" => "2020-01-01", "template_suffix" => nil, "initial_value" => "100.00", "balance" => "100.00", "customer_id" => nil, "id" => 1035197676, "created_at" => "2023-01-03T12:21:36-05:00", "updated_at" => "2023-01-03T12:30:02-05:00", "currency" => "USD", "disabled_at" => nil, "line_item_id" => nil, "api_client_id" => nil, "user_id" => nil, "note" => nil, "last_characters" => "0d0d", "order_id" => nil}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"gift_card" => {"expires_on" => "2020-01-01", "template_suffix" => nil, "initial_value" => "100.00", "balance" => "100.00", "customer_id" => nil, "id" => 1035197676, "created_at" => "2023-04-06T06:34:03-04:00", "updated_at" => "2023-04-06T06:39:34-04:00", "currency" => "USD", "disabled_at" => nil, "line_item_id" => nil, "api_client_id" => nil, "user_id" => nil, "note" => nil, "last_characters" => "0d0d", "order_id" => nil}}), headers: {})
 
     gift_card = ShopifyAPI::GiftCard.new
     gift_card.id = 1035197676
@@ -109,7 +109,7 @@ class GiftCard202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "gift_card" => hash_including({"note" => "Updating with a new note"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"gift_card" => {"note" => "Updating with a new note", "template_suffix" => nil, "initial_value" => "100.00", "balance" => "100.00", "customer_id" => nil, "id" => 1035197676, "created_at" => "2023-01-03T12:21:36-05:00", "updated_at" => "2023-01-03T12:30:10-05:00", "currency" => "USD", "disabled_at" => nil, "line_item_id" => nil, "api_client_id" => nil, "user_id" => nil, "expires_on" => nil, "last_characters" => "0d0d", "order_id" => nil}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"gift_card" => {"note" => "Updating with a new note", "template_suffix" => nil, "initial_value" => "100.00", "balance" => "100.00", "customer_id" => nil, "id" => 1035197676, "created_at" => "2023-04-06T06:34:03-04:00", "updated_at" => "2023-04-06T06:39:46-04:00", "currency" => "USD", "disabled_at" => nil, "line_item_id" => nil, "api_client_id" => nil, "user_id" => nil, "expires_on" => nil, "last_characters" => "0d0d", "order_id" => nil}}), headers: {})
 
     gift_card = ShopifyAPI::GiftCard.new
     gift_card.id = 1035197676
@@ -162,7 +162,7 @@ class GiftCard202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "gift_card" => hash_including({"note" => "This is a note", "initial_value" => 100.0, "code" => "ABCD EFGH IJKL MNOP", "template_suffix" => "gift_cards.birthday.liquid"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"gift_card" => {"id" => 1063936318, "balance" => "100.00", "created_at" => "2023-01-03T12:30:11-05:00", "updated_at" => "2023-01-03T12:30:11-05:00", "currency" => "USD", "initial_value" => "100.00", "disabled_at" => nil, "line_item_id" => nil, "api_client_id" => 755357713, "user_id" => nil, "customer_id" => nil, "note" => "This is a note", "expires_on" => nil, "template_suffix" => "gift_cards.birthday.liquid", "last_characters" => "mnop", "order_id" => nil, "code" => "abcdefghijklmnop"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"gift_card" => {"id" => 1063936317, "balance" => "100.00", "created_at" => "2023-04-06T06:39:42-04:00", "updated_at" => "2023-04-06T06:39:42-04:00", "currency" => "USD", "initial_value" => "100.00", "disabled_at" => nil, "line_item_id" => nil, "api_client_id" => 755357713, "user_id" => nil, "customer_id" => nil, "note" => "This is a note", "expires_on" => nil, "template_suffix" => "gift_cards.birthday.liquid", "last_characters" => "mnop", "order_id" => nil, "code" => "abcdefghijklmnop"}}), headers: {})
 
     gift_card = ShopifyAPI::GiftCard.new
     gift_card.note = "This is a note"
@@ -183,7 +183,7 @@ class GiftCard202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "gift_card" => hash_including({"initial_value" => 25.0}) }
       )
-      .to_return(status: 200, body: JSON.generate({"gift_card" => {"id" => 1063936317, "balance" => "25.00", "created_at" => "2023-01-03T12:30:08-05:00", "updated_at" => "2023-01-03T12:30:08-05:00", "currency" => "USD", "initial_value" => "25.00", "disabled_at" => nil, "line_item_id" => nil, "api_client_id" => 755357713, "user_id" => nil, "customer_id" => nil, "note" => nil, "expires_on" => nil, "template_suffix" => nil, "last_characters" => "fc53", "order_id" => nil, "code" => "58he9ffdhhc4fc53"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"gift_card" => {"id" => 1063936318, "balance" => "25.00", "created_at" => "2023-04-06T06:39:49-04:00", "updated_at" => "2023-04-06T06:39:49-04:00", "currency" => "USD", "initial_value" => "25.00", "disabled_at" => nil, "line_item_id" => nil, "api_client_id" => 755357713, "user_id" => nil, "customer_id" => nil, "note" => nil, "expires_on" => nil, "template_suffix" => nil, "last_characters" => "24c3", "order_id" => nil, "code" => "37eged5ac8c424c3"}}), headers: {})
 
     gift_card = ShopifyAPI::GiftCard.new
     gift_card.initial_value = 25.0
@@ -201,7 +201,7 @@ class GiftCard202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "gift_card" => hash_including({"id" => 1035197676}) }
       )
-      .to_return(status: 200, body: JSON.generate({"gift_card" => {"disabled_at" => "2023-01-03T12:30:07-05:00", "template_suffix" => nil, "initial_value" => "100.00", "balance" => "100.00", "customer_id" => nil, "id" => 1035197676, "created_at" => "2023-01-03T12:21:36-05:00", "updated_at" => "2023-01-03T12:30:07-05:00", "currency" => "USD", "line_item_id" => nil, "api_client_id" => nil, "user_id" => nil, "note" => nil, "expires_on" => nil, "last_characters" => "0d0d", "order_id" => nil}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"gift_card" => {"disabled_at" => "2023-04-06T06:39:31-04:00", "template_suffix" => nil, "initial_value" => "100.00", "balance" => "100.00", "customer_id" => nil, "id" => 1035197676, "created_at" => "2023-04-06T06:34:03-04:00", "updated_at" => "2023-04-06T06:39:31-04:00", "currency" => "USD", "line_item_id" => nil, "api_client_id" => nil, "user_id" => nil, "note" => nil, "expires_on" => nil, "last_characters" => "0d0d", "order_id" => nil}}), headers: {})
 
     gift_card = ShopifyAPI::GiftCard.new
     gift_card.id = 1035197676
@@ -221,7 +221,7 @@ class GiftCard202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"gift_cards" => [{"id" => 1063936316, "balance" => "10.00", "created_at" => "2023-01-03T12:30:02-05:00", "updated_at" => "2023-01-03T12:30:02-05:00", "currency" => "USD", "initial_value" => "10.00", "disabled_at" => nil, "line_item_id" => nil, "api_client_id" => nil, "user_id" => nil, "customer_id" => nil, "note" => nil, "expires_on" => nil, "template_suffix" => nil, "last_characters" => "mnop", "order_id" => nil}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"gift_cards" => [{"id" => 1063936319, "balance" => "10.00", "created_at" => "2023-04-06T06:39:49-04:00", "updated_at" => "2023-04-06T06:39:49-04:00", "currency" => "USD", "initial_value" => "10.00", "disabled_at" => nil, "line_item_id" => nil, "api_client_id" => nil, "user_id" => nil, "customer_id" => nil, "note" => nil, "expires_on" => nil, "template_suffix" => nil, "last_characters" => "mnop", "order_id" => nil}]}), headers: {})
 
     ShopifyAPI::GiftCard.search(
       query: "last_characters:mnop",
