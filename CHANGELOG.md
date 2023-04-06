@@ -6,6 +6,7 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 - [#1098](https://github.com/Shopify/shopify-api-ruby/pull/1098) Gracefully handle HTTP 204 repsonse bodies
 - [#1104](https://github.com/Shopify/shopify-api-ruby/pull/1104) Allow api version overrides.
+- [#1137](https://github.com/Shopify/shopify-api-ruby/pull/1137) Support for 2023_04 API version. Fix reported typing bugs.
 
 ## Version 12.4.0
 
