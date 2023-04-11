@@ -38,7 +38,7 @@ class StorefrontAccessToken202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "storefront_access_token" => hash_including({"title" => "Test"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"storefront_access_token" => {"access_token" => "b3ababb5c68d0062d5619d853abf6efa", "access_scope" => "unauthenticated_read_product_listings", "created_at" => "2023-01-03T12:44:44-05:00", "id" => 1003303990, "admin_graphql_api_id" => "gid://shopify/StorefrontAccessToken/1003303990", "title" => "Test"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"storefront_access_token" => {"access_token" => "bac50afe906e84b04b95ffb1bee5ade6", "access_scope" => "unauthenticated_read_product_listings", "created_at" => "2023-02-02T09:35:37-05:00", "id" => 1003303990, "admin_graphql_api_id" => "gid://shopify/StorefrontAccessToken/1003303990", "title" => "Test"}}), headers: {})
 
     storefront_access_token = ShopifyAPI::StorefrontAccessToken.new
     storefront_access_token.title = "Test"
@@ -56,7 +56,7 @@ class StorefrontAccessToken202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"storefront_access_tokens" => [{"access_token" => "378d95641257a4ab3feff967ee234f4d", "access_scope" => "unauthenticated_read_product_listings", "created_at" => "2023-01-03T12:21:36-05:00", "id" => 755357713, "admin_graphql_api_id" => "gid://shopify/StorefrontAccessToken/755357713", "title" => "API Client Extension"}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"storefront_access_tokens" => [{"access_token" => "378d95641257a4ab3feff967ee234f4d", "access_scope" => "unauthenticated_read_product_listings", "created_at" => "2023-02-02T09:09:49-05:00", "id" => 755357713, "admin_graphql_api_id" => "gid://shopify/StorefrontAccessToken/755357713", "title" => "API Client Extension"}]}), headers: {})
 
     ShopifyAPI::StorefrontAccessToken.all
 

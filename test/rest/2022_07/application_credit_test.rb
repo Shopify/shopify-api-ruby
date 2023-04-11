@@ -38,7 +38,7 @@ class ApplicationCredit202207Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "application_credit" => hash_including({"description" => "application credit for refund", "amount" => 5.0}) }
       )
-      .to_return(status: 200, body: JSON.generate({"application_credit" => {"id" => 1031636125, "amount" => "5.00", "description" => "application credit for refund", "test" => nil}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"application_credit" => {"id" => 1031636125, "amount" => "5.00", "description" => "application credit for refund", "test" => nil, "currency" => "USD"}}), headers: {})
 
     application_credit = ShopifyAPI::ApplicationCredit.new
     application_credit.description = "application credit for refund"
@@ -57,7 +57,7 @@ class ApplicationCredit202207Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "application_credit" => hash_including({"description" => "application credit for refund", "amount" => 5.0, "test" => true}) }
       )
-      .to_return(status: 200, body: JSON.generate({"application_credit" => {"id" => 1031636129, "amount" => "5.00", "description" => "application credit for refund", "test" => true}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"application_credit" => {"id" => 1031636126, "amount" => "5.00", "description" => "application credit for refund", "test" => true, "currency" => "USD"}}), headers: {})
 
     application_credit = ShopifyAPI::ApplicationCredit.new
     application_credit.description = "application credit for refund"
@@ -77,7 +77,7 @@ class ApplicationCredit202207Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"application_credits" => [{"id" => 140583599, "amount" => "5.00", "description" => "credit for application refund", "test" => nil}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"application_credits" => [{"id" => 140583599, "amount" => "5.00", "description" => "credit for application refund", "test" => nil, "currency" => "USD"}]}), headers: {})
 
     ShopifyAPI::ApplicationCredit.all
 
@@ -93,7 +93,7 @@ class ApplicationCredit202207Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"application_credit" => {"id" => 140583599, "amount" => "5.00", "description" => "credit for application refund", "test" => nil}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"application_credit" => {"id" => 140583599, "amount" => "5.00", "description" => "credit for application refund", "test" => nil, "currency" => "USD"}}), headers: {})
 
     ShopifyAPI::ApplicationCredit.find(
       id: 140583599,

@@ -17,12 +17,15 @@ module ShopifyAPI
       super(session: session)
 
       @amount = T.let(nil, T.nilable(Integer))
+      @currency = T.let(nil, T.nilable(Currency))
       @description = T.let(nil, T.nilable(String))
       @id = T.let(nil, T.nilable(Integer))
       @test = T.let(nil, T.nilable(T::Boolean))
     end
 
-    @has_one = T.let({}, T::Hash[Symbol, Class])
+    @has_one = T.let({
+      currency: Currency
+    }, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
     @paths = T.let([
       {http_method: :get, operation: :get, ids: [], path: "application_credits.json"},
@@ -32,6 +35,8 @@ module ShopifyAPI
 
     sig { returns(T.nilable(Integer)) }
     attr_reader :amount
+    sig { returns(T.nilable(Currency)) }
+    attr_reader :currency
     sig { returns(T.nilable(String)) }
     attr_reader :description
     sig { returns(T.nilable(Integer)) }

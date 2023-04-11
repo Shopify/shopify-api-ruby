@@ -18,7 +18,7 @@ module ShopifyAPI
 
       @key = T.let(nil, T.nilable(String))
       @namespace = T.let(nil, T.nilable(String))
-      @value = T.let(nil, T.nilable(T.any(String, Integer, Float)))
+      @value = T.let(nil, T.nilable(T.any(String, Integer, Float, T::Boolean, String)))
       @article_id = T.let(nil, T.nilable(Integer))
       @blog_id = T.let(nil, T.nilable(Integer))
       @collection_id = T.let(nil, T.nilable(Integer))
@@ -119,7 +119,7 @@ module ShopifyAPI
     attr_reader :key
     sig { returns(T.nilable(String)) }
     attr_reader :namespace
-    sig { returns(T.nilable(T.any(String, Integer, Float))) }
+    sig { returns(T.nilable(T.any(String, Integer, Float, T::Boolean, String))) }
     attr_reader :value
     sig { returns(T.nilable(Integer)) }
     attr_reader :article_id

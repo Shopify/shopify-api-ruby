@@ -17,7 +17,7 @@ module ShopifyAPI
       super(session: session)
 
       @api_client_id = T.let(nil, T.nilable(Integer))
-      @balance = T.let(nil, T.nilable(Float))
+      @balance = T.let(nil, T.nilable(String))
       @code = T.let(nil, T.nilable(String))
       @created_at = T.let(nil, T.nilable(String))
       @currency = T.let(nil, T.nilable(String))
@@ -25,7 +25,7 @@ module ShopifyAPI
       @disabled_at = T.let(nil, T.nilable(String))
       @expires_on = T.let(nil, T.nilable(String))
       @id = T.let(nil, T.nilable(Integer))
-      @initial_value = T.let(nil, T.nilable(Float))
+      @initial_value = T.let(nil, T.nilable(String))
       @last_characters = T.let(nil, T.nilable(String))
       @line_item_id = T.let(nil, T.nilable(Integer))
       @note = T.let(nil, T.nilable(String))
@@ -49,7 +49,7 @@ module ShopifyAPI
 
     sig { returns(T.nilable(Integer)) }
     attr_reader :api_client_id
-    sig { returns(T.nilable(Float)) }
+    sig { returns(T.nilable(String)) }
     attr_reader :balance
     sig { returns(T.nilable(String)) }
     attr_reader :code
@@ -65,7 +65,7 @@ module ShopifyAPI
     attr_reader :expires_on
     sig { returns(T.nilable(Integer)) }
     attr_reader :id
-    sig { returns(T.nilable(Float)) }
+    sig { returns(T.nilable(String)) }
     attr_reader :initial_value
     sig { returns(T.nilable(String)) }
     attr_reader :last_characters
