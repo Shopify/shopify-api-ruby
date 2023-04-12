@@ -123,6 +123,25 @@ module ShopifyAPITest
         assert_raises(ShopifyAPI::Errors::InvalidHttpRequestError) { @client.request(@request) }
       end
 
+      def test_error_message_structure
+        error_response_body = {
+          "errors": { "line_items" => ["must have at least one line item"] },
+        }.to_json
+        response_headers = {
+          "x-request-id": 1234,
+        }
+        stub_request(@request.http_method, "https://#{@shop}#{@base_path}/#{@request.path}")
+          .with(body: @request.body.to_json, query: @request.query, headers: @expected_headers)
+          .to_return(body: error_response_body, status: 422, headers: response_headers)
+
+        response = assert_raises(ShopifyAPI::Errors::HttpResponseError) do
+          @client.request(@request)
+        end
+        parsed_error = JSON.parse(response.message)
+        assert(parsed_error["errors"].present?)
+        assert(parsed_error["error_reference"].present?)
+      end
+
       def test_non_retriable_error_code
         stub_request(@request.http_method, "https://#{@shop}#{@base_path}/#{@request.path}")
           .with(body: @request.body.to_json, query: @request.query, headers: @expected_headers)

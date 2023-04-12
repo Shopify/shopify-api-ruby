@@ -4,6 +4,8 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
 
+- [#1140](https://github.com/Shopify/shopify-api-ruby/pull/1140) ⚠️ [Breaking] Reformat Http error messages to be JSON parsable.
+
 ## 12.5.0
 
 - [#1113](https://github.com/Shopify/shopify-api-ruby/pull/1113) Handle JSON::ParserError when http response is HTML and raise ShopifyAPI::Errors::HttpResponseError

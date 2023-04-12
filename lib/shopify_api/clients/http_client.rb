@@ -65,15 +65,7 @@ module ShopifyAPI
 
           break if response.ok?
 
-          error_messages = []
-          error_messages << response.body["errors"] if response.body["errors"]
-
-          if response.headers["x-request-id"]
-            id = T.must(response.headers["x-request-id"])[0]
-            error_messages << "If you report this error, please include this id: #{id}."
-          end
-
-          error_message = error_messages.join("\n")
+          error_message = serialized_error(response)
 
           unless [429, 500].include?(response.code)
             raise ShopifyAPI::Errors::HttpResponseError.new(response: response), error_message
@@ -101,6 +93,18 @@ module ShopifyAPI
       sig { params(request: HttpRequest).returns(String) }
       def request_url(request)
         "#{@base_uri_and_path}/#{request.path}"
+      end
+
+      sig { params(response: HttpResponse).returns(String) }
+      def serialized_error(response)
+        body = {}
+        body["errors"] = response.body["errors"] if response.body["errors"]
+
+        if response.headers["x-request-id"]
+          id = T.must(response.headers["x-request-id"])[0]
+          body["error_reference"] = "If you report this error, please include this id: #{id}."
+        end
+        body.to_json
       end
     end
   end
