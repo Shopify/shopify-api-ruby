@@ -5,6 +5,7 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
 
 - [#1140](https://github.com/Shopify/shopify-api-ruby/pull/1140) ⚠️ [Breaking] Reformat Http error messages to be JSON parsable.
+- [#1145](https://github.com/Shopify/shopify-api-ruby/pull/1146) REST API Shop resource definitions TypeError
 
 ## 12.5.0
 
