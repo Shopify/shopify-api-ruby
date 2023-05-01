@@ -367,19 +367,6 @@ module ShopifyAPI
         ).left_diff
       end
 
-      sig { params(hash: T::Hash[T.untyped, T.untyped]).returns(T::Hash[T.untyped, T.untyped]) }
-      def remove_associations_from_changed_attributes(hash)
-        ASSOCIATION_METHOD_NAMES.each do |association_name|
-          next unless self.class.respond_to?(association_name)
-
-          self.class.send(association_name).each do |method_name, _klass_name|
-            hash.delete(method_name.to_s)
-          end
-        end
-
-        hash
-      end
-
       sig { returns(Symbol) }
       def deduce_write_verb
         send(self.class.primary_key) ? :put : :post
