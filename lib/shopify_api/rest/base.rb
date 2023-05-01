@@ -236,16 +236,20 @@ module ShopifyAPI
             attr_sym = attribute.to_sym
 
             if has_many?(attr_sym) && value
+              instance.original_state[attr_sym] = []
               attr_list = []
               value.each do |element|
-                attr_list << T.unsafe(@has_many[attr_sym]).create_instance(data: element, session: session)
+                child = T.unsafe(@has_many[attr_sym]).create_instance(data: element, session: session)
+                attr_list << child
+                instance.original_state[attr_sym] << child.to_hash(true)
               end
               instance.public_send("#{attribute}=", attr_list)
             elsif has_one?(attr_sym) && value
               # force a hash if core returns values that instantiate objects like "USD"
               data_hash = value.is_a?(Hash) ? value : { attribute.to_s => value }
-              instance.public_send("#{attribute}=",
-                T.unsafe(@has_one[attr_sym]).create_instance(data: data_hash, session: session))
+              child = T.unsafe(@has_one[attr_sym]).create_instance(data: data_hash, session: session)
+              instance.public_send("#{attribute}=", child)
+              instance.original_state[attr_sym] = child.to_hash(true)
             else
               instance.public_send("#{attribute}=", value)
               instance.original_state[attr_sym] = value
@@ -359,12 +363,10 @@ module ShopifyAPI
 
       sig { returns(T::Hash[String, String]) }
       def attributes_to_update
-        attributes = HashDiff::Comparison.new(
+        HashDiff::Comparison.new(
           deep_stringify_keys(original_state),
           deep_stringify_keys(to_hash(true)),
         ).left_diff
-
-        # remove_associations_from_changed_attributes(attributes)
       end
 
       sig { params(hash: T::Hash[T.untyped, T.untyped]).returns(T::Hash[T.untyped, T.untyped]) }
