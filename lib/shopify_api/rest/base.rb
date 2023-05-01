@@ -364,7 +364,7 @@ module ShopifyAPI
           deep_stringify_keys(to_hash(true)),
         ).left_diff
 
-        remove_associations_from_changed_attributes(attributes)
+        # remove_associations_from_changed_attributes(attributes)
       end
 
       sig { params(hash: T::Hash[T.untyped, T.untyped]).returns(T::Hash[T.untyped, T.untyped]) }
@@ -382,7 +382,7 @@ module ShopifyAPI
 
       sig { returns(Symbol) }
       def deduce_write_verb
-        original_state[self.class.primary_key.to_sym] ? :put : :post
+        send(self.class.primary_key) ? :put : :post
       end
 
       sig { params(method: Symbol).returns(T.nilable(String)) }
