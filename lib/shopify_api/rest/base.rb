@@ -11,6 +11,8 @@ module ShopifyAPI
       extend T::Helpers
       abstract!
 
+      ASSOCIATION_METHOD_NAMES = T.let(["has_many", "belongs_to", "has_one"].freeze, T::Array[String])
+
       @has_one = T.let({}, T::Hash[Symbol, Class])
       @has_many = T.let({}, T::Hash[Symbol, Class])
       @paths = T.let([], T::Array[T::Hash[Symbol, T.any(T::Array[Symbol], String, Symbol)]])
@@ -357,12 +359,24 @@ module ShopifyAPI
 
       sig { returns(T::Hash[String, String]) }
       def attributes_to_update
-        hash = HashDiff::Comparison.new(
+        attributes = HashDiff::Comparison.new(
           deep_stringify_keys(original_state),
           deep_stringify_keys(to_hash(true)),
         ).left_diff
-        associations = self.class.has_many.keys.map(&:to_s) # do I need all associations?
-        associations.each { |association_name| hash.delete(association_name) }
+
+        remove_associations_from_changed_attributes(attributes)
+      end
+
+      sig { params(hash: T::Hash[T.untyped, T.untyped]).returns(T::Hash[T.untyped, T.untyped]) }
+      def remove_associations_from_changed_attributes(hash)
+        ASSOCIATION_METHOD_NAMES.each do |association_name|
+          next unless self.class.respond_to?(association_name)
+
+          self.class.send(association_name).each do |method_name, _klass_name|
+            hash.delete(method_name.to_s)
+          end
+        end
+
         hash
       end
 
