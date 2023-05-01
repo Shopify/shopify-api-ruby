@@ -11,8 +11,6 @@ module ShopifyAPI
       extend T::Helpers
       abstract!
 
-      ASSOCIATION_METHOD_NAMES = T.let(["has_many", "belongs_to", "has_one"].freeze, T::Array[String])
-
       @has_one = T.let({}, T::Hash[Symbol, Class])
       @has_many = T.let({}, T::Hash[Symbol, Class])
       @paths = T.let([], T::Array[T::Hash[Symbol, T.any(T::Array[Symbol], String, Symbol)]])
