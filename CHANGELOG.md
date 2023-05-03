@@ -5,6 +5,7 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
 
 - [#1140](https://github.com/Shopify/shopify-api-ruby/pull/1140) ⚠️ [Breaking] Reformat Http error messages to be JSON parsable.
+- [#1142](https://github.com/Shopify/shopify-api-ruby/issues/1142) Restore API version 2022-04, in alignment with [this](https://shopify.dev/changelog/action-required-support-for-api-version-2022-04-extended-to-june-30-2023) changelog notice.
 
 ## 12.5.0
 
