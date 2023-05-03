@@ -234,16 +234,20 @@ module ShopifyAPI
             attr_sym = attribute.to_sym
 
             if has_many?(attr_sym) && value
+              instance.original_state[attr_sym] = []
               attr_list = []
               value.each do |element|
-                attr_list << T.unsafe(@has_many[attr_sym]).create_instance(data: element, session: session)
+                child = T.unsafe(@has_many[attr_sym]).create_instance(data: element, session: session)
+                attr_list << child
+                instance.original_state[attr_sym] << child.to_hash(true)
               end
               instance.public_send("#{attribute}=", attr_list)
             elsif has_one?(attr_sym) && value
               # force a hash if core returns values that instantiate objects like "USD"
               data_hash = value.is_a?(Hash) ? value : { attribute.to_s => value }
-              instance.public_send("#{attribute}=",
-                T.unsafe(@has_one[attr_sym]).create_instance(data: data_hash, session: session))
+              child = T.unsafe(@has_one[attr_sym]).create_instance(data: data_hash, session: session)
+              instance.public_send("#{attribute}=", child)
+              instance.original_state[attr_sym] = child.to_hash(true)
             else
               instance.public_send("#{attribute}=", value)
               instance.original_state[attr_sym] = value
@@ -335,16 +339,12 @@ module ShopifyAPI
 
       sig { params(update_object: T::Boolean).void }
       def save(update_object: false)
-        hash = HashDiff::Comparison.new(original_state, to_hash(true)).left_diff
-        method = hash[self.class.primary_key] ? :put : :post
-
-        path = self.class.get_path(http_method: method, operation: method, entity: self)
-        if path.nil?
-          method = method == :post ? :put : :post
-          path = self.class.get_path(http_method: method, operation: method, entity: self)
-        end
-
-        response = @client.public_send(method, body: { self.class.json_body_name => hash }, path: path)
+        method = deduce_write_verb
+        response = @client.public_send(
+          method,
+          body: { self.class.json_body_name => attributes_to_update },
+          path: deduce_write_path(method),
+        )
 
         if update_object
           self.class.create_instance(
@@ -358,6 +358,40 @@ module ShopifyAPI
       end
 
       private
+
+      sig { returns(T::Hash[String, String]) }
+      def attributes_to_update
+        HashDiff::Comparison.new(
+          deep_stringify_keys(original_state),
+          deep_stringify_keys(to_hash(true)),
+        ).left_diff
+      end
+
+      sig { returns(Symbol) }
+      def deduce_write_verb
+        send(self.class.primary_key) ? :put : :post
+      end
+
+      sig { params(method: Symbol).returns(T.nilable(String)) }
+      def deduce_write_path(method)
+        path = self.class.get_path(http_method: method, operation: method, entity: self)
+
+        if path.nil?
+          method = method == :post ? :put : :post
+          path = self.class.get_path(http_method: method, operation: method, entity: self)
+        end
+
+        path
+      end
+
+      sig { params(hash: T::Hash[T.any(String, Symbol), T.untyped]).returns(T::Hash[String, String]) }
+      def deep_stringify_keys(hash)
+        hash.each_with_object({}) do |(key, value), result|
+          new_key = key.to_s
+          new_value = value.is_a?(Hash) ? deep_stringify_keys(value) : value
+          result[new_key] = new_value
+        end
+      end
 
       sig { params(key: T.any(String, Symbol), val: T.untyped).void }
       def set_property(key, val)
