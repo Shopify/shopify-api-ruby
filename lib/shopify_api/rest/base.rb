@@ -21,7 +21,7 @@ module ShopifyAPI
       sig { returns(T::Hash[Symbol, T.untyped]) }
       attr_accessor :original_state
 
-      sig { returns(Rest::BaseErrors) }
+      sig { returns(T.any(Rest::BaseErrors, T.nilable(T::Hash[T.untyped, T.untyped]))) }
       attr_reader :errors
 
       sig do
