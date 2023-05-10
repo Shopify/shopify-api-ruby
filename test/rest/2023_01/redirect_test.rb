@@ -40,11 +40,25 @@ class Redirect202301Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"redirects" => [{"id" => 950115854, "path" => "/ibook", "target" => "/products/macbook"}]}), headers: {})
 
-    ShopifyAPI::Redirect.all(
+    response = ShopifyAPI::Redirect.all(
       since_id: "668809255",
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-01/redirects.json?since_id=668809255")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -58,9 +72,23 @@ class Redirect202301Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"redirects" => [{"id" => 304339089, "path" => "/products.php", "target" => "/products"}, {"id" => 668809255, "path" => "/leopard", "target" => "/pages/macosx"}, {"id" => 950115854, "path" => "/ibook", "target" => "/products/macbook"}]}), headers: {})
 
-    ShopifyAPI::Redirect.all
+    response = ShopifyAPI::Redirect.all
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-01/redirects.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -74,9 +102,23 @@ class Redirect202301Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"count" => 3}), headers: {})
 
-    ShopifyAPI::Redirect.count
+    response = ShopifyAPI::Redirect.count
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-01/redirects/count.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -90,11 +132,25 @@ class Redirect202301Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"redirect" => {"id" => 668809255, "path" => "/leopard", "target" => "/pages/macosx"}}), headers: {})
 
-    ShopifyAPI::Redirect.find(
+    response = ShopifyAPI::Redirect.find(
       id: 668809255,
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-01/redirects/668809255.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -108,13 +164,27 @@ class Redirect202301Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"redirect" => {"path" => "/powermac", "target" => "/pages/macpro", "id" => 950115854}}), headers: {})
 
-    redirect = ShopifyAPI::Redirect.new
+    response = redirect = ShopifyAPI::Redirect.new
     redirect.id = 950115854
     redirect.path = "/powermac"
     redirect.target = "/pages/macpro"
     redirect.save
 
     assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2023-01/redirects/950115854.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -128,12 +198,26 @@ class Redirect202301Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"redirect" => {"path" => "/tiger", "target" => "/pages/macosx", "id" => 668809255}}), headers: {})
 
-    redirect = ShopifyAPI::Redirect.new
+    response = redirect = ShopifyAPI::Redirect.new
     redirect.id = 668809255
     redirect.path = "/tiger"
     redirect.save
 
     assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2023-01/redirects/668809255.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -147,12 +231,26 @@ class Redirect202301Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"redirect" => {"target" => "/pages/macpro", "path" => "/leopard", "id" => 668809255}}), headers: {})
 
-    redirect = ShopifyAPI::Redirect.new
+    response = redirect = ShopifyAPI::Redirect.new
     redirect.id = 668809255
     redirect.target = "/pages/macpro"
     redirect.save
 
     assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2023-01/redirects/668809255.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -166,11 +264,25 @@ class Redirect202301Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({}), headers: {})
 
-    ShopifyAPI::Redirect.delete(
+    response = ShopifyAPI::Redirect.delete(
       id: 668809255,
     )
 
     assert_requested(:delete, "https://test-shop.myshopify.io/admin/api/2023-01/redirects/668809255.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -184,12 +296,26 @@ class Redirect202301Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"redirect" => {"id" => 984542200, "path" => "/ipod", "target" => "/pages/itunes"}}), headers: {})
 
-    redirect = ShopifyAPI::Redirect.new
+    response = redirect = ShopifyAPI::Redirect.new
     redirect.path = "/ipod"
     redirect.target = "/pages/itunes"
     redirect.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-01/redirects.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -203,12 +329,26 @@ class Redirect202301Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"redirect" => {"id" => 984542199, "path" => "/forums", "target" => "http://forums.apple.com/"}}), headers: {})
 
-    redirect = ShopifyAPI::Redirect.new
+    response = redirect = ShopifyAPI::Redirect.new
     redirect.path = "http://www.apple.com/forums"
     redirect.target = "http://forums.apple.com"
     redirect.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-01/redirects.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
 end

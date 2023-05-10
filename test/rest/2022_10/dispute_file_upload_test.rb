@@ -40,7 +40,7 @@ class DisputeFileUpload202210Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"dispute_file_upload" => {"id" => 799719587, "shop_id" => 220006451, "file_size" => 34509, "file_type" => "application/pdf", "original_filename" => "test.pdf", "filename" => "1d374225-7b80-4ccf-a8a0-403758b029ab.pdf", "created_at" => "2023-02-02T09:17:55-05:00", "updated_at" => "2023-02-02T09:17:55-05:00", "dispute_evidence_id" => 819974671, "dispute_evidence_type" => "uncategorized_file", "url" => "https://unittest.storage.googleapis.com/s/files/1/0002/2000/6451/payments_file_uploads/1d374225-7b80-4ccf-a8a0-403758b029ab.pdf?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=shopify-core-gcs-test%40shopify-tiers.iam.gserviceaccount.com%2F20200912%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=2023-02-02T14:17:55Z&X-Goog-Expires=604800&X-Goog-SignedHeaders=host&response-content-disposition=&X-Goog-Signature=87811646776a232917997f6a4595871d9123629da45d35b2b915e7210eececff55a58147e79ac636861617cc21b5a2f\n                    6e5ea6547d9a20e9503e64caca84c9043ecccbf27d20142118017c60d2418edb7896c53eb466335fca\n                    9153d8d73c15645962eace819a3588301d55bcbc5b4ecf2225561de914b104e2069daa400e741a59a\n                    306d094f7b147c0ae2215f8203e4ce20a907c983a2e4be074c584725bd1c9e399f633499531160dac25\n                    b34054527795ef5ea48a4ac1d392585d4bc0976d62cab57e18d33547c9110599f39368983e4c88275790\n                    0bac1eddcb41b87d4d26269bfe01b0161ef0a81088a0e4d6596380f4d3d37e4e72a8c5fefc6bc07551efb59"}}), headers: {})
 
-    dispute_file_upload = ShopifyAPI::DisputeFileUpload.new
+    response = dispute_file_upload = ShopifyAPI::DisputeFileUpload.new
     dispute_file_upload.dispute_id = 598735659
     dispute_file_upload.document_type = "uncategorized_file"
     dispute_file_upload.filename = "test.pdf"
@@ -49,6 +49,20 @@ class DisputeFileUpload202210Test < Test::Unit::TestCase
     dispute_file_upload.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-10/shopify_payments/disputes/598735659/dispute_file_uploads.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -62,12 +76,26 @@ class DisputeFileUpload202210Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({}), headers: {})
 
-    ShopifyAPI::DisputeFileUpload.delete(
+    response = ShopifyAPI::DisputeFileUpload.delete(
       dispute_id: 598735659,
       id: 799719586,
     )
 
     assert_requested(:delete, "https://test-shop.myshopify.io/admin/api/2022-10/shopify_payments/disputes/598735659/dispute_file_uploads/799719586.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
 end

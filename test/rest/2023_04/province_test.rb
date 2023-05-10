@@ -40,11 +40,25 @@ class Province202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"provinces" => [{"id" => 205434194, "country_id" => 879921427, "name" => "Alberta", "code" => "AB", "tax_name" => nil, "tax_type" => nil, "shipping_zone_id" => nil, "tax" => 0.08, "tax_percentage" => 8.0}, {"id" => 170405627, "country_id" => 879921427, "name" => "British Columbia", "code" => "BC", "tax_name" => nil, "tax_type" => nil, "shipping_zone_id" => nil, "tax" => 0.07, "tax_percentage" => 7.0}, {"id" => 342345110, "country_id" => 879921427, "name" => "Manitoba", "code" => "MB", "tax_name" => nil, "tax_type" => nil, "shipping_zone_id" => nil, "tax" => 0.07, "tax_percentage" => 7.0}, {"id" => 92264567, "country_id" => 879921427, "name" => "New Brunswick", "code" => "NB", "tax_name" => nil, "tax_type" => nil, "shipping_zone_id" => nil, "tax" => 0.15, "tax_percentage" => 15.0}, {"id" => 243284171, "country_id" => 879921427, "name" => "Newfoundland", "code" => "NL", "tax_name" => nil, "tax_type" => nil, "shipping_zone_id" => nil, "tax" => 0.15, "tax_percentage" => 15.0}, {"id" => 439598329, "country_id" => 879921427, "name" => "Northwest Territories", "code" => "NT", "tax_name" => nil, "tax_type" => nil, "shipping_zone_id" => nil, "tax" => 0.0, "tax_percentage" => 0.0}, {"id" => 448070559, "country_id" => 879921427, "name" => "Nova Scotia", "code" => "NS", "tax_name" => nil, "tax_type" => "harmonized", "shipping_zone_id" => nil, "tax" => 0.15, "tax_percentage" => 15.0}, {"id" => 670206421, "country_id" => 879921427, "name" => "Nunavut", "code" => "NU", "tax_name" => nil, "tax_type" => nil, "shipping_zone_id" => nil, "tax" => 0.0, "tax_percentage" => 0.0}, {"id" => 702530425, "country_id" => 879921427, "name" => "Ontario", "code" => "ON", "tax_name" => nil, "tax_type" => nil, "shipping_zone_id" => nil, "tax" => 0.08, "tax_percentage" => 8.0}, {"id" => 570891722, "country_id" => 879921427, "name" => "Prince Edward Island", "code" => "PE", "tax_name" => nil, "tax_type" => nil, "shipping_zone_id" => nil, "tax" => 0.1, "tax_percentage" => 10.0}, {"id" => 224293623, "country_id" => 879921427, "name" => "Quebec", "code" => "QC", "tax_name" => "HST", "tax_type" => "compounded", "shipping_zone_id" => nil, "tax" => 0.09, "tax_percentage" => 9.0}, {"id" => 473391800, "country_id" => 879921427, "name" => "Saskatchewan", "code" => "SK", "tax_name" => nil, "tax_type" => nil, "shipping_zone_id" => nil, "tax" => 0.09, "tax_percentage" => 9.0}, {"id" => 1005264686, "country_id" => 879921427, "name" => "Yukon", "code" => "YT", "tax_name" => nil, "tax_type" => nil, "shipping_zone_id" => nil, "tax" => 0.0, "tax_percentage" => 0.0}]}), headers: {})
 
-    ShopifyAPI::Province.all(
+    response = ShopifyAPI::Province.all(
       country_id: 879921427,
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-04/countries/879921427/provinces.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -58,12 +72,26 @@ class Province202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"provinces" => [{"id" => 570891722, "country_id" => 879921427, "name" => "Prince Edward Island", "code" => "PE", "tax_name" => nil, "tax_type" => nil, "shipping_zone_id" => nil, "tax" => 0.1, "tax_percentage" => 10.0}, {"id" => 670206421, "country_id" => 879921427, "name" => "Nunavut", "code" => "NU", "tax_name" => nil, "tax_type" => nil, "shipping_zone_id" => nil, "tax" => 0.0, "tax_percentage" => 0.0}, {"id" => 702530425, "country_id" => 879921427, "name" => "Ontario", "code" => "ON", "tax_name" => nil, "tax_type" => nil, "shipping_zone_id" => nil, "tax" => 0.08, "tax_percentage" => 8.0}, {"id" => 1005264686, "country_id" => 879921427, "name" => "Yukon", "code" => "YT", "tax_name" => nil, "tax_type" => nil, "shipping_zone_id" => nil, "tax" => 0.0, "tax_percentage" => 0.0}]}), headers: {})
 
-    ShopifyAPI::Province.all(
+    response = ShopifyAPI::Province.all(
       country_id: 879921427,
       since_id: "536137098",
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-04/countries/879921427/provinces.json?since_id=536137098")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -77,11 +105,25 @@ class Province202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"count" => 13}), headers: {})
 
-    ShopifyAPI::Province.count(
+    response = ShopifyAPI::Province.count(
       country_id: 879921427,
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-04/countries/879921427/provinces/count.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -95,12 +137,26 @@ class Province202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"province" => {"id" => 224293623, "country_id" => 879921427, "name" => "Quebec", "code" => "QC", "tax_name" => "HST", "tax_type" => "compounded", "shipping_zone_id" => nil, "tax" => 0.09, "tax_percentage" => 9.0}}), headers: {})
 
-    ShopifyAPI::Province.find(
+    response = ShopifyAPI::Province.find(
       country_id: 879921427,
       id: 224293623,
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-04/countries/879921427/provinces/224293623.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -114,13 +170,27 @@ class Province202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"province" => {"country_id" => 879921427, "id" => 224293623, "name" => "Quebec", "code" => "QC", "tax_name" => "HST", "tax_type" => "compounded", "shipping_zone_id" => nil, "tax" => 0.09, "tax_percentage" => 9.0}}), headers: {})
 
-    province = ShopifyAPI::Province.new
+    response = province = ShopifyAPI::Province.new
     province.country_id = 879921427
     province.id = 224293623
     province.tax = 0.09
     province.save
 
     assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2023-04/countries/879921427/provinces/224293623.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
 end

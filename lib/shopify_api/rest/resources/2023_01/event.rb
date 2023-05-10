@@ -16,7 +16,7 @@ module ShopifyAPI
     def initialize(session: ShopifyAPI::Context.active_session)
       super(session: session)
 
-      @arguments = T.let(nil, T.nilable(String))
+      @arguments = T.let(nil, T.nilable(T::Array[T.untyped]))
       @body = T.let(nil, T.nilable(String))
       @created_at = T.let(nil, T.nilable(String))
       @description = T.let(nil, T.nilable(String))
@@ -38,7 +38,7 @@ module ShopifyAPI
       {http_method: :get, operation: :get, ids: [:product_id], path: "products/<product_id>/events.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
-    sig { returns(T.nilable(String)) }
+    sig { returns(T.nilable(T::Array[String])) }
     attr_reader :arguments
     sig { returns(T.nilable(String)) }
     attr_reader :body

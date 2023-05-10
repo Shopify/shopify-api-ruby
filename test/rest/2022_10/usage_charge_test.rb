@@ -36,17 +36,31 @@ class UsageCharge202210Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2022-10/recurring_application_charges/455696195/usage_charges.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "usage_charge" => hash_including({"description" => "Super Mega Plan 1000 emails", "price" => 1.0}) }
+        body: { "usage_charge" => hash_including({"description" => "Super Mega Plan 1000 emails", "price" => "1.00"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"usage_charge" => {"id" => 1034618211, "description" => "Super Mega Plan 1000 emails", "price" => "1.00", "created_at" => "2023-03-15T20:03:22-04:00", "currency" => "USD", "billing_on" => nil, "balance_used" => 11.0, "balance_remaining" => 89.0, "risk_level" => 0}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"usage_charge" => {"id" => 1034618219, "description" => "Super Mega Plan 1000 emails", "price" => "1.00", "created_at" => "2023-05-09T20:28:48-04:00", "currency" => "USD", "billing_on" => nil, "balance_used" => 11.0, "balance_remaining" => 89.0, "risk_level" => 0}}), headers: {})
 
-    usage_charge = ShopifyAPI::UsageCharge.new
+    response = usage_charge = ShopifyAPI::UsageCharge.new
     usage_charge.recurring_application_charge_id = 455696195
     usage_charge.description = "Super Mega Plan 1000 emails"
-    usage_charge.price = 1.0
+    usage_charge.price = "1.00"
     usage_charge.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-10/recurring_application_charges/455696195/usage_charges.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -58,32 +72,60 @@ class UsageCharge202210Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"usage_charges" => [{"id" => 1034618213, "description" => "Super Mega Plan Add-ons", "price" => "10.00", "created_at" => "2023-03-15T20:03:24-04:00", "currency" => "USD", "billing_on" => nil, "balance_used" => 10.0, "balance_remaining" => 90.0, "risk_level" => 0}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"usage_charges" => [{"id" => 1034618215, "description" => "Super Mega Plan Add-ons", "price" => "10.00", "created_at" => "2023-05-09T20:28:43-04:00", "currency" => "USD", "billing_on" => nil, "balance_used" => 10.0, "balance_remaining" => 90.0, "risk_level" => 0}]}), headers: {})
 
-    ShopifyAPI::UsageCharge.all(
+    response = ShopifyAPI::UsageCharge.all(
       recurring_application_charge_id: 455696195,
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-10/recurring_application_charges/455696195/usage_charges.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
     void
   end
   def test_3()
-    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-10/recurring_application_charges/455696195/usage_charges/1034618209.json")
+    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-10/recurring_application_charges/455696195/usage_charges/1034618214.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"usage_charge" => {"id" => 1034618209, "description" => "Super Mega Plan Add-ons", "price" => "10.00", "created_at" => "2023-03-15T20:03:19-04:00", "currency" => "USD", "billing_on" => nil, "balance_used" => 10.0, "balance_remaining" => 90.0, "risk_level" => 0}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"usage_charge" => {"id" => 1034618214, "description" => "Super Mega Plan Add-ons", "price" => "10.00", "created_at" => "2023-05-09T20:28:36-04:00", "currency" => "USD", "billing_on" => nil, "balance_used" => 10.0, "balance_remaining" => 90.0, "risk_level" => 0}}), headers: {})
 
-    ShopifyAPI::UsageCharge.find(
+    response = ShopifyAPI::UsageCharge.find(
       recurring_application_charge_id: 455696195,
-      id: 1034618209,
+      id: 1034618214,
     )
 
-    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-10/recurring_application_charges/455696195/usage_charges/1034618209.json")
+    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-10/recurring_application_charges/455696195/usage_charges/1034618214.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
 end

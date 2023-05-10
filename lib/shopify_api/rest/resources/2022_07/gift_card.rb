@@ -17,10 +17,10 @@ module ShopifyAPI
       super(session: session)
 
       @api_client_id = T.let(nil, T.nilable(Integer))
-      @balance = T.let(nil, T.nilable(String))
+      @balance = T.let(nil, T.nilable(Balance))
       @code = T.let(nil, T.nilable(String))
       @created_at = T.let(nil, T.nilable(String))
-      @currency = T.let(nil, T.nilable(String))
+      @currency = T.let(nil, T.nilable(Currency))
       @customer_id = T.let(nil, T.nilable(Integer))
       @disabled_at = T.let(nil, T.nilable(String))
       @expires_on = T.let(nil, T.nilable(String))
@@ -35,7 +35,10 @@ module ShopifyAPI
       @user_id = T.let(nil, T.nilable(Integer))
     end
 
-    @has_one = T.let({}, T::Hash[Symbol, Class])
+    @has_one = T.let({
+      balance: Balance,
+      currency: Currency
+    }, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
     @paths = T.let([
       {http_method: :get, operation: :count, ids: [], path: "gift_cards/count.json"},
@@ -49,13 +52,13 @@ module ShopifyAPI
 
     sig { returns(T.nilable(Integer)) }
     attr_reader :api_client_id
-    sig { returns(T.nilable(String)) }
+    sig { returns(T.nilable(Balance)) }
     attr_reader :balance
     sig { returns(T.nilable(String)) }
     attr_reader :code
     sig { returns(T.nilable(String)) }
     attr_reader :created_at
-    sig { returns(T.nilable(String)) }
+    sig { returns(T.nilable(Currency)) }
     attr_reader :currency
     sig { returns(T.nilable(Integer)) }
     attr_reader :customer_id

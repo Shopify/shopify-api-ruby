@@ -38,15 +38,29 @@ class CarrierService202210Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "carrier_service" => hash_including({"name" => "Shipping Rate Provider", "callback_url" => "http://shipping.example.com", "service_discovery" => true}) }
       )
-      .to_return(status: 200, body: JSON.generate({"carrier_service" => {"id" => 1036895049, "name" => "Shipping Rate Provider", "active" => true, "service_discovery" => true, "carrier_service_type" => "api", "admin_graphql_api_id" => "gid://shopify/DeliveryCarrierService/1036895049", "format" => "json", "callback_url" => "http://shipping.example.com/"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"carrier_service" => {"id" => 1036895016, "name" => "Shipping Rate Provider", "active" => true, "service_discovery" => true, "carrier_service_type" => "api", "admin_graphql_api_id" => "gid://shopify/DeliveryCarrierService/1036895016", "format" => "json", "callback_url" => "http://shipping.example.com/"}}), headers: {})
 
-    carrier_service = ShopifyAPI::CarrierService.new
+    response = carrier_service = ShopifyAPI::CarrierService.new
     carrier_service.name = "Shipping Rate Provider"
     carrier_service.callback_url = "http://shipping.example.com"
     carrier_service.service_discovery = true
     carrier_service.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-10/carrier_services.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -58,67 +72,123 @@ class CarrierService202210Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"carrier_services" => [{"id" => 1036895046, "name" => "Purolator", "active" => true, "service_discovery" => true, "carrier_service_type" => "api", "admin_graphql_api_id" => "gid://shopify/DeliveryCarrierService/1036895046", "format" => "json", "callback_url" => "http://example.com/"}, {"id" => 260046840, "name" => "ups_shipping", "active" => true, "service_discovery" => true, "carrier_service_type" => "legacy", "admin_graphql_api_id" => "gid://shopify/DeliveryCarrierService/260046840"}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"carrier_services" => [{"id" => 1036895019, "name" => "Purolator", "active" => true, "service_discovery" => true, "carrier_service_type" => "api", "admin_graphql_api_id" => "gid://shopify/DeliveryCarrierService/1036895019", "format" => "json", "callback_url" => "http://example.com/"}, {"id" => 260046840, "name" => "ups_shipping", "active" => true, "service_discovery" => true, "carrier_service_type" => "legacy", "admin_graphql_api_id" => "gid://shopify/DeliveryCarrierService/260046840"}]}), headers: {})
 
-    ShopifyAPI::CarrierService.all
+    response = ShopifyAPI::CarrierService.all
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-10/carrier_services.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
     void
   end
   def test_3()
-    stub_request(:put, "https://test-shop.myshopify.io/admin/api/2022-10/carrier_services/1036895045.json")
+    stub_request(:put, "https://test-shop.myshopify.io/admin/api/2022-10/carrier_services/1036895017.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "carrier_service" => hash_including({"name" => "Some new name", "active" => false}) }
       )
-      .to_return(status: 200, body: JSON.generate({"carrier_service" => {"active" => false, "id" => 1036895045, "name" => "Some new name", "service_discovery" => true, "carrier_service_type" => "api", "admin_graphql_api_id" => "gid://shopify/DeliveryCarrierService/1036895045", "format" => "json", "callback_url" => "http://example.com/"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"carrier_service" => {"active" => false, "id" => 1036895017, "name" => "Some new name", "service_discovery" => true, "carrier_service_type" => "api", "admin_graphql_api_id" => "gid://shopify/DeliveryCarrierService/1036895017", "format" => "json", "callback_url" => "http://example.com/"}}), headers: {})
 
-    carrier_service = ShopifyAPI::CarrierService.new
-    carrier_service.id = 1036895045
+    response = carrier_service = ShopifyAPI::CarrierService.new
+    carrier_service.id = 1036895017
     carrier_service.name = "Some new name"
     carrier_service.active = false
     carrier_service.save
 
-    assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2022-10/carrier_services/1036895045.json")
+    assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2022-10/carrier_services/1036895017.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
     void
   end
   def test_4()
-    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-10/carrier_services/1036895050.json")
+    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-10/carrier_services/1036895021.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"carrier_service" => {"id" => 1036895050, "name" => "Purolator", "active" => true, "service_discovery" => true, "carrier_service_type" => "api", "admin_graphql_api_id" => "gid://shopify/DeliveryCarrierService/1036895050", "format" => "json", "callback_url" => "http://example.com/"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"carrier_service" => {"id" => 1036895021, "name" => "Purolator", "active" => true, "service_discovery" => true, "carrier_service_type" => "api", "admin_graphql_api_id" => "gid://shopify/DeliveryCarrierService/1036895021", "format" => "json", "callback_url" => "http://example.com/"}}), headers: {})
 
-    ShopifyAPI::CarrierService.find(
-      id: 1036895050,
+    response = ShopifyAPI::CarrierService.find(
+      id: 1036895021,
     )
 
-    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-10/carrier_services/1036895050.json")
+    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-10/carrier_services/1036895021.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
     void
   end
   def test_5()
-    stub_request(:delete, "https://test-shop.myshopify.io/admin/api/2022-10/carrier_services/1036895047.json")
+    stub_request(:delete, "https://test-shop.myshopify.io/admin/api/2022-10/carrier_services/1036895020.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
       .to_return(status: 200, body: JSON.generate({}), headers: {})
 
-    ShopifyAPI::CarrierService.delete(
-      id: 1036895047,
+    response = ShopifyAPI::CarrierService.delete(
+      id: 1036895020,
     )
 
-    assert_requested(:delete, "https://test-shop.myshopify.io/admin/api/2022-10/carrier_services/1036895047.json")
+    assert_requested(:delete, "https://test-shop.myshopify.io/admin/api/2022-10/carrier_services/1036895020.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
 end

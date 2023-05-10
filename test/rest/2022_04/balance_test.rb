@@ -40,9 +40,23 @@ class Balance202204Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"balance" => [{"amount" => "53.99", "currency" => "USD"}]}), headers: {})
 
-    ShopifyAPI::Balance.all
+    response = ShopifyAPI::Balance.all
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-04/shopify_payments/balance.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
 end

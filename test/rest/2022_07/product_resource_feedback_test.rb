@@ -40,7 +40,7 @@ class ProductResourceFeedback202207Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"resource_feedback" => {"created_at" => "2023-02-02T09:27:03-05:00", "updated_at" => "2023-02-02T09:27:03-05:00", "resource_id" => 632910392, "resource_type" => "Product", "resource_updated_at" => "2023-02-02T09:09:49-05:00", "messages" => ["Needs at least one image."], "feedback_generated_at" => "2023-02-02T09:27:02-05:00", "state" => "requires_action"}}), headers: {})
 
-    product_resource_feedback = ShopifyAPI::ProductResourceFeedback.new
+    response = product_resource_feedback = ShopifyAPI::ProductResourceFeedback.new
     product_resource_feedback.product_id = 632910392
     product_resource_feedback.state = "requires_action"
     product_resource_feedback.messages = [
@@ -51,6 +51,20 @@ class ProductResourceFeedback202207Test < Test::Unit::TestCase
     product_resource_feedback.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-07/products/632910392/resource_feedback.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -64,7 +78,7 @@ class ProductResourceFeedback202207Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"resource_feedback" => {"created_at" => "2023-02-02T09:27:04-05:00", "updated_at" => "2023-02-02T09:27:04-05:00", "resource_id" => 632910392, "resource_type" => "Product", "resource_updated_at" => "2023-02-02T09:09:49-05:00", "messages" => [], "feedback_generated_at" => "2023-02-02T09:27:03-05:00", "state" => "success"}}), headers: {})
 
-    product_resource_feedback = ShopifyAPI::ProductResourceFeedback.new
+    response = product_resource_feedback = ShopifyAPI::ProductResourceFeedback.new
     product_resource_feedback.product_id = 632910392
     product_resource_feedback.state = "success"
     product_resource_feedback.resource_updated_at = "2023-02-02T09:09:49-05:00"
@@ -72,6 +86,20 @@ class ProductResourceFeedback202207Test < Test::Unit::TestCase
     product_resource_feedback.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-07/products/632910392/resource_feedback.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -85,11 +113,25 @@ class ProductResourceFeedback202207Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"resource_feedback" => [{"created_at" => "2023-02-02T09:27:00-05:00", "updated_at" => "2023-02-02T09:27:00-05:00", "resource_id" => 632910392, "resource_type" => "Product", "resource_updated_at" => "2023-02-02T09:09:49-05:00", "messages" => ["Needs at least one image."], "feedback_generated_at" => "2023-02-02T08:27:00-05:00", "state" => "requires_action"}]}), headers: {})
 
-    ShopifyAPI::ProductResourceFeedback.all(
+    response = ShopifyAPI::ProductResourceFeedback.all(
       product_id: 632910392,
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-07/products/632910392/resource_feedback.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
 end

@@ -40,9 +40,23 @@ class Policy202207Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"policies" => [{"body" => "You have 30 days to get a refund", "created_at" => "2023-02-02T09:25:07-05:00", "updated_at" => "2023-02-02T09:25:07-05:00", "handle" => "refund-policy", "title" => "Refund policy", "url" => "https://jsmith.myshopify.com/548380009/policies/878590288"}]}), headers: {})
 
-    ShopifyAPI::Policy.all
+    response = ShopifyAPI::Policy.all
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-07/policies.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
 end

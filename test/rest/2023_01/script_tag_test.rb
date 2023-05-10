@@ -40,9 +40,23 @@ class ScriptTag202301Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"script_tags" => [{"id" => 421379493, "src" => "https://js.example.org/bar.js", "event" => "onload", "created_at" => "2023-02-02T09:09:49-05:00", "updated_at" => "2023-02-02T09:09:49-05:00", "display_scope" => "all"}, {"id" => 596726825, "src" => "https://js.example.org/foo.js", "event" => "onload", "created_at" => "2023-02-02T09:09:49-05:00", "updated_at" => "2023-02-02T09:09:49-05:00", "display_scope" => "all"}]}), headers: {})
 
-    ShopifyAPI::ScriptTag.all
+    response = ShopifyAPI::ScriptTag.all
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-01/script_tags.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -56,11 +70,25 @@ class ScriptTag202301Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"script_tags" => [{"id" => 596726825, "src" => "https://js.example.org/foo.js", "event" => "onload", "created_at" => "2023-02-02T09:09:49-05:00", "updated_at" => "2023-02-02T09:09:49-05:00", "display_scope" => "all"}]}), headers: {})
 
-    ShopifyAPI::ScriptTag.all(
+    response = ShopifyAPI::ScriptTag.all(
       since_id: "421379493",
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-01/script_tags.json?since_id=421379493")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -74,11 +102,25 @@ class ScriptTag202301Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"script_tags" => [{"id" => 596726825, "src" => "https://js.example.org/foo.js", "event" => "onload", "created_at" => "2023-02-02T09:09:49-05:00", "updated_at" => "2023-02-02T09:09:49-05:00", "display_scope" => "all"}]}), headers: {})
 
-    ShopifyAPI::ScriptTag.all(
+    response = ShopifyAPI::ScriptTag.all(
       src: "https://js.example.org/foo.js",
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-01/script_tags.json?src=https%3A%2F%2Fjs.example.org%2Ffoo.js")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -92,12 +134,26 @@ class ScriptTag202301Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"script_tag" => {"id" => 870402688, "src" => "https://example.com/my_script.js", "event" => "onload", "created_at" => "2023-02-02T09:14:37-05:00", "updated_at" => "2023-02-02T09:14:37-05:00", "display_scope" => "all", "cache" => false}}), headers: {})
 
-    script_tag = ShopifyAPI::ScriptTag.new
+    response = script_tag = ShopifyAPI::ScriptTag.new
     script_tag.event = "onload"
     script_tag.src = "https://example.com/my_script.js"
     script_tag.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-01/script_tags.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -111,9 +167,23 @@ class ScriptTag202301Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"count" => 2}), headers: {})
 
-    ShopifyAPI::ScriptTag.count
+    response = ShopifyAPI::ScriptTag.count
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-01/script_tags/count.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -127,11 +197,25 @@ class ScriptTag202301Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"script_tag" => {"id" => 596726825, "src" => "https://js.example.org/foo.js", "event" => "onload", "created_at" => "2023-02-02T09:09:49-05:00", "updated_at" => "2023-02-02T09:09:49-05:00", "display_scope" => "all", "cache" => false}}), headers: {})
 
-    ShopifyAPI::ScriptTag.find(
+    response = ShopifyAPI::ScriptTag.find(
       id: 596726825,
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-01/script_tags/596726825.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -145,12 +229,26 @@ class ScriptTag202301Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"script_tag" => {"src" => "https://somewhere-else.com/another.js", "cache" => false, "id" => 596726825, "event" => "onload", "created_at" => "2023-02-02T09:09:49-05:00", "updated_at" => "2023-02-02T09:14:53-05:00", "display_scope" => "all"}}), headers: {})
 
-    script_tag = ShopifyAPI::ScriptTag.new
+    response = script_tag = ShopifyAPI::ScriptTag.new
     script_tag.id = 596726825
     script_tag.src = "https://somewhere-else.com/another.js"
     script_tag.save
 
     assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2023-01/script_tags/596726825.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -164,11 +262,25 @@ class ScriptTag202301Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({}), headers: {})
 
-    ShopifyAPI::ScriptTag.delete(
+    response = ShopifyAPI::ScriptTag.delete(
       id: 596726825,
     )
 
     assert_requested(:delete, "https://test-shop.myshopify.io/admin/api/2023-01/script_tags/596726825.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
 end

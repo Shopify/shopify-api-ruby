@@ -40,12 +40,26 @@ class CustomerAddress202210Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"addresses" => [{"id" => 207119551, "customer_id" => 207119551, "first_name" => nil, "last_name" => nil, "company" => nil, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "province" => "Kentucky", "country" => "United States", "zip" => "40202", "phone" => "555-625-1199", "name" => "", "province_code" => "KY", "country_code" => "US", "country_name" => "United States", "default" => true}]}), headers: {})
 
-    ShopifyAPI::CustomerAddress.all(
+    response = ShopifyAPI::CustomerAddress.all(
       customer_id: 207119551,
       limit: "1",
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-10/customers/207119551/addresses.json?limit=1")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -59,11 +73,25 @@ class CustomerAddress202210Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"addresses" => [{"id" => 207119551, "customer_id" => 207119551, "first_name" => nil, "last_name" => nil, "company" => nil, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "province" => "Kentucky", "country" => "United States", "zip" => "40202", "phone" => "555-625-1199", "name" => "", "province_code" => "KY", "country_code" => "US", "country_name" => "United States", "default" => true}]}), headers: {})
 
-    ShopifyAPI::CustomerAddress.all(
+    response = ShopifyAPI::CustomerAddress.all(
       customer_id: 207119551,
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-10/customers/207119551/addresses.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -77,12 +105,26 @@ class CustomerAddress202210Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"customer_address" => {"id" => 207119551, "customer_id" => 207119551, "first_name" => nil, "last_name" => nil, "company" => nil, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "province" => "Kentucky", "country" => "United States", "zip" => "40202", "phone" => "555-625-1199", "name" => "", "province_code" => "KY", "country_code" => "US", "country_name" => "United States", "default" => true}}), headers: {})
 
-    ShopifyAPI::CustomerAddress.find(
+    response = ShopifyAPI::CustomerAddress.find(
       customer_id: 207119551,
       id: 207119551,
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-10/customers/207119551/addresses/207119551.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -96,13 +138,27 @@ class CustomerAddress202210Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"customer_address" => {"customer_id" => 207119551, "zip" => "90210", "country" => "United States", "province" => "Kentucky", "city" => "Louisville", "address1" => "Chestnut Street 92", "address2" => "", "first_name" => nil, "last_name" => nil, "company" => nil, "phone" => "555-625-1199", "id" => 207119551, "name" => "", "province_code" => "KY", "country_code" => "US", "country_name" => "United States", "default" => true}}), headers: {})
 
-    customer_address = ShopifyAPI::CustomerAddress.new
+    response = customer_address = ShopifyAPI::CustomerAddress.new
     customer_address.customer_id = 207119551
     customer_address.id = 207119551
     customer_address.zip = "90210"
     customer_address.save
 
     assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2022-10/customers/207119551/addresses/207119551.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -116,7 +172,7 @@ class CustomerAddress202210Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"customer_address" => {"customer_id" => 207119551, "address1" => "Apartment 23", "address2" => "Chestnut Street 92", "country" => "United States", "province" => "Kentucky", "zip" => "40202", "city" => "Louisville", "first_name" => nil, "last_name" => nil, "company" => nil, "phone" => "555-625-1199", "id" => 207119551, "name" => "", "province_code" => "KY", "country_code" => "US", "country_name" => "United States", "default" => true}}), headers: {})
 
-    customer_address = ShopifyAPI::CustomerAddress.new
+    response = customer_address = ShopifyAPI::CustomerAddress.new
     customer_address.customer_id = 207119551
     customer_address.id = 207119551
     customer_address.address1 = "Apartment 23"
@@ -124,6 +180,20 @@ class CustomerAddress202210Test < Test::Unit::TestCase
     customer_address.save
 
     assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2022-10/customers/207119551/addresses/207119551.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -137,12 +207,26 @@ class CustomerAddress202210Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({}), headers: {})
 
-    ShopifyAPI::CustomerAddress.delete(
+    response = ShopifyAPI::CustomerAddress.delete(
       customer_id: 207119551,
       id: 1053317288,
     )
 
     assert_requested(:delete, "https://test-shop.myshopify.io/admin/api/2022-10/customers/207119551/addresses/1053317288.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -156,7 +240,7 @@ class CustomerAddress202210Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"customer_address" => {"id" => 1053317286, "customer_id" => 207119551, "first_name" => "Samuel", "last_name" => "de Champlain", "company" => "Fancy Co.", "address1" => "1 Rue des Carrieres", "address2" => "Suite 1234", "city" => "Montreal", "province" => "Quebec", "country" => "Canada", "zip" => "G1R 4P5", "phone" => "819-555-5555", "name" => "Samuel de Champlain", "province_code" => "QC", "country_code" => "CA", "country_name" => "Canada", "default" => false}}), headers: {})
 
-    customer_address = ShopifyAPI::CustomerAddress.new
+    response = customer_address = ShopifyAPI::CustomerAddress.new
     customer_address.customer_id = 207119551
     customer_address.address1 = "1 Rue des Carrieres"
     customer_address.address2 = "Suite 1234"
@@ -175,6 +259,20 @@ class CustomerAddress202210Test < Test::Unit::TestCase
     customer_address.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-10/customers/207119551/addresses.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -188,7 +286,7 @@ class CustomerAddress202210Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({}), headers: {})
 
-    customer_address = ShopifyAPI::CustomerAddress.new
+    response = customer_address = ShopifyAPI::CustomerAddress.new
     customer_address.customer_id = 207119551
     customer_address.set(
       address_ids: ["1053317289"],
@@ -196,6 +294,20 @@ class CustomerAddress202210Test < Test::Unit::TestCase
     )
 
     assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2022-10/customers/207119551/addresses/set.json?address_ids%5B%5D=1053317289&operation=destroy")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -209,12 +321,26 @@ class CustomerAddress202210Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"customer_address" => {"id" => 1053317287, "customer_id" => 207119551, "first_name" => "Bob", "last_name" => "Norman", "company" => nil, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "province" => "Kentucky", "country" => "United States", "zip" => "40202", "phone" => "555-625-1199", "name" => "Bob Norman", "province_code" => "KY", "country_code" => "US", "country_name" => "United States", "default" => true}}), headers: {})
 
-    customer_address = ShopifyAPI::CustomerAddress.new
+    response = customer_address = ShopifyAPI::CustomerAddress.new
     customer_address.customer_id = 207119551
     customer_address.id = 1053317287
     customer_address.default
 
     assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2022-10/customers/207119551/addresses/1053317287/default.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
 end

@@ -40,11 +40,25 @@ class InventoryItem202204Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"inventory_items" => [{"id" => 39072856, "sku" => "IPOD2008GREEN", "created_at" => "2023-02-02T09:53:49-05:00", "updated_at" => "2023-02-02T09:53:49-05:00", "requires_shipping" => true, "cost" => "25.00", "country_code_of_origin" => nil, "province_code_of_origin" => nil, "harmonized_system_code" => nil, "tracked" => true, "country_harmonized_system_codes" => [], "admin_graphql_api_id" => "gid://shopify/InventoryItem/39072856"}, {"id" => 457924702, "sku" => "IPOD2008BLACK", "created_at" => "2023-02-02T09:53:49-05:00", "updated_at" => "2023-02-02T09:53:49-05:00", "requires_shipping" => true, "cost" => "25.00", "country_code_of_origin" => nil, "province_code_of_origin" => nil, "harmonized_system_code" => nil, "tracked" => true, "country_harmonized_system_codes" => [], "admin_graphql_api_id" => "gid://shopify/InventoryItem/457924702"}, {"id" => 808950810, "sku" => "IPOD2008PINK", "created_at" => "2023-02-02T09:53:49-05:00", "updated_at" => "2023-02-02T09:53:49-05:00", "requires_shipping" => true, "cost" => "25.00", "country_code_of_origin" => nil, "province_code_of_origin" => nil, "harmonized_system_code" => nil, "tracked" => true, "country_harmonized_system_codes" => [], "admin_graphql_api_id" => "gid://shopify/InventoryItem/808950810"}]}), headers: {})
 
-    ShopifyAPI::InventoryItem.all(
+    response = ShopifyAPI::InventoryItem.all(
       ids: "808950810,39072856,457924702",
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-04/inventory_items.json?ids=808950810%2C39072856%2C457924702")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -58,11 +72,25 @@ class InventoryItem202204Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"inventory_item" => {"id" => 808950810, "sku" => "IPOD2008PINK", "created_at" => "2023-02-02T09:53:49-05:00", "updated_at" => "2023-02-02T09:53:49-05:00", "requires_shipping" => true, "cost" => "25.00", "country_code_of_origin" => nil, "province_code_of_origin" => nil, "harmonized_system_code" => nil, "tracked" => true, "country_harmonized_system_codes" => [], "admin_graphql_api_id" => "gid://shopify/InventoryItem/808950810"}}), headers: {})
 
-    ShopifyAPI::InventoryItem.find(
+    response = ShopifyAPI::InventoryItem.find(
       id: 808950810,
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-04/inventory_items/808950810.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -76,12 +104,26 @@ class InventoryItem202204Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"inventory_item" => {"id" => 808950810, "sku" => "new sku", "created_at" => "2023-02-02T09:53:49-05:00", "updated_at" => "2023-02-02T09:55:54-05:00", "requires_shipping" => true, "cost" => "25.00", "country_code_of_origin" => nil, "province_code_of_origin" => nil, "harmonized_system_code" => nil, "tracked" => true, "country_harmonized_system_codes" => [], "admin_graphql_api_id" => "gid://shopify/InventoryItem/808950810"}}), headers: {})
 
-    inventory_item = ShopifyAPI::InventoryItem.new
+    response = inventory_item = ShopifyAPI::InventoryItem.new
     inventory_item.id = 808950810
     inventory_item.sku = "new sku"
     inventory_item.save
 
     assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2022-04/inventory_items/808950810.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -95,12 +137,26 @@ class InventoryItem202204Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"inventory_item" => {"id" => 808950810, "sku" => "IPOD2008PINK", "created_at" => "2023-02-02T09:53:49-05:00", "updated_at" => "2023-02-02T09:53:49-05:00", "requires_shipping" => true, "cost" => "25.00", "country_code_of_origin" => nil, "province_code_of_origin" => nil, "harmonized_system_code" => nil, "tracked" => true, "country_harmonized_system_codes" => [], "admin_graphql_api_id" => "gid://shopify/InventoryItem/808950810"}}), headers: {})
 
-    inventory_item = ShopifyAPI::InventoryItem.new
+    response = inventory_item = ShopifyAPI::InventoryItem.new
     inventory_item.id = 808950810
     inventory_item.cost = "25.00"
     inventory_item.save
 
     assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2022-04/inventory_items/808950810.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
 end

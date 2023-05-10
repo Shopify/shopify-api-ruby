@@ -38,11 +38,25 @@ class Webhook202204Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"webhooks" => [{"id" => 4759306, "address" => "https://apple.com", "topic" => "orders/create", "created_at" => "2023-03-15T11:57:00-04:00", "updated_at" => "2023-03-15T11:57:00-04:00", "format" => "json", "fields" => [], "metafield_namespaces" => [], "api_version" => "unstable", "private_metafield_namespaces" => []}, {"id" => 892403750, "address" => "https://example.org/fully_loaded_1", "topic" => "orders/cancelled", "created_at" => "2021-12-01T05:23:43-05:00", "updated_at" => "2021-12-01T05:23:43-05:00", "format" => "json", "fields" => [], "metafield_namespaces" => [], "api_version" => "unstable", "private_metafield_namespaces" => []}, {"id" => 901431826, "address" => "https://apple.com/uninstall", "topic" => "app/uninstalled", "created_at" => "2023-03-15T11:57:00-04:00", "updated_at" => "2023-03-15T11:57:00-04:00", "format" => "json", "fields" => [], "metafield_namespaces" => [], "api_version" => "unstable", "private_metafield_namespaces" => []}, {"id" => 1014196360, "address" => "https://example.org/app_uninstalled", "topic" => "app/uninstalled", "created_at" => "2023-03-15T11:57:00-04:00", "updated_at" => "2023-03-15T11:57:00-04:00", "format" => "json", "fields" => [], "metafield_namespaces" => [], "api_version" => "unstable", "private_metafield_namespaces" => []}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"webhooks" => [{"id" => 4759306, "address" => "https://apple.com", "topic" => "orders/create", "created_at" => "2023-05-08T15:23:30-04:00", "updated_at" => "2023-05-08T15:23:30-04:00", "format" => "json", "fields" => [], "metafield_namespaces" => [], "api_version" => "unstable", "private_metafield_namespaces" => []}, {"id" => 892403750, "address" => "https://example.org/fully_loaded_1", "topic" => "orders/cancelled", "created_at" => "2021-12-01T05:23:43-05:00", "updated_at" => "2021-12-01T05:23:43-05:00", "format" => "json", "fields" => [], "metafield_namespaces" => [], "api_version" => "unstable", "private_metafield_namespaces" => []}, {"id" => 901431826, "address" => "https://apple.com/uninstall", "topic" => "app/uninstalled", "created_at" => "2023-05-08T15:23:30-04:00", "updated_at" => "2023-05-08T15:23:30-04:00", "format" => "json", "fields" => [], "metafield_namespaces" => [], "api_version" => "unstable", "private_metafield_namespaces" => []}, {"id" => 1014196360, "address" => "https://example.org/app_uninstalled", "topic" => "app/uninstalled", "created_at" => "2023-05-08T15:23:30-04:00", "updated_at" => "2023-05-08T15:23:30-04:00", "format" => "json", "fields" => [], "metafield_namespaces" => [], "api_version" => "unstable", "private_metafield_namespaces" => []}]}), headers: {})
 
-    ShopifyAPI::Webhook.all
+    response = ShopifyAPI::Webhook.all
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-04/webhooks.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -54,13 +68,27 @@ class Webhook202204Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"webhooks" => [{"id" => 1014196360, "address" => "https://example.org/app_uninstalled", "topic" => "app/uninstalled", "created_at" => "2023-03-15T11:57:00-04:00", "updated_at" => "2023-03-15T11:57:00-04:00", "format" => "json", "fields" => [], "metafield_namespaces" => [], "api_version" => "unstable", "private_metafield_namespaces" => []}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"webhooks" => [{"id" => 1014196360, "address" => "https://example.org/app_uninstalled", "topic" => "app/uninstalled", "created_at" => "2023-05-08T15:23:30-04:00", "updated_at" => "2023-05-08T15:23:30-04:00", "format" => "json", "fields" => [], "metafield_namespaces" => [], "api_version" => "unstable", "private_metafield_namespaces" => []}]}), headers: {})
 
-    ShopifyAPI::Webhook.all(
+    response = ShopifyAPI::Webhook.all(
       since_id: "901431826",
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-04/webhooks.json?since_id=901431826")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -72,15 +100,29 @@ class Webhook202204Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "webhook" => hash_including({"address" => "pubsub://projectName:topicName", "topic" => "customers/update", "format" => "json"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"webhook" => {"id" => 7585186740, "address" => "pubsub://projectName:topicName", "topic" => "customers/update", "created_at" => "2023-03-15T12:12:42-04:00", "updated_at" => "2023-03-15T12:12:42-04:00", "format" => "json", "fields" => [], "metafield_namespaces" => [], "api_version" => "unstable", "private_metafield_namespaces" => []}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"webhook" => {"id" => 4368563255, "address" => "pubsub://projectName:topicName", "topic" => "customers/update", "created_at" => "2023-05-08T15:25:36-04:00", "updated_at" => "2023-05-08T15:25:36-04:00", "format" => "json", "fields" => [], "metafield_namespaces" => [], "api_version" => "unstable", "private_metafield_namespaces" => []}}), headers: {})
 
-    webhook = ShopifyAPI::Webhook.new
+    response = webhook = ShopifyAPI::Webhook.new
     webhook.address = "pubsub://projectName:topicName"
     webhook.topic = "customers/update"
     webhook.format = "json"
     webhook.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-04/webhooks.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -92,15 +134,29 @@ class Webhook202204Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "webhook" => hash_including({"address" => "arn:aws:events:us-east-1::event-source/aws.partner/shopify.com/755357713/example-event-source", "topic" => "customers/update", "format" => "json"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"webhook" => {"id" => 7585186745, "address" => "arn:aws:events:us-east-1::event-source/aws.partner/shopify.com/755357713/example-event-source", "topic" => "customers/update", "created_at" => "2023-03-15T12:13:04-04:00", "updated_at" => "2023-03-15T12:13:04-04:00", "format" => "json", "fields" => [], "metafield_namespaces" => [], "api_version" => "unstable", "private_metafield_namespaces" => []}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"webhook" => {"id" => 4368563249, "address" => "arn:aws:events:us-east-1::event-source/aws.partner/shopify.com/755357713/example-event-source", "topic" => "customers/update", "created_at" => "2023-05-08T15:24:55-04:00", "updated_at" => "2023-05-08T15:24:55-04:00", "format" => "json", "fields" => [], "metafield_namespaces" => [], "api_version" => "unstable", "private_metafield_namespaces" => []}}), headers: {})
 
-    webhook = ShopifyAPI::Webhook.new
+    response = webhook = ShopifyAPI::Webhook.new
     webhook.address = "arn:aws:events:us-east-1::event-source/aws.partner/shopify.com/755357713/example-event-source"
     webhook.topic = "customers/update"
     webhook.format = "json"
     webhook.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-04/webhooks.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -112,9 +168,9 @@ class Webhook202204Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "webhook" => hash_including({"topic" => "orders/create", "address" => "https://example.hostname.com/", "format" => "json", "fields" => ["id", "note"]}) }
       )
-      .to_return(status: 200, body: JSON.generate({"webhook" => {"id" => 7585186720, "address" => "https://example.hostname.com/", "topic" => "orders/create", "created_at" => "2023-03-15T12:10:59-04:00", "updated_at" => "2023-03-15T12:10:59-04:00", "format" => "json", "fields" => ["id", "note"], "metafield_namespaces" => [], "api_version" => "unstable", "private_metafield_namespaces" => []}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"webhook" => {"id" => 4368563279, "address" => "https://example.hostname.com/", "topic" => "orders/create", "created_at" => "2023-05-08T15:27:07-04:00", "updated_at" => "2023-05-08T15:27:07-04:00", "format" => "json", "fields" => ["id", "note"], "metafield_namespaces" => [], "api_version" => "unstable", "private_metafield_namespaces" => []}}), headers: {})
 
-    webhook = ShopifyAPI::Webhook.new
+    response = webhook = ShopifyAPI::Webhook.new
     webhook.topic = "orders/create"
     webhook.address = "https://example.hostname.com/"
     webhook.format = "json"
@@ -125,6 +181,20 @@ class Webhook202204Test < Test::Unit::TestCase
     webhook.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-04/webhooks.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -138,11 +208,25 @@ class Webhook202204Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"count" => 1}), headers: {})
 
-    ShopifyAPI::Webhook.count(
+    response = ShopifyAPI::Webhook.count(
       topic: "orders/create",
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-04/webhooks/count.json?topic=orders%2Fcreate")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -156,9 +240,23 @@ class Webhook202204Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"count" => 4}), headers: {})
 
-    ShopifyAPI::Webhook.count
+    response = ShopifyAPI::Webhook.count
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-04/webhooks/count.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -170,13 +268,27 @@ class Webhook202204Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"webhook" => {"id" => 4759306, "address" => "https://apple.com", "topic" => "orders/create", "created_at" => "2023-03-15T11:57:00-04:00", "updated_at" => "2023-03-15T11:57:00-04:00", "format" => "json", "fields" => [], "metafield_namespaces" => [], "api_version" => "unstable", "private_metafield_namespaces" => []}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"webhook" => {"id" => 4759306, "address" => "https://apple.com", "topic" => "orders/create", "created_at" => "2023-05-08T15:23:30-04:00", "updated_at" => "2023-05-08T15:23:30-04:00", "format" => "json", "fields" => [], "metafield_namespaces" => [], "api_version" => "unstable", "private_metafield_namespaces" => []}}), headers: {})
 
-    ShopifyAPI::Webhook.find(
+    response = ShopifyAPI::Webhook.find(
       id: 4759306,
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-04/webhooks/4759306.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -188,14 +300,28 @@ class Webhook202204Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "webhook" => hash_including({"address" => "https://somewhere-else.com/"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"webhook" => {"id" => 4759306, "address" => "https://somewhere-else.com/", "topic" => "orders/create", "created_at" => "2023-03-15T11:57:00-04:00", "updated_at" => "2023-03-15T12:15:15-04:00", "format" => "json", "fields" => [], "metafield_namespaces" => [], "api_version" => "unstable", "private_metafield_namespaces" => []}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"webhook" => {"id" => 4759306, "address" => "https://somewhere-else.com/", "topic" => "orders/create", "created_at" => "2023-05-08T15:23:30-04:00", "updated_at" => "2023-05-08T15:27:17-04:00", "format" => "json", "fields" => [], "metafield_namespaces" => [], "api_version" => "unstable", "private_metafield_namespaces" => []}}), headers: {})
 
-    webhook = ShopifyAPI::Webhook.new
+    response = webhook = ShopifyAPI::Webhook.new
     webhook.id = 4759306
     webhook.address = "https://somewhere-else.com/"
     webhook.save
 
     assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2022-04/webhooks/4759306.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -209,11 +335,25 @@ class Webhook202204Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({}), headers: {})
 
-    ShopifyAPI::Webhook.delete(
+    response = ShopifyAPI::Webhook.delete(
       id: 4759306,
     )
 
     assert_requested(:delete, "https://test-shop.myshopify.io/admin/api/2022-04/webhooks/4759306.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
 end
