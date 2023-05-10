@@ -40,11 +40,25 @@ class ApplePayCertificate202204Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"apple_pay_certificate" => {"id" => 1068938274, "status" => "issuing", "merchant_id" => nil}}), headers: {})
 
-    apple_pay_certificate = ShopifyAPI::ApplePayCertificate.new
+    response = apple_pay_certificate = ShopifyAPI::ApplePayCertificate.new
 
     apple_pay_certificate.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-04/apple_pay_certificates.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -58,11 +72,25 @@ class ApplePayCertificate202204Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"apple_pay_certificate" => {"id" => 1068938276, "status" => "csr", "merchant_id" => nil}}), headers: {})
 
-    ShopifyAPI::ApplePayCertificate.find(
+    response = ShopifyAPI::ApplePayCertificate.find(
       id: 1068938276,
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-04/apple_pay_certificates/1068938276.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -76,7 +104,7 @@ class ApplePayCertificate202204Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"apple_pay_certificate" => {"id" => 1068938278, "status" => "completed", "merchant_id" => "merchant.something"}}), headers: {})
 
-    apple_pay_certificate = ShopifyAPI::ApplePayCertificate.new
+    response = apple_pay_certificate = ShopifyAPI::ApplePayCertificate.new
     apple_pay_certificate.id = 1068938278
     apple_pay_certificate.status = "completed"
     apple_pay_certificate.merchant_id = "merchant.something"
@@ -84,6 +112,20 @@ class ApplePayCertificate202204Test < Test::Unit::TestCase
     apple_pay_certificate.save
 
     assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2022-04/apple_pay_certificates/1068938278.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -97,11 +139,25 @@ class ApplePayCertificate202204Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({}), headers: {})
 
-    ShopifyAPI::ApplePayCertificate.delete(
+    response = ShopifyAPI::ApplePayCertificate.delete(
       id: 1068938277,
     )
 
     assert_requested(:delete, "https://test-shop.myshopify.io/admin/api/2022-04/apple_pay_certificates/1068938277.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -115,11 +171,25 @@ class ApplePayCertificate202204Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"csr" => {"key" => "YXBwbGUtcGF5LWNzcg==\n"}}), headers: {})
 
-    ShopifyAPI::ApplePayCertificate.csr(
+    response = ShopifyAPI::ApplePayCertificate.csr(
       id: 1068938275,
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-04/apple_pay_certificates/1068938275/csr.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
 end

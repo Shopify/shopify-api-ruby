@@ -40,12 +40,26 @@ class FulfillmentEvent202301Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"fulfillment_events" => [{"id" => 944956392, "fulfillment_id" => 255858046, "status" => "in_transit", "message" => nil, "happened_at" => "2023-02-02T10:00:14-05:00", "city" => nil, "province" => nil, "country" => nil, "zip" => nil, "address1" => nil, "latitude" => nil, "longitude" => nil, "shop_id" => 548380009, "created_at" => "2023-02-02T10:00:14-05:00", "updated_at" => "2023-02-02T10:00:14-05:00", "estimated_delivery_at" => nil, "order_id" => 450789469, "admin_graphql_api_id" => "gid://shopify/FulfillmentEvent/944956392"}]}), headers: {})
 
-    ShopifyAPI::FulfillmentEvent.all(
+    response = ShopifyAPI::FulfillmentEvent.all(
       order_id: 450789469,
       fulfillment_id: 255858046,
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-01/orders/450789469/fulfillments/255858046/events.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -59,13 +73,27 @@ class FulfillmentEvent202301Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"fulfillment_event" => {"id" => 944956393, "fulfillment_id" => 255858046, "status" => "in_transit", "message" => nil, "happened_at" => "2023-02-02T10:00:17-05:00", "city" => nil, "province" => nil, "country" => nil, "zip" => nil, "address1" => nil, "latitude" => nil, "longitude" => nil, "shop_id" => 548380009, "created_at" => "2023-02-02T10:00:17-05:00", "updated_at" => "2023-02-02T10:00:17-05:00", "estimated_delivery_at" => nil, "order_id" => 450789469, "admin_graphql_api_id" => "gid://shopify/FulfillmentEvent/944956393"}}), headers: {})
 
-    fulfillment_event = ShopifyAPI::FulfillmentEvent.new
+    response = fulfillment_event = ShopifyAPI::FulfillmentEvent.new
     fulfillment_event.order_id = 450789469
     fulfillment_event.fulfillment_id = 255858046
     fulfillment_event.status = "in_transit"
     fulfillment_event.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-01/orders/450789469/fulfillments/255858046/events.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -79,13 +107,27 @@ class FulfillmentEvent202301Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"fulfillment_event" => {"id" => 944956394, "fulfillment_id" => 255858046, "status" => "in_transit", "message" => nil, "happened_at" => "2023-02-02T10:00:18-05:00", "city" => nil, "province" => nil, "country" => nil, "zip" => nil, "address1" => nil, "latitude" => nil, "longitude" => nil, "shop_id" => 548380009, "created_at" => "2023-02-02T10:00:18-05:00", "updated_at" => "2023-02-02T10:00:18-05:00", "estimated_delivery_at" => nil, "order_id" => 450789469, "admin_graphql_api_id" => "gid://shopify/FulfillmentEvent/944956394"}}), headers: {})
 
-    ShopifyAPI::FulfillmentEvent.find(
+    response = ShopifyAPI::FulfillmentEvent.find(
       order_id: 450789469,
       fulfillment_id: 255858046,
       id: 944956394,
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-01/orders/450789469/fulfillments/255858046/events/944956394.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -99,13 +141,27 @@ class FulfillmentEvent202301Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({}), headers: {})
 
-    ShopifyAPI::FulfillmentEvent.delete(
+    response = ShopifyAPI::FulfillmentEvent.delete(
       order_id: 450789469,
       fulfillment_id: 255858046,
       id: 944956391,
     )
 
     assert_requested(:delete, "https://test-shop.myshopify.io/admin/api/2023-01/orders/450789469/fulfillments/255858046/events/944956391.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
 end

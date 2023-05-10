@@ -36,7 +36,7 @@ module ShopifyAPI
       @shipping_line = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
       @source_name = T.let(nil, T.nilable(String))
       @status = T.let(nil, T.nilable(String))
-      @subtotal_price = T.let(nil, T.nilable(Float))
+      @subtotal_price = T.let(nil, T.nilable(String))
       @tags = T.let(nil, T.nilable(String))
       @tax_exempt = T.let(nil, T.nilable(T::Boolean))
       @tax_exemptions = T.let(nil, T.nilable(T::Array[T.untyped]))
@@ -102,7 +102,7 @@ module ShopifyAPI
     attr_reader :source_name
     sig { returns(T.nilable(String)) }
     attr_reader :status
-    sig { returns(T.nilable(Float)) }
+    sig { returns(T.nilable(String)) }
     attr_reader :subtotal_price
     sig { returns(T.nilable(String)) }
     attr_reader :tags

@@ -29,7 +29,9 @@ module ShopifyAPI
       @shipment_status = T.let(nil, T.nilable(String))
       @status = T.let(nil, T.nilable(String))
       @tracking_company = T.let(nil, T.nilable(String))
+      @tracking_number = T.let(nil, T.nilable(String))
       @tracking_numbers = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @tracking_url = T.let(nil, T.nilable(String))
       @tracking_urls = T.let(nil, T.nilable(T::Array[T.untyped]))
       @updated_at = T.let(nil, T.nilable(String))
       @variant_inventory_management = T.let(nil, T.nilable(String))
@@ -73,8 +75,12 @@ module ShopifyAPI
     attr_reader :status
     sig { returns(T.nilable(String)) }
     attr_reader :tracking_company
+    sig { returns(T.nilable(String)) }
+    attr_reader :tracking_number
     sig { returns(T.nilable(T::Array[String])) }
     attr_reader :tracking_numbers
+    sig { returns(T.nilable(String)) }
+    attr_reader :tracking_url
     sig { returns(T.nilable(T::Array[String])) }
     attr_reader :tracking_urls
     sig { returns(T.nilable(String)) }

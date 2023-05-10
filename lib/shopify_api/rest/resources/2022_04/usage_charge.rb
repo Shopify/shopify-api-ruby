@@ -20,7 +20,7 @@ module ShopifyAPI
       @currency = T.let(nil, T.nilable(Currency))
       @description = T.let(nil, T.nilable(String))
       @id = T.let(nil, T.nilable(Integer))
-      @price = T.let(nil, T.nilable(Integer))
+      @price = T.let(nil, T.nilable(String))
       @recurring_application_charge_id = T.let(nil, T.nilable(Integer))
       @updated_at = T.let(nil, T.nilable(String))
     end
@@ -43,7 +43,7 @@ module ShopifyAPI
     attr_reader :description
     sig { returns(T.nilable(Integer)) }
     attr_reader :id
-    sig { returns(T.nilable(Integer)) }
+    sig { returns(T.nilable(String)) }
     attr_reader :price
     sig { returns(T.nilable(Integer)) }
     attr_reader :recurring_application_charge_id

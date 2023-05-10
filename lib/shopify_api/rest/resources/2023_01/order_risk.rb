@@ -24,7 +24,7 @@ module ShopifyAPI
       @message = T.let(nil, T.nilable(String))
       @order_id = T.let(nil, T.nilable(Integer))
       @recommendation = T.let(nil, T.nilable(String))
-      @score = T.let(nil, T.nilable(Float))
+      @score = T.let(nil, T.nilable(String))
       @source = T.let(nil, T.nilable(String))
     end
 
@@ -54,7 +54,7 @@ module ShopifyAPI
     attr_reader :order_id
     sig { returns(T.nilable(String)) }
     attr_reader :recommendation
-    sig { returns(T.nilable(Float)) }
+    sig { returns(T.nilable(String)) }
     attr_reader :score
     sig { returns(T.nilable(String)) }
     attr_reader :source
@@ -64,6 +64,13 @@ module ShopifyAPI
         returns(String)
       end
       def json_body_name()
+        "risk"
+      end
+
+      sig do
+        returns(String)
+      end
+      def json_response_body_name()
         "risk"
       end
 

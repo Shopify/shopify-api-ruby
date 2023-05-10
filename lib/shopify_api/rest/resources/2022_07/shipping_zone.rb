@@ -19,7 +19,7 @@ module ShopifyAPI
       @carrier_shipping_rate_providers = T.let(nil, T.untyped)
       @countries = T.let(nil, T.nilable(T::Array[T.untyped]))
       @id = T.let(nil, T.nilable(Integer))
-      @location_group_id = T.let(nil, T.nilable(Integer))
+      @location_group_id = T.let(nil, T.nilable(String))
       @name = T.let(nil, T.nilable(String))
       @price_based_shipping_rates = T.let(nil, T.nilable(T::Array[T.untyped]))
       @profile_id = T.let(nil, T.nilable(String))
@@ -42,7 +42,7 @@ module ShopifyAPI
     attr_reader :countries
     sig { returns(T.nilable(Integer)) }
     attr_reader :id
-    sig { returns(T.nilable(Integer)) }
+    sig { returns(T.nilable(String)) }
     attr_reader :location_group_id
     sig { returns(T.nilable(String)) }
     attr_reader :name

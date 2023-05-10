@@ -40,7 +40,7 @@ class ResourceFeedback202301Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"resource_feedback" => {"created_at" => "2023-02-02T10:00:53-05:00", "updated_at" => "2023-02-02T10:00:53-05:00", "resource_id" => 548380009, "resource_type" => "Shop", "resource_updated_at" => nil, "messages" => ["is not connected. Connect your account to use this sales channel."], "feedback_generated_at" => "2023-02-02T10:00:51-05:00", "state" => "requires_action"}}), headers: {})
 
-    resource_feedback = ShopifyAPI::ResourceFeedback.new
+    response = resource_feedback = ShopifyAPI::ResourceFeedback.new
     resource_feedback.state = "requires_action"
     resource_feedback.messages = [
       "is not connected. Connect your account to use this sales channel."
@@ -49,6 +49,20 @@ class ResourceFeedback202301Test < Test::Unit::TestCase
     resource_feedback.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-01/resource_feedback.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -62,12 +76,26 @@ class ResourceFeedback202301Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"resource_feedback" => {"created_at" => "2023-02-02T10:00:54-05:00", "updated_at" => "2023-02-02T10:00:54-05:00", "resource_id" => 548380009, "resource_type" => "Shop", "resource_updated_at" => nil, "messages" => [], "feedback_generated_at" => "2023-02-02T10:00:53-05:00", "state" => "success"}}), headers: {})
 
-    resource_feedback = ShopifyAPI::ResourceFeedback.new
+    response = resource_feedback = ShopifyAPI::ResourceFeedback.new
     resource_feedback.state = "success"
     resource_feedback.feedback_generated_at = "2023-02-02T15:00:53.508619Z"
     resource_feedback.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-01/resource_feedback.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -81,9 +109,23 @@ class ResourceFeedback202301Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"resource_feedback" => [{"created_at" => "2023-02-02T10:00:58-05:00", "updated_at" => "2023-02-02T10:00:58-05:00", "resource_id" => 548380009, "resource_type" => "Shop", "resource_updated_at" => nil, "messages" => ["is not connected. Connect your account to use this sales channel."], "feedback_generated_at" => "2023-02-02T09:00:58-05:00", "state" => "requires_action"}]}), headers: {})
 
-    ShopifyAPI::ResourceFeedback.all
+    response = ShopifyAPI::ResourceFeedback.all
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-01/resource_feedback.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
 end

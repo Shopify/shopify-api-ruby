@@ -18,6 +18,7 @@ module ShopifyAPI
 
       @code = T.let(nil, T.nilable(String))
       @created_at = T.let(nil, T.nilable(String))
+      @errors = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
       @id = T.let(nil, T.nilable(Integer))
       @price_rule_id = T.let(nil, T.nilable(Integer))
       @updated_at = T.let(nil, T.nilable(String))
@@ -43,6 +44,8 @@ module ShopifyAPI
     attr_reader :code
     sig { returns(T.nilable(String)) }
     attr_reader :created_at
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
+    attr_reader :errors
     sig { returns(T.nilable(Integer)) }
     attr_reader :id
     sig { returns(T.nilable(Integer)) }

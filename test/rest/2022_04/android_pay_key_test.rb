@@ -40,11 +40,25 @@ class AndroidPayKey202204Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"android_pay_key" => {"id" => 964811895, "public_key" => "BPI5no5liIrAC3knvJnxSoMW09D0KwbJOnv+TaAmd3Fur3wYlD85yFaJABZC\n1qb/14GtM+616y8SrKwaVOSu4U8=\n"}}), headers: {})
 
-    android_pay_key = ShopifyAPI::AndroidPayKey.new
+    response = android_pay_key = ShopifyAPI::AndroidPayKey.new
 
     android_pay_key.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-04/android_pay_keys.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -58,11 +72,25 @@ class AndroidPayKey202204Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"android_pay_key" => {"id" => 964811894, "public_key" => "BPI5no5liIrAC3knvJnxSoMW09D0KwbJOnv+TaAmd3Fur3wYlD85yFaJABZC\n1qb/14GtM+616y8SrKwaVOSu4U8=\n"}}), headers: {})
 
-    ShopifyAPI::AndroidPayKey.find(
+    response = ShopifyAPI::AndroidPayKey.find(
       id: 964811894,
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-04/android_pay_keys/964811894.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -76,11 +104,25 @@ class AndroidPayKey202204Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({}), headers: {})
 
-    ShopifyAPI::AndroidPayKey.delete(
+    response = ShopifyAPI::AndroidPayKey.delete(
       id: 964811896,
     )
 
     assert_requested(:delete, "https://test-shop.myshopify.io/admin/api/2022-04/android_pay_keys/964811896.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
 end

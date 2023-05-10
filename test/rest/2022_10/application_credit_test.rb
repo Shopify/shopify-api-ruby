@@ -36,16 +36,30 @@ class ApplicationCredit202210Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2022-10/application_credits.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "application_credit" => hash_including({"description" => "application credit for refund", "amount" => 5.0}) }
+        body: { "application_credit" => hash_including({"description" => "application credit for refund", "amount" => "5.00"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"application_credit" => {"id" => 1031636125, "amount" => "5.00", "description" => "application credit for refund", "test" => nil, "currency" => "USD"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"application_credit" => {"id" => 1031636134, "amount" => "5.00", "description" => "application credit for refund", "test" => nil, "currency" => "USD"}}), headers: {})
 
-    application_credit = ShopifyAPI::ApplicationCredit.new
+    response = application_credit = ShopifyAPI::ApplicationCredit.new
     application_credit.description = "application credit for refund"
-    application_credit.amount = 5.0
+    application_credit.amount = "5.00"
     application_credit.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-10/application_credits.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -55,17 +69,31 @@ class ApplicationCredit202210Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2022-10/application_credits.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "application_credit" => hash_including({"description" => "application credit for refund", "amount" => 5.0, "test" => true}) }
+        body: { "application_credit" => hash_including({"description" => "application credit for refund", "amount" => "5.00", "test" => true}) }
       )
-      .to_return(status: 200, body: JSON.generate({"application_credit" => {"id" => 1031636126, "amount" => "5.00", "description" => "application credit for refund", "test" => true, "currency" => "USD"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"application_credit" => {"id" => 1031636131, "amount" => "5.00", "description" => "application credit for refund", "test" => true, "currency" => "USD"}}), headers: {})
 
-    application_credit = ShopifyAPI::ApplicationCredit.new
+    response = application_credit = ShopifyAPI::ApplicationCredit.new
     application_credit.description = "application credit for refund"
-    application_credit.amount = 5.0
+    application_credit.amount = "5.00"
     application_credit.test = true
     application_credit.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-10/application_credits.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -79,9 +107,23 @@ class ApplicationCredit202210Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"application_credits" => [{"id" => 140583599, "amount" => "5.00", "description" => "credit for application refund", "test" => nil, "currency" => "USD"}]}), headers: {})
 
-    ShopifyAPI::ApplicationCredit.all
+    response = ShopifyAPI::ApplicationCredit.all
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-10/application_credits.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -95,11 +137,25 @@ class ApplicationCredit202210Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"application_credit" => {"id" => 140583599, "amount" => "5.00", "description" => "credit for application refund", "test" => nil, "currency" => "USD"}}), headers: {})
 
-    ShopifyAPI::ApplicationCredit.find(
+    response = ShopifyAPI::ApplicationCredit.find(
       id: 140583599,
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-10/application_credits/140583599.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
 end

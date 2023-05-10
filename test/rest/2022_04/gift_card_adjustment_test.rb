@@ -40,11 +40,25 @@ class GiftCardAdjustment202204Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"adjustments" => [{"id" => 1064273908, "gift_card_id" => 1035197676, "api_client_id" => nil, "user_id" => nil, "order_transaction_id" => nil, "number" => nil, "amount" => "10.00", "processed_at" => nil, "created_at" => "2023-02-02T09:09:49-05:00", "updated_at" => "2023-02-02T09:09:49-05:00", "note" => "Customer refilled gift card by $10", "remote_transaction_ref" => nil, "remote_transaction_url" => nil}]}), headers: {})
 
-    ShopifyAPI::GiftCardAdjustment.all(
+    response = ShopifyAPI::GiftCardAdjustment.all(
       gift_card_id: 1035197676,
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-04/gift_cards/1035197676/adjustments.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -58,7 +72,7 @@ class GiftCardAdjustment202204Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"adjustment" => {"id" => 1064273912, "gift_card_id" => 1035197676, "api_client_id" => 755357713, "user_id" => nil, "order_transaction_id" => nil, "number" => 1, "amount" => "10.00", "processed_at" => "2023-02-02T09:30:35-05:00", "created_at" => "2023-02-02T09:30:35-05:00", "updated_at" => "2023-02-02T09:30:35-05:00", "note" => nil, "remote_transaction_ref" => "gift_card_app_transaction_193402", "remote_transaction_url" => "http://example.com/my-gift-card-app/gift_card_adjustments/193402"}}), headers: {})
 
-    gift_card_adjustment = ShopifyAPI::GiftCardAdjustment.new
+    response = gift_card_adjustment = ShopifyAPI::GiftCardAdjustment.new
     gift_card_adjustment.gift_card_id = 1035197676
     gift_card_adjustment.amount = 10.0
     gift_card_adjustment.remote_transaction_ref = "gift_card_app_transaction_193402"
@@ -66,6 +80,20 @@ class GiftCardAdjustment202204Test < Test::Unit::TestCase
     gift_card_adjustment.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-04/gift_cards/1035197676/adjustments.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -79,13 +107,27 @@ class GiftCardAdjustment202204Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"adjustment" => {"id" => 1064273909, "gift_card_id" => 1035197676, "api_client_id" => 755357713, "user_id" => nil, "order_transaction_id" => nil, "number" => 1, "amount" => "10.00", "processed_at" => "2023-02-02T09:30:31-05:00", "created_at" => "2023-02-02T09:30:31-05:00", "updated_at" => "2023-02-02T09:30:31-05:00", "note" => "Customer refilled gift card by $10", "remote_transaction_ref" => nil, "remote_transaction_url" => nil}}), headers: {})
 
-    gift_card_adjustment = ShopifyAPI::GiftCardAdjustment.new
+    response = gift_card_adjustment = ShopifyAPI::GiftCardAdjustment.new
     gift_card_adjustment.gift_card_id = 1035197676
     gift_card_adjustment.amount = 10.0
     gift_card_adjustment.note = "Customer refilled gift card by $10"
     gift_card_adjustment.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-04/gift_cards/1035197676/adjustments.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -99,13 +141,27 @@ class GiftCardAdjustment202204Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"adjustment" => {"id" => 1064273910, "gift_card_id" => 1035197676, "api_client_id" => 755357713, "user_id" => nil, "order_transaction_id" => nil, "number" => 1, "amount" => "-20.00", "processed_at" => "2023-02-02T09:30:33-05:00", "created_at" => "2023-02-02T09:30:33-05:00", "updated_at" => "2023-02-02T09:30:33-05:00", "note" => "Customer spent $20 via external service", "remote_transaction_ref" => nil, "remote_transaction_url" => nil}}), headers: {})
 
-    gift_card_adjustment = ShopifyAPI::GiftCardAdjustment.new
+    response = gift_card_adjustment = ShopifyAPI::GiftCardAdjustment.new
     gift_card_adjustment.gift_card_id = 1035197676
     gift_card_adjustment.amount = -20.0
     gift_card_adjustment.note = "Customer spent $20 via external service"
     gift_card_adjustment.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-04/gift_cards/1035197676/adjustments.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -119,13 +175,27 @@ class GiftCardAdjustment202204Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"adjustment" => {"id" => 1064273911, "gift_card_id" => 1035197676, "api_client_id" => 755357713, "user_id" => nil, "order_transaction_id" => nil, "number" => 1, "amount" => "10.00", "processed_at" => "2022-08-02T09:30:33-04:00", "created_at" => "2023-02-02T09:30:33-05:00", "updated_at" => "2023-02-02T09:30:33-05:00", "note" => nil, "remote_transaction_ref" => nil, "remote_transaction_url" => nil}}), headers: {})
 
-    gift_card_adjustment = ShopifyAPI::GiftCardAdjustment.new
+    response = gift_card_adjustment = ShopifyAPI::GiftCardAdjustment.new
     gift_card_adjustment.gift_card_id = 1035197676
     gift_card_adjustment.amount = 10.0
     gift_card_adjustment.processed_at = "2022-08-02T09:30:33-04:00"
     gift_card_adjustment.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-04/gift_cards/1035197676/adjustments.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -139,12 +209,26 @@ class GiftCardAdjustment202204Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"adjustment" => {"id" => 1064273908, "gift_card_id" => 1035197676, "api_client_id" => nil, "user_id" => nil, "order_transaction_id" => nil, "number" => nil, "amount" => "10.00", "processed_at" => nil, "created_at" => "2023-02-02T09:09:49-05:00", "updated_at" => "2023-02-02T09:09:49-05:00", "note" => "Customer refilled gift card by $10", "remote_transaction_ref" => nil, "remote_transaction_url" => nil}}), headers: {})
 
-    ShopifyAPI::GiftCardAdjustment.find(
+    response = ShopifyAPI::GiftCardAdjustment.find(
       gift_card_id: 1035197676,
       id: 1064273908,
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-04/gift_cards/1035197676/adjustments/1064273908.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
 end

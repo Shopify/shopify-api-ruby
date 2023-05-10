@@ -40,9 +40,23 @@ class PaymentGateway202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"payment_gateways" => [{"disabled" => false, "id" => 431363653, "name" => "shopify_payments", "provider_id" => 87, "sandbox" => false, "supports_network_tokenization" => nil, "type" => "DirectPaymentGateway", "enabled_card_brands" => ["visa", "master", "american_express", "discover", "diners_club"], "processing_method" => "direct", "service_name" => "Shopify Payments", "metadata" => {"google_pay_merchant_id" => 548380009}, "created_at" => "2011-12-31T19:00:00-05:00", "updated_at" => "2023-02-02T09:25:51-05:00", "credential4" => nil, "attachment" => nil}, {"disabled" => true, "id" => 170508070, "name" => "Cash on Delivery (COD)", "provider_id" => 140, "sandbox" => false, "supports_network_tokenization" => nil, "type" => "ManualPaymentGateway", "enabled_card_brands" => [], "processing_method" => "manual", "service_name" => "Cash on Delivery (COD)", "metadata" => {}, "created_at" => "2023-02-02T09:09:49-05:00", "updated_at" => "2023-02-02T09:09:49-05:00"}]}), headers: {})
 
-    ShopifyAPI::PaymentGateway.all
+    response = ShopifyAPI::PaymentGateway.all
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-04/payment_gateways.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -56,11 +70,25 @@ class PaymentGateway202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"payment_gateways" => [{"disabled" => false, "id" => 431363653, "name" => "shopify_payments", "provider_id" => 87, "sandbox" => false, "supports_network_tokenization" => nil, "type" => "DirectPaymentGateway", "enabled_card_brands" => ["visa", "master", "american_express", "discover", "diners_club"], "processing_method" => "direct", "service_name" => "Shopify Payments", "metadata" => {"google_pay_merchant_id" => 548380009}, "created_at" => "2011-12-31T19:00:00-05:00", "updated_at" => "2023-02-02T09:25:49-05:00", "credential4" => nil, "attachment" => nil}]}), headers: {})
 
-    ShopifyAPI::PaymentGateway.all(
+    response = ShopifyAPI::PaymentGateway.all(
       disabled: "false",
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-04/payment_gateways.json?disabled=false")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -74,12 +102,26 @@ class PaymentGateway202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"payment_gateway" => {"disabled" => false, "id" => 1048196722, "name" => "authorize_net", "provider_id" => 7, "sandbox" => false, "supports_network_tokenization" => nil, "type" => "DirectPaymentGateway", "enabled_card_brands" => ["visa", "master", "american_express", "discover", "diners_club", "jcb"], "processing_method" => "direct", "service_name" => "Authorize.net", "metadata" => {}, "created_at" => "2023-02-02T09:25:46-05:00", "updated_at" => "2023-02-02T09:25:46-05:00", "credential1" => "someone@example.com", "credential3" => nil, "credential4" => nil, "attachment" => nil}}), headers: {})
 
-    payment_gateway = ShopifyAPI::PaymentGateway.new
+    response = payment_gateway = ShopifyAPI::PaymentGateway.new
     payment_gateway.credential1 = "someone@example.com"
     payment_gateway.provider_id = 7
     payment_gateway.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-04/payment_gateways.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -93,11 +135,25 @@ class PaymentGateway202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"payment" => {"disabled" => false, "id" => 431363653, "name" => "shopify_payments", "provider_id" => 87, "sandbox" => false, "supports_network_tokenization" => nil, "type" => "DirectPaymentGateway", "enabled_card_brands" => ["visa", "master", "american_express", "discover", "diners_club"], "processing_method" => "direct", "service_name" => "Shopify Payments", "metadata" => {"google_pay_merchant_id" => 548380009}, "created_at" => "2011-12-31T19:00:00-05:00", "updated_at" => "2023-02-02T09:25:53-05:00", "credential4" => nil, "attachment" => nil}}), headers: {})
 
-    ShopifyAPI::PaymentGateway.find(
+    response = ShopifyAPI::PaymentGateway.find(
       id: 431363653,
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-04/payment_gateways/431363653.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -111,12 +167,26 @@ class PaymentGateway202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"payment_gateway" => {"disabled" => false, "id" => 170508070, "name" => "Cash on Delivery (COD)", "provider_id" => 140, "sandbox" => true, "supports_network_tokenization" => nil, "type" => "ManualPaymentGateway", "enabled_card_brands" => [], "processing_method" => "manual", "service_name" => "Cash on Delivery (COD)", "metadata" => {}, "created_at" => "2023-02-02T09:09:49-05:00", "updated_at" => "2023-02-02T09:25:43-05:00"}}), headers: {})
 
-    payment_gateway = ShopifyAPI::PaymentGateway.new
+    response = payment_gateway = ShopifyAPI::PaymentGateway.new
     payment_gateway.id = 170508070
     payment_gateway.sandbox = true
     payment_gateway.save
 
     assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2023-04/payment_gateways/170508070.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -130,11 +200,25 @@ class PaymentGateway202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({}), headers: {})
 
-    ShopifyAPI::PaymentGateway.delete(
+    response = ShopifyAPI::PaymentGateway.delete(
       id: 170508070,
     )
 
     assert_requested(:delete, "https://test-shop.myshopify.io/admin/api/2023-04/payment_gateways/170508070.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
 end

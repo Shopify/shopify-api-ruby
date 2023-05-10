@@ -40,11 +40,25 @@ class Refund202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"refunds" => [{"id" => 509562969, "order_id" => 450789469, "created_at" => "2023-02-02T09:53:49-05:00", "note" => "it broke during shipping", "user_id" => 548380009, "processed_at" => "2023-02-02T09:53:49-05:00", "restock" => true, "admin_graphql_api_id" => "gid://shopify/Refund/509562969", "refund_line_items" => [{"id" => 104689539, "quantity" => 1, "line_item_id" => 703073504, "location_id" => 487838322, "restock_type" => "legacy_restock", "subtotal" => 195.67, "total_tax" => 3.98, "subtotal_set" => {"shop_money" => {"amount" => "195.67", "currency_code" => "USD"}, "presentment_money" => {"amount" => "195.67", "currency_code" => "USD"}}, "total_tax_set" => {"shop_money" => {"amount" => "3.98", "currency_code" => "USD"}, "presentment_money" => {"amount" => "3.98", "currency_code" => "USD"}}, "line_item" => {"id" => 703073504, "variant_id" => 457924702, "title" => "IPod Nano - 8gb", "quantity" => 1, "sku" => "IPOD2008BLACK", "variant_title" => "black", "vendor" => nil, "fulfillment_service" => "manual", "product_id" => 632910392, "requires_shipping" => true, "taxable" => true, "gift_card" => false, "name" => "IPod Nano - 8gb - black", "variant_inventory_management" => "shopify", "properties" => [], "product_exists" => true, "fulfillable_quantity" => 1, "grams" => 200, "price" => "199.00", "total_discount" => "0.00", "fulfillment_status" => nil, "price_set" => {"shop_money" => {"amount" => "199.00", "currency_code" => "USD"}, "presentment_money" => {"amount" => "199.00", "currency_code" => "USD"}}, "total_discount_set" => {"shop_money" => {"amount" => "0.00", "currency_code" => "USD"}, "presentment_money" => {"amount" => "0.00", "currency_code" => "USD"}}, "discount_allocations" => [{"amount" => "3.33", "discount_application_index" => 0, "amount_set" => {"shop_money" => {"amount" => "3.33", "currency_code" => "USD"}, "presentment_money" => {"amount" => "3.33", "currency_code" => "USD"}}}], "duties" => [], "admin_graphql_api_id" => "gid://shopify/LineItem/703073504", "tax_lines" => [{"title" => "State Tax", "price" => "3.98", "rate" => 0.06, "price_set" => {"shop_money" => {"amount" => "3.98", "currency_code" => "USD"}, "presentment_money" => {"amount" => "3.98", "currency_code" => "USD"}}}]}}, {"id" => 709875399, "quantity" => 1, "line_item_id" => 466157049, "location_id" => 487838322, "restock_type" => "legacy_restock", "subtotal" => 195.66, "total_tax" => 3.98, "subtotal_set" => {"shop_money" => {"amount" => "195.66", "currency_code" => "USD"}, "presentment_money" => {"amount" => "195.66", "currency_code" => "USD"}}, "total_tax_set" => {"shop_money" => {"amount" => "3.98", "currency_code" => "USD"}, "presentment_money" => {"amount" => "3.98", "currency_code" => "USD"}}, "line_item" => {"id" => 466157049, "variant_id" => 39072856, "title" => "IPod Nano - 8gb", "quantity" => 1, "sku" => "IPOD2008GREEN", "variant_title" => "green", "vendor" => nil, "fulfillment_service" => "manual", "product_id" => 632910392, "requires_shipping" => true, "taxable" => true, "gift_card" => false, "name" => "IPod Nano - 8gb - green", "variant_inventory_management" => "shopify", "properties" => [{"name" => "Custom Engraving Front", "value" => "Happy Birthday"}, {"name" => "Custom Engraving Back", "value" => "Merry Christmas"}], "product_exists" => true, "fulfillable_quantity" => 1, "grams" => 200, "price" => "199.00", "total_discount" => "0.00", "fulfillment_status" => nil, "price_set" => {"shop_money" => {"amount" => "199.00", "currency_code" => "USD"}, "presentment_money" => {"amount" => "199.00", "currency_code" => "USD"}}, "total_discount_set" => {"shop_money" => {"amount" => "0.00", "currency_code" => "USD"}, "presentment_money" => {"amount" => "0.00", "currency_code" => "USD"}}, "discount_allocations" => [{"amount" => "3.34", "discount_application_index" => 0, "amount_set" => {"shop_money" => {"amount" => "3.34", "currency_code" => "USD"}, "presentment_money" => {"amount" => "3.34", "currency_code" => "USD"}}}], "duties" => [], "admin_graphql_api_id" => "gid://shopify/LineItem/466157049", "tax_lines" => [{"title" => "State Tax", "price" => "3.98", "rate" => 0.06, "price_set" => {"shop_money" => {"amount" => "3.98", "currency_code" => "USD"}, "presentment_money" => {"amount" => "3.98", "currency_code" => "USD"}}}]}}], "transactions" => [{"id" => 179259969, "order_id" => 450789469, "kind" => "refund", "gateway" => "bogus", "status" => "success", "message" => nil, "created_at" => "2005-08-05T12:59:12-04:00", "test" => false, "authorization" => "authorization-key", "location_id" => nil, "user_id" => nil, "parent_id" => 801038806, "processed_at" => "2005-08-05T12:59:12-04:00", "device_id" => nil, "error_code" => nil, "source_name" => "web", "receipt" => {}, "amount" => "209.00", "currency" => "USD", "admin_graphql_api_id" => "gid://shopify/OrderTransaction/179259969"}], "order_adjustments" => []}]}), headers: {})
 
-    ShopifyAPI::Refund.all(
+    response = ShopifyAPI::Refund.all(
       order_id: 450789469,
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-04/orders/450789469/refunds.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -58,7 +72,7 @@ class Refund202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"refund" => {"id" => 929361465, "order_id" => 450789469, "created_at" => "2023-02-02T09:55:44-05:00", "note" => "wrong size", "user_id" => nil, "processed_at" => "2023-02-02T09:55:44-05:00", "restock" => false, "duties" => [], "total_duties_set" => {"shop_money" => {"amount" => "0.00", "currency_code" => "USD"}, "presentment_money" => {"amount" => "0.00", "currency_code" => "USD"}}, "additional_fees" => [], "total_additional_fees_set" => {"shop_money" => {"amount" => "0.00", "currency_code" => "USD"}, "presentment_money" => {"amount" => "0.00", "currency_code" => "USD"}}, "return" => nil, "admin_graphql_api_id" => "gid://shopify/Refund/929361465", "refund_line_items" => [{"location_id" => nil, "restock_type" => "no_restock", "quantity" => 1, "id" => 1058498312, "line_item_id" => 518995019, "subtotal" => 195.67, "total_tax" => 3.98, "subtotal_set" => {"shop_money" => {"amount" => "195.67", "currency_code" => "USD"}, "presentment_money" => {"amount" => "195.67", "currency_code" => "USD"}}, "total_tax_set" => {"shop_money" => {"amount" => "3.98", "currency_code" => "USD"}, "presentment_money" => {"amount" => "3.98", "currency_code" => "USD"}}, "line_item" => {"id" => 518995019, "variant_id" => 49148385, "title" => "IPod Nano - 8gb", "quantity" => 1, "sku" => "IPOD2008RED", "variant_title" => "red", "vendor" => nil, "fulfillment_service" => "manual", "product_id" => 632910392, "requires_shipping" => true, "taxable" => true, "gift_card" => false, "name" => "IPod Nano - 8gb - red", "variant_inventory_management" => "shopify", "properties" => [], "product_exists" => true, "fulfillable_quantity" => 1, "grams" => 200, "price" => "199.00", "total_discount" => "0.00", "fulfillment_status" => nil, "price_set" => {"shop_money" => {"amount" => "199.00", "currency_code" => "USD"}, "presentment_money" => {"amount" => "199.00", "currency_code" => "USD"}}, "total_discount_set" => {"shop_money" => {"amount" => "0.00", "currency_code" => "USD"}, "presentment_money" => {"amount" => "0.00", "currency_code" => "USD"}}, "discount_allocations" => [{"amount" => "3.33", "discount_application_index" => 0, "amount_set" => {"shop_money" => {"amount" => "3.33", "currency_code" => "USD"}, "presentment_money" => {"amount" => "3.33", "currency_code" => "USD"}}}], "duties" => [], "admin_graphql_api_id" => "gid://shopify/LineItem/518995019", "tax_lines" => [{"title" => "State Tax", "price" => "3.98", "rate" => 0.06, "channel_liable" => nil, "price_set" => {"shop_money" => {"amount" => "3.98", "currency_code" => "USD"}, "presentment_money" => {"amount" => "3.98", "currency_code" => "USD"}}}]}}], "transactions" => [{"id" => 1068278489, "order_id" => 450789469, "kind" => "refund", "gateway" => "bogus", "status" => "success", "message" => "Bogus Gateway: Forced success", "created_at" => "2023-02-02T09:55:44-05:00", "test" => true, "authorization" => nil, "location_id" => nil, "user_id" => nil, "parent_id" => 801038806, "processed_at" => "2023-02-02T09:55:44-05:00", "device_id" => nil, "error_code" => nil, "source_name" => "755357713", "receipt" => {}, "amount" => "41.94", "currency" => "USD", "payment_id" => "c901414060.1", "admin_graphql_api_id" => "gid://shopify/OrderTransaction/1068278489"}], "order_adjustments" => []}}), headers: {})
 
-    refund = ShopifyAPI::Refund.new
+    response = refund = ShopifyAPI::Refund.new
     refund.order_id = 450789469
     refund.currency = "USD"
     refund.notify = true
@@ -85,6 +99,20 @@ class Refund202304Test < Test::Unit::TestCase
     refund.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-04/orders/450789469/refunds.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -98,7 +126,7 @@ class Refund202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"refund" => {"id" => 929361466, "order_id" => 450789469, "created_at" => "2023-02-02T09:55:48-05:00", "note" => nil, "user_id" => nil, "processed_at" => "2023-02-02T09:55:48-05:00", "restock" => false, "duties" => [], "total_duties_set" => {"shop_money" => {"amount" => "0.00", "currency_code" => "USD"}, "presentment_money" => {"amount" => "0.00", "currency_code" => "USD"}}, "additional_fees" => [], "total_additional_fees_set" => {"shop_money" => {"amount" => "0.00", "currency_code" => "USD"}, "presentment_money" => {"amount" => "0.00", "currency_code" => "USD"}}, "return" => nil, "admin_graphql_api_id" => "gid://shopify/Refund/929361466", "refund_line_items" => [], "transactions" => [{"id" => 1068278490, "order_id" => 450789469, "kind" => "refund", "gateway" => "bogus", "status" => "success", "message" => "Bogus Gateway: Forced success", "created_at" => "2023-02-02T09:55:48-05:00", "test" => true, "authorization" => nil, "location_id" => nil, "user_id" => nil, "parent_id" => 801038806, "processed_at" => "2023-02-02T09:55:48-05:00", "device_id" => nil, "error_code" => nil, "source_name" => "755357713", "receipt" => {}, "amount" => "5.00", "currency" => "USD", "payment_id" => "c901414060.1", "admin_graphql_api_id" => "gid://shopify/OrderTransaction/1068278490"}], "order_adjustments" => [{"id" => 1030976843, "order_id" => 450789469, "refund_id" => 929361466, "amount" => "-5.00", "tax_amount" => "0.00", "kind" => "shipping_refund", "reason" => "Shipping refund", "amount_set" => {"shop_money" => {"amount" => "-5.00", "currency_code" => "USD"}, "presentment_money" => {"amount" => "-5.00", "currency_code" => "USD"}}, "tax_amount_set" => {"shop_money" => {"amount" => "0.00", "currency_code" => "USD"}, "presentment_money" => {"amount" => "0.00", "currency_code" => "USD"}}}]}}), headers: {})
 
-    refund = ShopifyAPI::Refund.new
+    response = refund = ShopifyAPI::Refund.new
     refund.order_id = 450789469
     refund.currency = "USD"
     refund.shipping = {
@@ -115,6 +143,20 @@ class Refund202304Test < Test::Unit::TestCase
     refund.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-04/orders/450789469/refunds.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -128,12 +170,26 @@ class Refund202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"refund" => {"id" => 509562969, "order_id" => 450789469, "created_at" => "2023-02-02T09:53:49-05:00", "note" => "it broke during shipping", "user_id" => 548380009, "processed_at" => "2023-02-02T09:53:49-05:00", "restock" => true, "duties" => [], "total_duties_set" => {"shop_money" => {"amount" => "0.00", "currency_code" => "USD"}, "presentment_money" => {"amount" => "0.00", "currency_code" => "USD"}}, "additional_fees" => [], "total_additional_fees_set" => {"shop_money" => {"amount" => "0.00", "currency_code" => "USD"}, "presentment_money" => {"amount" => "0.00", "currency_code" => "USD"}}, "return" => nil, "admin_graphql_api_id" => "gid://shopify/Refund/509562969", "refund_line_items" => [{"id" => 104689539, "quantity" => 1, "line_item_id" => 703073504, "location_id" => 487838322, "restock_type" => "legacy_restock", "subtotal" => 195.67, "total_tax" => 3.98, "subtotal_set" => {"shop_money" => {"amount" => "195.67", "currency_code" => "USD"}, "presentment_money" => {"amount" => "195.67", "currency_code" => "USD"}}, "total_tax_set" => {"shop_money" => {"amount" => "3.98", "currency_code" => "USD"}, "presentment_money" => {"amount" => "3.98", "currency_code" => "USD"}}, "line_item" => {"id" => 703073504, "variant_id" => 457924702, "title" => "IPod Nano - 8gb", "quantity" => 1, "sku" => "IPOD2008BLACK", "variant_title" => "black", "vendor" => nil, "fulfillment_service" => "manual", "product_id" => 632910392, "requires_shipping" => true, "taxable" => true, "gift_card" => false, "name" => "IPod Nano - 8gb - black", "variant_inventory_management" => "shopify", "properties" => [], "product_exists" => true, "fulfillable_quantity" => 1, "grams" => 200, "price" => "199.00", "total_discount" => "0.00", "fulfillment_status" => nil, "price_set" => {"shop_money" => {"amount" => "199.00", "currency_code" => "USD"}, "presentment_money" => {"amount" => "199.00", "currency_code" => "USD"}}, "total_discount_set" => {"shop_money" => {"amount" => "0.00", "currency_code" => "USD"}, "presentment_money" => {"amount" => "0.00", "currency_code" => "USD"}}, "discount_allocations" => [{"amount" => "3.33", "discount_application_index" => 0, "amount_set" => {"shop_money" => {"amount" => "3.33", "currency_code" => "USD"}, "presentment_money" => {"amount" => "3.33", "currency_code" => "USD"}}}], "duties" => [], "admin_graphql_api_id" => "gid://shopify/LineItem/703073504", "tax_lines" => [{"title" => "State Tax", "price" => "3.98", "rate" => 0.06, "channel_liable" => nil, "price_set" => {"shop_money" => {"amount" => "3.98", "currency_code" => "USD"}, "presentment_money" => {"amount" => "3.98", "currency_code" => "USD"}}}]}}, {"id" => 709875399, "quantity" => 1, "line_item_id" => 466157049, "location_id" => 487838322, "restock_type" => "legacy_restock", "subtotal" => 195.66, "total_tax" => 3.98, "subtotal_set" => {"shop_money" => {"amount" => "195.66", "currency_code" => "USD"}, "presentment_money" => {"amount" => "195.66", "currency_code" => "USD"}}, "total_tax_set" => {"shop_money" => {"amount" => "3.98", "currency_code" => "USD"}, "presentment_money" => {"amount" => "3.98", "currency_code" => "USD"}}, "line_item" => {"id" => 466157049, "variant_id" => 39072856, "title" => "IPod Nano - 8gb", "quantity" => 1, "sku" => "IPOD2008GREEN", "variant_title" => "green", "vendor" => nil, "fulfillment_service" => "manual", "product_id" => 632910392, "requires_shipping" => true, "taxable" => true, "gift_card" => false, "name" => "IPod Nano - 8gb - green", "variant_inventory_management" => "shopify", "properties" => [{"name" => "Custom Engraving Front", "value" => "Happy Birthday"}, {"name" => "Custom Engraving Back", "value" => "Merry Christmas"}], "product_exists" => true, "fulfillable_quantity" => 1, "grams" => 200, "price" => "199.00", "total_discount" => "0.00", "fulfillment_status" => nil, "price_set" => {"shop_money" => {"amount" => "199.00", "currency_code" => "USD"}, "presentment_money" => {"amount" => "199.00", "currency_code" => "USD"}}, "total_discount_set" => {"shop_money" => {"amount" => "0.00", "currency_code" => "USD"}, "presentment_money" => {"amount" => "0.00", "currency_code" => "USD"}}, "discount_allocations" => [{"amount" => "3.34", "discount_application_index" => 0, "amount_set" => {"shop_money" => {"amount" => "3.34", "currency_code" => "USD"}, "presentment_money" => {"amount" => "3.34", "currency_code" => "USD"}}}], "duties" => [], "admin_graphql_api_id" => "gid://shopify/LineItem/466157049", "tax_lines" => [{"title" => "State Tax", "price" => "3.98", "rate" => 0.06, "channel_liable" => nil, "price_set" => {"shop_money" => {"amount" => "3.98", "currency_code" => "USD"}, "presentment_money" => {"amount" => "3.98", "currency_code" => "USD"}}}]}}], "transactions" => [{"id" => 179259969, "order_id" => 450789469, "kind" => "refund", "gateway" => "bogus", "status" => "success", "message" => nil, "created_at" => "2005-08-05T12:59:12-04:00", "test" => false, "authorization" => "authorization-key", "location_id" => nil, "user_id" => nil, "parent_id" => 801038806, "processed_at" => "2005-08-05T12:59:12-04:00", "device_id" => nil, "error_code" => nil, "source_name" => "web", "receipt" => {}, "amount" => "209.00", "currency" => "USD", "payment_id" => "#1001.3", "admin_graphql_api_id" => "gid://shopify/OrderTransaction/179259969"}], "order_adjustments" => []}}), headers: {})
 
-    ShopifyAPI::Refund.find(
+    response = ShopifyAPI::Refund.find(
       order_id: 450789469,
       id: 509562969,
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-04/orders/450789469/refunds/509562969.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -147,13 +203,27 @@ class Refund202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"refund" => {"shipping" => {"amount" => "2.00", "tax" => "0.00", "maximum_refundable" => "5.00"}, "duties" => [], "total_duties_set" => {"shop_money" => {"amount" => "0.00", "currency_code" => "USD"}, "presentment_money" => {"amount" => "0.00", "currency_code" => "USD"}}, "additional_fees" => [], "total_additional_fees_set" => {"shop_money" => {"amount" => "0.00", "currency_code" => "USD"}, "presentment_money" => {"amount" => "0.00", "currency_code" => "USD"}}, "return" => nil, "refund_line_items" => [], "transactions" => [{"order_id" => 450789469, "kind" => "suggested_refund", "gateway" => "bogus", "parent_id" => 801038806, "amount" => "2.00", "currency" => "USD", "maximum_refundable" => "41.94"}], "currency" => "USD"}}), headers: {})
 
-    refund = ShopifyAPI::Refund.new
+    response = refund = ShopifyAPI::Refund.new
     refund.order_id = 450789469
     refund.calculate(
       body: {"refund" => {"currency" => "USD", "shipping" => {"amount" => 2.0}}},
     )
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-04/orders/450789469/refunds/calculate.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -167,13 +237,27 @@ class Refund202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"refund" => {"shipping" => {"amount" => "5.00", "tax" => "0.00", "maximum_refundable" => "5.00"}, "duties" => [], "total_duties_set" => {"shop_money" => {"amount" => "0.00", "currency_code" => "USD"}, "presentment_money" => {"amount" => "0.00", "currency_code" => "USD"}}, "additional_fees" => [], "total_additional_fees_set" => {"shop_money" => {"amount" => "0.00", "currency_code" => "USD"}, "presentment_money" => {"amount" => "0.00", "currency_code" => "USD"}}, "return" => nil, "refund_line_items" => [{"quantity" => 1, "line_item_id" => 518995019, "location_id" => nil, "restock_type" => "no_restock", "price" => "199.00", "subtotal" => "195.67", "total_tax" => "3.98", "discounted_price" => "199.00", "discounted_total_price" => "199.00", "total_cart_discount_amount" => "3.33"}], "transactions" => [{"order_id" => 450789469, "kind" => "suggested_refund", "gateway" => "bogus", "parent_id" => 801038806, "amount" => "41.94", "currency" => "USD", "maximum_refundable" => "41.94"}], "currency" => "USD"}}), headers: {})
 
-    refund = ShopifyAPI::Refund.new
+    response = refund = ShopifyAPI::Refund.new
     refund.order_id = 450789469
     refund.calculate(
       body: {"refund" => {"currency" => "USD", "shipping" => {"full_refund" => true}, "refund_line_items" => [{"line_item_id" => 518995019, "quantity" => 1, "restock_type" => "no_restock"}]}},
     )
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-04/orders/450789469/refunds/calculate.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -187,13 +271,27 @@ class Refund202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"refund" => {"shipping" => {"amount" => "5.00", "tax" => "0.00", "maximum_refundable" => "5.00"}, "duties" => [], "total_duties_set" => {"shop_money" => {"amount" => "0.00", "currency_code" => "USD"}, "presentment_money" => {"amount" => "0.00", "currency_code" => "USD"}}, "additional_fees" => [], "total_additional_fees_set" => {"shop_money" => {"amount" => "0.00", "currency_code" => "USD"}, "presentment_money" => {"amount" => "0.00", "currency_code" => "USD"}}, "return" => nil, "refund_line_items" => [{"quantity" => 1, "line_item_id" => 518995019, "location_id" => nil, "restock_type" => "no_restock", "price" => "199.00", "subtotal" => "195.67", "total_tax" => "3.98", "discounted_price" => "199.00", "discounted_total_price" => "199.00", "total_cart_discount_amount" => "3.33"}], "transactions" => [{"order_id" => 450789469, "kind" => "suggested_refund", "gateway" => "bogus", "parent_id" => 801038806, "amount" => "41.94", "currency" => "USD", "maximum_refundable" => "41.94"}], "currency" => "USD"}}), headers: {})
 
-    refund = ShopifyAPI::Refund.new
+    response = refund = ShopifyAPI::Refund.new
     refund.order_id = 450789469
     refund.calculate(
       body: {"refund" => {"shipping" => {"full_refund" => true}, "refund_line_items" => [{"line_item_id" => 518995019, "quantity" => 1, "restock_type" => "no_restock"}]}},
     )
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-04/orders/450789469/refunds/calculate.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
 end

@@ -40,11 +40,25 @@ class Report202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"reports" => [{"id" => 517154478, "name" => "Wholesale Sales Report", "shopify_ql" => "SHOW total_sales BY order_id FROM sales WHERE api_client_id == 123 SINCE -1m UNTIL today", "updated_at" => "2017-04-10T16:33:22-04:00", "category" => "custom_app_reports"}, {"id" => 752357116, "name" => "Custom App Report 2", "shopify_ql" => "SHOW total_sales BY order_id FROM sales ORDER BY total_sales", "updated_at" => "2023-02-02T09:09:49-05:00", "category" => "custom_app_reports"}]}), headers: {})
 
-    ShopifyAPI::Report.all(
+    response = ShopifyAPI::Report.all(
       since_id: "123",
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-04/reports.json?since_id=123")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -58,9 +72,23 @@ class Report202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"reports" => [{"id" => 752357116, "name" => "Custom App Report 2", "shopify_ql" => "SHOW total_sales BY order_id FROM sales ORDER BY total_sales", "updated_at" => "2023-02-02T09:09:49-05:00", "category" => "custom_app_reports"}, {"id" => 517154478, "name" => "Wholesale Sales Report", "shopify_ql" => "SHOW total_sales BY order_id FROM sales WHERE api_client_id == 123 SINCE -1m UNTIL today", "updated_at" => "2017-04-10T16:33:22-04:00", "category" => "custom_app_reports"}]}), headers: {})
 
-    ShopifyAPI::Report.all
+    response = ShopifyAPI::Report.all
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-04/reports.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -74,11 +102,25 @@ class Report202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"reports" => [{"id" => 752357116, "shopify_ql" => "SHOW total_sales BY order_id FROM sales ORDER BY total_sales"}, {"id" => 517154478, "shopify_ql" => "SHOW total_sales BY order_id FROM sales WHERE api_client_id == 123 SINCE -1m UNTIL today"}]}), headers: {})
 
-    ShopifyAPI::Report.all(
+    response = ShopifyAPI::Report.all(
       fields: "id,shopify_ql",
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-04/reports.json?fields=id%2Cshopify_ql")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -92,11 +134,25 @@ class Report202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"reports" => [{"id" => 517154478, "name" => "Wholesale Sales Report", "shopify_ql" => "SHOW total_sales BY order_id FROM sales WHERE api_client_id == 123 SINCE -1m UNTIL today", "updated_at" => "2017-04-10T16:33:22-04:00", "category" => "custom_app_reports"}]}), headers: {})
 
-    ShopifyAPI::Report.all(
+    response = ShopifyAPI::Report.all(
       ids: "517154478",
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-04/reports.json?ids=517154478")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -110,11 +166,25 @@ class Report202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"reports" => [{"id" => 752357116, "name" => "Custom App Report 2", "shopify_ql" => "SHOW total_sales BY order_id FROM sales ORDER BY total_sales", "updated_at" => "2023-02-02T09:09:49-05:00", "category" => "custom_app_reports"}, {"id" => 517154478, "name" => "Wholesale Sales Report", "shopify_ql" => "SHOW total_sales BY order_id FROM sales WHERE api_client_id == 123 SINCE -1m UNTIL today", "updated_at" => "2017-04-10T16:33:22-04:00", "category" => "custom_app_reports"}]}), headers: {})
 
-    ShopifyAPI::Report.all(
+    response = ShopifyAPI::Report.all(
       updated_at_min: "2005-07-31 15:57:11 EDT -04:00",
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-04/reports.json?updated_at_min=2005-07-31+15%3A57%3A11+EDT+-04%3A00")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -128,11 +198,25 @@ class Report202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"report" => {"id" => 517154478, "name" => "Wholesale Sales Report", "shopify_ql" => "SHOW total_sales BY order_id FROM sales WHERE api_client_id == 123 SINCE -1m UNTIL today", "updated_at" => "2017-04-10T16:33:22-04:00", "category" => "custom_app_reports"}}), headers: {})
 
-    ShopifyAPI::Report.find(
+    response = ShopifyAPI::Report.find(
       id: 517154478,
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-04/reports/517154478.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -146,12 +230,26 @@ class Report202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"report" => {"id" => 517154478, "shopify_ql" => "SHOW total_sales BY order_id FROM sales WHERE api_client_id == 123 SINCE -1m UNTIL today"}}), headers: {})
 
-    ShopifyAPI::Report.find(
+    response = ShopifyAPI::Report.find(
       id: 517154478,
       fields: "id,shopify_ql",
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-04/reports/517154478.json?fields=id%2Cshopify_ql")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -165,13 +263,27 @@ class Report202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"report" => {"name" => "Changed Report Name", "shopify_ql" => "SHOW total_sales BY order_id FROM sales SINCE -12m UNTIL today ORDER BY total_sales", "id" => 517154478, "updated_at" => "2023-02-02T09:14:24-05:00", "category" => "custom_app_reports"}}), headers: {})
 
-    report = ShopifyAPI::Report.new
+    response = report = ShopifyAPI::Report.new
     report.id = 517154478
     report.name = "Changed Report Name"
     report.shopify_ql = "SHOW total_sales BY order_id FROM sales SINCE -12m UNTIL today ORDER BY total_sales"
     report.save
 
     assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2023-04/reports/517154478.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -185,11 +297,25 @@ class Report202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({}), headers: {})
 
-    ShopifyAPI::Report.delete(
+    response = ShopifyAPI::Report.delete(
       id: 517154478,
     )
 
     assert_requested(:delete, "https://test-shop.myshopify.io/admin/api/2023-04/reports/517154478.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -203,12 +329,26 @@ class Report202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"report" => {"id" => 1016888664, "name" => "A new app report", "shopify_ql" => "SHOW total_sales BY order_id FROM sales SINCE -1m UNTIL today ORDER BY total_sales", "updated_at" => "2023-02-02T09:14:18-05:00", "category" => "custom_app_reports"}}), headers: {})
 
-    report = ShopifyAPI::Report.new
+    response = report = ShopifyAPI::Report.new
     report.name = "A new app report"
     report.shopify_ql = "SHOW total_sales BY order_id FROM sales SINCE -1m UNTIL today ORDER BY total_sales"
     report.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-04/reports.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
 end
