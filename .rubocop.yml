@@ -57,3 +57,6 @@ Layout/EmptyLineAfterGuardClause:
   Enabled: true
 Style/GlobalStdStream:
   Enabled: true
+Layout/LineLength:
+  Exclude:
+    - "test/clients/*"
