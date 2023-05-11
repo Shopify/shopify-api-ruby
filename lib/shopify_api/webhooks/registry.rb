@@ -136,7 +136,7 @@ module ShopifyAPI
         def get_webhook_id(topic:, client:)
           fetch_id_query = <<~QUERY
             {
-              webhookSubscriptions(first: 1, topics: #{topic.gsub("/", "_").upcase}) {
+              webhookSubscriptions(first: 1, topics: #{topic.gsub(%r{/|\.}, "_").upcase}) {
                 edges {
                   node {
                     id
