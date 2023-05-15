@@ -196,6 +196,21 @@ module ShopifyAPITest
         )
       end
 
+      def test_get_webhook_id_success_for_event
+        stub_request(:post, @url)
+          .with(body: JSON.dump({ query: queries[:fetch_id_event_query], variables: nil }))
+          .to_return({ status: 200, body: JSON.dump(queries[:fetch_id_response]) })
+
+        webhook_id_response = ShopifyAPI::Webhooks::Registry.get_webhook_id(
+          topic: "domain.sub_domain.something_happened",
+          client: ShopifyAPI::Clients::Graphql::Admin.new(session: @session),
+        )
+        assert_equal(
+          queries[:fetch_id_response]["data"]["webhookSubscriptions"]["edges"][0]["node"]["id"],
+          webhook_id_response,
+        )
+      end
+
       def test_get_webhook_id_not_found
         stub_request(:post, @url)
           .with(body: JSON.dump({ query: queries[:fetch_id_query], variables: nil }))
