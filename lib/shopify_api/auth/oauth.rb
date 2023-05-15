@@ -93,8 +93,6 @@ module ShopifyAPI
             )
           end
 
-          Context.session_storage&.store_session(session)
-
           { session: session, cookie: cookie }
         end
 
