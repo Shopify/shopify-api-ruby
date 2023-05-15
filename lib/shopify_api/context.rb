@@ -15,7 +15,7 @@ module ShopifyAPI
     @logger = T.let(::Logger.new($stdout), ::Logger)
     @log_level = T.let(:info, Symbol)
     @notified_missing_resources_folder = T.let({}, T::Hash[String, T::Boolean])
-    @active_session = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+    @active_session = T.let(Concurrent::ThreadLocalVar.new { nil }, T.nilable(Concurrent::ThreadLocalVar))
     @user_agent_prefix = T.let(nil, T.nilable(String))
     @old_api_secret_key = T.let(nil, T.nilable(String))
 
@@ -146,12 +146,12 @@ module ShopifyAPI
 
       sig { params(session: T.nilable(Auth::Session)).void }
       def activate_session(session)
-        @active_session.value = session
+        T.must(@active_session).value = session
       end
 
       sig { void }
       def deactivate_session
-        @active_session.value = nil
+        T.must(@active_session).value = nil
       end
 
       sig { returns(String) }

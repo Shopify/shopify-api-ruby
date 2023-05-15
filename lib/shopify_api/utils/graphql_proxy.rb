@@ -21,6 +21,11 @@ module ShopifyAPI
 
           normalized_headers = HttpUtils.normalize_headers(headers)
 
+          unless session.online?
+            raise Errors::SessionNotFoundError,
+              "Failed to load an online session from the provided parameters."
+          end
+
           client = Clients::Graphql::Admin.new(session: session)
 
           case normalized_headers["content-type"]
