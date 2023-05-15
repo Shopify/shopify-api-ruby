@@ -16,7 +16,6 @@ module ShopifyAPITest
         scope: ["scope1", "scope2"],
         is_private: true,
         is_embedded: true,
-        session_storage: ShopifyAPI::Auth::FileSessionStorage.new,
         log_level: :off,
         logger: Logger.new(writer),
         private_shop: "privateshop.myshopify.com",
@@ -38,7 +37,6 @@ module ShopifyAPITest
       assert_equal("http://localhost:3000", ShopifyAPI::Context.host)
       assert_equal(ShopifyAPI::Auth::AuthScopes.new(["scope1", "scope2"]), ShopifyAPI::Context.scope)
       assert(ShopifyAPI::Context.private?)
-      assert_equal(ShopifyAPI::Auth::FileSessionStorage.new, ShopifyAPI::Context.session_storage)
       ShopifyAPI::Context.logger.info("test log")
       assert_match(/test log/, @reader.gets)
       assert_equal("privateshop.myshopify.com", ShopifyAPI::Context.private_shop)
@@ -78,11 +76,6 @@ module ShopifyAPITest
       threads.each(&:join)
     end
 
-    def test_active_session_defaults_to_private_session
-      assert_equal("privateshop.myshopify.com", T.must(ShopifyAPI::Context.active_session).shop)
-      assert_equal("secret", T.must(ShopifyAPI::Context.active_session).access_token)
-    end
-
     def test_active_session_defaults_to_nil
       clear_context
       assert_nil(ShopifyAPI::Context.active_session)
@@ -109,7 +102,6 @@ module ShopifyAPITest
           scope: ["scope1", "scope2"],
           is_private: false,
           is_embedded: true,
-          session_storage: ShopifyAPI::Auth::FileSessionStorage.new,
           logger: Logger.new($stdout),
         )
       end
@@ -128,7 +120,6 @@ module ShopifyAPITest
         scope: ["scope1", "scope2"],
         is_private: true,
         is_embedded: true,
-        session_storage: ShopifyAPI::Auth::FileSessionStorage.new,
         private_shop: "privateshop.myshopify.com",
         user_agent_prefix: "user_agent_prefix1",
         old_api_secret_key: "old_secret",
@@ -153,7 +144,6 @@ module ShopifyAPITest
         is_private: false,
         is_embedded: true,
         logger: ::Logger.new(T.let(StringIO.new, StringIO)),
-        session_storage: ShopifyAPI::Auth::FileSessionStorage.new,
         user_agent_prefix: nil,
         old_api_secret_key: nil,
         log_level: :not_a_level,
@@ -175,7 +165,6 @@ module ShopifyAPITest
         scope: [],
         is_private: false,
         is_embedded: true,
-        session_storage: ShopifyAPI::Auth::FileSessionStorage.new,
         user_agent_prefix: nil,
         old_api_secret_key: nil,
         log_level: :off,

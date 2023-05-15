@@ -9,22 +9,19 @@ module ShopifyAPI
 
         sig do
           params(
+            session: Auth::Session,
             headers: T::Hash[String, T.untyped],
             body: String,
             cookies: T.nilable(T::Hash[String, String]),
             tries: Integer,
           ).returns(Clients::HttpResponse)
         end
-        def proxy_query(headers:, body:, cookies: nil, tries: 1)
+        def proxy_query(session:, headers:, body:, cookies: nil, tries: 1)
           raise Errors::PrivateAppError, "GraphQL proxing is unsupported for private apps." if Context.private?
 
           normalized_headers = HttpUtils.normalize_headers(headers)
 
-          session = Utils::SessionUtils.load_current_session(
-            auth_header: normalized_headers["authorization"], cookies: cookies, is_online: true,
-          )
-
-          if session.nil? || !session.online?
+          unless session.online?
             raise Errors::SessionNotFoundError,
               "Failed to load an online session from the provided parameters."
           end

@@ -15,8 +15,7 @@ module ShopifyAPI
     @logger = T.let(::Logger.new($stdout), ::Logger)
     @log_level = T.let(:info, Symbol)
     @notified_missing_resources_folder = T.let({}, T::Hash[String, T::Boolean])
-    @active_session = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
-    @session_storage = T.let(nil, T.nilable(ShopifyAPI::Auth::SessionStorage))
+    @active_session = T.let(Concurrent::ThreadLocalVar.new { nil }, T.nilable(Concurrent::ThreadLocalVar))
     @user_agent_prefix = T.let(nil, T.nilable(String))
     @old_api_secret_key = T.let(nil, T.nilable(String))
 
@@ -35,7 +34,6 @@ module ShopifyAPI
           is_embedded: T::Boolean,
           log_level: T.any(String, Symbol),
           logger: ::Logger,
-          session_storage: T.nilable(ShopifyAPI::Auth::SessionStorage),
           host_name: T.nilable(String),
           host: T.nilable(String),
           private_shop: T.nilable(String),
@@ -52,7 +50,6 @@ module ShopifyAPI
         is_embedded:,
         log_level: :info,
         logger: ::Logger.new($stdout),
-        session_storage: nil,
         host_name: nil,
         host: ENV["HOST"] || "https://#{host_name}",
         private_shop: nil,
@@ -71,7 +68,6 @@ module ShopifyAPI
         @is_private = is_private
         @scope = Auth::AuthScopes.new(scope)
         @is_embedded = is_embedded
-        @session_storage = session_storage
         @logger = logger
         @private_shop = private_shop
         @user_agent_prefix = user_agent_prefix
@@ -80,13 +76,6 @@ module ShopifyAPI
           log_level.to_sym
         else
           :info
-        end
-
-        if @session_storage
-          ::ShopifyAPI::Logger.deprecated("The use of SessionStorage in the API library has been deprecated. " \
-            "The ShopifyAPI will no longer have responsibility for session persistence. " \
-            "Upgrading to `shopify_app` 21.3 will allow you to remove session_storage" \
-            " from the API library Context configuration.", "13.0.0")
         end
 
         load_rest_resources(api_version: api_version)
@@ -126,9 +115,6 @@ module ShopifyAPI
       sig { returns(Auth::AuthScopes) }
       attr_reader :scope
 
-      sig { returns(T.nilable(ShopifyAPI::Auth::SessionStorage)) }
-      attr_reader :session_storage
-
       sig { returns(::Logger) }
       attr_reader :logger
 
@@ -155,19 +141,17 @@ module ShopifyAPI
 
       sig { returns(T.nilable(Auth::Session)) }
       def active_session
-        return @active_session.value unless @active_session.value.nil?
-
-        private? ? Utils::SessionUtils.load_current_session : nil
+        @active_session&.value
       end
 
       sig { params(session: T.nilable(Auth::Session)).void }
       def activate_session(session)
-        @active_session.value = session
+        T.must(@active_session).value = session
       end
 
       sig { void }
       def deactivate_session
-        @active_session.value = nil
+        T.must(@active_session).value = nil
       end
 
       sig { returns(String) }
