@@ -397,6 +397,53 @@ module ShopifyAPITest
 
         customer.save
       end
+
+      def test_put_requests_for_resource_with_read_only_attributes
+        stub_request(:get, "https://test-shop.myshopify.com/admin/api/unstable/variants/169.json")
+          .to_return(
+            status: 200,
+            body: JSON.generate(
+              {
+                "variant" => {
+                  "id" => 169,
+                  "product_id" => 116,
+                  "title" => "Default Title",
+                  "price" => "2.50",
+                  "sku" => "SKU123",
+                  "position" => 1,
+                  "inventory_policy" => "deny",
+                  "compare_at_price" => nil,
+                  "fulfillment_service" => "manual",
+                  "inventory_management" => nil,
+                  "option1" => "Default Title",
+                  "option2" => nil,
+                  "option3" => nil,
+                  "created_at" => "2023-05-10T16:37:23-04:00",
+                  "updated_at" => "2023-05-10T16:37:23-04:00",
+                  "taxable" => true,
+                  "barcode" => "0000",
+                  "grams" => 45359236093,
+                  "image_id" => nil,
+                  "weight" => 99999998.0,
+                  "weight_unit" => "lb",
+                  "inventory_item_id" => 167,
+                  "inventory_quantity" => 0,
+                  "old_inventory_quantity" => 0,
+                  "requires_shipping" => true,
+                  "admin_graphql_api_id" => "gid://shopify/ProductVariant/169",
+                },
+              },
+            ),
+          )
+
+        variant = ShopifyAPI::Variant.find(id: 169, session: @session)
+        variant.client.expects(:put).with(
+          body: { "variant" => { "barcode" => "1234" } },
+          path: "variants/169.json",
+        )
+        variant.barcode = "1234"
+        variant.save
+      end
     end
   end
 end
