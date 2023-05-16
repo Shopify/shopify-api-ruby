@@ -361,8 +361,12 @@ module ShopifyAPI
 
       sig { returns(T::Hash[String, String]) }
       def attributes_to_update
+        original_state_for_update = original_state.reject do |attribute, _|
+          self.class.read_only_attributes&.include?("@#{attribute}".to_sym)
+        end
+
         HashDiff::Comparison.new(
-          deep_stringify_keys(original_state),
+          deep_stringify_keys(original_state_for_update),
           deep_stringify_keys(to_hash(true)),
         ).left_diff
       end
