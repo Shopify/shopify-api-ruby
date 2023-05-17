@@ -4,6 +4,5 @@
 
 # typed: false
 
-module RDoc::Task; end
 module Rack::Request::Env; end
 module Rack::Request::Helpers; end
