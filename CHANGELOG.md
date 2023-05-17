@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+ - [#1159](https://github.com/Shopify/shopify-api-ruby/pull/1159) Backport fixes around computing attribute changesets when saving REST resources
+
 ## Version 10.1.0
 
 - [#933](https://github.com/Shopify/shopify_api/pull/933) Fix syntax of GraphQL query in `Webhooks.get_webhook_id` method by removing extra curly brace
