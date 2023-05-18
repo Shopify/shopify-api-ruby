@@ -7,7 +7,7 @@ module ShopifyAPITest
   class ContextTest < Minitest::Test
     def setup
       @reader, writer = IO.pipe
-      ENV["HOST"] = "http://localhost:3000"
+      ENV["SHOPIFY_APP_URL"] = "http://localhost:3000"
 
       ShopifyAPI::Context.setup(
         api_key: "key",
@@ -107,10 +107,10 @@ module ShopifyAPITest
       end
     end
 
-    def test_with_host_name_and_no_host_env
+    def test_with_host_name_and_no_env_var
       clear_context
-      old_host = ENV["HOST"]
-      ENV["HOST"] = nil
+      old_host = ENV["SHOPIFY_APP_URL"]
+      ENV["SHOPIFY_APP_URL"] = nil
 
       ShopifyAPI::Context.setup(
         api_key: "key",
@@ -128,7 +128,32 @@ module ShopifyAPITest
       assert_equal("https", ShopifyAPI::Context.host_scheme)
       assert_equal("https://tunnel-o-security.com", ShopifyAPI::Context.host)
       assert_equal("tunnel-o-security.com", ShopifyAPI::Context.host_name)
-      ENV["HOST"] = old_host
+    ensure
+      ENV["SHOPIFY_APP_URL"] = old_host
+    end
+
+    def test_with_host_env_var
+      clear_context
+      ENV["HOST"] = "http://localhost:3000"
+
+      ShopifyAPI::Context.setup(
+        api_key: "key",
+        api_secret_key: "secret",
+        api_version: "unstable",
+        host_name: "tunnel-o-security.com",
+        scope: ["scope1", "scope2"],
+        is_private: true,
+        is_embedded: true,
+        private_shop: "privateshop.myshopify.com",
+        user_agent_prefix: "user_agent_prefix1",
+        old_api_secret_key: "old_secret",
+        log_level: :off,
+      )
+      assert_equal("http", ShopifyAPI::Context.host_scheme)
+      assert_equal("http://localhost:3000", ShopifyAPI::Context.host)
+      assert_equal("localhost", ShopifyAPI::Context.host_name)
+    ensure
+      ENV["HOST"] = nil
     end
 
     def test_send_a_warning_if_log_level_is_invalid

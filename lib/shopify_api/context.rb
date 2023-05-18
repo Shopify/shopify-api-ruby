@@ -51,7 +51,7 @@ module ShopifyAPI
         log_level: :info,
         logger: ::Logger.new($stdout),
         host_name: nil,
-        host: ENV["HOST"] || "https://#{host_name}",
+        host: ENV["SHOPIFY_APP_URL"] || ENV["HOST"] || "https://#{host_name}",
         private_shop: nil,
         user_agent_prefix: nil,
         old_api_secret_key: nil
