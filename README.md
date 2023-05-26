@@ -52,18 +52,11 @@ ShopifyAPI::Context.setup(
   api_secret_key: "<api-secret-key>",
   host: "<https://application-host-name.com>",
   scope: "read_orders,read_products,etc",
-  session_storage: ShopifyAPI::Auth::FileSessionStorage.new, # See more details below
   is_embedded: true, # Set to true if you are building an embedded app
   api_version: "2022-01", # The version of the API you would like to use
   is_private: false, # Set to true if you have an existing private app
 )
 ```
-
-### Setup a Session Store
-
-In order for the Shopify API gem to properly store sessions it needs an implementation of `ShopifyAPI::Auth::SessionStorage`. We provide one implementation in the gem, `ShopifyAPI::Auth::FileSessionStorage`, which is suitable for testing/development, but isn't intended for production apps. See the [Session Storage doc](docs/usage/session_storage.md) for instructions on how to create a custom session store for a production application.
-
-Session information would is typically stored in cookies on the browser. However, due to restrictions with modern browsers we highly discourage using cookies for embedded apps. For this reason, an app needs to define a storage implementation that the library can use to store and retrieve a session given its ID. In a non-embedded app this ID will come from a cookie, whereas in an embedded app this ID will come from [App Bridge](https://shopify.dev/docs/apps/tools/app-bridge).
 
 ### Performing OAuth
 
