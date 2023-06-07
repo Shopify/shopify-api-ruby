@@ -5,6 +5,7 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
 
 - [#1157](https://github.com/Shopify/shopify-api-ruby/pull/1157) Fix an issue where read-only attributes are included when saving REST resources
+- [#1169](https://github.com/Shopify/shopify-api-ruby/pull/1169) Unpin zeitwerk version from 2.6.5
 
 ## 13.0.0
 
