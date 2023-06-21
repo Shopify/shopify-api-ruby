@@ -28,7 +28,7 @@ ShopifyAPI::Context.setup(
   scope: "read_orders,read_products,etc",
   is_embedded: true, # Set to true if you are building an embedded app
   is_private: false, # Set to true if you are building a private app
-  api_version: "2021-01" # The vesion of the API you would like to use
+  api_version: "2021-01" # The version of the API you would like to use
 )
 ```
 

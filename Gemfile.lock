@@ -11,7 +11,7 @@ PATH
       openssl
       securerandom
       sorbet-runtime
-      zeitwerk (~> 2.5, < 2.6.5)
+      zeitwerk (~> 2.5)
 
 GEM
   remote: https://rubygems.org/
@@ -133,7 +133,7 @@ GEM
     yard-sorbet (0.7.0)
       sorbet-runtime (>= 0.5)
       yard (>= 0.9)
-    zeitwerk (2.6.4)
+    zeitwerk (2.6.8)
 
 PLATFORMS
   arm64-darwin-21
