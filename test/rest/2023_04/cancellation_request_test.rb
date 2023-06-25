@@ -40,12 +40,26 @@ class CancellationRequest202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"fulfillment_order" => {"id" => 1046000834, "shop_id" => 548380009, "order_id" => 450789469, "assigned_location_id" => 24826418, "request_status" => "cancellation_requested", "status" => "in_progress", "supported_actions" => ["cancel_fulfillment_order", "create_fulfillment"], "destination" => {"id" => 1046000825, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "company" => nil, "country" => "United States", "email" => "bob.norman@mail.example.com", "first_name" => "Bob", "last_name" => "Norman", "phone" => "+1(502)-459-2181", "province" => "Kentucky", "zip" => "40202"}, "origin" => {"address1" => nil, "address2" => nil, "city" => nil, "country_code" => "DE", "location_id" => 24826418, "name" => "Apple Api Shipwire", "phone" => nil, "province" => nil, "zip" => nil}, "line_items" => [{"id" => 1058737581, "shop_id" => 548380009, "fulfillment_order_id" => 1046000834, "quantity" => 1, "line_item_id" => 518995019, "inventory_item_id" => 49148385, "fulfillable_quantity" => 1, "variant_id" => 49148385}], "outgoing_requests" => [], "fulfillment_service_handle" => "shipwire-app"}}), headers: {})
 
-    cancellation_request = ShopifyAPI::CancellationRequest.new
+    response = cancellation_request = ShopifyAPI::CancellationRequest.new
     cancellation_request.fulfillment_order_id = 1046000834
     cancellation_request.message = "The customer changed his mind."
     cancellation_request.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000834/cancellation_request.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -59,13 +73,27 @@ class CancellationRequest202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"fulfillment_order" => {"id" => 1046000836, "shop_id" => 548380009, "order_id" => 450789469, "assigned_location_id" => 24826418, "request_status" => "cancellation_accepted", "status" => "cancelled", "supported_actions" => ["request_fulfillment", "create_fulfillment"], "destination" => {"id" => 1046000827, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "company" => nil, "country" => "United States", "email" => "bob.norman@mail.example.com", "first_name" => "Bob", "last_name" => "Norman", "phone" => "+1(502)-459-2181", "province" => "Kentucky", "zip" => "40202"}, "origin" => {"address1" => nil, "address2" => nil, "city" => nil, "country_code" => "DE", "location_id" => 24826418, "name" => "Apple Api Shipwire", "phone" => nil, "province" => nil, "zip" => nil}, "line_items" => [{"id" => 1058737583, "shop_id" => 548380009, "fulfillment_order_id" => 1046000836, "quantity" => 1, "line_item_id" => 518995019, "inventory_item_id" => 49148385, "fulfillable_quantity" => 1, "variant_id" => 49148385}], "outgoing_requests" => [], "fulfillment_service_handle" => "shipwire-app"}}), headers: {})
 
-    cancellation_request = ShopifyAPI::CancellationRequest.new
+    response = cancellation_request = ShopifyAPI::CancellationRequest.new
     cancellation_request.fulfillment_order_id = 1046000836
     cancellation_request.accept(
       body: {"cancellation_request" => {"message" => "We had not started any processing yet."}},
     )
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000836/cancellation_request/accept.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -79,13 +107,27 @@ class CancellationRequest202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"fulfillment_order" => {"id" => 1046000835, "shop_id" => 548380009, "order_id" => 450789469, "assigned_location_id" => 24826418, "request_status" => "cancellation_rejected", "status" => "in_progress", "supported_actions" => [], "destination" => {"id" => 1046000826, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "company" => nil, "country" => "United States", "email" => "bob.norman@mail.example.com", "first_name" => "Bob", "last_name" => "Norman", "phone" => "+1(502)-459-2181", "province" => "Kentucky", "zip" => "40202"}, "origin" => {"address1" => nil, "address2" => nil, "city" => nil, "country_code" => "DE", "location_id" => 24826418, "name" => "Apple Api Shipwire", "phone" => nil, "province" => nil, "zip" => nil}, "line_items" => [{"id" => 1058737582, "shop_id" => 548380009, "fulfillment_order_id" => 1046000835, "quantity" => 1, "line_item_id" => 518995019, "inventory_item_id" => 49148385, "fulfillable_quantity" => 1, "variant_id" => 49148385}], "outgoing_requests" => [], "fulfillment_service_handle" => "shipwire-app"}}), headers: {})
 
-    cancellation_request = ShopifyAPI::CancellationRequest.new
+    response = cancellation_request = ShopifyAPI::CancellationRequest.new
     cancellation_request.fulfillment_order_id = 1046000835
     cancellation_request.reject(
       body: {"cancellation_request" => {"message" => "We have already send the shipment out."}},
     )
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000835/cancellation_request/reject.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
 end

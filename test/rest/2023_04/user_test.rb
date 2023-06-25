@@ -40,9 +40,23 @@ class User202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"users" => [{"id" => 548380009, "first_name" => "John", "email" => "j.smith@example.com", "url" => "www.example.com", "im" => nil, "screen_name" => nil, "phone" => nil, "last_name" => "Smith", "account_owner" => true, "receive_announcements" => 1, "bio" => nil, "permissions" => ["applications", "beacons", "billing_application_charges", "channels", "content", "content_entries_delete", "content_entries_edit", "content_entries_view", "content_models_delete", "content_models_edit", "content_models_view", "custom_pixels_management", "custom_pixels_view", "customers", "dashboard", "domains", "draft_orders", "edit_orders", "edit_private_apps", "gift_cards", "links", "locations", "marketing", "marketing_section", "metaobjects_delete", "metaobjects_edit", "metaobjects_view", "metaobject_definitions_delete", "metaobject_definitions_edit", "metaobject_definitions_view", "orders", "overviews", "pages", "pay_draft_orders_by_credit_card", "pay_orders_by_credit_card", "pay_orders_by_vaulted_card", "preferences", "products", "refund_orders", "reports", "translations", "themes", "view_private_apps", "shopify_payments_accounts", "shopify_payments_transfers", "staff_audit_log_view", "staff_management_update", "applications_billing", "attestation_authority", "authentication_management", "balance_bank_accounts_management", "billing_charges", "billing_invoices_pay", "billing_invoices_view", "billing_payment_methods_manage", "billing_payment_methods_view", "billing_settings", "billing_subscriptions", "capital", "shopify_credit", "customer_private_data", "erase_customer_data", "request_customer_data", "domains_management", "domains_transfer_out", "enable_private_apps", "experiments_management", "gdpr_actions", "manage_tap_to_pay", "payment_settings", "upgrade_to_plus_plan", "shopify_payments", "staff_api_permission_management", "staff_management", "staff_management_activation", "staff_management_create", "staff_management_delete", "support_methods", "collaborator_request_management", "collaborator_request_settings", "export_customers", "export_draft_orders", "export_orders", "export_products"], "locale" => "en", "user_type" => "regular", "admin_graphql_api_id" => "gid://shopify/StaffMember/548380009", "tfa_enabled?" => false}, {"id" => 930143300, "first_name" => "John", "email" => "j.limited@example.com", "url" => "www.example.com", "im" => nil, "screen_name" => nil, "phone" => nil, "last_name" => "Limited", "account_owner" => false, "receive_announcements" => 1, "bio" => nil, "permissions" => [], "locale" => "en", "user_type" => "regular", "admin_graphql_api_id" => "gid://shopify/StaffMember/930143300", "tfa_enabled?" => false}]}), headers: {})
 
-    ShopifyAPI::User.all
+    response = ShopifyAPI::User.all
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-04/users.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -56,11 +70,25 @@ class User202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"user" => {"id" => 548380009, "first_name" => "John", "email" => "j.smith@example.com", "url" => "www.example.com", "im" => nil, "screen_name" => nil, "phone" => nil, "last_name" => "Smith", "account_owner" => true, "receive_announcements" => 1, "bio" => nil, "permissions" => ["applications", "beacons", "billing_application_charges", "channels", "content", "content_entries_delete", "content_entries_edit", "content_entries_view", "content_models_delete", "content_models_edit", "content_models_view", "custom_pixels_management", "custom_pixels_view", "customers", "dashboard", "domains", "draft_orders", "edit_orders", "edit_private_apps", "gift_cards", "links", "locations", "marketing", "marketing_section", "metaobjects_delete", "metaobjects_edit", "metaobjects_view", "metaobject_definitions_delete", "metaobject_definitions_edit", "metaobject_definitions_view", "orders", "overviews", "pages", "pay_draft_orders_by_credit_card", "pay_orders_by_credit_card", "pay_orders_by_vaulted_card", "preferences", "products", "refund_orders", "reports", "translations", "themes", "view_private_apps", "shopify_payments_accounts", "shopify_payments_transfers", "staff_audit_log_view", "staff_management_update", "applications_billing", "attestation_authority", "authentication_management", "balance_bank_accounts_management", "billing_charges", "billing_invoices_pay", "billing_invoices_view", "billing_payment_methods_manage", "billing_payment_methods_view", "billing_settings", "billing_subscriptions", "capital", "shopify_credit", "customer_private_data", "erase_customer_data", "request_customer_data", "domains_management", "domains_transfer_out", "enable_private_apps", "experiments_management", "gdpr_actions", "manage_tap_to_pay", "payment_settings", "upgrade_to_plus_plan", "shopify_payments", "staff_api_permission_management", "staff_management", "staff_management_activation", "staff_management_create", "staff_management_delete", "support_methods", "collaborator_request_management", "collaborator_request_settings", "export_customers", "export_draft_orders", "export_orders", "export_products"], "locale" => "en", "user_type" => "regular", "admin_graphql_api_id" => "gid://shopify/StaffMember/548380009", "tfa_enabled?" => false}}), headers: {})
 
-    ShopifyAPI::User.find(
+    response = ShopifyAPI::User.find(
       id: 548380009,
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-04/users/548380009.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -74,9 +102,23 @@ class User202304Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"user" => {"id" => 548380009, "first_name" => "John", "email" => "j.smith@example.com", "url" => "www.example.com", "im" => nil, "screen_name" => nil, "phone" => nil, "last_name" => "Smith", "account_owner" => true, "receive_announcements" => 1, "bio" => nil, "permissions" => ["applications", "beacons", "billing_application_charges", "channels", "content", "content_entries_delete", "content_entries_edit", "content_entries_view", "content_models_delete", "content_models_edit", "content_models_view", "custom_pixels_management", "custom_pixels_view", "customers", "dashboard", "domains", "draft_orders", "edit_orders", "edit_private_apps", "gift_cards", "links", "locations", "marketing", "marketing_section", "metaobjects_delete", "metaobjects_edit", "metaobjects_view", "metaobject_definitions_delete", "metaobject_definitions_edit", "metaobject_definitions_view", "orders", "overviews", "pages", "pay_draft_orders_by_credit_card", "pay_orders_by_credit_card", "pay_orders_by_vaulted_card", "preferences", "products", "refund_orders", "reports", "translations", "themes", "view_private_apps", "shopify_payments_accounts", "shopify_payments_transfers", "staff_audit_log_view", "staff_management_update", "applications_billing", "attestation_authority", "authentication_management", "balance_bank_accounts_management", "billing_charges", "billing_invoices_pay", "billing_invoices_view", "billing_payment_methods_manage", "billing_payment_methods_view", "billing_settings", "billing_subscriptions", "capital", "shopify_credit", "customer_private_data", "erase_customer_data", "request_customer_data", "domains_management", "domains_transfer_out", "enable_private_apps", "experiments_management", "gdpr_actions", "manage_tap_to_pay", "payment_settings", "upgrade_to_plus_plan", "shopify_payments", "staff_api_permission_management", "staff_management", "staff_management_activation", "staff_management_create", "staff_management_delete", "support_methods", "collaborator_request_management", "collaborator_request_settings", "export_customers", "export_draft_orders", "export_orders", "export_products"], "locale" => "en", "user_type" => "regular", "admin_graphql_api_id" => "gid://shopify/StaffMember/548380009", "tfa_enabled?" => false}}), headers: {})
 
-    ShopifyAPI::User.current
+    response = ShopifyAPI::User.current
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-04/users/current.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
 end

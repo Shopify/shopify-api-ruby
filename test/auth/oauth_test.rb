@@ -156,11 +156,6 @@ module ShopifyAPITest
         expected_cookie = ShopifyAPI::Auth::Oauth::SessionCookie.new(value: "", expires: @stubbed_time_now)
 
         modify_context(is_embedded: true)
-        ShopifyAPI::Context.session_storage.store_session(ShopifyAPI::Auth::Session.new(
-          shop: @shop,
-          id: @session_cookie,
-          state: @callback_state,
-        ))
 
         got = Time.stub(:now, @stubbed_time_now) do
           ShopifyAPI::Auth::Oauth.validate_auth_callback(cookies: @cookies, auth_query: @auth_query)
@@ -186,12 +181,6 @@ module ShopifyAPITest
         expected_cookie = ShopifyAPI::Auth::Oauth::SessionCookie.new(value: expected_session.id,
           expires: expected_session.expires)
 
-        ShopifyAPI::Context.session_storage.store_session(ShopifyAPI::Auth::Session.new(
-          shop: @shop,
-          id: @session_cookie,
-          state: @callback_state,
-          is_online: true,
-        ))
         got = Time.stub(:now, @stubbed_time_now) do
           ShopifyAPI::Auth::Oauth.validate_auth_callback(cookies: @cookies, auth_query: @auth_query)
         end
@@ -219,12 +208,6 @@ module ShopifyAPITest
         )
 
         modify_context(is_embedded: true)
-        ShopifyAPI::Context.session_storage.store_session(ShopifyAPI::Auth::Session.new(
-          shop: @shop,
-          id: @session_cookie,
-          state: @callback_state,
-          is_online: true,
-        ))
         got = Time.stub(:now, @stubbed_time_now) do
           ShopifyAPI::Auth::Oauth.validate_auth_callback(cookies: @cookies, auth_query: @auth_query)
         end
@@ -275,11 +258,6 @@ module ShopifyAPITest
       def test_validate_auth_callback_bad_http_response
         stub_request(:post, "https://#{@shop}/admin/oauth/access_token").to_return(status: 500)
 
-        ShopifyAPI::Context.session_storage.store_session(ShopifyAPI::Auth::Session.new(
-          shop: @shop,
-          id: @session_cookie,
-          state: @callback_state,
-        ))
         assert_raises(ShopifyAPI::Errors::RequestAccessTokenError) do
           ShopifyAPI::Auth::Oauth.validate_auth_callback(cookies: @cookies, auth_query: @auth_query)
         end
@@ -312,7 +290,6 @@ module ShopifyAPITest
 
       def verify_oauth_complete(got:, expected_session:, expected_cookie:)
         assert_equal(expected_session, got[:session])
-        assert_equal(expected_session, ShopifyAPI::Context.session_storage.sessions[expected_session.id])
         assert_equal(expected_cookie, got[:cookie])
       end
     end
