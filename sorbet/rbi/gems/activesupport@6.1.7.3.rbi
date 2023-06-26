@@ -87,7 +87,6 @@ class ActiveSupport::Inflector::Inflections
 
   class << self
     def instance(locale = T.unsafe(nil)); end
-    def instance_or_fallback(locale); end
   end
 end
 
@@ -212,6 +211,8 @@ module ActiveSupport::Multibyte::Unicode
 
   def compose(codepoints); end
   def decompose(type, codepoints); end
+  def default_normalization_form; end
+  def default_normalization_form=(_); end
   def tidy_bytes(string, force = T.unsafe(nil)); end
 
   private
@@ -309,7 +310,7 @@ class Date
   def inspect; end
   def readable_inspect; end
   def to_formatted_s(format = T.unsafe(nil)); end
-  def to_fs(format = T.unsafe(nil)); end
+  def to_s(format = T.unsafe(nil)); end
   def to_time(form = T.unsafe(nil)); end
   def xmlschema; end
 end
@@ -368,8 +369,8 @@ class DateTime < ::Date
   def subsec; end
   def to_f; end
   def to_formatted_s(format = T.unsafe(nil)); end
-  def to_fs(format = T.unsafe(nil)); end
   def to_i; end
+  def to_s(format = T.unsafe(nil)); end
   def usec; end
   def utc; end
   def utc?; end
@@ -415,7 +416,6 @@ class Hash
   def as_json(options = T.unsafe(nil)); end
   def deep_merge(other_hash, &block); end
   def deep_merge!(other_hash, &block); end
-  def except(*keys); end
   def except!(*keys); end
   def extract!(*keys); end
   def slice!(*keys); end
@@ -456,6 +456,9 @@ end
 
 IO::EWOULDBLOCKWaitReadable = IO::EAGAINWaitReadable
 IO::EWOULDBLOCKWaitWritable = IO::EAGAINWaitWritable
+IO::PRIORITY = T.let(T.unsafe(nil), Integer)
+IO::READABLE = T.let(T.unsafe(nil), Integer)
+IO::WRITABLE = T.let(T.unsafe(nil), Integer)
 
 class IPAddr
   include ::Comparable
@@ -463,8 +466,11 @@ class IPAddr
   def as_json(options = T.unsafe(nil)); end
 end
 
+class LoadError < ::ScriptError
+  include ::DidYouMean::Correctable
+end
+
 class Module
-  def as_json(options = T.unsafe(nil)); end
   def cattr_accessor(*syms, instance_reader: T.unsafe(nil), instance_writer: T.unsafe(nil), instance_accessor: T.unsafe(nil), default: T.unsafe(nil), &blk); end
   def cattr_reader(*syms, instance_reader: T.unsafe(nil), instance_accessor: T.unsafe(nil), default: T.unsafe(nil), location: T.unsafe(nil)); end
   def cattr_writer(*syms, instance_writer: T.unsafe(nil), instance_accessor: T.unsafe(nil), default: T.unsafe(nil), location: T.unsafe(nil)); end
@@ -618,7 +624,6 @@ end
 
 Struct::Group = Etc::Group
 Struct::Passwd = Etc::Passwd
-Struct::Tms = Process::Tms
 
 class Symbol
   include ::Comparable
@@ -634,7 +639,7 @@ class Time
   def blank?; end
   def formatted_offset(colon = T.unsafe(nil), alternate_utc_string = T.unsafe(nil)); end
   def to_formatted_s(format = T.unsafe(nil)); end
-  def to_fs(format = T.unsafe(nil)); end
+  def to_s(format = T.unsafe(nil)); end
 end
 
 Time::DATE_FORMATS = T.let(T.unsafe(nil), Hash)
