@@ -1,8 +1,7 @@
 PATH
   remote: .
   specs:
-    shopify_api (13.0.0)
-      activesupport
+    shopify_api (10.0.3)
       concurrent-ruby
       hash_diff
       httparty
@@ -16,11 +15,12 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (7.0.4.3)
+    activesupport (7.0.1)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
+      zeitwerk (~> 2.3)
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
     ast (2.4.2)
@@ -90,23 +90,17 @@ GEM
       sorbet-runtime
       syntax_tree (>= 3.4)
     ruby-progressbar (1.11.0)
-    securerandom (0.2.2)
-    sorbet (0.5.10438)
-      sorbet-static (= 0.5.10438)
-    sorbet-runtime (0.5.10438)
-    sorbet-static (0.5.10438-universal-darwin-21)
-    sorbet-static (0.5.10438-universal-darwin-22)
-    sorbet-static (0.5.10438-x86_64-linux)
-    sorbet-static-and-runtime (0.5.10438)
-      sorbet (= 0.5.10438)
-      sorbet-runtime (= 0.5.10438)
-    spoom (1.1.11)
+    securerandom (0.2.0)
+    sorbet (0.5.9924)
+      sorbet-static (= 0.5.9924)
+    sorbet-runtime (0.5.9924)
+    sorbet-static (0.5.9924-universal-darwin-21)
+    sorbet-static (0.5.9924-x86_64-linux)
+    spoom (1.1.8)
       sorbet (>= 0.5.9204)
       sorbet-runtime (>= 0.5.9204)
       thor (>= 0.19.2)
-    syntax_tree (3.6.1)
-      prettier_print
-    tapioca (0.10.2)
+    tapioca (0.6.3)
       bundler (>= 1.17.3)
       netrc (>= 0.11.0)
       parallel (>= 1.21.0)
