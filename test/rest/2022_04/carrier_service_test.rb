@@ -38,7 +38,7 @@ class CarrierService202204Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "carrier_service" => hash_including({"name" => "Shipping Rate Provider", "callback_url" => "http://shipping.example.com", "service_discovery" => true}) }
       )
-      .to_return(status: 200, body: JSON.generate({"carrier_service" => {"id" => 1036895016, "name" => "Shipping Rate Provider", "active" => true, "service_discovery" => true, "carrier_service_type" => "api", "admin_graphql_api_id" => "gid://shopify/DeliveryCarrierService/1036895016", "format" => "json", "callback_url" => "http://shipping.example.com/"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"carrier_service" => {"id" => 1036894959, "name" => "Shipping Rate Provider", "active" => true, "service_discovery" => true, "carrier_service_type" => "api", "admin_graphql_api_id" => "gid://shopify/DeliveryCarrierService/1036894959", "format" => "json", "callback_url" => "http://shipping.example.com/"}}), headers: {})
 
     response = carrier_service = ShopifyAPI::CarrierService.new
     carrier_service.name = "Shipping Rate Provider"
@@ -72,7 +72,7 @@ class CarrierService202204Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"carrier_services" => [{"id" => 1036895019, "name" => "Purolator", "active" => true, "service_discovery" => true, "carrier_service_type" => "api", "admin_graphql_api_id" => "gid://shopify/DeliveryCarrierService/1036895019", "format" => "json", "callback_url" => "http://example.com/"}, {"id" => 260046840, "name" => "ups_shipping", "active" => true, "service_discovery" => true, "carrier_service_type" => "legacy", "admin_graphql_api_id" => "gid://shopify/DeliveryCarrierService/260046840"}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"carrier_services" => [{"id" => 1036894956, "name" => "Purolator", "active" => true, "service_discovery" => true, "carrier_service_type" => "api", "admin_graphql_api_id" => "gid://shopify/DeliveryCarrierService/1036894956", "format" => "json", "callback_url" => "http://example.com/"}, {"id" => 260046840, "name" => "ups_shipping", "active" => true, "service_discovery" => true, "carrier_service_type" => "legacy", "admin_graphql_api_id" => "gid://shopify/DeliveryCarrierService/260046840"}]}), headers: {})
 
     response = ShopifyAPI::CarrierService.all
 
@@ -97,20 +97,20 @@ class CarrierService202204Test < Test::Unit::TestCase
     void
   end
   def test_3()
-    stub_request(:put, "https://test-shop.myshopify.io/admin/api/2022-04/carrier_services/1036895017.json")
+    stub_request(:put, "https://test-shop.myshopify.io/admin/api/2022-04/carrier_services/1036894957.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "carrier_service" => hash_including({"name" => "Some new name", "active" => false}) }
       )
-      .to_return(status: 200, body: JSON.generate({"carrier_service" => {"active" => false, "id" => 1036895017, "name" => "Some new name", "service_discovery" => true, "carrier_service_type" => "api", "admin_graphql_api_id" => "gid://shopify/DeliveryCarrierService/1036895017", "format" => "json", "callback_url" => "http://example.com/"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"carrier_service" => {"active" => false, "id" => 1036894957, "name" => "Some new name", "service_discovery" => true, "carrier_service_type" => "api", "admin_graphql_api_id" => "gid://shopify/DeliveryCarrierService/1036894957", "format" => "json", "callback_url" => "http://example.com/"}}), headers: {})
 
     response = carrier_service = ShopifyAPI::CarrierService.new
-    carrier_service.id = 1036895017
+    carrier_service.id = 1036894957
     carrier_service.name = "Some new name"
     carrier_service.active = false
     carrier_service.save
 
-    assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2022-04/carrier_services/1036895017.json")
+    assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2022-04/carrier_services/1036894957.json")
 
     response = response.first if response.respond_to?(:first)
 
@@ -131,18 +131,18 @@ class CarrierService202204Test < Test::Unit::TestCase
     void
   end
   def test_4()
-    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-04/carrier_services/1036895021.json")
+    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-04/carrier_services/1036894960.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"carrier_service" => {"id" => 1036895021, "name" => "Purolator", "active" => true, "service_discovery" => true, "carrier_service_type" => "api", "admin_graphql_api_id" => "gid://shopify/DeliveryCarrierService/1036895021", "format" => "json", "callback_url" => "http://example.com/"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"carrier_service" => {"id" => 1036894960, "name" => "Purolator", "active" => true, "service_discovery" => true, "carrier_service_type" => "api", "admin_graphql_api_id" => "gid://shopify/DeliveryCarrierService/1036894960", "format" => "json", "callback_url" => "http://example.com/"}}), headers: {})
 
     response = ShopifyAPI::CarrierService.find(
-      id: 1036895021,
+      id: 1036894960,
     )
 
-    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-04/carrier_services/1036895021.json")
+    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-04/carrier_services/1036894960.json")
 
     response = response.first if response.respond_to?(:first)
 
@@ -163,7 +163,7 @@ class CarrierService202204Test < Test::Unit::TestCase
     void
   end
   def test_5()
-    stub_request(:delete, "https://test-shop.myshopify.io/admin/api/2022-04/carrier_services/1036895020.json")
+    stub_request(:delete, "https://test-shop.myshopify.io/admin/api/2022-04/carrier_services/1036894955.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
@@ -171,10 +171,10 @@ class CarrierService202204Test < Test::Unit::TestCase
       .to_return(status: 200, body: JSON.generate({}), headers: {})
 
     response = ShopifyAPI::CarrierService.delete(
-      id: 1036895020,
+      id: 1036894955,
     )
 
-    assert_requested(:delete, "https://test-shop.myshopify.io/admin/api/2022-04/carrier_services/1036895020.json")
+    assert_requested(:delete, "https://test-shop.myshopify.io/admin/api/2022-04/carrier_services/1036894955.json")
 
     response = response.first if response.respond_to?(:first)
 
