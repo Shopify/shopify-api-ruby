@@ -36,9 +36,9 @@ class ProductResourceFeedback202304Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2023-04/products/632910392/resource_feedback.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "resource_feedback" => hash_including({"state" => "requires_action", "messages" => ["Needs at least one image."], "resource_updated_at" => "2023-02-02T09:09:49-05:00", "feedback_generated_at" => "2023-02-02T14:27:02.024755Z"}) }
+        body: { "resource_feedback" => hash_including({"state" => "requires_action", "messages" => ["Needs at least one image."], "resource_updated_at" => "2023-07-05T18:38:03-04:00", "feedback_generated_at" => "2023-07-05T22:49:30.831932Z"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"resource_feedback" => {"created_at" => "2023-02-02T09:27:03-05:00", "updated_at" => "2023-02-02T09:27:03-05:00", "resource_id" => 632910392, "resource_type" => "Product", "resource_updated_at" => "2023-02-02T09:09:49-05:00", "messages" => ["Needs at least one image."], "feedback_generated_at" => "2023-02-02T09:27:02-05:00", "state" => "requires_action"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"resource_feedback" => {"created_at" => "2023-07-05T18:49:31-04:00", "updated_at" => "2023-07-05T18:49:31-04:00", "resource_id" => 632910392, "resource_type" => "Product", "resource_updated_at" => "2023-07-05T18:38:03-04:00", "messages" => ["Needs at least one image."], "feedback_generated_at" => "2023-07-05T18:49:30-04:00", "state" => "requires_action"}}), headers: {})
 
     response = product_resource_feedback = ShopifyAPI::ProductResourceFeedback.new
     product_resource_feedback.product_id = 632910392
@@ -46,8 +46,8 @@ class ProductResourceFeedback202304Test < Test::Unit::TestCase
     product_resource_feedback.messages = [
       "Needs at least one image."
     ]
-    product_resource_feedback.resource_updated_at = "2023-02-02T09:09:49-05:00"
-    product_resource_feedback.feedback_generated_at = "2023-02-02T14:27:02.024755Z"
+    product_resource_feedback.resource_updated_at = "2023-07-05T18:38:03-04:00"
+    product_resource_feedback.feedback_generated_at = "2023-07-05T22:49:30.831932Z"
     product_resource_feedback.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-04/products/632910392/resource_feedback.json")
@@ -74,15 +74,15 @@ class ProductResourceFeedback202304Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2023-04/products/632910392/resource_feedback.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "resource_feedback" => hash_including({"state" => "success", "resource_updated_at" => "2023-02-02T09:09:49-05:00", "feedback_generated_at" => "2023-02-02T14:27:03.509419Z"}) }
+        body: { "resource_feedback" => hash_including({"state" => "success", "resource_updated_at" => "2023-07-05T18:38:03-04:00", "feedback_generated_at" => "2023-07-05T22:49:29.190072Z"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"resource_feedback" => {"created_at" => "2023-02-02T09:27:04-05:00", "updated_at" => "2023-02-02T09:27:04-05:00", "resource_id" => 632910392, "resource_type" => "Product", "resource_updated_at" => "2023-02-02T09:09:49-05:00", "messages" => [], "feedback_generated_at" => "2023-02-02T09:27:03-05:00", "state" => "success"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"resource_feedback" => {"created_at" => "2023-07-05T18:49:29-04:00", "updated_at" => "2023-07-05T18:49:29-04:00", "resource_id" => 632910392, "resource_type" => "Product", "resource_updated_at" => "2023-07-05T18:38:03-04:00", "messages" => [], "feedback_generated_at" => "2023-07-05T18:49:29-04:00", "state" => "success"}}), headers: {})
 
     response = product_resource_feedback = ShopifyAPI::ProductResourceFeedback.new
     product_resource_feedback.product_id = 632910392
     product_resource_feedback.state = "success"
-    product_resource_feedback.resource_updated_at = "2023-02-02T09:09:49-05:00"
-    product_resource_feedback.feedback_generated_at = "2023-02-02T14:27:03.509419Z"
+    product_resource_feedback.resource_updated_at = "2023-07-05T18:38:03-04:00"
+    product_resource_feedback.feedback_generated_at = "2023-07-05T22:49:29.190072Z"
     product_resource_feedback.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-04/products/632910392/resource_feedback.json")
@@ -111,7 +111,7 @@ class ProductResourceFeedback202304Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"resource_feedback" => [{"created_at" => "2023-02-02T09:27:00-05:00", "updated_at" => "2023-02-02T09:27:00-05:00", "resource_id" => 632910392, "resource_type" => "Product", "resource_updated_at" => "2023-02-02T09:09:49-05:00", "messages" => ["Needs at least one image."], "feedback_generated_at" => "2023-02-02T08:27:00-05:00", "state" => "requires_action"}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"resource_feedback" => [{"created_at" => "2023-07-05T18:49:31-04:00", "updated_at" => "2023-07-05T18:49:31-04:00", "resource_id" => 632910392, "resource_type" => "Product", "resource_updated_at" => "2023-07-05T18:38:03-04:00", "messages" => ["Needs at least one image."], "feedback_generated_at" => "2023-07-05T17:49:31-04:00", "state" => "requires_action"}]}), headers: {})
 
     response = ShopifyAPI::ProductResourceFeedback.all(
       product_id: 632910392,
