@@ -51,6 +51,8 @@ For *non-embedded* apps, you can pass the cookies into `ShopifyAPI::Utils::Sessi
 #### Getting Session ID From Embedded Requests
 For *embedded* apps, you can pass the auth header into `ShopifyAPI::Utils::SessionUtils.current_session_id(auth_header, nil, true)` for online (user) sessions or `ShopifyAPI::Utils::SessionUtils.current_session_id(auth_header, nil, false)` for offline (store) sessions.
 
+If your app uses client side rendering instead of server side rendering, you will need to use App Bridge's [authenticatedFetch](https://shopify.dev/docs/apps/auth/oauth/session-tokens/getting-started) to make authenticated API requests from the client.
+
 #### Start Making Authenticated Shopify Requests
 
 You can now start making authenticated Shopify API calls using the Admin [REST](usage/rest.md) or [GraphQL](usage/graphql.md) Clients or the [Storefront GraphQL Client](usage/graphql_storefront.md).
