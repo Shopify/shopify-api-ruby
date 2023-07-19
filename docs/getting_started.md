@@ -37,10 +37,27 @@ ShopifyAPI::Context.setup(
 Next, unless you are making a private app, you need to go through OAuth as described [here](https://shopify.dev/docs/apps/auth/oauth) to create sessions for shops using your app.
 The Shopify API gem tries to make this easy by providing functions to begin and complete the OAuth process. See the [Oauth doc](usage/oauth.md) for instructions on how to use these.
 
+### Sessions
+
+Sessions are required to make requests with the REST or GraphQL clients. This Library provides helpers for creating sessions via OAuth. Helpers are provided to retrieve session ID from a HTTP request from an embedded Shopify app or cookies from non-embedded apps.
+
+Session persistence is handled by the [ShopifyApp](https://github.com/Shopify/shopify_app) gem and is recommended for use in the Rails context. See that gem for documentation on how to use it.
+
+#### Cookie
+Cookie based authentication is not supported for embedded apps due to browsers dropping support for third party cookies due to security concerns. Non-embedded apps are able to use cookies for session storage/retrieval.
+
+For *non-embedded* apps, you can pass the cookies into `ShopifyAPI::Utils::SessionUtils.current_session_id(nil, cookies, true)` for online (user) sessions or `ShopifyAPI::Utils::SessionUtils.current_session_id(nil, cookies, false)` for offline (store) sessions.
+
+#### Getting Session ID From Embedded Requests
+For *embedded* apps, you can pass the auth header into `ShopifyAPI::Utils::SessionUtils.current_session_id(auth_header, nil, true)` for online (user) sessions or `ShopifyAPI::Utils::SessionUtils.current_session_id(auth_header, nil, false)` for offline (store) sessions. This function needs an `auth_header` which is the `HTTP_AUTHORIZATION` header.
+
+If your app uses client side rendering instead of server side rendering, you will need to use App Bridge's [authenticatedFetch](https://shopify.dev/docs/apps/auth/oauth/session-tokens/getting-started) to make authenticated API requests from the client.
+
+#### Start Making Authenticated Shopify Requests
+
+You can now start making authenticated Shopify API calls using the Admin [REST](usage/rest.md) or [GraphQL](usage/graphql.md) Clients or the [Storefront GraphQL Client](usage/graphql_storefront.md).
+
 ### Register Webhooks and a Webhook Handler
 
 If you intend to use webhooks in your application follow the steps in the [Webhooks doc](usage/webhooks.md) for instructions on registering and handling webhooks.
 
-### Start Making Authenticated Shopify Requests
-
-You can now start making authenticated Shopify API calls using the Admin [REST](usage/rest.md) or [GraphQL](usage/graphql.md) Clients or the [Storefront GraphQL Client](usage/graphql_storefront.md).

@@ -104,6 +104,7 @@ If you would like to give your front end the ability to make authenticated graph
 def proxy
   begin
     response = ShopifyAPI::Utils::GraphqlProxy.proxy_query(
+      session: session,
       headers: request.headers.to_h,
       body: request.raw_post,
       cookies: request.cookies.to_h
