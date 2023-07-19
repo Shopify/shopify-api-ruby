@@ -169,17 +169,13 @@ module ShopifyAPI
 
     sig do
       params(
-        reason: T.untyped,
-        reason_notes: T.untyped,
-        notify_merchant: T.untyped,
+        fulfillment_hold: T.untyped,
         body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end
     def hold(
-      reason: nil,
-      reason_notes: nil,
-      notify_merchant: nil,
+      fulfillment_hold: nil,
       body: nil,
       **kwargs
     )
@@ -188,7 +184,7 @@ module ShopifyAPI
         operation: :hold,
         session: @session,
         ids: {id: @id},
-        params: {reason: reason, reason_notes: reason_notes, notify_merchant: notify_merchant}.merge(kwargs).compact,
+        params: {fulfillment_hold: fulfillment_hold}.merge(kwargs).compact,
         body: body,
         entity: self,
       )

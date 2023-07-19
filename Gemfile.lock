@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    shopify_api (13.0.0)
+    shopify_api (13.1.0)
       activesupport
       concurrent-ruby
       hash_diff
@@ -16,7 +16,7 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (7.0.4.3)
+    activesupport (7.0.6)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
@@ -36,10 +36,10 @@ GEM
     httparty (0.21.0)
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
-    i18n (1.13.0)
+    i18n (1.14.1)
       concurrent-ruby (~> 1.0)
     json (2.6.2)
-    jwt (2.7.0)
+    jwt (2.7.1)
     language_server-protocol (3.17.0.1)
     method_source (1.0.0)
     mini_mime (1.1.2)
@@ -47,7 +47,7 @@ GEM
     mocha (1.13.0)
     multi_xml (0.6.0)
     netrc (0.11.0)
-    oj (3.14.3)
+    oj (3.15.0)
     openssl (3.1.0)
     parallel (1.22.1)
     parser (3.1.2.1)
