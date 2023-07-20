@@ -10,4 +10,3 @@ You can follow our getting started guide to learn how to use this library.
 - [Make a GraphQL API call](usage/graphql.md)
 - [Make a Storefront API call](usage/graphql_storefront.md)
 - [Webhooks](usage/webhooks.md)
-- [Known issues and caveats](issues.md)

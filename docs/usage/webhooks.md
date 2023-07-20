@@ -2,12 +2,15 @@
 
 The `shopify_api` gem provides webhook functionality to make it easy to both subscribe to and process webhooks. To implement in your app follow the steps outlined below.
 
+## Use with Rails
+If using in the Rails framework, we highly recommend you use the [shopify_app](https://github.com/Shopify/shopify_app) gem to interact with this gem. That gem handles [webhooks with a declarative configuration](https://github.com/Shopify/shopify_app/blob/main/docs/shopify_app/webhooks.md).
+
 ## Create a Webhook Handler
 
 If you want to register for an http webhook you need to implement a webhook handler which the `shopify_api` gem can use to determine how to process your webhook. You can make multiple implementations (one per topic) or you can make one implementation capable of handling all the topics you want to subscribe to. To do this simply make a module or class that includes or extends `ShopifyAPI::Webhooks::WebhookHandler` and implement the handle method which accepts the following named parameters: topic: `String`, shop: `String`, and body: `Hash[String, untyped]`. An example implementation is shown below:
 
 ```ruby
-module WebhookHandler 
+module WebhookHandler
   include ShopifyAPI::Webhooks::Handler
 
   class << self
@@ -31,11 +34,11 @@ If you are only interested in particular fields, you can optionally filter the d
 
 ```ruby
 registration = ShopifyAPI::Webhooks::Registry.add_registration(
-  topic: "orders/create", 
-  delivery_method: :http, 
-  handler: WebhookHandler, 
+  topic: "orders/create",
+  delivery_method: :http,
+  handler: WebhookHandler,
   fields: ["number","note"] # this can also be a single comma separated string
-) 
+)
 ```
 
 **Note**: The webhooks you register with Shopify are saved in the Shopify platform, but the local `ShopifyAPI::Webhooks::Registry` needs to be reloaded whenever your server restarts.
@@ -75,7 +78,7 @@ ShopifyAPI::Webhooks::Registry.register(topic: "<specific-topic>", session: shop
 
 This will return a single `ShopifyAPI::Webhooks::RegisterResult`.
 
-## Unregister a Webhook 
+## Unregister a Webhook
 
 To unregister a topic from a shop you can simply call:
 ```ruby

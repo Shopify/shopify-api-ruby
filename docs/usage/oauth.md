@@ -5,6 +5,11 @@ Once the library is set up for your project, you'll be able to use it to start a
 To do this, you can follow the steps below.
 For more information on authenticating a Shopify app please see the [Types of Authentication](https://shopify.dev/docs/apps/auth#types-of-authentication) page.
 
+## Note about Rails
+If using in the Rails framework, we highly recommend you use the [shopify_app](https://github.com/Shopify/shopify_app) gem to perform OAuth.
+
+If you aren't using Rails, you can look at how that [gem creates / stores sessions from the OAuth flow](https://github.com/Shopify/shopify_app/blob/2f90af43173041d145f578dcd6448f238b69f9fe/app/controllers/shopify_app/callback_controller.rb#L9) for further examples.
+
 ## Add a route to start OAuth
 
 The route for starting the OAuth process (in this case `/login`) will use the library's `begin_auth` method. The method will return an `auth_route` URI that will be used for redirecting the user to the Shopify Authentication screen and a session cookie to store on the user's browser. These return values will be a hash in the form of {`auth_route`: `String`, `cookie`: `ShopifyAPI::Auth::Oauth::SessionCookie`}

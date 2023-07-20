@@ -17,13 +17,15 @@ The Rest Admin client offers the 4 core request methods: `get`, `delete`, `post`
 **Note:** _These paramaters can still be used in all methods regardless of if they are required._
 
 ## Usage Examples:
+### Required Session
+Every request requires a valid
+[ShopifyAPI::Auth::Session](https://github.com/Shopify/shopify-api-ruby/blob/f341d998cce7429b841c2c3b4ce55a18a52823e4/lib/shopify_api/auth/session.rb).
+
+To instantiate a session, we recommend you either use the `shopify_app` if working in Rails or refer to our [OAuth docs on constructing a session](oauth.md#fetching-sessions)
 
 ### Perform a `GET` request:
 
 ```ruby
-# Load the current session to get the `accessToken`.
-session = ShopifyAPI::Utils::SessionUtils.load_current_session(headers, cookies, is_online)
-
 # Create a new client.
 client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
 
@@ -37,9 +39,6 @@ some_function(response.body)
 ### Perform a `POST` request:
 
 ```ruby
-# Load the current session to get the `accessToken`.
-session = ShopifyAPI::Utils::SessionUtils.load_current_session(headers, cookies, is_online)
-
 # Create a new client.
 client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
 
@@ -78,7 +77,6 @@ After making a request, the `next_page_info` and `prev_page_info` can be found o
 An example of this is shown below:
 
 ```ruby
-session = ShopifyAPI::Utils::SessionUtils.load_current_session(headers, cookies, is_online)
 client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
 
 response = client.get(path: "products", query: { limit: 10 })
@@ -95,8 +93,6 @@ Similarly, when using REST resources the `next_page_info` and `prev_page_info` c
 An example of this is shown below:
 
 ```ruby
-session = ShopifyAPI::Utils::SessionUtils.load_current_session(headers, cookies, is_online)
-
 products = ShopifyAPI::Product.all(session: session, limit: 10)
 
 loop do
@@ -111,7 +107,6 @@ The next/previous page_info strings can also be retrieved from the response obje
 An example of this is shown below:
 
 ```ruby
-session = ShopifyAPI::Utils::SessionUtils.load_current_session(headers, cookies, is_online)
 client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
 
 response = client.get(path: "products", query: { limit: 10 })
