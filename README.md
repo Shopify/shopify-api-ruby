@@ -17,6 +17,9 @@ You can use this library in any application that has a Ruby backend, since it do
 
 **Note**: These instructions apply to v10 or later of this package. If you're running v9 in your app, you can find the documentation [in this branch](https://github.com/Shopify/shopify-api-ruby/tree/v9).
 
+## Use with Rails
+If using in the Rails framework, we highly recommend you use the [shopify_app](https://github.com/Shopify/shopify_app) gem to interact with this gem. Authentication, session storage, webhook regirstration, and other frequenly implemented paths are managed in that gem with easy to use configurations.
+
 ## Requirements
 
 To follow these usage guides, you will need to:
@@ -93,7 +96,7 @@ Please refer to [the documentation](docs/getting_started.md) in this repository 
 With this, a lot changed in how apps access the library. Here are the updates you should make when migrating to v10:
 
 - Call `ShopifyAPI::Context.setup` when setting up your app. This class holds global configurations for your app and defines how the library behaves.
-- If not using the `shopify_app` gem, your app needs to provide an implementation of `ShopifyAPI::Auth::SessionStorage` for production. Read more about this [in our documentation](docs/usage/session_storage.md).
+- If not using the [shopify_app](https://github.com/Shopify/shopify_app) gem, your app needs to provide an implementation of `ShopifyAPI::Auth::SessionStorage` for production. Read more about this [in our documentation](docs/usage/session_storage.md).
 - To change the `User-Agent` header, use `user_agent_prefix` in `ShopifyAPI::Context.setup`.
 - Usages of the `ActiveResource` classes for REST API requests need to be refactored into the new format. You can find detailed examples on how each of the endpoints work in our [reference documentation](https://shopify.dev/docs/api/admin-rest).
 
