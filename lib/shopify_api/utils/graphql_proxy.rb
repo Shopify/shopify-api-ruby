@@ -14,10 +14,11 @@ module ShopifyAPI
             body: String,
             cookies: T.nilable(T::Hash[String, String]),
             tries: Integer,
+            config: T.any(ShopifyAPI::Config, T.class_of(ShopifyAPI::Context)),
           ).returns(Clients::HttpResponse)
         end
-        def proxy_query(session:, headers:, body:, cookies: nil, tries: 1)
-          raise Errors::PrivateAppError, "GraphQL proxing is unsupported for private apps." if Context.private?
+        def proxy_query(session:, headers:, body:, cookies: nil, tries: 1, config: ShopifyAPI::Context)
+          raise Errors::PrivateAppError, "GraphQL proxing is unsupported for private apps." if config.private?
 
           normalized_headers = HttpUtils.normalize_headers(headers)
 

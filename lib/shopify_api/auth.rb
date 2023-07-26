@@ -8,10 +8,16 @@ module ShopifyAPI
     class << self
       extend T::Sig
 
-      sig { params(host: T.nilable(String)).returns(String) }
-      def embedded_app_url(host)
-        unless Context.setup?
-          raise Errors::ContextNotSetupError, "ShopifyAPI::Context not setup, please call ShopifyAPI::Context.setup"
+      sig do
+        params(
+          host: T.nilable(String),
+          config: T.any(ShopifyAPI::Config, T.class_of(ShopifyAPI::Context)),
+        ).returns(String)
+      end
+      def embedded_app_url(host, config = ShopifyAPI::Context)
+        unless config.setup?
+          raise Errors::ContextNotSetupError,
+            "Config not setup, please pass a valid ShopifyAPI::Config instance or call ShopifyAPI::Context.setup"
         end
 
         unless host
@@ -19,7 +25,7 @@ module ShopifyAPI
         end
 
         decoded_host = Base64.decode64(host)
-        "https://#{decoded_host}/apps/#{Context.api_key}"
+        "https://#{decoded_host}/apps/#{config.api_key}"
       end
     end
   end

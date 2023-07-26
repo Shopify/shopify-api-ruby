@@ -69,18 +69,18 @@ module ShopifyAPI
         extend T::Sig
 
         sig do
-          params(shop: String, access_token: String,
+          params(shop: String, access_token: String, config: T.any(ShopifyAPI::Config, T.class_of(ShopifyAPI::Context)),
             blk: T.proc.params(arg0: Session).returns(T.untyped)).returns(T.untyped)
         end
-        def temp(shop:, access_token:, &blk)
-          original_session = Context.active_session
+        def temp(shop:, access_token:, config: ShopifyAPI::Context, &blk)
+          original_session = config.active_session
           temp_session = Session.new(shop: shop, access_token: access_token)
 
           begin
-            Context.activate_session(temp_session)
+            config.activate_session(temp_session)
             yield temp_session
           ensure
-            Context.activate_session(original_session)
+            config.activate_session(original_session)
           end
         end
 

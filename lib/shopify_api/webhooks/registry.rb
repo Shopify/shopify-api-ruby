@@ -9,13 +9,16 @@ module ShopifyAPI
       class << self
         extend T::Sig
         sig do
-          params(topic: String,
+          params(
+            topic: String,
             delivery_method: Symbol,
             path: String,
             handler: T.nilable(Handler),
-            fields: T.nilable(String)).void
+            fields: T.nilable(String),
+            config: T.any(ShopifyAPI::Config, T.class_of(ShopifyAPI::Context)),
+          ).void
         end
-        def add_registration(topic:, delivery_method:, path:, handler: nil, fields: nil)
+        def add_registration(topic:, delivery_method:, path:, handler: nil, fields: nil, config: ShopifyAPI::Context)
           @registry[topic] = case delivery_method
           when :pub_sub
             Registrations::PubSub.new(topic: topic, path: path, fields: fields)
@@ -26,7 +29,7 @@ module ShopifyAPI
               raise Errors::InvalidWebhookRegistrationError, "Cannot create an Http registration without a handler."
             end
 
-            Registrations::Http.new(topic: topic, path: path, handler: handler, fields: fields)
+            Registrations::Http.new(topic: topic, path: path, handler: handler, fields: fields, config: config)
           else
             raise Errors::InvalidWebhookRegistrationError,
               "Unsupported delivery method #{delivery_method}. Allowed values: {:http, :pub_sub, :event_bridge}."
@@ -159,9 +162,12 @@ module ShopifyAPI
 
           edges[0]["node"]["id"].to_s
         end
-        sig { params(request: Request).void }
-        def process(request)
-          raise Errors::InvalidWebhookError, "Invalid webhook HMAC." unless Utils::HmacValidator.validate(request)
+        sig do
+          params(request: Request, config: T.any(ShopifyAPI::Config, T.class_of(ShopifyAPI::Context))).void
+        end
+        def process(request, config = ShopifyAPI::Context)
+          raise Errors::InvalidWebhookError, "Invalid webhook HMAC." unless Utils::HmacValidator.validate(request,
+            config)
 
           handler = @registry[request.topic]&.handler
 

@@ -7,20 +7,26 @@ module ShopifyAPI
       class Admin < HttpClient
         extend T::Sig
 
-        sig { params(session: T.nilable(Auth::Session), api_version: T.nilable(String)).void }
-        def initialize(session: nil, api_version: nil)
-          @api_version = T.let(api_version || Context.api_version, String)
+        sig do
+          params(
+            session: T.nilable(Auth::Session),
+            api_version: T.nilable(String),
+            config: T.any(ShopifyAPI::Config, T.class_of(ShopifyAPI::Context)),
+          ).void
+        end
+        def initialize(session: nil, api_version: nil, config: ShopifyAPI::Context)
+          @api_version = T.let(api_version || config.api_version, String)
           if api_version
-            if api_version == Context.api_version
-              Context.logger.debug("Rest client has a redundant API version override "\
-                "to the default #{Context.api_version}")
+            if api_version == config.api_version
+              config.logger.debug("Rest client has a redundant API version override "\
+                "to the default #{config.api_version}")
             else
-              Context.logger.debug("Rest client overriding default API version "\
-                "#{Context.api_version} with #{api_version}")
+              config.logger.debug("Rest client overriding default API version "\
+                "#{config.api_version} with #{api_version}")
             end
           end
 
-          super(session: session, base_path: "/admin/api/#{@api_version}")
+          super(session: session, base_path: "/admin/api/#{@api_version}", config: config)
         end
 
         sig do

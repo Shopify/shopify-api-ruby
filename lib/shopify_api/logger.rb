@@ -9,33 +9,59 @@ module ShopifyAPI
     class << self
       extend T::Sig
 
-      sig { params(message: String).void }
-      def debug(message)
-        send_to_logger(:debug, message)
+      sig do
+        params(
+          message: String,
+          config: T.any(ShopifyAPI::Config, T.class_of(ShopifyAPI::Context)),
+        ).void
+      end
+      def debug(message, config = ShopifyAPI::Context)
+        send_to_logger(:debug, message, config)
       end
 
-      sig { params(message: String).void }
-      def info(message)
-        send_to_logger(:info, message)
+      sig do
+        params(
+          message: String,
+          config: T.any(ShopifyAPI::Config, T.class_of(ShopifyAPI::Context)),
+        ).void
+      end
+      def info(message, config = ShopifyAPI::Context)
+        send_to_logger(:info, message, config)
       end
 
-      sig { params(message: String).void }
-      def warn(message)
-        send_to_logger(:warn, message)
+      sig do
+        params(
+          message: String,
+          config: T.any(ShopifyAPI::Config, T.class_of(ShopifyAPI::Context)),
+        ).void
+      end
+      def warn(message, config = ShopifyAPI::Context)
+        send_to_logger(:warn, message, config)
       end
 
-      sig { params(message: String).void }
-      def error(message)
-        send_to_logger(:error, message)
+      sig do
+        params(
+          message: String,
+          config: T.any(ShopifyAPI::Config, T.class_of(ShopifyAPI::Context)),
+        ).void
+      end
+      def error(message, config = ShopifyAPI::Context)
+        send_to_logger(:error, message, config)
       end
 
-      sig { params(message: String, version: String).void }
-      def deprecated(message, version)
+      sig do
+        params(
+          message: String,
+          version: String,
+          config: T.any(ShopifyAPI::Config, T.class_of(ShopifyAPI::Context)),
+        ).void
+      end
+      def deprecated(message, version, config = ShopifyAPI::Context)
         return unless enabled_for_log_level?(:warn)
 
         raise Errors::FeatureDeprecatedError unless valid_version(version)
 
-        send_to_logger(:warn, message)
+        send_to_logger(:warn, message, config)
       end
 
       sig { returns(T::Array[Symbol]) }
@@ -45,29 +71,46 @@ module ShopifyAPI
 
       private
 
-      sig { params(log_level: Symbol).returns(String) }
-      def context(log_level)
-        current_shop = ShopifyAPI::Context.active_session&.shop
+      sig do
+        params(
+          log_level: Symbol,
+          config: T.any(ShopifyAPI::Config, T.class_of(ShopifyAPI::Context)),
+        ).returns(String)
+      end
+      def context(log_level, config = ShopifyAPI::Context)
+        current_shop = config.active_session&.shop
 
-        if current_shop.nil?
+        context = if current_shop.nil?
           "[ ShopifyAPI | #{log_level.to_s.upcase} ]"
         else
           "[ ShopifyAPI | #{log_level.to_s.upcase} | #{current_shop} ]"
         end
+        context
       end
 
-      sig { params(log_level: Symbol, message: String).void }
-      def send_to_logger(log_level, message)
+      sig do
+        params(
+          log_level: Symbol,
+          message: String,
+          config: T.any(ShopifyAPI::Config, T.class_of(ShopifyAPI::Context)),
+        ).void
+      end
+      def send_to_logger(log_level, message, config = ShopifyAPI::Context)
         return unless enabled_for_log_level?(log_level)
 
         full_message = "#{context(log_level)} #{message}"
 
-        ShopifyAPI::Context.logger.public_send(log_level, full_message)
+        config.logger.public_send(log_level, full_message)
       end
 
-      sig { params(log_level: Symbol).returns(T::Boolean) }
-      def enabled_for_log_level?(log_level)
-        T.must(LOG_LEVELS[log_level]) >= T.must(LOG_LEVELS[ShopifyAPI::Context.log_level] ||
+      sig do
+        params(
+          log_level: Symbol,
+          config: T.any(ShopifyAPI::Config, T.class_of(ShopifyAPI::Context)),
+        ).returns(T::Boolean)
+      end
+      def enabled_for_log_level?(log_level, config = ShopifyAPI::Context)
+        T.must(LOG_LEVELS[log_level]) >= T.must(LOG_LEVELS[config.log_level] ||
           LOG_LEVELS[DEFAULT_LOG_LEVEL])
       end
 

@@ -8,15 +8,25 @@ module ShopifyAPI
 
       RETRY_WAIT_TIME = 1
 
-      sig { params(base_path: String, session: T.nilable(Auth::Session)).void }
-      def initialize(base_path:, session: nil)
-        session ||= Context.active_session
+      sig { returns(T.any(ShopifyAPI::Config, T.class_of(ShopifyAPI::Context))) }
+      attr_reader :config
+
+      sig do
+        params(
+          base_path: String,
+          session: T.nilable(Auth::Session),
+          config: T.any(ShopifyAPI::Config, T.class_of(ShopifyAPI::Context)),
+        ).void
+      end
+      def initialize(base_path:, session: nil, config: ShopifyAPI::Context)
+        session ||= config.active_session
         raise Errors::NoActiveSessionError, "No passed or active session" unless session
 
+        @config = config
         @base_uri = T.let("https://#{session.shop}", String)
         @base_uri_and_path = T.let("#{@base_uri}#{base_path}", String)
 
-        user_agent_prefix = Context.user_agent_prefix.nil? ? "" : "#{Context.user_agent_prefix} | "
+        user_agent_prefix = config.user_agent_prefix.nil? ? "" : "#{config.user_agent_prefix} | "
 
         @headers = T.let({
           "User-Agent": "#{user_agent_prefix}Shopify API Library v#{VERSION} | Ruby #{RUBY_VERSION}",
@@ -60,7 +70,7 @@ module ShopifyAPI
 
           if response.headers["x-shopify-api-deprecated-reason"]
             reason = T.must(response.headers["x-shopify-api-deprecated-reason"])[0]
-            Context.logger.warn("Deprecated request to Shopify API at #{request.path}, received reason: #{reason}")
+            config.logger.warn("Deprecated request to Shopify API at #{request.path}, received reason: #{reason}")
           end
 
           break if response.ok?

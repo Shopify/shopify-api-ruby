@@ -7,17 +7,24 @@ module ShopifyAPI
       class Client
         extend T::Sig
 
-        sig { params(session: T.nilable(Auth::Session), base_path: String, api_version: T.nilable(String)).void }
-        def initialize(session:, base_path:, api_version: nil)
-          @http_client = T.let(HttpClient.new(session: session, base_path: base_path), HttpClient)
-          @api_version = T.let(api_version || Context.api_version, String)
+        sig do
+          params(
+            session: T.nilable(Auth::Session),
+            base_path: String,
+            api_version: T.nilable(String),
+            config: T.any(ShopifyAPI::Config, T.class_of(ShopifyAPI::Context)),
+          ).void
+        end
+        def initialize(session:, base_path:, api_version: nil, config: ShopifyAPI::Context)
+          @http_client = T.let(HttpClient.new(session: session, base_path: base_path, config: config), HttpClient)
+          @api_version = T.let(api_version || config.api_version, String)
           if api_version
-            if api_version == Context.api_version
-              Context.logger.debug("Graphql client has a redundant API version override "\
-                "to the default #{Context.api_version}")
+            if api_version == config.api_version
+              config.logger.debug("Graphql client has a redundant API version override "\
+                "to the default #{config.api_version}")
             else
-              Context.logger.debug("Graphql client overriding default API version "\
-                "#{Context.api_version} with #{api_version}")
+              config.logger.debug("Graphql client overriding default API version "\
+                "#{config.api_version} with #{api_version}")
             end
           end
         end

@@ -11,10 +11,10 @@ module ShopifyAPI
         def callback_address
           if @path.match?(%r{^https?://})
             @path
-          elsif @path.match?(/^#{Context.host_name}/)
-            "#{Context.host_scheme}://#{@path}"
+          elsif @path.match?(/^#{config.host_name}/)
+            "#{config.host_scheme}://#{@path}"
           else
-            "#{Context.host}/#{@path}"
+            "#{config.host}/#{@path}"
           end
         end
 

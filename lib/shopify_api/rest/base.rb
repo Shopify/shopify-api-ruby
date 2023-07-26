@@ -28,15 +28,16 @@ module ShopifyAPI
         params(
           session: T.nilable(Auth::Session),
           from_hash: T.nilable(T::Hash[Symbol, T.untyped]),
+          config: T.any(ShopifyAPI::Config, T.class_of(ShopifyAPI::Context)),
         ).void
       end
-      def initialize(session: nil, from_hash: nil)
+      def initialize(session: nil, from_hash: nil, config: ShopifyAPI::Context)
         @original_state = T.let({}, T::Hash[Symbol, T.untyped])
         @custom_prefix = T.let(nil, T.nilable(String))
         @forced_nils = T.let({}, T::Hash[String, T::Boolean])
         @aliased_properties = T.let({}, T::Hash[String, String])
 
-        session ||= ShopifyAPI::Context.active_session
+        session ||= config.active_session
 
         client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
 
@@ -66,12 +67,13 @@ module ShopifyAPI
             session: T.nilable(Auth::Session),
             ids: T::Hash[Symbol, String],
             params: T::Hash[Symbol, T.untyped],
+            config: T.any(ShopifyAPI::Config, T.class_of(ShopifyAPI::Context)),
           ).returns(T::Array[Base])
         end
-        def base_find(session: nil, ids: {}, params: {})
-          session ||= ShopifyAPI::Context.active_session
+        def base_find(session: nil, ids: {}, params: {}, config: ShopifyAPI::Context)
+          session ||= config.active_session
 
-          client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
+          client = ShopifyAPI::Clients::Rest::Admin.new(session: session, config: config)
 
           path = T.must(get_path(http_method: :get, operation: :get, ids: ids))
           response = client.get(path: path, query: params.compact)

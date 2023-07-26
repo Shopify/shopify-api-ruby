@@ -19,16 +19,25 @@ module ShopifyAPI
       sig { returns(T.nilable(T::Array[String])) }
       attr_reader :fields
 
+      sig { returns(T.any(ShopifyAPI::Config, T.class_of(ShopifyAPI::Context))) }
+      attr_reader :config
+
       sig do
-        params(topic: String, path: String, handler: T.nilable(Handler),
-          fields: T.nilable(T.any(String, T::Array[String]))).void
+        params(
+          topic: String,
+          path: String,
+          handler: T.nilable(Handler),
+          fields: T.nilable(T.any(String, T::Array[String])),
+          config: T.any(ShopifyAPI::Config, T.class_of(ShopifyAPI::Context)),
+        ).void
       end
-      def initialize(topic:, path:, handler: nil, fields: nil)
+      def initialize(topic:, path:, handler: nil, fields: nil, config: ShopifyAPI::Context)
         @topic = T.let(topic.gsub("/", "_").upcase, String)
         @path = path
         @handler = handler
         fields_array = fields.is_a?(String) ? fields.split(FIELDS_DELIMITER) : fields
         @fields = T.let(fields_array&.map(&:strip)&.compact, T.nilable(T::Array[String]))
+        @config = config
       end
 
       sig { abstract.returns(String) }

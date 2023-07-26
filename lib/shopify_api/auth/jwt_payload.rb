@@ -14,14 +14,23 @@ module ShopifyAPI
       sig { returns(Integer) }
       attr_reader :exp, :nbf, :iat
 
-      sig { params(token: String).void }
-      def initialize(token)
-        payload_hash = begin
-          decode_token(token, Context.api_secret_key)
-        rescue ShopifyAPI::Errors::InvalidJwtTokenError
-          raise unless Context.old_api_secret_key
+      sig { returns(T.any(ShopifyAPI::Config, T.class_of(ShopifyAPI::Context))) }
+      attr_reader :config
 
-          decode_token(token, T.must(Context.old_api_secret_key))
+      sig do
+        params(
+          token: String,
+          config: T.any(ShopifyAPI::Config, T.class_of(ShopifyAPI::Context)),
+        ).void
+      end
+      def initialize(token, config: ShopifyAPI::Context)
+        @config = config
+        payload_hash = begin
+          decode_token(token, config.api_secret_key)
+        rescue ShopifyAPI::Errors::InvalidJwtTokenError
+          raise unless config.old_api_secret_key
+
+          decode_token(token, T.must(config.old_api_secret_key))
         end
 
         @iss = T.let(payload_hash["iss"], String)
@@ -35,7 +44,7 @@ module ShopifyAPI
         @sid = T.let(payload_hash["sid"], String)
 
         raise ShopifyAPI::Errors::InvalidJwtTokenError,
-          "Session token had invalid API key" unless @aud == Context.api_key
+          "Session token had invalid API key" unless @aud == config.api_key
       end
 
       sig { returns(String) }
@@ -46,7 +55,7 @@ module ShopifyAPI
       # TODO: Remove before releasing v11
       sig { params(shop: String).returns(T::Boolean) }
       def validate_shop(shop)
-        Context.logger.warn(
+        config.logger.warn(
           "Deprecation notice: ShopifyAPI::Auth::JwtPayload.validate_shop no longer checks the given shop and always " \
             "returns true. It will be removed in v11.",
         )

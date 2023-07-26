@@ -14,18 +14,19 @@ module ShopifyAPI
             auth_header: T.nilable(String),
             cookies: T.nilable(T::Hash[String, String]),
             online: T::Boolean,
+            config: T.any(ShopifyAPI::Config, T.class_of(ShopifyAPI::Context)),
           ).returns(T.nilable(String))
         end
-        def current_session_id(auth_header, cookies, online)
-          if Context.embedded?
+        def current_session_id(auth_header, cookies, online, config: ShopifyAPI::Context)
+          if config.embedded?
             if auth_header
               matches = auth_header.match(/^Bearer (.+)$/)
               unless matches
-                ShopifyAPI::Logger.warn("Missing Bearer token in authorization header")
+                ShopifyAPI::Logger.warn("Missing Bearer token in authorization header", config)
                 raise Errors::MissingJwtTokenError, "Missing Bearer token in authorization header"
               end
 
-              jwt_payload = Auth::JwtPayload.new(T.must(matches[1]))
+              jwt_payload = Auth::JwtPayload.new(T.must(matches[1]), config: config)
               shop = jwt_payload.shop
 
               if online

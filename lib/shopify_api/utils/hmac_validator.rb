@@ -9,15 +9,20 @@ module ShopifyAPI
       class << self
         extend T::Sig
 
-        sig { params(verifiable_query: VerifiableQuery).returns(T::Boolean) }
-        def validate(verifiable_query)
+        sig do
+          params(
+            verifiable_query: VerifiableQuery,
+            config: T.any(ShopifyAPI::Config, T.class_of(ShopifyAPI::Context)),
+          ).returns(T::Boolean)
+        end
+        def validate(verifiable_query, config = ShopifyAPI::Context)
           return false unless verifiable_query.hmac
 
-          result = validate_signature(verifiable_query, Context.api_secret_key)
-          if result || Context.old_api_secret_key.blank?
+          result = validate_signature(verifiable_query, config.api_secret_key)
+          if result || config.old_api_secret_key.blank?
             result
           else
-            validate_signature(verifiable_query, T.must(Context.old_api_secret_key))
+            validate_signature(verifiable_query, T.must(config.old_api_secret_key))
           end
         end
 

@@ -17,30 +17,32 @@ module ShopifyAPI
             redirect_path: String,
             is_online: T.nilable(T::Boolean),
             scope_override: T.nilable(T.any(ShopifyAPI::Auth::AuthScopes, T::Array[String], String)),
+            config: T.any(ShopifyAPI::Config, T.class_of(ShopifyAPI::Context)),
           ).returns(T::Hash[Symbol, T.any(String, SessionCookie)])
         end
-        def begin_auth(shop:, redirect_path:, is_online: true, scope_override: nil)
+        def begin_auth(shop:, redirect_path:, is_online: true, scope_override: nil, config: ShopifyAPI::Context)
           scope = if scope_override.nil?
-            ShopifyAPI::Context.scope
+            config.scope
           elsif scope_override.is_a?(ShopifyAPI::Auth::AuthScopes)
             scope_override
           else
             ShopifyAPI::Auth::AuthScopes.new(scope_override)
           end
 
-          unless Context.setup?
+          unless config.setup?
+            # TODO: Adjust error message to reflect the new Config instance
             raise Errors::ContextNotSetupError, "ShopifyAPI::Context not setup, please call ShopifyAPI::Context.setup"
           end
-          raise Errors::UnsupportedOauthError, "Cannot perform OAuth for private apps." if Context.private?
+          raise Errors::UnsupportedOauthError, "Cannot perform OAuth for private apps." if config.private?
 
           state = SecureRandom.alphanumeric(NONCE_LENGTH)
 
           cookie = SessionCookie.new(value: state, expires: Time.now + 60)
 
           query = {
-            client_id: ShopifyAPI::Context.api_key,
+            client_id: config.api_key,
             scope: scope.to_s,
-            redirect_uri: "#{ShopifyAPI::Context.host}#{redirect_path}",
+            redirect_uri: "#{config.host}#{redirect_path}",
             state: state,
             "grant_options[]": is_online ? "per-user" : "",
           }
@@ -55,14 +57,17 @@ module ShopifyAPI
           params(
             cookies: T::Hash[String, String],
             auth_query: AuthQuery,
+            config: T.any(ShopifyAPI::Config, T.class_of(ShopifyAPI::Context)),
           ).returns(T::Hash[Symbol, T.any(Session, SessionCookie)])
         end
-        def validate_auth_callback(cookies:, auth_query:)
-          unless Context.setup?
+        def validate_auth_callback(cookies:, auth_query:, config: ShopifyAPI::Context)
+          unless config.setup?
+            # TODO: Adjust error message to reflect the new Config instance
             raise Errors::ContextNotSetupError, "ShopifyAPI::Context not setup, please call ShopifyAPI::Context.setup"
           end
-          raise Errors::InvalidOauthError, "Invalid OAuth callback." unless Utils::HmacValidator.validate(auth_query)
-          raise Errors::UnsupportedOauthError, "Cannot perform OAuth for private apps." if Context.private?
+          raise Errors::InvalidOauthError, "Invalid OAuth callback." unless Utils::HmacValidator.validate(auth_query,
+            config)
+          raise Errors::UnsupportedOauthError, "Cannot perform OAuth for private apps." if config.private?
 
           state = cookies[SessionCookie::SESSION_COOKIE_NAME]
           raise Errors::NoSessionCookieError unless state
@@ -71,7 +76,7 @@ module ShopifyAPI
             "Invalid state in OAuth callback." unless state == auth_query.state
 
           # TODO: replace this call with the HTTP client once it is built
-          body = { client_id: Context.api_key, client_secret: Context.api_secret_key, code: auth_query.code }
+          body = { client_id: config.api_key, client_secret: config.api_secret_key, code: auth_query.code }
           response = HTTParty.post("https://#{auth_query.shop}/admin/oauth/access_token", body: body)
           unless response.ok?
             raise Errors::RequestAccessTokenError,
@@ -81,7 +86,7 @@ module ShopifyAPI
 
           session = create_new_session(session_params, auth_query.shop)
 
-          cookie = if Context.embedded?
+          cookie = if config.embedded?
             SessionCookie.new(
               value: "",
               expires: Time.now,
