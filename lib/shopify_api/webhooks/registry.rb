@@ -13,7 +13,7 @@ module ShopifyAPI
             delivery_method: Symbol,
             path: String,
             handler: T.nilable(Handler),
-            fields: T.nilable(String)).void
+            fields: T.nilable(T.any(String, T::Array[String]))).void
         end
         def add_registration(topic:, delivery_method:, path:, handler: nil, fields: nil)
           @registry[topic] = case delivery_method
