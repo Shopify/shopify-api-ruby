@@ -88,6 +88,13 @@ module ShopifyAPI
       end
 
       sig do
+        returns(String)
+      end
+      def json_response_body_name()
+        "addresses"
+      end
+
+      sig do
         params(
           id: T.any(Integer, String),
           customer_id: T.nilable(T.any(Integer, String)),
@@ -197,5 +204,24 @@ module ShopifyAPI
       )
     end
 
+    class << self
+      sig { params(response: Clients::HttpResponse, session: Auth::Session).returns(T::Array[ShopifyAPI::Rest::Base]) }
+      def create_instances_from_response(response:, session:)
+        objects = []
+
+        body = T.cast(response.body, T::Hash[String, T.untyped])
+
+        if body.key?('customer_addresses') || body.key?('addresses')
+          key = body.key?('customer_addresses') ? 'customer_addresses' : 'addresses'
+          body[key].each do |entry|
+            objects << create_instance(data: entry, session: session)
+          end
+        elsif body.key?('customer_address')
+          objects << create_instance(data: body['customer_address'], session: session)
+        end
+
+        objects
+      end
+    end
   end
 end
