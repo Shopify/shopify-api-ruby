@@ -4,6 +4,8 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
 
+- [#1183](https://github.com/Shopify/shopify-api-ruby/pull/1189) Added string array support for fields parameter in Webhook::Registry
+
 ## 13.1.0
 
 - [#1183](https://github.com/Shopify/shopify-api-ruby/pull/1183) Added support for API version 2023-07
