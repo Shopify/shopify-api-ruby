@@ -38,9 +38,9 @@ class ApplicationCharge202207Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "application_charge" => hash_including({"name" => "Super Duper Expensive action", "price" => 100.0, "return_url" => "http://super-duper.shopifyapps.com", "test" => true}) }
       )
-      .to_return(status: 200, body: JSON.generate({"application_charge" => {"id" => 1017262349, "name" => "Super Duper Expensive action", "api_client_id" => 755357713, "price" => "100.00", "status" => "pending", "return_url" => "http://super-duper.shopifyapps.com/", "test" => true, "created_at" => "2023-03-15T20:08:12-04:00", "updated_at" => "2023-03-15T20:08:12-04:00", "currency" => "USD", "charge_type" => nil, "decorated_return_url" => "http://super-duper.shopifyapps.com/?charge_id=1017262349", "confirmation_url" => "https://jsmith.myshopify.com/admin/charges/755357713/1017262349/ApplicationCharge/confirm_application_charge?signature=BAh7BzoHaWRpBA0xojw6EmF1dG9fYWN0aXZhdGVU--3387410582dfe2d6a8074748671fcddc0421c3de"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"application_charge" => {"id" => 1017262351, "name" => "Super Duper Expensive action", "api_client_id" => 755357713, "price" => "100.00", "status" => "pending", "return_url" => "http://super-duper.shopifyapps.com/", "test" => true, "created_at" => "2023-07-05T18:42:30-04:00", "updated_at" => "2023-07-05T18:42:30-04:00", "currency" => "USD", "charge_type" => nil, "decorated_return_url" => "http://super-duper.shopifyapps.com/?charge_id=1017262351", "confirmation_url" => "https://jsmith.myshopify.com/admin/charges/755357713/1017262351/ApplicationCharge/confirm_application_charge?signature=BAh7BzoHaWRpBA8xojw6EmF1dG9fYWN0aXZhdGVU--afcec023ede0b2a7fd865e6593f5c6afd51c2adb"}}), headers: {})
 
-    application_charge = ShopifyAPI::ApplicationCharge.new
+    response = application_charge = ShopifyAPI::ApplicationCharge.new
     application_charge.name = "Super Duper Expensive action"
     application_charge.price = 100.0
     application_charge.return_url = "http://super-duper.shopifyapps.com"
@@ -48,6 +48,20 @@ class ApplicationCharge202207Test < Test::Unit::TestCase
     application_charge.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-07/application_charges.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -59,15 +73,29 @@ class ApplicationCharge202207Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "application_charge" => hash_including({"name" => "Super Duper Expensive action", "price" => 100.0, "return_url" => "http://super-duper.shopifyapps.com"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"application_charge" => {"id" => 1017262350, "name" => "Super Duper Expensive action", "api_client_id" => 755357713, "price" => "100.00", "status" => "pending", "return_url" => "http://super-duper.shopifyapps.com/", "test" => nil, "created_at" => "2023-03-15T20:08:13-04:00", "updated_at" => "2023-03-15T20:08:13-04:00", "currency" => "USD", "charge_type" => nil, "decorated_return_url" => "http://super-duper.shopifyapps.com/?charge_id=1017262350", "confirmation_url" => "https://jsmith.myshopify.com/admin/charges/755357713/1017262350/ApplicationCharge/confirm_application_charge?signature=BAh7BzoHaWRpBA4xojw6EmF1dG9fYWN0aXZhdGVU--a0aaca94eb37286987c698be142bfd6a3fe7e4e3"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"application_charge" => {"id" => 1017262354, "name" => "Super Duper Expensive action", "api_client_id" => 755357713, "price" => "100.00", "status" => "pending", "return_url" => "http://super-duper.shopifyapps.com/", "test" => nil, "created_at" => "2023-07-05T18:42:38-04:00", "updated_at" => "2023-07-05T18:42:38-04:00", "currency" => "USD", "charge_type" => nil, "decorated_return_url" => "http://super-duper.shopifyapps.com/?charge_id=1017262354", "confirmation_url" => "https://jsmith.myshopify.com/admin/charges/755357713/1017262354/ApplicationCharge/confirm_application_charge?signature=BAh7BzoHaWRpBBIxojw6EmF1dG9fYWN0aXZhdGVU--500c003666a169151fdfd6593a7a6635b5aa0617"}}), headers: {})
 
-    application_charge = ShopifyAPI::ApplicationCharge.new
+    response = application_charge = ShopifyAPI::ApplicationCharge.new
     application_charge.name = "Super Duper Expensive action"
     application_charge.price = 100.0
     application_charge.return_url = "http://super-duper.shopifyapps.com"
     application_charge.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-07/application_charges.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -79,11 +107,25 @@ class ApplicationCharge202207Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"application_charges" => [{"id" => 556467234, "name" => "Green theme", "api_client_id" => 755357713, "price" => "120.00", "status" => "accepted", "return_url" => "http://google.com", "test" => nil, "created_at" => "2023-03-15T20:02:09-04:00", "updated_at" => "2023-03-15T20:02:09-04:00", "currency" => "USD", "charge_type" => "theme", "decorated_return_url" => "http://google.com?charge_id=556467234"}, {"id" => 675931192, "name" => "iPod Cleaning", "api_client_id" => 755357713, "price" => "5.00", "status" => "accepted", "return_url" => "http://google.com", "test" => nil, "created_at" => "2023-03-15T20:02:09-04:00", "updated_at" => "2023-03-15T20:02:09-04:00", "currency" => "USD", "charge_type" => nil, "decorated_return_url" => "http://google.com?charge_id=675931192"}, {"id" => 1017262346, "name" => "Create me a logo", "api_client_id" => 755357713, "price" => "123.00", "status" => "accepted", "return_url" => "http://google.com", "test" => nil, "created_at" => "2023-03-15T20:02:09-04:00", "updated_at" => "2023-03-15T20:02:09-04:00", "currency" => "USD", "charge_type" => "brokered_service", "decorated_return_url" => "http://google.com?charge_id=1017262346"}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"application_charges" => [{"id" => 556467234, "name" => "Green theme", "api_client_id" => 755357713, "price" => "120.00", "status" => "accepted", "return_url" => "http://google.com", "test" => nil, "external_id" => nil, "created_at" => "2023-07-05T18:38:03-04:00", "updated_at" => "2023-07-05T18:38:03-04:00", "currency" => "USD", "charge_type" => "theme", "decorated_return_url" => "http://google.com?charge_id=556467234"}, {"id" => 675931192, "name" => "iPod Cleaning", "api_client_id" => 755357713, "price" => "5.00", "status" => "accepted", "return_url" => "http://google.com", "test" => nil, "created_at" => "2023-07-05T18:38:03-04:00", "updated_at" => "2023-07-05T18:38:03-04:00", "currency" => "USD", "charge_type" => nil, "decorated_return_url" => "http://google.com?charge_id=675931192"}, {"id" => 1017262346, "name" => "Create me a logo", "api_client_id" => 755357713, "price" => "123.00", "status" => "accepted", "return_url" => "http://google.com", "test" => nil, "created_at" => "2023-07-05T18:38:03-04:00", "updated_at" => "2023-07-05T18:38:03-04:00", "currency" => "USD", "charge_type" => "brokered_service", "decorated_return_url" => "http://google.com?charge_id=1017262346"}]}), headers: {})
 
-    ShopifyAPI::ApplicationCharge.all
+    response = ShopifyAPI::ApplicationCharge.all
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-07/application_charges.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -95,13 +137,27 @@ class ApplicationCharge202207Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"application_charges" => [{"id" => 675931192, "name" => "iPod Cleaning", "api_client_id" => 755357713, "price" => "5.00", "status" => "accepted", "return_url" => "http://google.com", "test" => nil, "created_at" => "2023-03-15T20:02:09-04:00", "updated_at" => "2023-03-15T20:02:09-04:00", "currency" => "USD", "charge_type" => nil, "decorated_return_url" => "http://google.com?charge_id=675931192"}, {"id" => 1017262346, "name" => "Create me a logo", "api_client_id" => 755357713, "price" => "123.00", "status" => "accepted", "return_url" => "http://google.com", "test" => nil, "created_at" => "2023-03-15T20:02:09-04:00", "updated_at" => "2023-03-15T20:02:09-04:00", "currency" => "USD", "charge_type" => "brokered_service", "decorated_return_url" => "http://google.com?charge_id=1017262346"}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"application_charges" => [{"id" => 675931192, "name" => "iPod Cleaning", "api_client_id" => 755357713, "price" => "5.00", "status" => "accepted", "return_url" => "http://google.com", "test" => nil, "created_at" => "2023-07-05T18:38:03-04:00", "updated_at" => "2023-07-05T18:38:03-04:00", "currency" => "USD", "charge_type" => nil, "decorated_return_url" => "http://google.com?charge_id=675931192"}, {"id" => 1017262346, "name" => "Create me a logo", "api_client_id" => 755357713, "price" => "123.00", "status" => "accepted", "return_url" => "http://google.com", "test" => nil, "created_at" => "2023-07-05T18:38:03-04:00", "updated_at" => "2023-07-05T18:38:03-04:00", "currency" => "USD", "charge_type" => "brokered_service", "decorated_return_url" => "http://google.com?charge_id=1017262346"}]}), headers: {})
 
-    ShopifyAPI::ApplicationCharge.all(
+    response = ShopifyAPI::ApplicationCharge.all(
       since_id: "556467234",
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-07/application_charges.json?since_id=556467234")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -113,13 +169,27 @@ class ApplicationCharge202207Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"application_charge" => {"id" => 675931192, "name" => "iPod Cleaning", "api_client_id" => 755357713, "price" => "5.00", "status" => "accepted", "return_url" => "http://google.com", "test" => nil, "created_at" => "2023-03-15T20:02:09-04:00", "updated_at" => "2023-03-15T20:02:09-04:00", "currency" => "USD", "charge_type" => nil, "decorated_return_url" => "http://google.com?charge_id=675931192"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"application_charge" => {"id" => 675931192, "name" => "iPod Cleaning", "api_client_id" => 755357713, "price" => "5.00", "status" => "accepted", "return_url" => "http://google.com", "test" => nil, "created_at" => "2023-07-05T18:38:03-04:00", "updated_at" => "2023-07-05T18:38:03-04:00", "currency" => "USD", "charge_type" => nil, "decorated_return_url" => "http://google.com?charge_id=675931192"}}), headers: {})
 
-    ShopifyAPI::ApplicationCharge.find(
+    response = ShopifyAPI::ApplicationCharge.find(
       id: 675931192,
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-07/application_charges/675931192.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
 end

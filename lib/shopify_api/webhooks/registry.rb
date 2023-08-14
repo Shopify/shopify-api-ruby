@@ -13,7 +13,7 @@ module ShopifyAPI
             delivery_method: Symbol,
             path: String,
             handler: T.nilable(Handler),
-            fields: T.nilable(String)).void
+            fields: T.nilable(T.any(String, T::Array[String]))).void
         end
         def add_registration(topic:, delivery_method:, path:, handler: nil, fields: nil)
           @registry[topic] = case delivery_method
@@ -136,7 +136,7 @@ module ShopifyAPI
         def get_webhook_id(topic:, client:)
           fetch_id_query = <<~QUERY
             {
-              webhookSubscriptions(first: 1, topics: #{topic.gsub("/", "_").upcase}) {
+              webhookSubscriptions(first: 1, topics: #{topic.gsub(%r{/|\.}, "_").upcase}) {
                 edges {
                   node {
                     id

@@ -22,7 +22,7 @@ module ShopifyAPI
       @evidence_sent_on = T.let(nil, T.nilable(String))
       @finalized_on = T.let(nil, T.nilable(String))
       @id = T.let(nil, T.nilable(Integer))
-      @network_reason_code = T.let(nil, T.nilable(Integer))
+      @network_reason_code = T.let(nil, T.nilable(String))
       @order_id = T.let(nil, T.nilable(Integer))
       @reason = T.let(nil, T.nilable(String))
       @status = T.let(nil, T.nilable(String))
@@ -48,7 +48,7 @@ module ShopifyAPI
     attr_reader :finalized_on
     sig { returns(T.nilable(Integer)) }
     attr_reader :id
-    sig { returns(T.nilable(Integer)) }
+    sig { returns(T.nilable(String)) }
     attr_reader :network_reason_code
     sig { returns(T.nilable(Integer)) }
     attr_reader :order_id

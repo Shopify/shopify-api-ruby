@@ -24,7 +24,7 @@ module ShopifyAPI
       @country = T.let(nil, T.nilable(String))
       @country_code = T.let(nil, T.nilable(String))
       @country_name = T.let(nil, T.nilable(String))
-      @county_taxes = T.let(nil, T.nilable(String))
+      @county_taxes = T.let(nil, T.nilable(T::Boolean))
       @created_at = T.let(nil, T.nilable(String))
       @currency = T.let(nil, T.nilable(String))
       @customer_email = T.let(nil, T.nilable(String))
@@ -66,7 +66,7 @@ module ShopifyAPI
       @shop_owner = T.let(nil, T.nilable(String))
       @source = T.let(nil, T.nilable(String))
       @tax_shipping = T.let(nil, T.nilable(String))
-      @taxes_included = T.let(nil, T.nilable(String))
+      @taxes_included = T.let(nil, T.nilable(T::Boolean))
       @timezone = T.let(nil, T.nilable(String))
       @transactional_sms_disabled = T.let(nil, T.nilable(T::Boolean))
       @updated_at = T.let(nil, T.nilable(String))
@@ -96,7 +96,7 @@ module ShopifyAPI
     attr_reader :country_code
     sig { returns(T.nilable(String)) }
     attr_reader :country_name
-    sig { returns(T.nilable(String)) }
+    sig { returns(T.nilable(T::Boolean)) }
     attr_reader :county_taxes
     sig { returns(T.nilable(String)) }
     attr_reader :created_at
@@ -180,7 +180,7 @@ module ShopifyAPI
     attr_reader :source
     sig { returns(T.nilable(String)) }
     attr_reader :tax_shipping
-    sig { returns(T.nilable(String)) }
+    sig { returns(T.nilable(T::Boolean)) }
     attr_reader :taxes_included
     sig { returns(T.nilable(String)) }
     attr_reader :timezone

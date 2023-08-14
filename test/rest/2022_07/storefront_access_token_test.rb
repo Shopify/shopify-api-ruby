@@ -38,13 +38,27 @@ class StorefrontAccessToken202207Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "storefront_access_token" => hash_including({"title" => "Test"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"storefront_access_token" => {"access_token" => "bac50afe906e84b04b95ffb1bee5ade6", "access_scope" => "unauthenticated_read_product_listings", "created_at" => "2023-02-02T09:35:37-05:00", "id" => 1003303990, "admin_graphql_api_id" => "gid://shopify/StorefrontAccessToken/1003303990", "title" => "Test"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"storefront_access_token" => {"access_token" => "169a201d2d13a3f3453cd557dace56e1", "access_scope" => "unauthenticated_read_product_listings", "created_at" => "2023-07-05T18:50:29-04:00", "id" => 1003303990, "admin_graphql_api_id" => "gid://shopify/StorefrontAccessToken/1003303990", "title" => "Test"}}), headers: {})
 
-    storefront_access_token = ShopifyAPI::StorefrontAccessToken.new
+    response = storefront_access_token = ShopifyAPI::StorefrontAccessToken.new
     storefront_access_token.title = "Test"
     storefront_access_token.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2022-07/storefront_access_tokens.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -56,11 +70,25 @@ class StorefrontAccessToken202207Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"storefront_access_tokens" => [{"access_token" => "378d95641257a4ab3feff967ee234f4d", "access_scope" => "unauthenticated_read_product_listings", "created_at" => "2023-02-02T09:09:49-05:00", "id" => 755357713, "admin_graphql_api_id" => "gid://shopify/StorefrontAccessToken/755357713", "title" => "API Client Extension"}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"storefront_access_tokens" => [{"access_token" => "378d95641257a4ab3feff967ee234f4d", "access_scope" => "unauthenticated_read_product_listings", "created_at" => "2023-07-05T18:38:03-04:00", "id" => 755357713, "admin_graphql_api_id" => "gid://shopify/StorefrontAccessToken/755357713", "title" => "API Client Extension"}]}), headers: {})
 
-    ShopifyAPI::StorefrontAccessToken.all
+    response = ShopifyAPI::StorefrontAccessToken.all
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-07/storefront_access_tokens.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -74,11 +102,25 @@ class StorefrontAccessToken202207Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({}), headers: {})
 
-    ShopifyAPI::StorefrontAccessToken.delete(
+    response = ShopifyAPI::StorefrontAccessToken.delete(
       id: 755357713,
     )
 
     assert_requested(:delete, "https://test-shop.myshopify.io/admin/api/2022-07/storefront_access_tokens/755357713.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
 end

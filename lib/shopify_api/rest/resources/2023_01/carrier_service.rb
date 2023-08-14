@@ -20,6 +20,7 @@ module ShopifyAPI
       @admin_graphql_api_id = T.let(nil, T.nilable(String))
       @callback_url = T.let(nil, T.nilable(String))
       @carrier_service_type = T.let(nil, T.nilable(String))
+      @format = T.let(nil, T.nilable(String))
       @id = T.let(nil, T.nilable(Integer))
       @name = T.let(nil, T.nilable(String))
       @service_discovery = T.let(nil, T.nilable(T::Boolean))
@@ -43,6 +44,8 @@ module ShopifyAPI
     attr_reader :callback_url
     sig { returns(T.nilable(String)) }
     attr_reader :carrier_service_type
+    sig { returns(T.nilable(String)) }
+    attr_reader :format
     sig { returns(T.nilable(Integer)) }
     attr_reader :id
     sig { returns(T.nilable(String)) }

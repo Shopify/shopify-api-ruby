@@ -94,6 +94,10 @@ module ShopifyAPITest
         do_registration_test(:http, "test-webhooks", fields: "field1, field2")
       end
 
+      def test_http_registration_with_fields_array_add_and_update
+        do_registration_test(:http, "test-webhooks", fields: ["field1", "field2"])
+      end
+
       def test_raises_on_http_registration_check_error
         do_registration_check_error_test(:http, "test-webhooks")
       end
@@ -106,6 +110,10 @@ module ShopifyAPITest
         do_registration_test(:pub_sub, "pubsub://my-project-id:my-topic-id", fields: "field1, field2")
       end
 
+      def test_pubsub_registration_with_fields_array_add_and_update
+        do_registration_test(:pub_sub, "pubsub://my-project-id:my-topic-id", fields: ["field1", "field2"])
+      end
+
       def test_raises_on_pubsub_registration_check_error
         do_registration_check_error_test(:pub_sub, "pubsub://my-project-id:my-topic-id")
       end
@@ -116,6 +124,10 @@ module ShopifyAPITest
 
       def test_eventbridge_registration_with_fields_add_and_update
         do_registration_test(:event_bridge, "test-webhooks", fields: "field1, field2")
+      end
+
+      def test_eventbridge_registration_with_fields_array_add_and_update
+        do_registration_test(:event_bridge, "test-webhooks", fields: ["field1", "field2"])
       end
 
       def test_raises_on_eventbridge_registration_check_error
@@ -188,6 +200,21 @@ module ShopifyAPITest
 
         webhook_id_response = ShopifyAPI::Webhooks::Registry.get_webhook_id(
           topic: "some/topic",
+          client: ShopifyAPI::Clients::Graphql::Admin.new(session: @session),
+        )
+        assert_equal(
+          queries[:fetch_id_response]["data"]["webhookSubscriptions"]["edges"][0]["node"]["id"],
+          webhook_id_response,
+        )
+      end
+
+      def test_get_webhook_id_success_for_event
+        stub_request(:post, @url)
+          .with(body: JSON.dump({ query: queries[:fetch_id_event_query], variables: nil }))
+          .to_return({ status: 200, body: JSON.dump(queries[:fetch_id_response]) })
+
+        webhook_id_response = ShopifyAPI::Webhooks::Registry.get_webhook_id(
+          topic: "domain.sub_domain.something_happened",
           client: ShopifyAPI::Clients::Graphql::Admin.new(session: @session),
         )
         assert_equal(

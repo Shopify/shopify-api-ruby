@@ -38,11 +38,25 @@ class Blog202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"blogs" => [{"id" => 382285388, "handle" => "banana-blog", "title" => "A Gnu Blog", "updated_at" => "2006-02-02T19:00:00-05:00", "commentable" => "no", "feedburner" => nil, "feedburner_location" => nil, "created_at" => "2023-02-02T09:09:49-05:00", "template_suffix" => nil, "tags" => "", "admin_graphql_api_id" => "gid://shopify/OnlineStoreBlog/382285388"}, {"id" => 241253187, "handle" => "apple-blog", "title" => "Mah Blog", "updated_at" => "2006-02-01T19:00:00-05:00", "commentable" => "no", "feedburner" => nil, "feedburner_location" => nil, "created_at" => "2023-02-02T09:09:49-05:00", "template_suffix" => nil, "tags" => "Announcing, Mystery", "admin_graphql_api_id" => "gid://shopify/OnlineStoreBlog/241253187"}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"blogs" => [{"id" => 382285388, "handle" => "banana-blog", "title" => "A Gnu Blog", "updated_at" => "2006-02-02T19:00:00-05:00", "commentable" => "no", "feedburner" => nil, "feedburner_location" => nil, "created_at" => "2023-07-05T19:05:24-04:00", "template_suffix" => nil, "tags" => "", "admin_graphql_api_id" => "gid://shopify/OnlineStoreBlog/382285388"}, {"id" => 241253187, "handle" => "apple-blog", "title" => "Mah Blog", "updated_at" => "2006-02-01T19:00:00-05:00", "commentable" => "no", "feedburner" => nil, "feedburner_location" => nil, "created_at" => "2023-07-05T19:05:24-04:00", "template_suffix" => nil, "tags" => "Announcing, Mystery", "admin_graphql_api_id" => "gid://shopify/OnlineStoreBlog/241253187"}]}), headers: {})
 
-    ShopifyAPI::Blog.all
+    response = ShopifyAPI::Blog.all
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-01/blogs.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -54,13 +68,27 @@ class Blog202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"blogs" => [{"id" => 382285388, "handle" => "banana-blog", "title" => "A Gnu Blog", "updated_at" => "2006-02-02T19:00:00-05:00", "commentable" => "no", "feedburner" => nil, "feedburner_location" => nil, "created_at" => "2023-02-02T09:09:49-05:00", "template_suffix" => nil, "tags" => "", "admin_graphql_api_id" => "gid://shopify/OnlineStoreBlog/382285388"}, {"id" => 1008414253, "handle" => "apple-main-blog", "title" => "Apple main blog", "updated_at" => "2023-02-02T09:17:46-05:00", "commentable" => "no", "feedburner" => nil, "feedburner_location" => nil, "created_at" => "2023-02-02T09:17:46-05:00", "template_suffix" => nil, "tags" => "", "admin_graphql_api_id" => "gid://shopify/OnlineStoreBlog/1008414253"}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"blogs" => [{"id" => 382285388, "handle" => "banana-blog", "title" => "A Gnu Blog", "updated_at" => "2006-02-02T19:00:00-05:00", "commentable" => "no", "feedburner" => nil, "feedburner_location" => nil, "created_at" => "2023-07-05T19:05:24-04:00", "template_suffix" => nil, "tags" => "", "admin_graphql_api_id" => "gid://shopify/OnlineStoreBlog/382285388"}, {"id" => 1008414253, "handle" => "apple-main-blog", "title" => "Apple main blog", "updated_at" => "2023-07-05T19:16:12-04:00", "commentable" => "no", "feedburner" => nil, "feedburner_location" => nil, "created_at" => "2023-07-05T19:16:12-04:00", "template_suffix" => nil, "tags" => "", "admin_graphql_api_id" => "gid://shopify/OnlineStoreBlog/1008414253"}]}), headers: {})
 
-    ShopifyAPI::Blog.all(
+    response = ShopifyAPI::Blog.all(
       since_id: "241253187",
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-01/blogs.json?since_id=241253187")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -72,13 +100,27 @@ class Blog202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "blog" => hash_including({"title" => "Apple main blog"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"blog" => {"id" => 1008414251, "handle" => "apple-main-blog", "title" => "Apple main blog", "updated_at" => "2023-02-02T09:17:35-05:00", "commentable" => "no", "feedburner" => nil, "feedburner_location" => nil, "created_at" => "2023-02-02T09:17:35-05:00", "template_suffix" => nil, "tags" => "", "admin_graphql_api_id" => "gid://shopify/OnlineStoreBlog/1008414251"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"blog" => {"id" => 1008414251, "handle" => "apple-main-blog", "title" => "Apple main blog", "updated_at" => "2023-07-05T19:16:07-04:00", "commentable" => "no", "feedburner" => nil, "feedburner_location" => nil, "created_at" => "2023-07-05T19:16:07-04:00", "template_suffix" => nil, "tags" => "", "admin_graphql_api_id" => "gid://shopify/OnlineStoreBlog/1008414251"}}), headers: {})
 
-    blog = ShopifyAPI::Blog.new
+    response = blog = ShopifyAPI::Blog.new
     blog.title = "Apple main blog"
     blog.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-01/blogs.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -90,9 +132,9 @@ class Blog202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "blog" => hash_including({"title" => "Apple main blog", "metafields" => [{"key" => "sponsor", "value" => "Shopify", "type" => "single_line_text_field", "namespace" => "global"}]}) }
       )
-      .to_return(status: 200, body: JSON.generate({"blog" => {"id" => 1008414249, "handle" => "apple-main-blog", "title" => "Apple main blog", "updated_at" => "2023-02-02T09:17:14-05:00", "commentable" => "no", "feedburner" => nil, "feedburner_location" => nil, "created_at" => "2023-02-02T09:17:13-05:00", "template_suffix" => nil, "tags" => "", "admin_graphql_api_id" => "gid://shopify/OnlineStoreBlog/1008414249"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"blog" => {"id" => 1008414252, "handle" => "apple-main-blog", "title" => "Apple main blog", "updated_at" => "2023-07-05T19:16:10-04:00", "commentable" => "no", "feedburner" => nil, "feedburner_location" => nil, "created_at" => "2023-07-05T19:16:10-04:00", "template_suffix" => nil, "tags" => "", "admin_graphql_api_id" => "gid://shopify/OnlineStoreBlog/1008414252"}}), headers: {})
 
-    blog = ShopifyAPI::Blog.new
+    response = blog = ShopifyAPI::Blog.new
     blog.title = "Apple main blog"
     blog.metafields = [
       {
@@ -105,6 +147,20 @@ class Blog202301Test < Test::Unit::TestCase
     blog.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-01/blogs.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -118,9 +174,23 @@ class Blog202301Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"count" => 2}), headers: {})
 
-    ShopifyAPI::Blog.count
+    response = ShopifyAPI::Blog.count
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-01/blogs/count.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -132,13 +202,27 @@ class Blog202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"blog" => {"id" => 241253187, "handle" => "apple-blog", "title" => "Mah Blog", "updated_at" => "2006-02-01T19:00:00-05:00", "commentable" => "no", "feedburner" => nil, "feedburner_location" => nil, "created_at" => "2023-02-02T09:09:49-05:00", "template_suffix" => nil, "tags" => "Announcing, Mystery", "admin_graphql_api_id" => "gid://shopify/OnlineStoreBlog/241253187"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"blog" => {"id" => 241253187, "handle" => "apple-blog", "title" => "Mah Blog", "updated_at" => "2006-02-01T19:00:00-05:00", "commentable" => "no", "feedburner" => nil, "feedburner_location" => nil, "created_at" => "2023-07-05T19:05:24-04:00", "template_suffix" => nil, "tags" => "Announcing, Mystery", "admin_graphql_api_id" => "gid://shopify/OnlineStoreBlog/241253187"}}), headers: {})
 
-    ShopifyAPI::Blog.find(
+    response = ShopifyAPI::Blog.find(
       id: 241253187,
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-01/blogs/241253187.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -152,12 +236,26 @@ class Blog202301Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"blog" => {"id" => 241253187, "title" => "Mah Blog"}}), headers: {})
 
-    ShopifyAPI::Blog.find(
+    response = ShopifyAPI::Blog.find(
       id: 241253187,
       fields: "id,title",
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-01/blogs/241253187.json?fields=id%2Ctitle")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -169,9 +267,9 @@ class Blog202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "blog" => hash_including({"metafields" => [{"key" => "sponsor", "value" => "Shopify", "type" => "single_line_text_field", "namespace" => "global"}]}) }
       )
-      .to_return(status: 200, body: JSON.generate({"blog" => {"title" => "Mah Blog", "handle" => "apple-blog", "id" => 241253187, "updated_at" => "2023-02-02T09:17:24-05:00", "commentable" => "no", "feedburner" => nil, "feedburner_location" => nil, "created_at" => "2023-02-02T09:09:49-05:00", "template_suffix" => nil, "tags" => "Announcing, Mystery", "admin_graphql_api_id" => "gid://shopify/OnlineStoreBlog/241253187"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"blog" => {"title" => "Mah Blog", "handle" => "apple-blog", "id" => 241253187, "updated_at" => "2023-07-05T19:16:19-04:00", "commentable" => "no", "feedburner" => nil, "feedburner_location" => nil, "created_at" => "2023-07-05T19:05:24-04:00", "template_suffix" => nil, "tags" => "Announcing, Mystery", "admin_graphql_api_id" => "gid://shopify/OnlineStoreBlog/241253187"}}), headers: {})
 
-    blog = ShopifyAPI::Blog.new
+    response = blog = ShopifyAPI::Blog.new
     blog.id = 241253187
     blog.metafields = [
       {
@@ -184,6 +282,20 @@ class Blog202301Test < Test::Unit::TestCase
     blog.save
 
     assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2023-01/blogs/241253187.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -195,14 +307,28 @@ class Blog202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "blog" => hash_including({"title" => "IPod Updates"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"blog" => {"title" => "IPod Updates", "handle" => "apple-blog", "id" => 241253187, "updated_at" => "2023-02-02T09:17:25-05:00", "commentable" => "no", "feedburner" => nil, "feedburner_location" => nil, "created_at" => "2023-02-02T09:09:49-05:00", "template_suffix" => nil, "tags" => "Announcing, Mystery", "admin_graphql_api_id" => "gid://shopify/OnlineStoreBlog/241253187"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"blog" => {"title" => "IPod Updates", "handle" => "apple-blog", "id" => 241253187, "updated_at" => "2023-07-05T19:16:18-04:00", "commentable" => "no", "feedburner" => nil, "feedburner_location" => nil, "created_at" => "2023-07-05T19:05:24-04:00", "template_suffix" => nil, "tags" => "Announcing, Mystery", "admin_graphql_api_id" => "gid://shopify/OnlineStoreBlog/241253187"}}), headers: {})
 
-    blog = ShopifyAPI::Blog.new
+    response = blog = ShopifyAPI::Blog.new
     blog.id = 241253187
     blog.title = "IPod Updates"
     blog.save
 
     assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2023-01/blogs/241253187.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -214,9 +340,9 @@ class Blog202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "blog" => hash_including({"title" => "IPod Updates", "handle" => "ipod-updates", "commentable" => "moderate"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"blog" => {"title" => "IPod Updates", "handle" => "ipod-updates", "commentable" => "moderate", "id" => 241253187, "updated_at" => "2023-02-02T09:17:44-05:00", "feedburner" => nil, "feedburner_location" => nil, "created_at" => "2023-02-02T09:09:49-05:00", "template_suffix" => nil, "tags" => "Announcing, Mystery", "admin_graphql_api_id" => "gid://shopify/OnlineStoreBlog/241253187"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"blog" => {"title" => "IPod Updates", "handle" => "ipod-updates", "commentable" => "moderate", "id" => 241253187, "updated_at" => "2023-07-05T19:16:09-04:00", "feedburner" => nil, "feedburner_location" => nil, "created_at" => "2023-07-05T19:05:24-04:00", "template_suffix" => nil, "tags" => "Announcing, Mystery", "admin_graphql_api_id" => "gid://shopify/OnlineStoreBlog/241253187"}}), headers: {})
 
-    blog = ShopifyAPI::Blog.new
+    response = blog = ShopifyAPI::Blog.new
     blog.id = 241253187
     blog.title = "IPod Updates"
     blog.handle = "ipod-updates"
@@ -224,6 +350,20 @@ class Blog202301Test < Test::Unit::TestCase
     blog.save
 
     assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2023-01/blogs/241253187.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
   sig do
@@ -237,11 +377,25 @@ class Blog202301Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({}), headers: {})
 
-    ShopifyAPI::Blog.delete(
+    response = ShopifyAPI::Blog.delete(
       id: 241253187,
     )
 
     assert_requested(:delete, "https://test-shop.myshopify.io/admin/api/2023-01/blogs/241253187.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
   end
 
 end

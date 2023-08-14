@@ -381,6 +381,18 @@ module ShopifyAPITest
               "message" => "some error",
             ],
           },
+          fetch_id_event_query:
+            <<~QUERY,
+              {
+                webhookSubscriptions(first: 1, topics: DOMAIN_SUB_DOMAIN_SOMETHING_HAPPENED) {
+                  edges {
+                    node {
+                      id
+                    }
+                  }
+                }
+              }
+            QUERY
           delete_query:
               <<~QUERY,
                 mutation webhookSubscription {

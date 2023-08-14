@@ -16,7 +16,7 @@ module ShopifyAPI
     def initialize(session: ShopifyAPI::Context.active_session)
       super(session: session)
 
-      @amount = T.let(nil, T.nilable(Integer))
+      @amount = T.let(nil, T.nilable(String))
       @currency = T.let(nil, T.nilable(Currency))
       @description = T.let(nil, T.nilable(String))
       @id = T.let(nil, T.nilable(Integer))
@@ -33,7 +33,7 @@ module ShopifyAPI
       {http_method: :post, operation: :post, ids: [], path: "application_credits.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
-    sig { returns(T.nilable(Integer)) }
+    sig { returns(T.nilable(String)) }
     attr_reader :amount
     sig { returns(T.nilable(Currency)) }
     attr_reader :currency

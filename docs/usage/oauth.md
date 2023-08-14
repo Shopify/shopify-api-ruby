@@ -5,6 +5,11 @@ Once the library is set up for your project, you'll be able to use it to start a
 To do this, you can follow the steps below.
 For more information on authenticating a Shopify app please see the [Types of Authentication](https://shopify.dev/docs/apps/auth#types-of-authentication) page.
 
+## Note about Rails
+If using in the Rails framework, we highly recommend you use the [shopify_app](https://github.com/Shopify/shopify_app) gem to perform OAuth.
+
+If you aren't using Rails, you can look at how that [gem creates / stores sessions from the OAuth flow](https://github.com/Shopify/shopify_app/blob/2f90af43173041d145f578dcd6448f238b69f9fe/app/controllers/shopify_app/callback_controller.rb#L9) for further examples.
+
 ## Add a route to start OAuth
 
 The route for starting the OAuth process (in this case `/login`) will use the library's `begin_auth` method. The method will return an `auth_route` URI that will be used for redirecting the user to the Shopify Authentication screen and a session cookie to store on the user's browser. These return values will be a hash in the form of {`auth_route`: `String`, `cookie`: `ShopifyAPI::Auth::Oauth::SessionCookie`}
@@ -70,35 +75,3 @@ def callback
   end
 end
 ```
-## Fetching sessions
-
-You can use the OAuth methods to create both offline and online sessions. Once the process is completed, the session will be stored as per your `Context.session_storage`, and can be retrieved with `SessionUtils` class methods.
-
-- To load current session, you can use the following method:
-
-```ruby
-ShopifyAPI::Utils::SessionUtils.load_current_session(auth_header: <auth-header>, cookies: <cookies>, is_online: <true|false>)
-```
-
-Accepted arguments:
-| Parameter   | Type                      | Notes                                                                                                                                                                     |
-| ----------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `auth_header`   | `String`    | JWT token will be extracted from `auth_header` to load session for embedded apps. If JWT token is not provided this methods will try with `cookies`. Only required if trying to load, an embedded session. |
-| `cookies`   | `Hash(String, String)`    | The cookies from the HTTP request. A session cookie named `shopify_app_session` is used to load session for non-embedded apps. Can be omitted if loading and embedded session without falling back on cookies |
-| `is_online` | `Boolean`                 | Whether to load online or offline sessions. Defaults to `false` |
-
-This method will return a `ShopifyAPI::Auth::Session`  if a session exists. Either a proper token or a proper cookie must be present.
-
-- To load offline session, you can use the following method:
-
-```ruby
-ShopifyAPI::Utils::SessionUtils.load_offline_session(shop)
-```
-
-Accepted arguments:
-| Parameter           | Type      | Notes                                                                                                                                                                     |
-| ------------------- | --------- | --------------------------------------------- |
-| `shop`              | `String`  | The shop url to find the offline session for. |
-| `include_expired`   | `Boolean` | Include expired sessions or not.              |
-
-This method will return a `ShopifyAPI::Auth::Session` if a session exists and `nil` otherwise. This method **does not** perform any validation on the shop domain, so it **must not** rely on user input for the domain. This method is typically meant to be used in background tasks like webhooks, where the data is expected to have been validated when the task was enqueued.

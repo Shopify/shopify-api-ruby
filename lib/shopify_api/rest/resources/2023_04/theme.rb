@@ -22,6 +22,7 @@ module ShopifyAPI
       @previewable = T.let(nil, T.nilable(T::Boolean))
       @processing = T.let(nil, T.nilable(T::Boolean))
       @role = T.let(nil, T.nilable(String))
+      @src = T.let(nil, T.nilable(String))
       @theme_store_id = T.let(nil, T.nilable(Integer))
       @updated_at = T.let(nil, T.nilable(String))
     end
@@ -48,6 +49,8 @@ module ShopifyAPI
     attr_reader :processing
     sig { returns(T.nilable(String)) }
     attr_reader :role
+    sig { returns(T.nilable(String)) }
+    attr_reader :src
     sig { returns(T.nilable(Integer)) }
     attr_reader :theme_store_id
     sig { returns(T.nilable(String)) }

@@ -5,9 +5,6 @@ Once you have a [session](oauth.md#fetching-sessions) after completing oauth, yo
 Below is an example
 
 ```ruby
-# load the current session with SessionUtils.load_current_session
-session = ShopifyAPI::Utils::SessionUtils.load_current_session(auth_header: <auth-header>, cookies: <cookies>, is_online: <true|false>)
-
 # initalize the client
 client = ShopifyAPI::Clients::Graphql::Admin.new(session: session)
 
@@ -104,6 +101,7 @@ If you would like to give your front end the ability to make authenticated graph
 def proxy
   begin
     response = ShopifyAPI::Utils::GraphqlProxy.proxy_query(
+      session: session,
       headers: request.headers.to_h,
       body: request.raw_post,
       cookies: request.cookies.to_h
