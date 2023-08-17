@@ -94,6 +94,10 @@ module ShopifyAPITest
         do_registration_test(:http, "test-webhooks", fields: "field1, field2")
       end
 
+      def test_http_registration_with_fields_array_add_and_update
+        do_registration_test(:http, "test-webhooks", fields: ["field1", "field2"])
+      end
+
       def test_raises_on_http_registration_check_error
         do_registration_check_error_test(:http, "test-webhooks")
       end
@@ -106,6 +110,10 @@ module ShopifyAPITest
         do_registration_test(:pub_sub, "pubsub://my-project-id:my-topic-id", fields: "field1, field2")
       end
 
+      def test_pubsub_registration_with_fields_array_add_and_update
+        do_registration_test(:pub_sub, "pubsub://my-project-id:my-topic-id", fields: ["field1", "field2"])
+      end
+
       def test_raises_on_pubsub_registration_check_error
         do_registration_check_error_test(:pub_sub, "pubsub://my-project-id:my-topic-id")
       end
@@ -116,6 +124,10 @@ module ShopifyAPITest
 
       def test_eventbridge_registration_with_fields_add_and_update
         do_registration_test(:event_bridge, "test-webhooks", fields: "field1, field2")
+      end
+
+      def test_eventbridge_registration_with_fields_array_add_and_update
+        do_registration_test(:event_bridge, "test-webhooks", fields: ["field1", "field2"])
       end
 
       def test_raises_on_eventbridge_registration_check_error

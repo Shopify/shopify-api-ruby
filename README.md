@@ -70,9 +70,12 @@ The Shopify API gem tries to make this easy by providing functions to begin and 
 
 If you intend to use webhooks in your application follow the steps in the [Webhooks doc](docs/usage/webhooks.md) for instructions on registering and handling webhooks.
 
-### Start Making Authenticated Shopify Requests
+### Start Making Authenticated Shopify API Requests
 
-Once your app can perform OAuth, it can now make authenticated Shopify API calls using the Admin [REST](docs/usage/rest.md) or [GraphQL](docs/usage/graphql.md) Clients, or the [Storefront API GraphQL Client](docs/usage/graphql_storefront.md).
+Once your app can perform OAuth, it can now make authenticated Shopify API calls, see docs for:
+* Making [Admin REST API](docs/usage/rest.md) requests
+* Making [Admin GraphQL API](docs/usage/graphql.md) requests
+* Making [Storefront GraphQL API](docs/usage/graphql_storefront.md) requests
 
 ## Breaking Change Notices
 
