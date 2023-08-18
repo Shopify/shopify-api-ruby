@@ -365,10 +365,11 @@ module ShopifyAPI
           self.class.read_only_attributes&.include?("@#{attribute}".to_sym)
         end
 
-        HashDiff::Comparison.new(
+        changes = HashDiff::Comparison.new(
           deep_stringify_keys(original_state_for_update),
           deep_stringify_keys(to_hash(true)),
         ).left_diff
+        binding.pry
       end
 
       sig { returns(Symbol) }
