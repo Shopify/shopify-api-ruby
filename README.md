@@ -99,7 +99,7 @@ Please refer to [the documentation](docs/getting_started.md) in this repository 
 With this, a lot changed in how apps access the library. Here are the updates you should make when migrating to v10:
 
 - Call `ShopifyAPI::Context.setup` when setting up your app. This class holds global configurations for your app and defines how the library behaves.
-- If not using the [shopify_app](https://github.com/Shopify/shopify_app) gem, your app needs to provide an implementation of `ShopifyAPI::Auth::SessionStorage` for production. Read more about this [in our documentation](docs/usage/session_storage.md).
+-Session persistence is handled by the ShopifyApp gem and is recommended for use in the Rails context. See that gem for documentation on how to use it.
 - To change the `User-Agent` header, use `user_agent_prefix` in `ShopifyAPI::Context.setup`.
 - Usages of the `ActiveResource` classes for REST API requests need to be refactored into the new format. You can find detailed examples on how each of the endpoints work in our [reference documentation](https://shopify.dev/docs/api/admin-rest).
 
