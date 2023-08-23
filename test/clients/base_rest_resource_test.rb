@@ -203,7 +203,7 @@ module ShopifyAPITest
         assert_equal("some-value", resource.to_hash["unknown"])
       end
 
-      def test_saves_removing_children_zzz
+      def test_saves_removing_children
         draft_order_data = {
           "id" => 1124601987358,
           "line_items" => [{
