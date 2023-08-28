@@ -18,7 +18,7 @@ You can use this library in any application that has a Ruby backend, since it do
 **Note**: These instructions apply to v10 or later of this package. If you're running v9 in your app, you can find the documentation [in this branch](https://github.com/Shopify/shopify-api-ruby/tree/v9).
 
 ## Use with Rails
-If using in the Rails framework, we highly recommend you use the [shopify_app](https://github.com/Shopify/shopify_app) gem to interact with this gem. Authentication, session storage, webhook regirstration, and other frequenly implemented paths are managed in that gem with easy to use configurations.
+If using in the Rails framework, we highly recommend you use the [shopify_app](https://github.com/Shopify/shopify_app) gem to interact with this gem. Authentication, session storage, webhook registration, and other frequently implemented paths are managed in that gem with easy to use configurations.
 
 ## Requirements
 
