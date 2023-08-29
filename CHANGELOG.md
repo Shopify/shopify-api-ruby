@@ -5,6 +5,7 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
 
 - [#1183](https://github.com/Shopify/shopify-api-ruby/pull/1189) Added string array support for fields parameter in Webhook::Registry
+- [#1206](https://github.com/Shopify/shopify-api-ruby/pull/1206) Fixes the issue of empty cookie sessions when using embedded mode.
 
 ## 13.1.0
 

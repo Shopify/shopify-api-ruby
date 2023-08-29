@@ -81,17 +81,10 @@ module ShopifyAPI
 
           session = create_new_session(session_params, auth_query.shop)
 
-          cookie = if Context.embedded?
-            SessionCookie.new(
-              value: "",
-              expires: Time.now,
-            )
-          else
-            SessionCookie.new(
-              value: session.id,
-              expires: session.online? ? session.expires : nil,
-            )
-          end
+          cookie = SessionCookie.new(
+            value: session.id,
+            expires: session.online? ? session.expires : nil,
+          )
 
           { session: session, cookie: cookie }
         end
