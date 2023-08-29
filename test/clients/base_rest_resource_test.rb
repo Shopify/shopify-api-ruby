@@ -182,6 +182,23 @@ module ShopifyAPITest
         refute_includes(resource.to_hash(true), "unsaveable_attribute")
       end
 
+      def test_save_allows_custom_json_body_names
+        request_body = { fake_resource: { attribute: "attribute" } }.to_json
+        response_body = { fake_resource_response: { id: 1, attribute: "attribute updated" } }.to_json
+
+        stub_request(:post, "#{@prefix}/fake_resources.json")
+          .with(body: request_body)
+          .to_return(status: 201, body: response_body)
+
+        resource = TestHelpers::FakeResource.new(session: @session)
+        resource.attribute = "attribute"
+        TestHelpers::FakeResource.stubs(:json_response_body_names).returns(["fake_resource_response"])
+
+        resource.save!
+        assert_equal(1, resource.id)
+        assert_equal("attribute updated", resource.attribute)
+      end
+
       def test_deletes_existing_resource_and_fails_on_deleting_nonexistent_resource
         resource = TestHelpers::FakeResource.new(session: @session)
         resource.id = 1
