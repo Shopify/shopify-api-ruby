@@ -51,10 +51,12 @@ module ShopifyAPI
 
     class << self
       sig do
-        returns(String)
+        returns(T::Array[String])
       end
-      def json_response_body_name()
-        "fulfillment_order"
+      def json_response_body_names()
+        [
+          "fulfillment_order"
+        ]
       end
 
       sig do
