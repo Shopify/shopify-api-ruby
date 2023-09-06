@@ -24,17 +24,17 @@ With this, a lot changed in how apps access the library. Here are the updates yo
 `ShopifyAPI::Base` class has been removed. Previous versions of this gem used this class to configure API request setting like:
   - API request version
     - Previously: Set by `ShopifyAPI::Base.api_version = "xxxx"`
-    - Change: This is now configured in `api_version` of [ShopifyAPI::Context.setup](#shopifyapicontext-setup)
+    - Change: Configured `api_version` in [ShopifyAPI::Context.setup](#shopifyapicontextsetup)
   - Set `User-Agent` on API request header
     - Previously: Set by `ShopifyAPI::Base.header["User-Agent"] = "xxxxx"`
-    - Change: This is now configured in `user_agent_prefix` of [ShopifyAPI::Context.setup](#shopifyapicontext-setup)
+    - Change: Configured `user_agent_prefix` in [ShopifyAPI::Context.setup](#shopifyapicontextsetup)
   - Set custom headers on API requests
     - Previously: Set by `ShopifyAPI::Base.header["User-Agent"] = "xxxxx"`
     - Change: Custom headers can be added to requests when you use [`ShopifyAPI::Clients::HttpRequest`](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/clients/http_request.rb#L14)
 
-
 #### ShopifyAPI::Context.setup
 Initializing the `ShopifyAPI::Context` with the parameters of your app by calling `ShopifyAPI::Context.setup` (example below) when your app starts (e.g `application.rb` in a Rails app).
+This class holds global configurations for your app and defines how the library behaves.
 
 ```ruby
 ShopifyAPI::Context.setup(
@@ -52,7 +52,26 @@ ShopifyAPI::Context.setup(
 
 See other fields accepted during `ShopifyAPI::Context` setup in [context.rb](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/context.rb).
 
-### Session Respository Changes
+### Session Changes
+`ShopifyAPI::Base` class has been removed, you can no longer activate session using `ShopifyAPI::Base.activate_session`
+
+Instead, you need to pass in the session (`ShopifyAPI::Auth::Session`) object when instantiating new `ShopifyAPI::Clients` objects.
+
+```ruby
+# GraphQL Client
+graphql_client = ShopifyAPI::Clients::Graphql::Admin.new(session: session) #ShopifyAPI::Auth::Session object.
+
+# REST Client
+rest_client = ShopifyAPI::Clients::Rest::Admin.new(session: session) #ShopifyAPI::Auth::Session object
+
+# Using REST Resources
+rest_resource = ShopifyAPI::Shop.new(session: session) # Defaults to using 
+```
+
+##### ShopifyAPI::Auth::Session
+If you're building a Rails app, it is highly recommended for you to use the [`ShopifyApp` gem to perform OAuth and session storage](https://github.com/Shopify/shopify_app/blob/main/docs/shopify_app/sessions.md).
+
+If you're not using Rails, please see the [Performing OAuth](#./docs/usage/oauth.md) guide on how to perform OAuth to retrieve and store sessions.
 
 ### Client Changes
 #### GraphQL
