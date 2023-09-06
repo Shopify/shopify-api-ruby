@@ -52,9 +52,10 @@ ShopifyAPI::Context.setup(
 
 See other fields accepted during `ShopifyAPI::Context` setup in [context.rb](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/context.rb).
 
-### Session Changes
+### 2. Session Changes
 `ShopifyAPI::Base` class has been removed, you can no longer activate session using `ShopifyAPI::Base.activate_session`. Instead, you can use
 `ShopifyAPI::Context.activate_session` to set the active session ([`ShopifyAPI::Auth::Session`](#shopifyapiauthsesion)).
+If you're using the [ShopifyApp](https://github.com/Shopify/shopify_app) gem in a Rails app, you don't have to manually set the active session if you use the included `ActiveSupport` concerns. See [Sesssion Docs](https://github.com/Shopify/shopify_app/blob/main/docs/shopify_app/sessions.md) from ShopifyApp gem.
 
 You can also manually specify the session to use without setting the active session by passing in the session object ([`ShopifyAPI::Auth::Session`](#shopifyapiauthsesion)) when instantiating new `ShopifyAPI::Clients` objects.
 If session is `nil`, it'll default to use active session from `ShopifyAPI::Context.active_session`.
@@ -77,22 +78,19 @@ If you're building a Rails app, it is highly recommended for you to use the [`Sh
 
 If you're not using Rails, please see the [Performing OAuth](./docs/usage/oauth.md) guide on how to perform OAuth to retrieve and store sessions.
 
-### Client Changes
+### 3. Client Changes
+
 #### GraphQL
 #### REST
+- The use of `ActiveResource` has been deprecated, REST API requests must now be refactored to use the new format that better represents our REST API schema.
+- You can find detailed examples on how each of the resource endpoints work in our [REST reference documentation](https://shopify.dev/docs/api/admin-rest).
+- Please see below a (non-exhaustive) list of common replacements to guide you in your updates, using the `Order` resource as an example.
+For more detail, see [`order` reference documentation's](https://shopify.dev/docs/api/admin-rest/2023-07/resources/order#top) ruby example.
 
-- Call `ShopifyAPI::Context.setup` when setting up your app. This class holds global configurations for your app and defines how the library behaves.
-Session persistence is handled by the [ShopifyApp](https://github.com/Shopify/shopify_app) gem and is recommended for use in the Rails context. See that gem's [documentation on how to use it](https://github.com/Shopify/shopify_app/blob/main/docs/shopify_app/sessions.md).
-- To change the `User-Agent` header, use `user_agent_prefix` in `ShopifyAPI::Context.setup`.
-- Usages of the `ActiveResource` classes for REST API requests need to be refactored into the new format. You can find detailed examples on how each of the endpoints work in our [reference documentation](https://shopify.dev/docs/api/admin-rest).
-
-    Please see below a (non-exhaustive) list of common replacements to guide you in your updates, using the `Order` resource as an example.
-
-    | Before                                             | After |
-    | ---                                                | --- |
-    | `Order.find(:all, params: {param1: value1})`       | `Order.all(param1: value1)` |
-    | `Order.find(<id>)`                                 | `Order.find(id: <id>)` |
-    | `order = Order.new(<id>)`<br/>`order.post(:close)` | `order = Order.new`<br/>`order.close` |
-    | `order = Order.new(<id>)`<br/>`order.delete`       | `Order.delete(id: <id>)` |
-
-
+|Usage | Before| After |
+| -----| --- | --- |
+|Find partially paid orders| `Order.find(:all, params: {financial_status: "partially_paid"})`| `Order.all(financial_status: "partially_paid")` |
+|Find order by ID `<id>` | `Order.find(<id>)` | `Order.find(id: <id>)` |
+|Update an order's fulfillment status|`order = Order.find<id>`<br/>`order.fulfillment_status = "fulfilled"`<br/>`order.note = "Fulfilled on September 6, 2023"`<br/>`order.save`|`order = Order.find(id: <id>)`<br/>`order.fulfillment_status = "fulfilled"`<br/>`order.note = "Fulfilled on September 6, 2023"`<br/>`order.save!`|
+|Close an order| `order = Order.new(<id>)`<br/>`order.post(:close)` | `order = Order.find(id: <id>)`<br/>`order.close` |
+|Delete an order| `order = Order.new(<id>)`<br/>`order.delete`       | `Order.delete(id: <id>)` |
