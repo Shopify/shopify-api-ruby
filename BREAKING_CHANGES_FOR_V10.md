@@ -78,13 +78,19 @@ If you're building a Rails app, it is highly recommended for you to use the [`Sh
 
 If you're not using Rails, please see the [Performing OAuth](./docs/usage/oauth.md) guide on how to perform OAuth to retrieve and store sessions.
 
-### 3. Client Changes
+### 3. API Client Changes
 
 #### GraphQL
 #### REST
+
+##### Using REST Resources
 - The use of `ActiveResource` has been deprecated, REST API requests must now be refactored to use the new format that better represents our REST API schema.
-- You can find detailed examples on how each of the resource endpoints work in our [REST reference documentation](https://shopify.dev/docs/api/admin-rest).
-- Please see below a (non-exhaustive) list of common replacements to guide you in your updates, using the `Order` resource as an example.
+- Previously the api_version is specified in `ShopifyAPI::Base.api_version`, that's been deprecated. It's now configured in [`ShopifyAPI::Context.setup`](#shopifyapicontextsetup).
+
+###### Example refactor
+⚠️ You can find detailed examples on how each of the resource endpoints work in our [REST reference documentation](https://shopify.dev/docs/api/admin-rest).
+
+Please see below a (non-exhaustive) list of common replacements to guide you in your updates, using the `Order` resource as an example.
 For more detail, see [`order` reference documentation's](https://shopify.dev/docs/api/admin-rest/2023-07/resources/order#top) ruby example.
 
 |Usage | Before| After |
@@ -94,3 +100,25 @@ For more detail, see [`order` reference documentation's](https://shopify.dev/doc
 |Update an order's fulfillment status|`order = Order.find<id>`<br/>`order.fulfillment_status = "fulfilled"`<br/>`order.note = "Fulfilled on September 6, 2023"`<br/>`order.save`|`order = Order.find(id: <id>)`<br/>`order.fulfillment_status = "fulfilled"`<br/>`order.note = "Fulfilled on September 6, 2023"`<br/>`order.save!`|
 |Close an order| `order = Order.new(<id>)`<br/>`order.post(:close)` | `order = Order.find(id: <id>)`<br/>`order.close` |
 |Delete an order| `order = Order.new(<id>)`<br/>`order.delete`       | `Order.delete(id: <id>)` |
+
+##### Using REST Admin Client
+If you do not want to use the REST resource classes, you can use our REST Admin client directly to make HTTP requests.
+
+⚠️ See other usages in [`REST` client documentation](https://github.com/Shopify/shopify-api-ruby/blob/main/docs/usage/rest.md).
+
+Example:
+```ruby
+# Create a new client.
+client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
+
+# Update title for product with ID <id>
+body = {
+  product: {
+    title: "My cool product"
+  }
+}
+
+# Use `client.put` to send your request to the specified Shopify Admin REST API endpoint.
+client.put(path: "products/<id>.json", body: body)
+```
+
