@@ -81,8 +81,48 @@ If you're not using Rails, please see the [Performing OAuth](./docs/usage/oauth.
 ### 3. API Client Changes
 
 #### GraphQL
-#### REST
+- We deprecated the dependency of [graphql-client](https://rubygems.org/gems/graphql-client) gem. You must refactor your existing query and response parsing to use our new GraphQL HTTP Client classes.
+  - [Admin API Client](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/clients/graphql/admin.rb)
+  - [Storefront API Client](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/clients/graphql/storefront.rb)
+- There is no need to dump the schema to a local JSON file before using it anymore.
+- The api version used to be set on `ShopifyAPI::Base.api_version`, however that's now deprecated.
+You may specify a specific version when initializing your client, or it'll infer to `ShopifyAPI::Context.api_version` as default.
 
+###### Example refactor
+ShopifyAPI Client v9
+```ruby
+ShopifyAPI::Base.api_version = "2023-04"
+client = ShopifyAPI::GraphQL.client
+
+SHOP_NAME_QUERY = client.parse <<-'GRAPHQL'
+  {
+    shop {
+      name
+    }
+  }
+GRAPHQL
+
+result = client.query(SHOP_NAME_QUERY)
+result.data.shop.name
+```
+
+ShopifyAPI Client v10+
+```ruby
+client = ShopifyAPI::Clients::Graphql::Admin.new(session: session, api_version: "2023-04")
+# session must be an instance of ShopifyAPI::Auth::Session, see Section - [2. Session Changes]
+
+SHOP_NAME_QUERY =<<~QUERY
+  {
+    shop {
+      name
+    }
+  }
+QUERY
+
+response = client.query(query: query)
+```
+
+#### REST
 ##### Using REST Resources
 - The use of `ActiveResource` has been deprecated, REST API requests must now be refactored to use the new format that better represents our REST API schema.
 - Previously the api_version is specified in `ShopifyAPI::Base.api_version`, that's been deprecated. It's now configured in [`ShopifyAPI::Context.setup`](#shopifyapicontextsetup).
