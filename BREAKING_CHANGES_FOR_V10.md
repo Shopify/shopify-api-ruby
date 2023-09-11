@@ -2,6 +2,18 @@
 
 We've rewritten this library for v10, so that it provides all essential features for a Shopify app without depending on the [Active Resource](https://github.com/rails/activeresource) or [graphql-client](https://github.com/github/graphql-client) libraries.
 
+#### Table of Contents
+- [New Features](#new-features)
+- [Upgrade Guide](#upgrade-guide)
+  - [1. Configuration Changes](#1-configuration-changes)
+  - [2. Session Changes](#2-session-changes)
+    - [ShopifyAPI::Auth::Session](#shopifyapiauthsession)
+  - [3. API Client Changes](#3-api-client-changes)
+    - [GraphQL](#graphql)
+    - [Rest](#rest)
+      - [Using Rest Resources](#using-rest-resources)
+      - [Using Rest Admin Client](#using-rest-admin-client)
+
 ## New Features
 Here are the main features version 10 provides:
 
