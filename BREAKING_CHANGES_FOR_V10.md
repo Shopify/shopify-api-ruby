@@ -13,6 +13,8 @@ We've rewritten this library for v10, so that it provides all essential features
     - [Rest](#rest)
       - [Using Rest Resources](#using-rest-resources)
       - [Using Rest Admin Client](#using-rest-admin-client)
+    - [Generic HTTP Client](#generic-http-client)
+- [Useful References](#useful-references)
 
 ## New Features
 Here are the main features version 10 provides:
@@ -67,7 +69,7 @@ See other fields accepted during `ShopifyAPI::Context` setup in [context.rb](htt
 ### 2. Session Changes
 `ShopifyAPI::Base` class has been removed, you can no longer activate session using `ShopifyAPI::Base.activate_session`. Instead, you can use
 `ShopifyAPI::Context.activate_session` to set the active session ([`ShopifyAPI::Auth::Session`](#shopifyapiauthsesion)).
-If you're using the [ShopifyApp](https://github.com/Shopify/shopify_app) gem in a Rails app, you don't have to manually set the active session if you use the included `ActiveSupport` concerns. See [Sesssion Docs](https://github.com/Shopify/shopify_app/blob/main/docs/shopify_app/sessions.md) from ShopifyApp gem.
+If you're using the [ShopifyApp](https://github.com/Shopify/shopify_app) gem in a Rails app, you don't have to manually set the active session if you use the included `ActiveSupport` concerns. See [Session Docs](https://github.com/Shopify/shopify_app/blob/main/docs/shopify_app/sessions.md) from ShopifyApp gem.
 
 You can also manually specify the session to use without setting the active session by passing in the session object ([`ShopifyAPI::Auth::Session`](#shopifyapiauthsesion)) when instantiating new `ShopifyAPI::Clients` objects.
 If session is `nil`, it'll default to use active session from `ShopifyAPI::Context.active_session`.
@@ -103,7 +105,6 @@ You may specify a specific version when initializing your client, or it'll infer
 ⚠️ See other Admin API usage in ["Make a GraphQL API call" documentation](https://github.com/Shopify/shopify-api-ruby/blob/main/docs/usage/graphql.md).
 
 ⚠️ See Storefront API client usage in ["Make a Storefront API call" documentation](https://github.com/Shopify/shopify-api-ruby/blob/main/docs/usage/graphql.md).
-
 
 ###### Example refactor
 ShopifyAPI Client v9
@@ -143,7 +144,7 @@ shop_name = response.body["data"]["shop"]["name"]
 #### REST
 ##### Using REST Resources
 - The use of `ActiveResource` has been deprecated, REST API requests must now be refactored to use the new format that better represents our REST API schema.
-- Previously the api_version is specified in `ShopifyAPI::Base.api_version`, that's been deprecated. It's now configured in [`ShopifyAPI::Context.setup`](#shopifyapicontextsetup).
+- Previously the api_version is specified in `ShopifyAPI::Base.api_version`, that has been deprecated. It's now configured in [`ShopifyAPI::Context.setup`](#shopifyapicontextsetup).
 
 ###### Example refactor
 ⚠️ You can find detailed examples on how each of the resource endpoints work in our [REST reference documentation](https://shopify.dev/docs/api/admin-rest).
@@ -185,4 +186,19 @@ We added a new generic [HttpClient](https://github.com/Shopify/shopify-api-ruby/
 You can use this to make direct HTTP API calls easily.
 See how the GraphQL Client makes a request with this HttpClient class in its [implementation here](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/clients/graphql/client.rb#L33-L45).
 
+## Useful references
 
+ShopifyAPI:
+- [Performing OAuth](https://github.com/Shopify/shopify-api-ruby/blob/main/docs/usage/oauth.md)
+- [Make a GraphQL API Call](https://github.com/Shopify/shopify-api-ruby/blob/main/docs/usage/graphql.md)
+- [Make a Storefront API Call (GraphQL)](https://github.com/Shopify/shopify-api-ruby/blob/main/docs/usage/graphql_storefront.md)
+- [Make a REST API Call](https://github.com/Shopify/shopify-api-ruby/blob/main/docs/usage/rest.md)
+- [Webhooks](https://github.com/Shopify/shopify-api-ruby/blob/main/docs/usage/webhooks.md)
+
+ShopifyApp Gem (Rails):
+- [Authentication](https://github.com/Shopify/shopify_app/blob/main/docs/shopify_app/authentication.md)
+- [Sessions](https://github.com/Shopify/shopify_app/blob/main/docs/shopify_app/sessions.md)
+
+Shopify API:
+- [Admin GraphQL Reference](https://shopify.dev/docs/api/admin-graphql)
+- [Admin REST Reference](https://shopify.dev/docs/api/admin-rest)
