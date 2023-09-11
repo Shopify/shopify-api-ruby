@@ -88,6 +88,11 @@ If you're not using Rails, please see the [Performing OAuth](./docs/usage/oauth.
 - The api version used to be set on `ShopifyAPI::Base.api_version`, however that's now deprecated.
 You may specify a specific version when initializing your client, or it'll infer to `ShopifyAPI::Context.api_version` as default.
 
+⚠️ See other Admin API usage in ["Make a GraphQL API call" documentation](https://github.com/Shopify/shopify-api-ruby/blob/main/docs/usage/graphql.md).
+
+⚠️ See Storefront API client usage in ["Make a Storefront API call" documentation](https://github.com/Shopify/shopify-api-ruby/blob/main/docs/usage/graphql.md).
+
+
 ###### Example refactor
 ShopifyAPI Client v9
 ```ruby
@@ -144,7 +149,7 @@ For more detail, see [`order` reference documentation's](https://shopify.dev/doc
 ##### Using REST Admin Client
 If you do not want to use the REST resource classes, you can use our REST Admin client directly to make HTTP requests.
 
-⚠️ See other usages in [`REST` client documentation](https://github.com/Shopify/shopify-api-ruby/blob/main/docs/usage/rest.md).
+⚠️ See other REST client usage in ["Make a REST API call" documentation](https://github.com/Shopify/shopify-api-ruby/blob/main/docs/usage/rest.md).
 
 Example:
 ```ruby
