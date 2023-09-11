@@ -120,7 +120,7 @@ SHOP_NAME_QUERY = client.parse <<-'GRAPHQL'
 GRAPHQL
 
 result = client.query(SHOP_NAME_QUERY)
-result.data.shop.name
+shop_name = result.data.shop.name
 ```
 
 ShopifyAPI Client v10+
@@ -137,6 +137,7 @@ SHOP_NAME_QUERY =<<~QUERY
 QUERY
 
 response = client.query(query: query)
+shop_name = response.body["data"]["shop"]["name"]
 ```
 
 #### REST
@@ -178,4 +179,10 @@ body = {
 # Use `client.put` to send your request to the specified Shopify Admin REST API endpoint.
 client.put(path: "products/<id>.json", body: body)
 ```
+
+#### Generic HTTP Client
+We added a new generic [HttpClient](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/clients/http_client.rb) wrapper to make requests and handle Shopify specific errors. All of the REST and GraphQL Clients use this HTTP Client in its foundation.
+You can use this to make direct HTTP API calls easily.
+See how the GraphQL Client makes a request with this HttpClient class in its [implementation here](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/clients/graphql/client.rb#L33-L45).
+
 
