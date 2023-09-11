@@ -5,7 +5,12 @@ Once the library is set up for your project, you'll be able to use it to start a
 To do this, you can follow the steps below.
 For more information on authenticating a Shopify app please see the [Types of Authentication](https://shopify.dev/docs/apps/auth#types-of-authentication) page.
 
-## Note about Rails
+## Session Persistence
+Session persistence is depreciated from the `ShopifyAPI` library gem. The responsibility of session storage typically is fulfilled by the web framework middleware. This API library's focus is on making requests and facilitate session creation.
+
+If you're not using the [ShopifyApp](https://github.com/Shopify/shopify_app) gem, you may use ShopifyAPI to perform OAuth to create sessions, but you must implement your own session storage method to persist the authorized access token.
+
+### Note about Rails
 If using in the Rails framework, we highly recommend you use the [shopify_app](https://github.com/Shopify/shopify_app) gem to perform OAuth.
 
 If you aren't using Rails, you can look at how that [gem creates / stores sessions from the OAuth flow](https://github.com/Shopify/shopify_app/blob/2f90af43173041d145f578dcd6448f238b69f9fe/app/controllers/shopify_app/callback_controller.rb#L9) for further examples.
@@ -75,3 +80,5 @@ def callback
   end
 end
 ```
+
+
