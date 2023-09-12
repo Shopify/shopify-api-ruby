@@ -13,8 +13,9 @@ If you're not using the [ShopifyApp](https://github.com/Shopify/shopify_app) gem
 
 ## Note about Rails
 If using in the Rails framework, we highly recommend you use the [shopify_app](https://github.com/Shopify/shopify_app) gem to perform OAuth.
+  - See `ShopifyApp`'s [documentation on sessions](https://github.com/Shopify/shopify_app/blob/main/docs/shopify_app/sessions.md#sessions)
 
-If you aren't using Rails, you can look at how that [gem creates / stores sessions from the OAuth flow](https://github.com/Shopify/shopify_app/blob/2f90af43173041d145f578dcd6448f238b69f9fe/app/controllers/shopify_app/callback_controller.rb#L9) for further examples.
+If you aren't using Rails, you can look at how the [ShopifyApp gem creates / stores sessions from the OAuth flow](https://github.com/Shopify/shopify_app/blob/2f90af43173041d145f578dcd6448f238b69f9fe/app/controllers/shopify_app/callback_controller.rb#L9) for further examples.
 
 ## Performing OAuth
 #### Steps
@@ -38,7 +39,7 @@ end
 After the app is authenticated with Shopify, the Shopify platform will send a request back to your app using this route
 (which you will provide as the `redirect_path` parameter to `begin_auth` method, in [step 3 - Begin OAuth](#3--begin-oauth)).
 ```ruby
-class ShopifyAuthController < ApplicationController
+class ShopifyCallbackController < ApplicationController
   def callback
     # This callback method will be called once user grants permission to this app from Shopify Admin.
   end
@@ -100,6 +101,8 @@ class ShopifyAuthController < ApplicationController
   end
 end
 ```
+
+⚠️ You can see a concrete example in the `ShopifyApp` gem's [SessionController](https://github.com/Shopify/shopify_app/blob/main/app/controllers/shopify_app/sessions_controller.rb).
 
 ### 4. Handle OAuth Callback
 When the user grants permission to the app in Shopify admin, they'll be redirected back to the app's callback route
@@ -172,4 +175,5 @@ def callback
 end
 ```
 
+⚠️ You can see a concrete example in the `ShopifyApp` gem's [CallbackController](https://github.com/Shopify/shopify_app/blob/main/app/controllers/shopify_app/callback_controller.rb).
 
