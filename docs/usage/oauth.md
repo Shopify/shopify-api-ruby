@@ -9,10 +9,10 @@ For more information on authenticating a Shopify app please see the [Types of Au
 Session persistence is depreciated from the `ShopifyAPI` library gem since [version 12.3.0](https://github.com/Shopify/shopify-api-ruby/blob/main/CHANGELOG.md#version-1230). The responsibility of session storage typically is fulfilled by the web framework middleware.
 This API library's focus is on making requests and facilitate session creation.
 
-If you're not using the [ShopifyApp](https://github.com/Shopify/shopify_app) gem, you may use ShopifyAPI to perform OAuth to create sessions, but you must implement your own session storage method to persist the authorized access token.
+⚠️ If you're not using the [ShopifyApp](https://github.com/Shopify/shopify_app) gem, you may use ShopifyAPI to perform OAuth to create sessions, but you must implement your own session storage method to persist the session information to be used in authenticated API calls.
 
 ## Note about Rails
-If using in the Rails framework, we highly recommend you use the [shopify_app](https://github.com/Shopify/shopify_app) gem to perform OAuth.
+If using in the Rails framework, we highly recommend you use the [shopify_app](https://github.com/Shopify/shopify_app) gem to perform OAuth, you won't have to follow the instructions below to start your own OAuth flow.
   - See `ShopifyApp`'s [documentation on session storage](https://github.com/Shopify/shopify_app/blob/main/docs/shopify_app/sessions.md#sessions)
 
 If you aren't using Rails, you can look at how the `ShopifyApp` gem handles Oauth flow for further examples:
@@ -27,6 +27,7 @@ If you aren't using Rails, you can look at how the `ShopifyApp` gem handles Oaut
 2. [Add an Oauth callback route](#2-add-an-oauth-callback-route)
 3. [Begin OAuth](#3-begin-oauth)
 4. [Handle OAuth Callback](#4-handle-oauth-callback)
+5. [Using OAuth Session to make authenticated API calls](#5-using-oauth-session-to-make-authenticated-api-calls)
 
 ### 1. Add a route to start OAuth
 Add a route to your app to start the OAuth process.
@@ -164,7 +165,7 @@ def callback
       value: auth_result[:cookie].value
     }
 
-    # Store the Session object if your app has a DB storage for session persistence
+    # Store the Session object if your app has a DB/file storage for session persistence
     # This session object could be retrieved later to make authenticated API requests to Shopify
     MyApp::SessionRepository.store_session(auth_result[:session])
 
@@ -181,3 +182,26 @@ end
 
 ⚠️ You can see a concrete example in the `ShopifyApp` gem's [CallbackController](https://github.com/Shopify/shopify_app/blob/main/app/controllers/shopify_app/callback_controller.rb).
 
+### 5. Using OAuth Session to make authenticated API calls
+Once your OAuth flow is complete, and you have stored your `Session` object from [Step 4 - Handle OAuth Callback](#4-handle-oauth-callback), you may use that `Session` object to make authenticated API calls.
+
+Example:
+```ruby
+def make_api_request(shop)
+# 1. Retrieve the Session object stored from previous step
+session = MyApp::SessionRepository.retrieve_session_for_shop(shop)
+
+# 2. Create API client with the session information
+# session must be type `ShopifyAPI::Auth::Session`
+graphql_client = ShopifyAPI::Clients::Graphql::Admin.new(session: session)
+
+# 3. Use API client to make queries
+response = client.query(query: MY_API_QUERY)
+
+# 4. Use the response for your app
+end
+```
+
+⚠️ See following docs on how to use the API clients:
+- [Make a GraphQL API call](https://github.com/Shopify/shopify-api-ruby/blob/main/docs/usage/graphql.md)
+- [Make a REST API call](https://github.com/Shopify/shopify-api-ruby/blob/main/docs/usage/rest.md)
