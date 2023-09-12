@@ -188,18 +188,48 @@ Once your OAuth flow is complete, and you have stored your `Session` object from
 Example:
 ```ruby
 def make_api_request(shop)
-# 1. Retrieve the Session object stored from previous step
-session = MyApp::SessionRepository.retrieve_session_for_shop(shop)
+  # 1. Retrieve the Session object stored from previous step
+  session = MyApp::SessionRepository.retrieve_session_for_shop(shop)
 
-# 2. Create API client with the session information
-# session must be type `ShopifyAPI::Auth::Session`
-graphql_client = ShopifyAPI::Clients::Graphql::Admin.new(session: session)
+  # 2. Create API client with the session information
+  # session must be type `ShopifyAPI::Auth::Session`
+  graphql_client = ShopifyAPI::Clients::Graphql::Admin.new(session: session)
 
-# 3. Use API client to make queries
-response = client.query(query: MY_API_QUERY)
+  # 3. Use API client to make queries
+  response = graphql_client.query(query: MY_API_QUERY)
 
-# 4. Use the response for your app
+  # 4. Use the response for your app
+  ...
 end
+```
+
+#### Setting `active_session`
+Alternatively, if you don't want to keep having to retrieve a Session object for a shop, you may set [`ShopifyAPI::Context.active_session`](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/context.rb#L144).
+All of the API client classes will [use the `active_session`](https://github.com/Shopify/shopify-api-ruby/blob/c3bb9d8f8b6053756149a4cf9299e059ec337544/lib/shopify_api/clients/http_client.rb#L13) if the `session` passed in is `nil`.
+
+Example:
+```ruby
+#### Configuration
+def configure_app
+  # This method is called before making authenticated API calls
+  session = retrieve_session_from_file # your implementation of retrieving a session
+
+  # Activate session to be used in all API calls
+  # session must be type `ShopifyAPI::Auth::Session`
+  ShopifyAPI::Context.activate_session(session)
+
+end
+
+#### Using clients to make authenticated API calls
+def make_api_request
+  # 1. Create API client without session information
+  # The graphql_client will use `ShopifyAPI::Context.active_session` when making API calls
+  graphql_client = ShopifyAPI::Clients::Graphql::Admin.new
+
+  # 2. Use API client to make queries
+  ...
+end
+
 ```
 
 ⚠️ See following docs on how to use the API clients:
