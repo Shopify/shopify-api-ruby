@@ -30,6 +30,23 @@ Here are the main features version 10 provides:
 
 Please refer to the [Getting Started](docs/getting_started.md) guide in this repository for instructions on how to use each of these components.
 
+### Reasoning
+- Browsers stopped allowing 3rd party cookies, even after jumping through several [ITP](https://webkit.org/tracking-prevention-policy/) hoops, which made the code
+even more more complex and error prone.
+    - Session tokens and `authenticatedFetch` were introduced to make it possible for apps to authenticate requests without depending on cookies.
+    - The gem was too closely tied to rails on how it sets up sessions (which worked for cookies), so we had to detach the library from rails
+  in order to be able to work with both cookies and session tokens.
+- We previously relied on an `omniauth-oauth2` strategy that worked fine when cookies were the only option. But it became increasingly
+awkward when we moved towards session tokens, which meant re-writing the OAuth process in the gem as a whole.
+  - Introducing a DB stored session persistence rather than cookie stored.
+- Most feedback we got previously was due to the `ActiveResource` classes failing out of sync with the API because:
+  1. We have some endpoints that didn't 100% follow REST convention;
+  2. We had a single class for each resource and manually maintained custom methods that didn't work across API versions.
+
+- To solve the REST problems:
+    - We were adding support for auto-generated, version-specific resources for other languages, we decided to add them for Ruby too.
+  But those same instances where the API doesn't follow convention would become problematic. Thus we opted for the most explicit option where **every** method was "custom" rather than just some, so that the resources were always consistent.
+
 ## Upgrade Guide
 With this, a lot changed in how apps access the library. Here are the updates you should make when migrating to v10:
 
