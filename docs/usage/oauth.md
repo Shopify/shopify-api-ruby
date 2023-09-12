@@ -13,9 +13,13 @@ If you're not using the [ShopifyApp](https://github.com/Shopify/shopify_app) gem
 
 ## Note about Rails
 If using in the Rails framework, we highly recommend you use the [shopify_app](https://github.com/Shopify/shopify_app) gem to perform OAuth.
-  - See `ShopifyApp`'s [documentation on sessions](https://github.com/Shopify/shopify_app/blob/main/docs/shopify_app/sessions.md#sessions)
+  - See `ShopifyApp`'s [documentation on session storage](https://github.com/Shopify/shopify_app/blob/main/docs/shopify_app/sessions.md#sessions)
 
-If you aren't using Rails, you can look at how the [ShopifyApp gem creates / stores sessions from the OAuth flow](https://github.com/Shopify/shopify_app/blob/2f90af43173041d145f578dcd6448f238b69f9fe/app/controllers/shopify_app/callback_controller.rb#L9) for further examples.
+If you aren't using Rails, you can look at how the `ShopifyApp` gem handles Oauth flow for futher examples:
+- [Session Controller](https://github.com/Shopify/shopify_app/blob/main/app/controllers/shopify_app/sessions_controller.rb)
+  - Triggering and redirecting user to **begin** OAuth flow
+- [Callback Controller](https://github.com/Shopify/shopify_app/blob/main/app/controllers/shopify_app/callback_controller.rb)
+  - Creating / storing sessions to **complete** the OAuth flow
 
 ## Performing OAuth
 #### Steps
