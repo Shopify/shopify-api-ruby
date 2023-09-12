@@ -15,7 +15,7 @@ If you're not using the [ShopifyApp](https://github.com/Shopify/shopify_app) gem
 If using in the Rails framework, we highly recommend you use the [shopify_app](https://github.com/Shopify/shopify_app) gem to perform OAuth.
   - See `ShopifyApp`'s [documentation on session storage](https://github.com/Shopify/shopify_app/blob/main/docs/shopify_app/sessions.md#sessions)
 
-If you aren't using Rails, you can look at how the `ShopifyApp` gem handles Oauth flow for futher examples:
+If you aren't using Rails, you can look at how the `ShopifyApp` gem handles Oauth flow for further examples:
 - [Session Controller](https://github.com/Shopify/shopify_app/blob/main/app/controllers/shopify_app/sessions_controller.rb)
   - Triggering and redirecting user to **begin** OAuth flow
 - [Callback Controller](https://github.com/Shopify/shopify_app/blob/main/app/controllers/shopify_app/callback_controller.rb)
@@ -23,10 +23,10 @@ If you aren't using Rails, you can look at how the `ShopifyApp` gem handles Oaut
 
 ## Performing OAuth
 #### Steps
-1. [Add a route to start OAuth](#1--add-a-route-to-start-oauth)
-2. [Add an Oauth callback route](#2--add-an-oauth-callback-route)
-3. [Begin OAuth](#3--begin-oauth)
-4. [Handle OAuth Callback](#4--handle-oauth-callback)
+1. [Add a route to start OAuth](#1-add-a-route-to-start-oauth)
+2. [Add an Oauth callback route](#2-add-an-oauth-callback-route)
+3. [Begin OAuth](#3-begin-oauth)
+4. [Handle OAuth Callback](#4-handle-oauth-callback)
 
 ### 1. Add a route to start OAuth
 Add a route to your app to start the OAuth process.
@@ -41,7 +41,7 @@ end
 
 ### 2. Add an OAuth callback route
 After the app is authenticated with Shopify, the Shopify platform will send a request back to your app using this route
-(which you will provide as the `redirect_path` parameter to `begin_auth` method, in [step 3 - Begin OAuth](#3--begin-oauth)).
+(which you will provide as the `redirect_path` parameter to `begin_auth` method, in [step 3 - Begin OAuth](#3-begin-oauth)).
 ```ruby
 class ShopifyCallbackController < ApplicationController
   def callback
@@ -110,7 +110,7 @@ end
 
 ### 4. Handle OAuth Callback
 When the user grants permission to the app in Shopify admin, they'll be redirected back to the app's callback route
-(configured in [Step 2 - Add your OAuth callback route](#2--add-your-oauth-callback-route)).
+(configured in [Step 2 - Add an OAuth callback route](#2-add-an-oauth-callback-route)).
 
 Use [`ShopifyAPI::AuthL::Oauth.validate_auth_callback`](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/auth/oauth.rb#L60) method to finalize the OAuth process.
 
