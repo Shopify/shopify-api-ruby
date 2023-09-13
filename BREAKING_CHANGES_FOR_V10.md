@@ -177,6 +177,16 @@ For more detail, see [`order` reference documentation's](https://shopify.dev/doc
 |Close an order| `order = Order.new(<id>)`<br/>`order.post(:close)` | `order = Order.find(id: <id>)`<br/>`order.close` |
 |Delete an order| `order = Order.new(<id>)`<br/>`order.delete`       | `Order.delete(id: <id>)` |
 
+###### Note on resource connections
+Previously we added helper methods to load related resource connections like [`orders.transactions`](https://github.com/Shopify/shopify-api-ruby/blob/97eec35fb76afbce1d948cee2963791457e934da/lib/shopify_api/resources/order.rb#L20).
+After the upgrade, only connected properties listed in the REST API will be supported.
+
+For example:
+- `order.transactions` is not supported because `transactions` is not a property of the `Order` resource.
+- `order.customer` is supported because `customer` is a property of the `Order` resource.
+
+[See the full list of `Order` properties here.](https://shopify.dev/docs/api/admin-rest/2023-07/resources/order#resource-object)
+
 ##### Using REST Admin Client
 If you do not want to use the REST resource classes, you can use our REST Admin client directly to make HTTP requests.
 
