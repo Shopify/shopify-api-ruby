@@ -1,5 +1,40 @@
 # Make a REST API call
 
+Once OAuth is complete, we can use `ShopifyAPI`'s REST library to make authenticated API calls to the Shopify Admin API.
+To make API calls, you must have a valid session, see references:
+ - ["Performing OAuth"](https://github.com/Shopify/shopify-api-ruby/blob/main/docs/usage/oauth.md) on how to create new sessions
+ - [[ShopifyApp] - "Session"](https://github.com/Shopify/shopify_app/blob/main/docs/shopify_app/sessions.md) if you're using [`ShopifyApp`](https://github.com/Shopify/shopify_app) gem's session handling.
+
+#### There are 2 methods you can use to make REST API calls to Shopify:
+- [Using REST Resources](#using-rest-resources)
+  - Resource classes with similar syntax as `ActiveResource`, and follows our REST convention.
+  ``` ruby
+  # Update product title
+  product = ShopifyAPI::Product.find(id: <product_id>)
+  product.title = "My awesome product"
+  product.save!
+  ```
+
+- [Using REST Admin Client](#using-rest-admin-client)
+  - More manual input method to make the API call
+  ```ruby
+  # Create a new client.
+  rest_client = ShopifyAPI::Clients::Rest::Admin.new
+
+  # Update product title
+  body = {
+    product: {
+      title: "My cool product"
+    }
+  }
+
+  # Use `client.put` to send your request to the specified Shopify Admin REST API endpoint.
+  rest_client.put(path: "products/<id>.json", body: body)
+  ```
+
+## Using REST Resources
+
+## Using REST Admin Client
 Once OAuth is complete, we can use the `ShopifyAPI::Clients::Rest::Admin` client to make an API call to the Shopify Admin API. To do this, you can create an instance of `ShopifyAPI::Clients::Rest::Admin` using the current session to make requests to the Admin API.
 
 ## Methods
@@ -14,7 +49,7 @@ The Rest Admin client offers the 4 core request methods: `get`, `delete`, `post`
 | `extraHeaders` | `Hash(any(Symbol, String), any(String, Integer, Float))` |        none         |     none      | Any additional headers you want to send with your request                                                                                                                                                                                                                              |
 | `tries`        | `Integer`                                                |        None         |      `1`      | The maximum number of times to try the request _(must be >= 0)_                                                                                                                                                                                                                        |
 
-**Note:** _These paramaters can still be used in all methods regardless of if they are required._
+**Note:** _These parameters can still be used in all methods regardless of if they are required._
 
 ## Usage Examples:
 ### Required Session
