@@ -1,13 +1,17 @@
 # Make a REST API call
 
 Once OAuth is complete, we can use `ShopifyAPI`'s REST library to make authenticated API calls to the Shopify Admin API.
-To make API calls, you must have a valid session, see references:
- - ["Performing OAuth"](https://github.com/Shopify/shopify-api-ruby/blob/main/docs/usage/oauth.md) on how to create new sessions
- - [[ShopifyApp] - "Session"](https://github.com/Shopify/shopify_app/blob/main/docs/shopify_app/sessions.md) if you're using [`ShopifyApp`](https://github.com/Shopify/shopify_app) gem's session handling.
+#### Required Session
+Every API request requires a valid
+[ShopifyAPI::Auth::Session](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/auth/session.rb).
+
+To instantiate a session, we recommend you either use the `shopify_app` if working in Rails, or refer to our OAuth docs on constructing a session:
+ - ["Performing OAuth"](https://github.com/Shopify/shopify-api-ruby/blob/main/docs/usage/oauth.md) - documentation on how to create new sessions
+ - [[ShopifyApp] - "Session"](https://github.com/Shopify/shopify_app/blob/main/docs/shopify_app/sessions.md) - documentation on session handling if you're using the [`ShopifyApp`](https://github.com/Shopify/shopify_app) gem.
 
 #### There are 2 methods you can use to make REST API calls to Shopify:
 - [Using REST Resources](#using-rest-resources)
-  - Resource classes with similar syntax as `ActiveResource`, and follows our REST convention.
+  - Resource classes with similar syntax as `ActiveResource`, and follows our REST convention. Example:
   ``` ruby
   # Update product title
   product = ShopifyAPI::Product.find(id: <product_id>)
@@ -16,7 +20,7 @@ To make API calls, you must have a valid session, see references:
   ```
 
 - [Using REST Admin Client](#using-rest-admin-client)
-  - More manual input method to make the API call
+  - More manual input method to make the API call. Example:
   ```ruby
   # Create a new client.
   rest_client = ShopifyAPI::Clients::Rest::Admin.new
@@ -35,11 +39,26 @@ To make API calls, you must have a valid session, see references:
 ## Using REST Resources
 
 ## Using REST Admin Client
-Once OAuth is complete, we can use the `ShopifyAPI::Clients::Rest::Admin` client to make an API call to the Shopify Admin API. To do this, you can create an instance of `ShopifyAPI::Clients::Rest::Admin` using the current session to make requests to the Admin API.
+Create an instance of `ShopifyAPI::Clients::Rest::Admin` using the current session to make requests to the Admin API.
 
-## Methods
+##### Table of Content:
+- [Methods](#methods)
+  - [Input Parameters](#method-input-parameters)
+  - [Output](#output)
+- [Usage Examples](#usage-examples)
+- [Pagination](#pagination)
 
-The Rest Admin client offers the 4 core request methods: `get`, `delete`, `post`, and `put`. These methods each take the parameters outlined in the table below. If the request is successful these methods will all return a `ShopifyAPI::Clients::HttpResponse` object, which has properties `code`, `headers`, and `body` otherwise an error will be raised describing what went wrong.
+### Methods
+
+The Rest Admin client offers the 4 core request methods:
+- `get`
+- `delete`
+- `post`
+- `put`
+
+#### Input Parameters
+
+Each method can take the parameters outlined in the table below. 
 
 | Parameter      | Type                                                     | Required in Methods | Default Value | Notes                                                                                                                                                                                                                                                                                  |
 | -------------- | -------------------------------------------------------- | :-----------------: | :-----------: | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -51,14 +70,11 @@ The Rest Admin client offers the 4 core request methods: `get`, `delete`, `post`
 
 **Note:** _These parameters can still be used in all methods regardless of if they are required._
 
-## Usage Examples:
-### Required Session
-Every request requires a valid
-[ShopifyAPI::Auth::Session](https://github.com/Shopify/shopify-api-ruby/blob/f341d998cce7429b841c2c3b4ce55a18a52823e4/lib/shopify_api/auth/session.rb).
+#### Output
+If the request is successful these methods will all return a `ShopifyAPI::Clients::HttpResponse` object, which has properties `code`, `headers`, and `body` otherwise an error will be raised describing what went wrong.
 
-To instantiate a session, we recommend you either use the `shopify_app` if working in Rails or refer to our [OAuth docs on constructing a session](oauth.md#fetching-sessions)
-
-### Perform a `GET` request:
+### Usage Examples:
+#### Perform a `GET` request:
 
 ```ruby
 # Create a new client.
@@ -71,7 +87,7 @@ response = client.get(path: "products")
 some_function(response.body)
 ```
 
-### Perform a `POST` request:
+#### Perform a `POST` request:
 
 ```ruby
 # Create a new client.
@@ -96,14 +112,14 @@ client.post({
 
 _for more information on the `products` endpoint, [check out our API reference guide](https://shopify.dev/docs/api/admin-rest/unstable/resources/product)._
 
-### Override the `api_version`:
+#### Override the `api_version`:
 
 ```ruby
 # To experiment with prerelease features, pass the api_version "unstable".
 client = ShopifyAPI::Clients::Rest::Admin.new(session: session, api_version: "unstable")
 ```
 
-## Pagination
+### Pagination
 
 This library also supports cursor-based pagination for REST Admin API requests. [Learn more about REST request pagination](https://shopify.dev/docs/api/usage/pagination-rest).
 
@@ -153,7 +169,7 @@ if next_page_info
 end
 ```
 
-### Error Messages
+#### Error Messages
 
 You can rescue `ShopifyAPI::Errors::HttpResponseError` and output error messages with `errors.full_messages`
 
