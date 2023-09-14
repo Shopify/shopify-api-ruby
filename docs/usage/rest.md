@@ -39,18 +39,43 @@ To instantiate a session, we recommend you either use the `shopify_app` if worki
 ## Using REST Resources
 
 ## Using REST Admin Client
-Create an instance of `ShopifyAPI::Clients::Rest::Admin` using the current session to make requests to the Admin API.
 
 ##### Table of Content:
+- [Instantiation](#Instantiation)
 - [Methods](#methods)
   - [Input Parameters](#method-input-parameters)
   - [Output](#output)
 - [Usage Examples](#usage-examples)
 - [Pagination](#pagination)
 
+### Instantiation
+Create an instance of [`ShopifyAPI::Clients::Rest::Admin`](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/clients/rest/admin.rb) using the current session to make requests to the Admin API.
+#### Constructor parameters
+| Parameter | Type | Notes |
+| ----------|------|-------|
+| `session` | `ShopifyAPI::Auth::Session` | Default value is `nil`. When `nil` is passed in, active session information is inferred from `ShopifyAPI::Context.active_session`. To set active session, use `ShopifyAPI::Context.activate_session`|
+| `api_version` | `String` | Default value is `nil`. When `nil` is passed in, api version is inferred from `ShopifyAPI::Context.api_version`.|
+
+Examples:
+```ruby
+# Create a default client with `ShopifyAPI::Context.api_version` 
+# and the active session from `ShopifyAPI::Context.active_session`
+client = ShopifyAPI::Clients::Rest::Admin.new
+
+# Create a client with a specific session "my_session"
+client = ShopifyAPI::Clients::Rest::Admin.new(session: my_session)
+
+# Create a client with active session from `ShopifyAPI::Context.active_session`
+# and a specific api_version - "unstable"
+client = ShopifyAPI::Clients::Rest::Admin.new(api_version: "unstable")
+
+# Create a client with a specific session "my_session" and api_version "unstable"
+client = ShopifyAPI::Clients::Rest::Admin.new(session: my_session, api_version: "unstable")
+```
+
 ### Methods
 
-The Rest Admin client offers the 4 core request methods:
+The `ShopifyAPI::Clients::Rest::Admin` client offers the 4 core request methods:
 - `get`
 - `delete`
 - `post`
@@ -71,7 +96,19 @@ Each method can take the parameters outlined in the table below.
 **Note:** _These parameters can still be used in all methods regardless of if they are required._
 
 #### Output
-If the request is successful these methods will all return a `ShopifyAPI::Clients::HttpResponse` object, which has properties `code`, `headers`, and `body` otherwise an error will be raised describing what went wrong.
+##### Success
+If the request is successful these methods will all return a [`ShopifyAPI::Clients::HttpResponse`](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/clients/http_response.rb) object, which has the following methods: 
+| Methods | Type | Notes |
+|---------|------|-------|
+| `code`  |`Integer`| HTTP Response code, e.g. `200`|
+| `header` |`Hash{String, [String]}` | HTTP Response headers |
+| `body`  | `Hash{String, Untyped}`  | HTTP Response body |
+| `prev_page_info` | `String` | See [Pagination](#pagination)|
+| `next_page_info` | `String` | See [Pagination](#pagination)|
+
+##### Failure
+If the request has failed, an error will be raised describing what went wrong. In most cases, the raised errors are:
+- [HttpResponseError](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/errors/http_response_error.rb)
 
 ### Usage Examples:
 #### Perform a `GET` request:
