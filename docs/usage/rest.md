@@ -107,11 +107,24 @@ If the request is successful these methods will all return a [`ShopifyAPI::Clien
 | `next_page_info` | `String` | See [Pagination](#pagination)|
 
 ##### Failure
-If the request has failed, an error will be raised describing what went wrong. In most cases, the raised errors are:
-- [HttpResponseError](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/errors/http_response_error.rb)
+If the request has failed, an error will be raised describing what went wrong.
+You can rescue [`ShopifyAPI::Errors::HttpResponseError`](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/errors/http_response_error.rb)
+and output error messages with `errors.full_messages`
 
-### Usage Examples:
-#### Perform a `GET` request:
+See example:
+
+```ruby
+    client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
+    response = client.get(path: "NOT-REAL")
+    some_function(response.body)
+rescue ShopifyAPI::Errors::HttpResponseError => e
+  puts fulfillment.errors.full_messages
+  # {"errors"=>"Not Found"}
+  # If you report this error, please include this id: bce76672-40c6-4047-b598-46208ab076f0.
+```
+### Usage Examples
+
+#### Perform a `GET` request
 
 ```ruby
 # Create a new client.
@@ -123,8 +136,9 @@ response = client.get(path: "products")
 # Do something with the returned data
 some_function(response.body)
 ```
+_For more information on the `products` endpoint, [check out our API reference guide](https://shopify.dev/docs/api/admin-rest/latest/resources/product)._
 
-#### Perform a `POST` request:
+#### Perform a `POST` request
 
 ```ruby
 # Create a new client.
@@ -141,26 +155,39 @@ body = {
 }
 
 # Use `client.post` to send your request to the specified Shopify Admin REST API endpoint.
+# This POST request will create a new product.
 client.post({
   path: "products",
   body: body,
 });
 ```
 
-_for more information on the `products` endpoint, [check out our API reference guide](https://shopify.dev/docs/api/admin-rest/unstable/resources/product)._
+_For more information on the `products` endpoint, [check out our API reference guide](https://shopify.dev/docs/api/admin-rest/latest/resources/product)._
 
-#### Override the `api_version`:
+#### Perform a `PUT` request
+  ```ruby
+  # Create a new client.
+  client = ShopifyAPI::Clients::Rest::Admin.new
 
-```ruby
-# To experiment with prerelease features, pass the api_version "unstable".
-client = ShopifyAPI::Clients::Rest::Admin.new(session: session, api_version: "unstable")
+  # Update product title
+  body = {
+    product: {
+      title: "My cool product"
+    }
+  }
+
+  # Use `client.put` to send your request to the specified Shopify Admin REST API endpoint.
+  # This will update product title for product with ID <id>
+  client.put(path: "products/<id>.json", body: body)
 ```
+
+_For more information on the `products` endpoint, [check out our API reference guide](https://shopify.dev/docs/api/admin-rest/latest/resources/product)._
 
 ### Pagination
 
 This library also supports cursor-based pagination for REST Admin API requests. [Learn more about REST request pagination](https://shopify.dev/docs/api/usage/pagination-rest).
 
-After making a request, the `next_page_info` and `prev_page_info` can be found on the response object and passed as the page_info query param in other requests.
+After making a request, the `next_page_info` and `prev_page_info` can be found on the response object and passed as the `page_info` query param in other requests.
 
 An example of this is shown below:
 
@@ -176,7 +203,7 @@ loop do
 end
 ```
 
-Similarly, when using REST resources the `next_page_info` and `prev_page_info` can be found on the Resource class and passed as the page_info query param in other requests.
+Similarly, when using REST resources the `next_page_info` and `prev_page_info` can be found on the Resource class and passed as the `page_info` query param in other requests.
 
 An example of this is shown below:
 
@@ -190,7 +217,7 @@ loop do
 end
 ```
 
-The next/previous page_info strings can also be retrieved from the response object and added to a request query to retrieve the next/previous pages.
+The `next_page_info`/`previous_page_info` strings can also be retrieved from the response object and added to a request query to retrieve the next/previous pages.
 
 An example of this is shown below:
 
@@ -207,21 +234,5 @@ end
 ```
 
 #### Error Messages
-
-You can rescue `ShopifyAPI::Errors::HttpResponseError` and output error messages with `errors.full_messages`
-
-See example:
-
-```ruby
- fulfillment = ShopifyAPI::Fulfillment.new(session: @session)
-  fulfillment.order_id = 2776493818000
-  ...
-  fulfillment.tracking_company = "Jack Black's Pack, Stack and Track"
-  fulfillment.save()
-rescue ShopifyAPI::Errors::HttpResponseError => e
-  puts fulfillment.errors.full_messages
-  # {"base"=>["Line items are already fulfilled"]}
-  # If you report this error, please include this id: e712dde0-1270-4258-8cdb-d198792c917e.
-```
 
 [Back to guide index](../README.md)
