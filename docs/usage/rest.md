@@ -187,37 +187,8 @@ _For more information on the `products` endpoint, [check out our API reference g
 
 This library also supports cursor-based pagination for REST Admin API requests. [Learn more about REST request pagination](https://shopify.dev/docs/api/usage/pagination-rest).
 
+#### REST Admin Client
 After making a request, the `next_page_info` and `prev_page_info` can be found on the response object and passed as the `page_info` query param in other requests.
-
-An example of this is shown below:
-
-```ruby
-client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
-
-response = client.get(path: "products", query: { limit: 10 })
-
-loop do
-  some_function(response.body)
-  break unless response.next_page_info
-  response =  client.get(path: "products", query: { limit: 10, page_info: response.next_page_info })
-end
-```
-
-Similarly, when using REST resources the `next_page_info` and `prev_page_info` can be found on the Resource class and passed as the `page_info` query param in other requests.
-
-An example of this is shown below:
-
-```ruby
-products = ShopifyAPI::Product.all(session: session, limit: 10)
-
-loop do
-  some_function(products)
-  break unless ShopifyAPI::Product.next_page?
-  products = ShopifyAPI::Product.all(session: session, limit: 10, page_info: ShopifyAPI::Product.next_page_info)
-end
-```
-
-The `next_page_info`/`previous_page_info` strings can also be retrieved from the response object and added to a request query to retrieve the next/previous pages.
 
 An example of this is shown below:
 
@@ -233,6 +204,19 @@ if next_page_info
 end
 ```
 
-#### Error Messages
+#### REST Resource
+Similarly, when using REST resources the `next_page_info` and `prev_page_info` can be found on the Resource class and passed as the `page_info` query param in other requests.
+
+An example of this is shown below:
+
+```ruby
+products = ShopifyAPI::Product.all(session: session, limit: 10)
+
+loop do
+  some_function(products)
+  break unless ShopifyAPI::Product.next_page?
+  products = ShopifyAPI::Product.all(session: session, limit: 10, page_info: ShopifyAPI::Product.next_page_info)
+end
+```
 
 [Back to guide index](../README.md)
