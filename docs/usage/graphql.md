@@ -1,14 +1,36 @@
 # Make a GraphQL API call
 
-Once you have a [session](oauth.md#fetching-sessions) after completing oauth, you can make GraphQL queries to the Admin API with `ShopifyAPI::Clients::Graphql::Admin`
+Once OAuth is complete, we can use `ShopifyAPI::Clients::Graphql::Admin` to make authenticated API calls to the Shopify Admin GraphQL API.
+#### Required Session
+Every API request requires a valid
+[ShopifyAPI::Auth::Session](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/auth/session.rb).
 
-Below is an example
+To instantiate a session, we recommend you either use the `shopify_app` if working in Rails, or refer to our OAuth docs on constructing a session:
+ - ["Performing OAuth"](https://github.com/Shopify/shopify-api-ruby/blob/main/docs/usage/oauth.md) - documentation on how to create new sessions
+ - [[ShopifyApp] - "Session"](https://github.com/Shopify/shopify_app/blob/main/docs/shopify_app/sessions.md) - documentation on session handling if you're using the [`ShopifyApp`](https://github.com/Shopify/shopify_app) gem.
+
+### Instantiation
+Create an instance of [`ShopifyAPI::Clients::Graphql::Admin`](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/clients/graphql/admin.rb) using the current session to make requests to the Admin API.
+
+#### Constructor parameters
+| Parameter | Type | Notes |
+| ----------|------|-------|
+| `session` | `ShopifyAPI::Auth::Session` | Default value is `nil`. <br><br>When `nil` is passed in, active session information is inferred from `ShopifyAPI::Context.active_session`. <br>To set active session, use `ShopifyAPI::Context.activate_session`. <br><br>This is handled automatically behind the scenes if you use ShopifyApp's [session controllers](https://github.com/Shopify/shopify_app/blob/main/docs/shopify_app/sessions.md). |
+| `api_version` | `String` | Default value is `nil`. When `nil` is passed in, api version is inferred from [`ShopifyAPI::Context.setup`](https://github.com/Shopify/shopify-api-ruby/blob/main/README.md#setup-shopify-context).|
+
+Usage:
+```ruby
+client = ShopifyAPI::Clients::Graphql::Admin.new(session: session, api_version: "unstable")
+```
+
+### Making Authenticated API calls
+#### Basic example
 
 ```ruby
-# initalize the client
+# Initialize the client
 client = ShopifyAPI::Clients::Graphql::Admin.new(session: session)
 
-# make the GraphQL query string
+# Make the GraphQL query string
 query =<<~QUERY
   {
     products(first: 10) {
@@ -25,10 +47,13 @@ query =<<~QUERY
 QUERY
 
 response = client.query(query: query)
+
 # do something with the response data
+product = response.body["data"]["products"]["edges"][0]
+my_function(product)
 ```
 
-You can also make GraphQL calls that take in variables
+#### Example GraphQL query with variables
 
 ```ruby
 client = ShopifyAPI::Clients::Graphql::Admin.new(session: session)
@@ -47,18 +72,19 @@ query = <<~QUERY
     }
   }
 QUERY
+
 variables = {
   first: 3
 }
 
 response = client.query(query: query, variables: variables)
-
 ```
 
-Here is an example of how you might use fragments as part of the client
+#### Example GraphQL query with fragments
 
 ```ruby
 client = ShopifyAPI::Clients::Graphql::Admin.new(session: session)
+
 # define the fragment as part of the query
 query = <<~QUERY
   fragment ProductStuff on Product {
@@ -78,24 +104,41 @@ query = <<~QUERY
     }
   }
 QUERY
+
 variables = {
   first: 3
 }
+
 response = client.query(query: query, variables: variables)
-# do something with the reponse
+# do something with the response
 ```
 
-By default, the client uses the API version configured in `ShopifyAPI`.  To use a different API version, set the optional `api_version` parameter.  To experiment with prerelease API features, use `"unstable"` for the API version.
 
-```ruby
-client = ShopifyAPI::Clients::Graphql::Admin.new(session: session, api_version: "unstable")
-```
+### Output
+#### Success
+If the request is successful these methods will all return a [`ShopifyAPI::Clients::HttpResponse`](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/clients/http_response.rb) object, which has the following methods: 
+| Methods | Type | Notes |
+|---------|------|-------|
+| `code`  |`Integer`| HTTP Response code, e.g. `200`|
+| `header` |`Hash{String, [String]}` | HTTP Response headers |
+| `body`  | `Hash{String, Untyped}`  | HTTP Response body |
+| `prev_page_info` | `String` | See [Pagination](#pagination)|
+| `next_page_info` | `String` | See [Pagination](#pagination)|
 
-Want to make calls to the Storefront API? Click [here](graphql_storefront.md)
+#### Failure
+If the request has failed, an error will be raised describing what went wrong.
+You can rescue [`ShopifyAPI::Errors::HttpResponseError`](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/errors/http_response_error.rb)
+and output error messages with `errors.full_messages`
 
-# Proxy a GraphQL Query
+## Pagination
 
-If you would like to give your front end the ability to make authenticated graphql queries to the Shopify Admin API, the `shopify_api` gem makes proxying a graphql request easy! The gem provides a utility function which will accept the raw request body (a GraphQL query), the headers, and the cookies (optional). It will add authentication to the request, proxy it to the Shopify Admin API, and return a `ShopifyAPI::Clients::HttpResponse`. An example utilization of this in Rails is shown below:
+This library also supports cursor-based pagination for GraphQL Admin API requests. [Learn more about GraphQL request pagination](https://shopify.dev/docs/api/usage/pagination-graphql).
+
+After making a request, the `next_page_info` and `prev_page_info` can be found on the response object and be used in the query param in other requests.
+
+## Proxy a GraphQL Query
+
+If you would like to give your front end the ability to make authenticated graphql queries to the Shopify Admin API, the `shopify_api` gem makes proxy-ing a graphql request easy! The gem provides a utility function which will accept the raw request body (a GraphQL query), the headers, and the cookies (optional). It will add authentication to the request, proxy it to the Shopify Admin API, and return a `ShopifyAPI::Clients::HttpResponse`. An example utilization of this in Rails is shown below:
 
 ```ruby
 def proxy
@@ -117,3 +160,6 @@ end
 ```
 
 **Note:** GraphQL proxying is only supported for online sessions for non-private apps, the utility will raise a `ShopifyAPI::Errors::SessionNotFoundError` if there are no existing online tokens for the provided credentials, and a `ShopifyAPI::Errors::PrivateAppError` if called from a private app.
+
+## Storefront API
+⚠️ Want to make calls to the Storefront API? [Read this](graphql_storefront.md).
