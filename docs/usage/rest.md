@@ -109,14 +109,6 @@ More examples can be found in each resource's documentation on [shopify.dev](htt
 
 ## Using REST Admin Client
 
-##### Table of Content:
-- [Instantiation](#Instantiation)
-- [Methods](#methods)
-  - [Input Parameters](#method-input-parameters)
-  - [Output](#output)
-- [Usage Examples](#usage-examples)
-- [Pagination](#pagination)
-
 ### Instantiation
 Create an instance of [`ShopifyAPI::Clients::Rest::Admin`](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/clients/rest/admin.rb) using the current session to make requests to the Admin API.
 #### Constructor parameters
