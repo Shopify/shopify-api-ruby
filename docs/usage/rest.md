@@ -44,7 +44,7 @@ Create an instance of the REST resource you'd like to use and optionally provide
 #### Constructor parameters
 | Parameter | Type | Notes |
 | ----------|------|-------|
-| `session` | `ShopifyAPI::Auth::Session` | Default value is `nil`.<br/>When `nil` is passed in, active session information is inferred from `ShopifyAPI::Context.active_session`. To set active session, use `ShopifyAPI::Context.activate_session`|
+| `session` | `ShopifyAPI::Auth::Session` | Default value is `nil`. <br><br>When `nil` is passed in, active session information is inferred from `ShopifyAPI::Context.active_session`. <br>To set active session, use `ShopifyAPI::Context.activate_session`. <br><br>This is handled automatically behind the scenes if you use ShopifyApp's [session controllers](https://github.com/Shopify/shopify_app/blob/main/docs/shopify_app/sessions.md). |
 | `from_hash` | `Hash` |  Default value is `nil`. Sets the resource properties to the values provided from the hash. |
 
 Examples:
@@ -114,8 +114,8 @@ Create an instance of [`ShopifyAPI::Clients::Rest::Admin`](https://github.com/Sh
 #### Constructor parameters
 | Parameter | Type | Notes |
 | ----------|------|-------|
-| `session` | `ShopifyAPI::Auth::Session` | Default value is `nil`. When `nil` is passed in, active session information is inferred from `ShopifyAPI::Context.active_session`. To set active session, use `ShopifyAPI::Context.activate_session`|
-| `api_version` | `String` | Default value is `nil`. When `nil` is passed in, api version is inferred from `ShopifyAPI::Context.api_version`.|
+| `session` | `ShopifyAPI::Auth::Session` | Default value is `nil`. <br><br>When `nil` is passed in, active session information is inferred from `ShopifyAPI::Context.active_session`. <br>To set active session, use `ShopifyAPI::Context.activate_session`. <br><br>This is handled automatically behind the scenes if you use ShopifyApp's [session controllers](https://github.com/Shopify/shopify_app/blob/main/docs/shopify_app/sessions.md). |
+| `api_version` | `String` | Default value is `nil`. When `nil` is passed in, api version is inferred from [`ShopifyAPI::Context.setup`](https://github.com/Shopify/shopify-api-ruby/blob/main/README.md#setup-shopify-context).|
 
 Examples:
 ```ruby
