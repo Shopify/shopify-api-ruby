@@ -37,6 +37,75 @@ To instantiate a session, we recommend you either use the `shopify_app` if worki
   ```
 
 ## Using REST Resources
+We provide a templated class library to access REST resources similar to `ActiveResource`. Format of the methods closely resemble our [REST API schema](https://shopify.dev/docs/api/admin-rest).
+
+### Instantiation
+Create an instance of the REST resource you'd like to use and optionally provide the following parameters.
+#### Constructor parameters
+| Parameter | Type | Notes |
+| ----------|------|-------|
+| `session` | `ShopifyAPI::Auth::Session` | Default value is `nil`.<br/>When `nil` is passed in, active session information is inferred from `ShopifyAPI::Context.active_session`. To set active session, use `ShopifyAPI::Context.activate_session`|
+| `from_hash` | `Hash` |  Default value is `nil`. Sets the resource properties to the values provided from the hash. |
+
+Examples:
+
+```ruby
+# To construct an Orders object using default session
+# This creates a new order object with properties provided from the hash
+order = ShopifyAPI::Orders.new(from_hash: {property: value})
+order.save!
+```
+
+### Methods
+Typical methods provided for each resources are:
+- `find`
+- `delete`
+- `all`
+- `count`
+
+Full list of methods can be found on each of the resource class.
+- Path:
+  - https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/rest/resources/#{version}/#{resource}.rb
+- Example for `Order` resource on `2023-04` version:
+  - https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/rest/resources/2023_04/order.rb
+
+### Usage Examples
+⚠️ Reference documentation on [shopify.dev](https://shopify.dev/docs/api/admin-rest) contains more examples on how to use each REST Resources.
+
+```Ruby
+# Find and update a customer email
+customer = ShopifyAPI::Customer.find(id: customer_id)
+customer.email = "steve-lastnameson@example.com"
+customer.save!
+
+# Create a new product from hash
+product_properties = {
+  title: "My awesome product"
+}
+product = ShopifyAPI::Product.new(from_hash: product_properties)
+product.save!
+
+# Create a product manually
+product = ShopifyAPI::Product.new
+product.title = "Another one"
+product.save!
+
+# Get all orders
+orders = ShopifyAPI::Orders.all
+
+# Retrieve a specific fulfillment order
+fulfillment_order_id = 123456789
+fulfillment_order = ShopifyAPI::FulfillmentOrder.find(id: fulfillment_order_id)
+
+# Remove an existing product image
+product_id = 1234567
+image_id = 1233211234567
+ShopifyAPI::Image.delete(product_id: product_id, id: image_id)
+```
+
+More examples can be found in each resource's documentation on [shopify.dev](https://shopify.dev/docs/api/admin-rest), e.g.:
+- [Order](https://shopify.dev/docs/api/admin-rest/current/resources/order)
+- [Product](https://shopify.dev/docs/api/admin-rest/current/resources/product)
 
 ## Using REST Admin Client
 
