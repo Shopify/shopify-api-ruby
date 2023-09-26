@@ -1,10 +1,150 @@
 # Make a REST API call
 
-Once OAuth is complete, we can use the `ShopifyAPI::Clients::Rest::Admin` client to make an API call to the Shopify Admin API. To do this, you can create an instance of `ShopifyAPI::Clients::Rest::Admin` using the current session to make requests to the Admin API.
+Once OAuth is complete, we can use `ShopifyAPI`'s REST library to make authenticated API calls to the Shopify Admin API.
+#### Required Session
+Every API request requires a valid
+[ShopifyAPI::Auth::Session](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/auth/session.rb).
 
-## Methods
+To instantiate a session, we recommend you either use the `shopify_app` if working in Rails, or refer to our OAuth docs on constructing a session:
+ - ["Performing OAuth"](https://github.com/Shopify/shopify-api-ruby/blob/main/docs/usage/oauth.md) - documentation on how to create new sessions
+ - [[ShopifyApp] - "Session"](https://github.com/Shopify/shopify_app/blob/main/docs/shopify_app/sessions.md) - documentation on session handling if you're using the [`ShopifyApp`](https://github.com/Shopify/shopify_app) gem.
 
-The Rest Admin client offers the 4 core request methods: `get`, `delete`, `post`, and `put`. These methods each take the parameters outlined in the table below. If the request is successful these methods will all return a `ShopifyAPI::Clients::HttpResponse` object, which has properties `code`, `headers`, and `body` otherwise an error will be raised describing what went wrong.
+#### There are 2 methods you can use to make REST API calls to Shopify:
+- [Using REST Resources](#using-rest-resources)
+  - Resource classes with similar syntax as `ActiveResource`, and follows our REST convention. Example:
+  ``` ruby
+  # Update product title
+  product = ShopifyAPI::Product.find(id: <product_id>)
+  product.title = "My awesome product"
+  product.save!
+  ```
+
+- [Using REST Admin Client](#using-rest-admin-client)
+  - More manual input method to make the API call. Example:
+  ```ruby
+  # Create a new client.
+  rest_client = ShopifyAPI::Clients::Rest::Admin.new
+
+  # Update product title
+  body = {
+    product: {
+      title: "My cool product"
+    }
+  }
+
+  # Use `client.put` to send your request to the specified Shopify Admin REST API endpoint.
+  rest_client.put(path: "products/<id>.json", body: body)
+  ```
+
+## Using REST Resources
+We provide a templated class library to access REST resources similar to `ActiveResource`. Format of the methods closely resemble our [REST API schema](https://shopify.dev/docs/api/admin-rest).
+
+### Instantiation
+Create an instance of the REST resource you'd like to use and optionally provide the following parameters.
+#### Constructor parameters
+| Parameter | Type | Notes |
+| ----------|------|-------|
+| `session` | `ShopifyAPI::Auth::Session` | Default value is `nil`. <br><br>When `nil` is passed in, active session information is inferred from `ShopifyAPI::Context.active_session`. <br>To set active session, use `ShopifyAPI::Context.activate_session`. <br><br>This is handled automatically behind the scenes if you use ShopifyApp's [session controllers](https://github.com/Shopify/shopify_app/blob/main/docs/shopify_app/sessions.md). |
+| `from_hash` | `Hash` |  Default value is `nil`. Sets the resource properties to the values provided from the hash. |
+
+Examples:
+
+```ruby
+# To construct an Orders object using default session
+# This creates a new order object with properties provided from the hash
+order = ShopifyAPI::Orders.new(from_hash: {property: value})
+order.save!
+```
+
+### Methods
+Typical methods provided for each resources are:
+- `find`
+- `delete`
+- `all`
+- `count`
+
+Full list of methods can be found on each of the resource class.
+- Path:
+  - https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/rest/resources/#{version}/#{resource}.rb
+- Example for `Order` resource on `2023-04` version:
+  - https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/rest/resources/2023_04/order.rb
+
+### Usage Examples
+⚠️ Reference documentation on [shopify.dev](https://shopify.dev/docs/api/admin-rest) contains more examples on how to use each REST Resources.
+
+```Ruby
+# Find and update a customer email
+customer = ShopifyAPI::Customer.find(id: customer_id)
+customer.email = "steve-lastnameson@example.com"
+customer.save!
+
+# Create a new product from hash
+product_properties = {
+  title: "My awesome product"
+}
+product = ShopifyAPI::Product.new(from_hash: product_properties)
+product.save!
+
+# Create a product manually
+product = ShopifyAPI::Product.new
+product.title = "Another one"
+product.save!
+
+# Get all orders
+orders = ShopifyAPI::Orders.all
+
+# Retrieve a specific fulfillment order
+fulfillment_order_id = 123456789
+fulfillment_order = ShopifyAPI::FulfillmentOrder.find(id: fulfillment_order_id)
+
+# Remove an existing product image
+product_id = 1234567
+image_id = 1233211234567
+ShopifyAPI::Image.delete(product_id: product_id, id: image_id)
+```
+
+More examples can be found in each resource's documentation on [shopify.dev](https://shopify.dev/docs/api/admin-rest), e.g.:
+- [Order](https://shopify.dev/docs/api/admin-rest/current/resources/order)
+- [Product](https://shopify.dev/docs/api/admin-rest/current/resources/product)
+
+## Using REST Admin Client
+
+### Instantiation
+Create an instance of [`ShopifyAPI::Clients::Rest::Admin`](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/clients/rest/admin.rb) using the current session to make requests to the Admin API.
+#### Constructor parameters
+| Parameter | Type | Notes |
+| ----------|------|-------|
+| `session` | `ShopifyAPI::Auth::Session` | Default value is `nil`. <br><br>When `nil` is passed in, active session information is inferred from `ShopifyAPI::Context.active_session`. <br>To set active session, use `ShopifyAPI::Context.activate_session`. <br><br>This is handled automatically behind the scenes if you use ShopifyApp's [session controllers](https://github.com/Shopify/shopify_app/blob/main/docs/shopify_app/sessions.md). |
+| `api_version` | `String` | Default value is `nil`. When `nil` is passed in, api version is inferred from [`ShopifyAPI::Context.setup`](https://github.com/Shopify/shopify-api-ruby/blob/main/README.md#setup-shopify-context).|
+
+Examples:
+```ruby
+# Create a default client with `ShopifyAPI::Context.api_version` 
+# and the active session from `ShopifyAPI::Context.active_session`
+client = ShopifyAPI::Clients::Rest::Admin.new
+
+# Create a client with a specific session "my_session"
+client = ShopifyAPI::Clients::Rest::Admin.new(session: my_session)
+
+# Create a client with active session from `ShopifyAPI::Context.active_session`
+# and a specific api_version - "unstable"
+client = ShopifyAPI::Clients::Rest::Admin.new(api_version: "unstable")
+
+# Create a client with a specific session "my_session" and api_version "unstable"
+client = ShopifyAPI::Clients::Rest::Admin.new(session: my_session, api_version: "unstable")
+```
+
+### Methods
+
+The `ShopifyAPI::Clients::Rest::Admin` client offers the 4 core request methods:
+- `get`
+- `delete`
+- `post`
+- `put`
+
+#### Input Parameters
+
+Each method can take the parameters outlined in the table below. 
 
 | Parameter      | Type                                                     | Required in Methods | Default Value | Notes                                                                                                                                                                                                                                                                                  |
 | -------------- | -------------------------------------------------------- | :-----------------: | :-----------: | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -14,16 +154,38 @@ The Rest Admin client offers the 4 core request methods: `get`, `delete`, `post`
 | `extraHeaders` | `Hash(any(Symbol, String), any(String, Integer, Float))` |        none         |     none      | Any additional headers you want to send with your request                                                                                                                                                                                                                              |
 | `tries`        | `Integer`                                                |        None         |      `1`      | The maximum number of times to try the request _(must be >= 0)_                                                                                                                                                                                                                        |
 
-**Note:** _These paramaters can still be used in all methods regardless of if they are required._
+**Note:** _These parameters can still be used in all methods regardless of if they are required._
 
-## Usage Examples:
-### Required Session
-Every request requires a valid
-[ShopifyAPI::Auth::Session](https://github.com/Shopify/shopify-api-ruby/blob/f341d998cce7429b841c2c3b4ce55a18a52823e4/lib/shopify_api/auth/session.rb).
+#### Output
+##### Success
+If the request is successful these methods will all return a [`ShopifyAPI::Clients::HttpResponse`](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/clients/http_response.rb) object, which has the following methods: 
+| Methods | Type | Notes |
+|---------|------|-------|
+| `code`  |`Integer`| HTTP Response code, e.g. `200`|
+| `header` |`Hash{String, [String]}` | HTTP Response headers |
+| `body`  | `Hash{String, Untyped}`  | HTTP Response body |
+| `prev_page_info` | `String` | See [Pagination](#pagination)|
+| `next_page_info` | `String` | See [Pagination](#pagination)|
 
-To instantiate a session, we recommend you either use the `shopify_app` if working in Rails or refer to our [OAuth docs on constructing a session](oauth.md#fetching-sessions)
+##### Failure
+If the request has failed, an error will be raised describing what went wrong.
+You can rescue [`ShopifyAPI::Errors::HttpResponseError`](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/errors/http_response_error.rb)
+and output error messages with `errors.full_messages`
 
-### Perform a `GET` request:
+See example:
+
+```ruby
+    client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
+    response = client.get(path: "NOT-REAL")
+    some_function(response.body)
+rescue ShopifyAPI::Errors::HttpResponseError => e
+  puts fulfillment.errors.full_messages
+  # {"errors"=>"Not Found"}
+  # If you report this error, please include this id: bce76672-40c6-4047-b598-46208ab076f0.
+```
+### Usage Examples
+
+#### Perform a `GET` request
 
 ```ruby
 # Create a new client.
@@ -35,8 +197,9 @@ response = client.get(path: "products")
 # Do something with the returned data
 some_function(response.body)
 ```
+_For more information on the `products` endpoint, [check out our API reference guide](https://shopify.dev/docs/api/admin-rest/latest/resources/product)._
 
-### Perform a `POST` request:
+#### Perform a `POST` request
 
 ```ruby
 # Create a new client.
@@ -53,56 +216,40 @@ body = {
 }
 
 # Use `client.post` to send your request to the specified Shopify Admin REST API endpoint.
+# This POST request will create a new product.
 client.post({
   path: "products",
   body: body,
 });
 ```
 
-_for more information on the `products` endpoint, [check out our API reference guide](https://shopify.dev/docs/api/admin-rest/unstable/resources/product)._
+_For more information on the `products` endpoint, [check out our API reference guide](https://shopify.dev/docs/api/admin-rest/latest/resources/product)._
 
-### Override the `api_version`:
+#### Perform a `PUT` request
+  ```ruby
+  # Create a new client.
+  client = ShopifyAPI::Clients::Rest::Admin.new
 
-```ruby
-# To experiment with prerelease features, pass the api_version "unstable".
-client = ShopifyAPI::Clients::Rest::Admin.new(session: session, api_version: "unstable")
+  # Update product title
+  body = {
+    product: {
+      title: "My cool product"
+    }
+  }
+
+  # Use `client.put` to send your request to the specified Shopify Admin REST API endpoint.
+  # This will update product title for product with ID <id>
+  client.put(path: "products/<id>.json", body: body)
 ```
 
-## Pagination
+_For more information on the `products` endpoint, [check out our API reference guide](https://shopify.dev/docs/api/admin-rest/latest/resources/product)._
+
+### Pagination
 
 This library also supports cursor-based pagination for REST Admin API requests. [Learn more about REST request pagination](https://shopify.dev/docs/api/usage/pagination-rest).
 
-After making a request, the `next_page_info` and `prev_page_info` can be found on the response object and passed as the page_info query param in other requests.
-
-An example of this is shown below:
-
-```ruby
-client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
-
-response = client.get(path: "products", query: { limit: 10 })
-
-loop do
-  some_function(response.body)
-  break unless response.next_page_info
-  response =  client.get(path: "products", query: { limit: 10, page_info: response.next_page_info })
-end
-```
-
-Similarly, when using REST resources the `next_page_info` and `prev_page_info` can be found on the Resource class and passed as the page_info query param in other requests.
-
-An example of this is shown below:
-
-```ruby
-products = ShopifyAPI::Product.all(session: session, limit: 10)
-
-loop do
-  some_function(products)
-  break unless ShopifyAPI::Product.next_page?
-  products = ShopifyAPI::Product.all(session: session, limit: 10, page_info: ShopifyAPI::Product.next_page_info)
-end
-```
-
-The next/previous page_info strings can also be retrieved from the response object and added to a request query to retrieve the next/previous pages.
+#### REST Admin Client
+After making a request, the `next_page_info` and `prev_page_info` can be found on the response object and passed as the `page_info` query param in other requests.
 
 An example of this is shown below:
 
@@ -118,22 +265,19 @@ if next_page_info
 end
 ```
 
-### Error Messages
+#### REST Resource
+Similarly, when using REST resources the `next_page_info` and `prev_page_info` can be found on the Resource class and passed as the `page_info` query param in other requests.
 
-You can rescue `ShopifyAPI::Errors::HttpResponseError` and output error messages with `errors.full_messages`
-
-See example:
+An example of this is shown below:
 
 ```ruby
- fulfillment = ShopifyAPI::Fulfillment.new(session: @session)
-  fulfillment.order_id = 2776493818000
-  ...
-  fulfillment.tracking_company = "Jack Black's Pack, Stack and Track"
-  fulfillment.save()
-rescue ShopifyAPI::Errors::HttpResponseError => e
-  puts fulfillment.errors.full_messages
-  # {"base"=>["Line items are already fulfilled"]}
-  # If you report this error, please include this id: e712dde0-1270-4258-8cdb-d198792c917e.
+products = ShopifyAPI::Product.all(session: session, limit: 10)
+
+loop do
+  some_function(products)
+  break unless ShopifyAPI::Product.next_page?
+  products = ShopifyAPI::Product.all(session: session, limit: 10, page_info: ShopifyAPI::Product.next_page_info)
+end
 ```
 
 [Back to guide index](../README.md)
