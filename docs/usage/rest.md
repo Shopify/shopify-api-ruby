@@ -40,6 +40,8 @@ To instantiate a session, we recommend you either use the `shopify_app` if worki
 ## Using REST Resources
 We provide a templated class library to access REST resources similar to `ActiveResource`. Format of the methods closely resemble our [REST API schema](https://shopify.dev/docs/api/admin-rest).
 
+The version of REST resource that's loaded and used is set from [`ShopifyAPI::Context.setup`](https://github.com/Shopify/shopify-api-ruby/blob/main/README.md#setup-shopify-context)
+
 ### Instantiation
 Create an instance of the REST resource you'd like to use and optionally provide the following parameters.
 #### Constructor parameters
