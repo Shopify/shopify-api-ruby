@@ -6,6 +6,7 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 - [#1183](https://github.com/Shopify/shopify-api-ruby/pull/1189) Added string array support for fields parameter in Webhook::Registry
 - [1208](https://github.com/Shopify/shopify-api-ruby/pull/1208) Fix CustomerAddress and FulfillmentRequest methods
+- [1225](https://github.com/Shopify/shopify-api-ruby/pull/1225) Support for 2023_10 API version
 
 ## 13.1.0
 
