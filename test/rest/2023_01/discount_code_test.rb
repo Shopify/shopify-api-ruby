@@ -38,7 +38,7 @@ class DiscountCode202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "discount_code" => hash_including({"code" => "SUMMERSALE10OFF"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"discount_code" => {"id" => 1054381139, "price_rule_id" => 507328175, "code" => "SUMMERSALE10OFF", "usage_count" => 0, "created_at" => "2023-07-05T18:44:08-04:00", "updated_at" => "2023-07-05T18:44:08-04:00"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"discount_code" => {"id" => 1054381139, "price_rule_id" => 507328175, "code" => "SUMMERSALE10OFF", "usage_count" => 0, "created_at" => "2023-10-03T13:22:41-04:00", "updated_at" => "2023-10-03T13:22:41-04:00"}}), headers: {})
 
     response = discount_code = ShopifyAPI::DiscountCode.new
     discount_code.price_rule_id = 507328175
@@ -71,7 +71,7 @@ class DiscountCode202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"discount_codes" => [{"id" => 507328175, "price_rule_id" => 507328175, "code" => "SUMMERSALE10OFF", "usage_count" => 0, "created_at" => "2023-07-05T18:38:03-04:00", "updated_at" => "2023-07-05T18:38:03-04:00"}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"discount_codes" => [{"id" => 507328175, "price_rule_id" => 507328175, "code" => "SUMMERSALE10OFF", "usage_count" => 0, "created_at" => "2023-10-03T13:19:52-04:00", "updated_at" => "2023-10-03T13:19:52-04:00"}]}), headers: {})
 
     response = ShopifyAPI::DiscountCode.all(
       price_rule_id: 507328175,
@@ -103,7 +103,7 @@ class DiscountCode202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "discount_code" => hash_including({"code" => "WINTERSALE20OFF"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"discount_code" => {"id" => 507328175, "price_rule_id" => 507328175, "code" => "WINTERSALE20OFF", "usage_count" => 0, "created_at" => "2023-07-05T18:38:03-04:00", "updated_at" => "2023-07-05T18:44:13-04:00"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"discount_code" => {"id" => 507328175, "price_rule_id" => 507328175, "code" => "WINTERSALE20OFF", "usage_count" => 0, "created_at" => "2023-10-03T13:19:52-04:00", "updated_at" => "2023-10-03T13:22:42-04:00"}}), headers: {})
 
     response = discount_code = ShopifyAPI::DiscountCode.new
     discount_code.price_rule_id = 507328175
@@ -137,7 +137,7 @@ class DiscountCode202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"discount_code" => {"id" => 507328175, "price_rule_id" => 507328175, "code" => "SUMMERSALE10OFF", "usage_count" => 0, "created_at" => "2023-07-05T18:38:03-04:00", "updated_at" => "2023-07-05T18:38:03-04:00"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"discount_code" => {"id" => 507328175, "price_rule_id" => 507328175, "code" => "SUMMERSALE10OFF", "usage_count" => 0, "created_at" => "2023-10-03T13:19:52-04:00", "updated_at" => "2023-10-03T13:19:52-04:00"}}), headers: {})
 
     response = ShopifyAPI::DiscountCode.find(
       price_rule_id: 507328175,
@@ -233,7 +233,7 @@ class DiscountCode202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: hash_including({"discount_codes" => [{"code" => "SUMMER1"}, {"code" => "SUMMER2"}, {"code" => "SUMMER3"}]})
       )
-      .to_return(status: 200, body: JSON.generate({"discount_code_creation" => {"id" => 989355119, "price_rule_id" => 507328175, "started_at" => nil, "completed_at" => nil, "created_at" => "2023-07-05T18:44:12-04:00", "updated_at" => "2023-07-05T18:44:12-04:00", "status" => "queued", "codes_count" => 3, "imported_count" => 0, "failed_count" => 0, "logs" => []}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"discount_code_creation" => {"id" => 989355119, "price_rule_id" => 507328175, "started_at" => nil, "completed_at" => nil, "created_at" => "2023-10-03T13:22:38-04:00", "updated_at" => "2023-10-03T13:22:38-04:00", "status" => "queued", "codes_count" => 3, "imported_count" => 0, "failed_count" => 0, "logs" => []}}), headers: {})
 
     response = discount_code = ShopifyAPI::DiscountCode.new
     discount_code.price_rule_id = 507328175
@@ -267,7 +267,7 @@ class DiscountCode202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"discount_code_creation" => {"id" => 173232803, "price_rule_id" => 507328175, "started_at" => nil, "completed_at" => nil, "created_at" => "2023-07-05T18:38:03-04:00", "updated_at" => "2023-07-05T18:38:03-04:00", "status" => "queued", "codes_count" => 3, "imported_count" => 0, "failed_count" => 0, "logs" => []}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"discount_code_creation" => {"id" => 173232803, "price_rule_id" => 507328175, "started_at" => nil, "completed_at" => nil, "created_at" => "2023-10-03T13:19:52-04:00", "updated_at" => "2023-10-03T13:19:52-04:00", "status" => "queued", "codes_count" => 3, "imported_count" => 0, "failed_count" => 0, "logs" => []}}), headers: {})
 
     response = ShopifyAPI::DiscountCode.get_all(
       price_rule_id: 507328175,
