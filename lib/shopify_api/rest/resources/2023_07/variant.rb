@@ -27,7 +27,6 @@ module ShopifyAPI
       @inventory_management = T.let(nil, T.nilable(String))
       @inventory_policy = T.let(nil, T.nilable(String))
       @inventory_quantity = T.let(nil, T.nilable(Integer))
-      @inventory_quantity_adjustment = T.let(nil, T.nilable(Integer))
       @old_inventory_quantity = T.let(nil, T.nilable(Integer))
       @option = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
       @position = T.let(nil, T.nilable(Integer))
@@ -55,8 +54,7 @@ module ShopifyAPI
       {http_method: :put, operation: :put, ids: [:id], path: "variants/<id>.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
     @read_only_attributes = T.let([
-      :inventory_quantity,
-      :inventory_quantity_adjustment
+      :inventory_quantity
     ], T::Array[Symbol])
 
     sig { returns(T.nilable(String)) }
@@ -81,8 +79,6 @@ module ShopifyAPI
     attr_reader :inventory_policy
     sig { returns(T.nilable(Integer)) }
     attr_reader :inventory_quantity
-    sig { returns(T.nilable(Integer)) }
-    attr_reader :inventory_quantity_adjustment
     sig { returns(T.nilable(Integer)) }
     attr_reader :old_inventory_quantity
     sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
