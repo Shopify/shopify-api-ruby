@@ -20,7 +20,7 @@ module ShopifyAPI
 
         sig { override.returns(T::Hash[Symbol, String]) }
         def subscription_args
-          { callbackUrl: callback_address, includeFields: fields }.compact
+          { callbackUrl: callback_address, includeFields: fields, metafieldNamespaces: metafield_namespaces }.compact
         end
 
         sig { override.params(webhook_id: T.nilable(String)).returns(String) }

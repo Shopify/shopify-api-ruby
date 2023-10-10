@@ -13,20 +13,24 @@ module ShopifyAPI
             delivery_method: Symbol,
             path: String,
             handler: T.nilable(Handler),
-            fields: T.nilable(T.any(String, T::Array[String]))).void
+            fields: T.nilable(T.any(String, T::Array[String])),
+            metafield_namespaces: T.nilable(T::Array[String])).void
         end
-        def add_registration(topic:, delivery_method:, path:, handler: nil, fields: nil)
+        def add_registration(topic:, delivery_method:, path:, handler: nil, fields: nil, metafield_namespaces: nil)
           @registry[topic] = case delivery_method
           when :pub_sub
-            Registrations::PubSub.new(topic: topic, path: path, fields: fields)
+            Registrations::PubSub.new(topic: topic, path: path, fields: fields,
+              metafield_namespaces: metafield_namespaces)
           when :event_bridge
-            Registrations::EventBridge.new(topic: topic, path: path, fields: fields)
+            Registrations::EventBridge.new(topic: topic, path: path, fields: fields,
+              metafield_namespaces: metafield_namespaces)
           when :http
             unless handler
               raise Errors::InvalidWebhookRegistrationError, "Cannot create an Http registration without a handler."
             end
 
-            Registrations::Http.new(topic: topic, path: path, handler: handler, fields: fields)
+            Registrations::Http.new(topic: topic, path: path, handler: handler,
+              fields: fields, metafield_namespaces: metafield_namespaces)
           else
             raise Errors::InvalidWebhookRegistrationError,
               "Unsupported delivery method #{delivery_method}. Allowed values: {:http, :pub_sub, :event_bridge}."
