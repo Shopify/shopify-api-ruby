@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    shopify_api (13.1.0)
+    shopify_api (13.2.0)
       activesupport
       concurrent-ruby
       hash_diff
@@ -16,7 +16,7 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (7.0.6)
+    activesupport (7.0.7.2)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
@@ -42,12 +42,12 @@ GEM
     jwt (2.7.1)
     language_server-protocol (3.17.0.1)
     method_source (1.0.0)
-    mini_mime (1.1.2)
+    mini_mime (1.1.5)
     minitest (5.15.0)
     mocha (1.13.0)
     multi_xml (0.6.0)
     netrc (0.11.0)
-    oj (3.15.0)
+    oj (3.16.0)
     openssl (3.1.0)
     parallel (1.22.1)
     parser (3.1.2.1)
@@ -133,7 +133,7 @@ GEM
     yard-sorbet (0.7.0)
       sorbet-runtime (>= 0.5)
       yard (>= 0.9)
-    zeitwerk (2.6.8)
+    zeitwerk (2.6.11)
 
 PLATFORMS
   arm64-darwin-21
