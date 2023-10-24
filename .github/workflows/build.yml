@@ -17,10 +17,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set up Ruby ${{ matrix.version }}
-        uses: ruby/setup-ruby@v2
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.version }}
-          bundler-cache: true
       - name: Install OpenSSL
         run: |
           sudo apt-get update
