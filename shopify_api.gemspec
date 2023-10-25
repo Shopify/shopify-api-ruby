@@ -48,7 +48,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency("rubocop")
   s.add_development_dependency("rubocop-shopify")
   s.add_development_dependency("rubocop-sorbet")
-  s.add_development_dependency("ruby-lsp")
   s.add_development_dependency("sorbet")
   s.add_development_dependency("tapioca")
 end
