@@ -33,18 +33,18 @@ class LocationsForMove202304Test < Test::Unit::TestCase
     void
   end
   def test_1()
-    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000814/locations_for_move.json")
+    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000780/locations_for_move.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"locations_for_move" => [{"location" => {"id" => 1072404544, "name" => "Alpha Location"}, "message" => "Current location.", "movable" => false}, {"location" => {"id" => 1072404545, "name" => "Bravo Location"}, "message" => "No items are stocked at this location.", "movable" => false}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"locations_for_move" => [{"location" => {"id" => 1072404542, "name" => "Alpha Location"}, "message" => "Current location.", "movable" => false}, {"location" => {"id" => 1072404543, "name" => "Bravo Location"}, "message" => "No items are stocked at this location.", "movable" => false}]}), headers: {})
 
     response = ShopifyAPI::LocationsForMove.all(
-      fulfillment_order_id: 1046000814,
+      fulfillment_order_id: 1046000780,
     )
 
-    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000814/locations_for_move.json")
+    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000780/locations_for_move.json")
 
     response = response.first if response.respond_to?(:first)
 

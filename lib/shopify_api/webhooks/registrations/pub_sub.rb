@@ -17,7 +17,8 @@ module ShopifyAPI
           project_topic_pair = callback_address.gsub(%r{^pubsub://}, "").split(":")
           project = project_topic_pair[0]
           topic = project_topic_pair[1]
-          { pubSubProject: project, pubSubTopic: topic, includeFields: fields }.compact
+          { pubSubProject: project, pubSubTopic: topic, includeFields: fields,
+            metafieldNamespaces: metafield_namespaces, }.compact
         end
 
         sig { override.params(webhook_id: T.nilable(String)).returns(String) }

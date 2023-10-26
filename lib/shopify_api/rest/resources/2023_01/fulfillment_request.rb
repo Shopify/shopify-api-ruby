@@ -31,6 +31,16 @@ module ShopifyAPI
     attr_reader :fulfillment_order_id
 
     class << self
+      sig do
+        returns(T::Array[String])
+      end
+      def json_response_body_names()
+        [
+          "submitted_fulfillment_order",
+          "fulfillment_order"
+        ]
+      end
+
     end
 
     sig do

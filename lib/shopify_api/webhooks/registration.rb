@@ -19,16 +19,21 @@ module ShopifyAPI
       sig { returns(T.nilable(T::Array[String])) }
       attr_reader :fields
 
+      sig { returns(T.nilable(T::Array[String])) }
+      attr_reader :metafield_namespaces
+
       sig do
         params(topic: String, path: String, handler: T.nilable(Handler),
-          fields: T.nilable(T.any(String, T::Array[String]))).void
+          fields: T.nilable(T.any(String, T::Array[String])),
+          metafield_namespaces: T.nilable(T::Array[String])).void
       end
-      def initialize(topic:, path:, handler: nil, fields: nil)
+      def initialize(topic:, path:, handler: nil, fields: nil, metafield_namespaces: nil)
         @topic = T.let(topic.gsub("/", "_").upcase, String)
         @path = path
         @handler = handler
         fields_array = fields.is_a?(String) ? fields.split(FIELDS_DELIMITER) : fields
         @fields = T.let(fields_array&.map(&:strip)&.compact, T.nilable(T::Array[String]))
+        @metafield_namespaces = T.let(metafield_namespaces&.map(&:strip)&.compact, T.nilable(T::Array[String]))
       end
 
       sig { abstract.returns(String) }
@@ -51,7 +56,7 @@ module ShopifyAPI
         identifier = webhook_id ? "id: \"#{webhook_id}\"" : "topic: #{@topic}"
 
         subscription_args_string = subscription_args.map do |k, v|
-          "#{k}: #{k == :includeFields ? v : '"' + v + '"'}"
+          "#{k}: #{[:includeFields, :metafieldNamespaces].include?(k) ? v : %("#{v}")}"
         end.join(", ")
 
         <<~QUERY
@@ -62,11 +67,21 @@ module ShopifyAPI
                 message
               }
               webhookSubscription {
-                id#{@fields.nil? ? "" : "\n      includeFields"}
+                #{subscription_response_attributes.join("\n      ")}
               }
             }
           }
         QUERY
+      end
+
+      private
+
+      sig { returns(T::Array[String]) }
+      def subscription_response_attributes
+        attributes = ["id"]
+        attributes << "includeFields" if @fields
+        attributes << "metafieldNamespaces" if @metafield_namespaces
+        attributes
       end
     end
   end

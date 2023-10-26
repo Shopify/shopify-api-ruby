@@ -68,10 +68,12 @@ module ShopifyAPI
       end
 
       sig do
-        returns(String)
+        returns(T::Array[String])
       end
-      def json_response_body_name()
-        "risk"
+      def json_response_body_names()
+        [
+          "risk"
+        ]
       end
 
       sig do

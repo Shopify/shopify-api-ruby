@@ -12,7 +12,9 @@ module ShopifyAPI
     @is_private = T.let(false, T::Boolean)
     @private_shop = T.let(nil, T.nilable(String))
     @is_embedded = T.let(true, T::Boolean)
-    @logger = T.let(::Logger.new($stdout), ::Logger)
+    # Logger can either be a Logger or an ActiveSupport::BroadcastLogger, which is new in Rails 7.1.0. To avoid adding a
+    # dependency Active Support >= 7.1.0, we go with T.untyped
+    @logger = T.let(::Logger.new($stdout), T.untyped)
     @log_level = T.let(:info, Symbol)
     @notified_missing_resources_folder = T.let({}, T::Hash[String, T::Boolean])
     @active_session = T.let(Concurrent::ThreadLocalVar.new { nil }, T.nilable(Concurrent::ThreadLocalVar))
@@ -33,7 +35,7 @@ module ShopifyAPI
           is_private: T::Boolean,
           is_embedded: T::Boolean,
           log_level: T.any(String, Symbol),
-          logger: ::Logger,
+          logger: T.untyped,
           host_name: T.nilable(String),
           host: T.nilable(String),
           private_shop: T.nilable(String),
@@ -116,7 +118,7 @@ module ShopifyAPI
       sig { returns(Auth::AuthScopes) }
       attr_reader :scope
 
-      sig { returns(::Logger) }
+      sig { returns(T.untyped) }
       attr_reader :logger
 
       sig { returns(Symbol) }

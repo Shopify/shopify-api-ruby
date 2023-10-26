@@ -182,6 +182,23 @@ module ShopifyAPITest
         refute_includes(resource.to_hash(true), "unsaveable_attribute")
       end
 
+      def test_save_allows_custom_json_body_names
+        request_body = { fake_resource: { attribute: "attribute" } }.to_json
+        response_body = { fake_resource_response: { id: 1, attribute: "attribute updated" } }.to_json
+
+        stub_request(:post, "#{@prefix}/fake_resources.json")
+          .with(body: request_body)
+          .to_return(status: 201, body: response_body)
+
+        resource = TestHelpers::FakeResource.new(session: @session)
+        resource.attribute = "attribute"
+        TestHelpers::FakeResource.stubs(:json_response_body_names).returns(["fake_resource_response"])
+
+        resource.save!
+        assert_equal(1, resource.id)
+        assert_equal("attribute updated", resource.attribute)
+      end
+
       def test_deletes_existing_resource_and_fails_on_deleting_nonexistent_resource
         resource = TestHelpers::FakeResource.new(session: @session)
         resource.id = 1
@@ -201,6 +218,32 @@ module ShopifyAPITest
 
         assert_equal("some-value", resource.unknown)
         assert_equal("some-value", resource.to_hash["unknown"])
+      end
+
+      def test_saves_removing_children
+        draft_order_data = {
+          "id" => 1124601987358,
+          "line_items" => [{
+            "id" => 58266522976542,
+            "title" => "The Minimal Snowboard",
+            "price" => "885.95",
+          }],
+        }
+        draft_order = ShopifyAPI::DraftOrder.create_instance(
+          session: @session,
+          data: draft_order_data,
+        )
+
+        body = draft_order_data.dup
+        body["line_items"] = []
+        stubbed_request = stub_request(:put, "#{@prefix}/draft_orders/#{draft_order_data.dig("id")}.json")
+          .with(body: hash_including("draft_order": { line_items: [] }))
+          .to_return(status: 200)
+
+        draft_order.line_items = []
+        draft_order.save
+
+        assert_requested(stubbed_request)
       end
 
       def test_loads_unknown_attribute_with_special_character
