@@ -12,7 +12,7 @@ module ShopifyAPITest
       ShopifyAPI::Context.setup(
         api_key: "key",
         api_secret_key: "secret",
-        api_version: "unstable",
+        api_version: "2023-10",
         scope: ["scope1", "scope2"],
         is_private: true,
         is_embedded: true,
@@ -33,7 +33,7 @@ module ShopifyAPITest
       assert(ShopifyAPI::Context.setup?)
       assert_equal("key", ShopifyAPI::Context.api_key)
       assert_equal("secret", ShopifyAPI::Context.api_secret_key)
-      assert_equal("unstable", ShopifyAPI::Context.api_version)
+      assert_equal("2023-10", ShopifyAPI::Context.api_version)
       assert_equal("http://localhost:3000", ShopifyAPI::Context.host)
       assert_equal(ShopifyAPI::Auth::AuthScopes.new(["scope1", "scope2"]), ShopifyAPI::Context.scope)
       assert(ShopifyAPI::Context.private?)
@@ -115,7 +115,7 @@ module ShopifyAPITest
       ShopifyAPI::Context.setup(
         api_key: "key",
         api_secret_key: "secret",
-        api_version: "unstable",
+        api_version: "2023-10",
         host_name: "tunnel-o-security.com",
         scope: ["scope1", "scope2"],
         is_private: true,
@@ -138,7 +138,7 @@ module ShopifyAPITest
       ShopifyAPI::Context.setup(
         api_key: "",
         api_secret_key: "",
-        api_version: "unstable",
+        api_version: "2023-10",
         host_name: "",
         scope: [],
         is_private: false,
@@ -160,7 +160,7 @@ module ShopifyAPITest
       ShopifyAPI::Context.setup(
         api_key: "",
         api_secret_key: "",
-        api_version: "unstable",
+        api_version: "2023-10",
         host_name: "",
         scope: [],
         is_private: false,
