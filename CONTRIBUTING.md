@@ -15,7 +15,7 @@ In order for us to best triage the issue, please include steps to reproduce the 
 
 The focus of development efforts by maintainers of this project a roadmap will be proposed via PR and accessible at any point in the ROADMAP.md file.
 
-Working with a pull request modify the ROADMAP.md allows us to invite community feedback on the direction while not adding another communication avenue. While there are certainly better tools for the job than a markdown file for this, we are aiming to keep a minimal toolset to help us better manage the communication channels that we have open.
+Working with a pull request modify the [ROADMAP.md](https://github.com/Shopify/shopify-api-ruby/blob/aa0b7f9a5a9095ca11f3f93f9aecc72e8daa6bce/ROADMAP.md) allows us to invite community feedback on the direction while not adding another communication avenue. While there are certainly better tools for the job than a markdown file for this, we are aiming to keep a minimal toolset to help us better manage the communication channels that we have open.
 
 If there are concerns with the direction and priorities of the maintainers, this roadmap PR is the appropriate place to share your concerns.
 
