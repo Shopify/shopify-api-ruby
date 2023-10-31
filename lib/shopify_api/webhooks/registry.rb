@@ -8,7 +8,7 @@ module ShopifyAPI
       MANDATORY_TOPICS = T.let([
         "shop/redact",
         "customers/redact",
-        "customers/data_request"
+        "customers/data_request",
       ].freeze, T::Array[String])
 
       class << self
@@ -108,7 +108,7 @@ module ShopifyAPI
           ).returns(T::Hash[String, T.untyped])
         end
         def unregister(topic:, session:)
-          return {"response": nil} if mandatory_webhook_topic?(topic)
+          return { "response": nil } if mandatory_webhook_topic?(topic)
 
           client = Clients::Graphql::Admin.new(session: session)
 
