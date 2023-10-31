@@ -5,6 +5,11 @@ module ShopifyAPI
   module Webhooks
     class Registry
       @registry = T.let({}, T::Hash[String, Registration])
+      MANDATORY_TOPICS = T.let([
+        "shop/redact",
+        "customers/redact",
+        "customers/data_request",
+      ].freeze, T::Array[String])
 
       class << self
         extend T::Sig
@@ -17,6 +22,8 @@ module ShopifyAPI
             metafield_namespaces: T.nilable(T::Array[String])).void
         end
         def add_registration(topic:, delivery_method:, path:, handler: nil, fields: nil, metafield_namespaces: nil)
+          return if mandatory_webhook_topic?(topic)
+
           @registry[topic] = case delivery_method
           when :pub_sub
             Registrations::PubSub.new(topic: topic, path: path, fields: fields,
@@ -101,6 +108,8 @@ module ShopifyAPI
           ).returns(T::Hash[String, T.untyped])
         end
         def unregister(topic:, session:)
+          return { "response": nil } if mandatory_webhook_topic?(topic)
+
           client = Clients::Graphql::Admin.new(session: session)
 
           webhook_id = get_webhook_id(topic: topic, client: client)
@@ -212,6 +221,13 @@ module ShopifyAPI
         sig { params(body: T::Hash[String, T.untyped], mutation_name: String).returns(T::Boolean) }
         def registration_sucessful?(body, mutation_name)
           !body.dig("data", mutation_name, "webhookSubscription").nil?
+        end
+
+        # Mandatory webhooks are subscribed to via the partner dashboard not the API
+        # https://shopify.dev/docs/apps/webhooks/configuration/mandatory-webhooks
+        sig { params(topic: String).returns(T::Boolean) }
+        def mandatory_webhook_topic?(topic)
+          MANDATORY_TOPICS.include?(topic)
         end
       end
     end
