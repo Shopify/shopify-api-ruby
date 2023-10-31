@@ -206,6 +206,17 @@ module ShopifyAPITest
         assert_equal("Failed to delete webhook from Shopify: some error", exception.message)
       end
 
+      def test_unregister_to_mandatory_topics_are_skipped
+        ShopifyAPI::Clients::Graphql::Admin.expects(:new).never
+
+        ShopifyAPI::Webhooks::Registry::MANDATORY_TOPICS.each do |topic|
+          ShopifyAPI::Webhooks::Registry.unregister(
+            topic: topic,
+            session: @session,
+          )
+        end
+      end
+
       def test_get_webhook_id_success
         stub_request(:post, @url)
           .with(body: JSON.dump({ query: queries[:fetch_id_query], variables: nil }))
@@ -265,6 +276,8 @@ module ShopifyAPITest
       def test_registrations_to_mandatory_topics_are_ignored
         ShopifyAPI::Webhooks::Registry.clear
 
+        ShopifyAPI::Webhooks::Registrations::Http.expects(:new).never
+
         ShopifyAPI::Webhooks::Registry::MANDATORY_TOPICS.each do |topic|
           ShopifyAPI::Webhooks::Registry.add_registration(
             topic: topic,
@@ -276,8 +289,6 @@ module ShopifyAPITest
             ),
           )
         end
-
-        assert_empty(ShopifyAPI::Webhooks::Registry.topics_in_registry)
       end
 
       private
