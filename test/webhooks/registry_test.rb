@@ -388,7 +388,6 @@ module ShopifyAPITest
         )
         end
       end
-
     end
   end
 end
