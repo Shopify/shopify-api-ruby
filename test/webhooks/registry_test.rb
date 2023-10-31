@@ -262,6 +262,24 @@ module ShopifyAPITest
         assert_equal("Failed to fetch webhook from Shopify: some error", exception.message)
       end
 
+      def test_registrations_to_mandatory_topics_are_ignored
+        ShopifyAPI::Webhooks::Registry.clear
+
+        ShopifyAPI::Webhooks::Registry::MANDATORY_TOPICS.each do |topic|
+          ShopifyAPI::Webhooks::Registry.add_registration(
+            topic: topic,
+            delivery_method: :http,
+            path: "some_path_under_the_rainbow",
+            handler: TestHelpers::FakeWebhookHandler.new(
+              lambda do |topic, shop, body|
+              end,
+            ),
+          )
+        end
+
+        assert_empty(ShopifyAPI::Webhooks::Registry.topics_in_registry)
+      end
+
       private
 
       def do_registration_test(delivery_method, path, fields: nil, metafield_namespaces: nil)
@@ -359,6 +377,7 @@ module ShopifyAPITest
         )
         end
       end
+
     end
   end
 end
