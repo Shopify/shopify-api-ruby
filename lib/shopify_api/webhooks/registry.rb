@@ -5,6 +5,11 @@ module ShopifyAPI
   module Webhooks
     class Registry
       @registry = T.let({}, T::Hash[String, Registration])
+      MANDATORY_TOPICS = T.let([
+        "SHOP_REDACT",
+        "CUSTOMERS_REDACT",
+        "CUSTOMERS_DATA_REQUEST"
+      ].freeze, T::Array[String])
 
       class << self
         extend T::Sig
@@ -17,6 +22,8 @@ module ShopifyAPI
             metafield_namespaces: T.nilable(T::Array[String])).void
         end
         def add_registration(topic:, delivery_method:, path:, handler: nil, fields: nil, metafield_namespaces: nil)
+          return if trying_to_register_mandatory_topic?(topic)
+
           @registry[topic] = case delivery_method
           when :pub_sub
             Registrations::PubSub.new(topic: topic, path: path, fields: fields,
@@ -40,6 +47,11 @@ module ShopifyAPI
         sig { void }
         def clear
           @registry.clear
+        end
+
+        sig { returns(T::Hash[String, ShopifyAPI::Webhooks::Registrations::Http]) }
+        def topics_in_registry
+          @registry
         end
 
         sig do
@@ -212,6 +224,13 @@ module ShopifyAPI
         sig { params(body: T::Hash[String, T.untyped], mutation_name: String).returns(T::Boolean) }
         def registration_sucessful?(body, mutation_name)
           !body.dig("data", mutation_name, "webhookSubscription").nil?
+        end
+
+        # Mandatory webhooks are subscribed to via the partner dashboard not the API
+        # https://shopify.dev/docs/apps/webhooks/configuration/mandatory-webhooks
+        sig { params(topic: String).returns(T::Boolean) }
+        def trying_to_register_mandatory_topic?(topic)
+          MANDATORY_TOPICS.include?(topic)
         end
       end
     end
