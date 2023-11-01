@@ -12,9 +12,24 @@ module ShopifyAPITest
       def headers(context)
         # Optionally set any HTTP headers
         {
-          "User-Agent": "shopify-api-ruby test",
-          "X-Shopify-Access-Token": ENV["TOKEN"],
+          "User-Agent" => "shopify-api-ruby test",
+          "X-Shopify-Access-Token" => ENV["TOKEN"],
         }
+      end
+
+      def execute(document:, operation_name:, variables:, context:)
+        puts "document: #{document.to_query_string}"
+        puts "operationname: #{operation_name}"
+        puts "variables: #{variables}"
+        # super
+        session = ::ShopifyAPI::Auth::Session.new(
+          shop: ENV["SHOP_DOMAIN"],
+          access_token: ENV["TOKEN"],
+        )
+
+        client = ::ShopifyAPI::Clients::Graphql::Admin.new(session: session)
+        response = client.query(query: document.to_query_string, variables: variables)
+        response.body
       end
     end
 
