@@ -20,6 +20,15 @@ module ShopifyAPI
                 "#{Context.api_version} with #{api_version}")
             end
           end
+
+          schema = GraphQL::Client.load_schema("data/graphql_schemas/#{@api_version}.json")
+          @graphql_client = GraphQL::Client.new(schema: schema, execute: self)
+
+          # This might be something concerning we need to do:
+          # "Deprecated: Allow dynamically generated queries to be passed to Client#query."
+          # "This ability will eventually be removed in future versions."
+          # https://github.com/github/graphql-client/blob/master/guides/dynamic-query-error.md
+          @graphql_client.allow_dynamic_queries = true
         end
 
         sig do
@@ -28,21 +37,35 @@ module ShopifyAPI
             variables: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             headers: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             tries: Integer,
-          ).returns(HttpResponse)
+          ).returns(GraphQL::Client::Response)
         end
         def query(query:, variables: nil, headers: nil, tries: 1)
-          body = { query: query, variables: variables }
-          @http_client.request(
+          query = @graphql_client.parse(query)
+          context = {
+            headers: headers,
+            tries: tries,
+          }
+          @graphql_client.query(query, variables: variables, context: context)
+        end
+
+        ## Adaptor for graphql-client
+        def execute(document:, operation_name:, variables:, context:)
+          body = {
+            query: document.to_query_string,
+            variables: variables,
+          }
+          response = @http_client.request(
             HttpRequest.new(
               http_method: :post,
               path: "#{@api_version}/graphql.json",
               body: body,
               query: nil,
-              extra_headers: headers,
+              extra_headers: context[:headers],
               body_type: "application/json",
-              tries: tries,
+              tries: context[:tries],
             ),
           )
+          response.body
         end
       end
     end
