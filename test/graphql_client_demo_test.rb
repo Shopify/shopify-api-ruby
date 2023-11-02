@@ -7,8 +7,10 @@ require "graphql/client/http"
 
 module ShopifyAPITest
   WebMock.disable!
-  class GraphqlClientTest < Minitest::Test
-    def test_query
+  class GraphqlClientDemoTest < Minitest::Test
+    def test_this_is_a_demo
+      # To Run this demo, do the following:
+      # bundle exec rake test TEST=test/graphql_client_demo_test.rb SHOP_DOMAIN=<my-shop-domain>.myshopify.com TOKEN=the_session_token-for_your_shop
       products = <<~QUERY
         query {
           products(first: 10){
