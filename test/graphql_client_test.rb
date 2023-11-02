@@ -9,23 +9,48 @@ module ShopifyAPITest
   WebMock.disable!
   class GraphqlClientTest < Minitest::Test
     def test_query
-      query = <<~QUERY
+      products = <<~QUERY
         query {
-          shop {
-            name
+          products(first: 10){
+             edges {
+               node{
+                 id
+                 title
+               }
+             }
+             pageInfo{
+               endCursor
+               hasNextPage
+               hasPreviousPage
+               startCursor
+             }
+           }
+        }
+      QUERY
+
+      product = <<~QUERY
+        query($id: ID!) {
+          product(id: $id) {
+            title
+            id
+            description
           }
         }
       QUERY
 
       session = ::ShopifyAPI::Auth::Session.new(
         shop: ENV["SHOP_DOMAIN"],
-        access_token: ENV["TOKEN"] + "sdfd",
+        access_token: ENV["TOKEN"],
       )
 
       client = ::ShopifyAPI::Clients::Graphql::Admin.new(session: session)
-      result = client.query(query: query)
-      puts "result: #{result}"
-      puts "result: #{result.data.shop.name}"
+      products = client.query(query: products)
+      variables = {
+        id: products.data.products.edges.first.node.id,
+      }
+      product = client.query(query: product, variables: variables)
+
+      puts "product description: #{product.data.product.description}"
     end
   end
 end
