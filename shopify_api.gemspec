@@ -42,8 +42,12 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency("securerandom")
   s.add_runtime_dependency("sorbet-runtime")
   s.add_runtime_dependency("zeitwerk", "~> 2.5")
-  # We have to lock graphql gem to less than 2.1 due to this issue:
+
+  # TODO: GRAPHQL_TODO
+  # I ran into some issues using the graphql-client gem,
+  # Solution is that we have to lock graphql gem to less than 2.1 due to this issue:
   # https://github.com/github/graphql-client/issues/310
+  # We should figure out a long term solution for this
   s.add_runtime_dependency("graphql-client")
   s.add_runtime_dependency("graphql", ">= 2.0.27",  "< 2.1")
 

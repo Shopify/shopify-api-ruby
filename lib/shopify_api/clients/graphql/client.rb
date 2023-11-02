@@ -56,8 +56,11 @@ module ShopifyAPI
           ).returns(Response)
         end
         def query(query:, variables: nil, headers: nil, tries: 1)
+          # TODO: GRAPHQL_TODO
           # using graphql-client gem's parse method will validate the query is correct before sending it to the server
           # https://github.com/github/graphql-client/blob/master/guides/handling-errors.md#parsevalidation-errors
+          # This also means that we won't be able to make queries that don't exist on the schema
+          # Do we need to add a way to bypass validation? e.g. for experimental features, first party apps, etc?
           query = @graphql_client.parse(query)
           context = {
             headers: headers,
