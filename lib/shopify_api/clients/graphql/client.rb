@@ -53,7 +53,7 @@ module ShopifyAPI
             variables: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             headers: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             tries: Integer,
-          ).returns(GraphQL::Client::Response)
+          ).returns(Response)
         end
         def query(query:, variables: nil, headers: nil, tries: 1)
           # using graphql-client gem's parse method will validate the query is correct before sending it to the server
@@ -63,7 +63,12 @@ module ShopifyAPI
             headers: headers,
             tries: tries,
           }
-          @graphql_client.query(query, variables: variables, context: context)
+
+          # TODO: GRAPHQL_TODO
+          # Error handling from graphql-gem?
+          # What should we do if an error is raised during these graphql-client method calls?
+          response = @graphql_client.query(query, variables: variables, context: context)
+          Response.new(response: response)
         end
 
         # **************
@@ -92,7 +97,20 @@ module ShopifyAPI
               tries: context[:tries],
             ),
           )
-          response.body
+
+          # TODO: GRAPHQL_TODO
+          # This is so that we can convert graphql-client results back into our HTTPResponse class
+          # By default, the graphql-client only accepts the body of the HTTP response as the output of this method,
+          # but we need more data like headers to construct our response object
+          # Hack is to add those data as a part of the body hash and retrieve it later for use -
+          # See "lib/shopify_api/clients/graphql/reponse.rb" for its usage
+          result = response.body
+          extra = {
+            "response_body" => response.body,
+            "response_code" => response.code,
+            "response_headers" => response.headers,
+          }
+          result.merge(extra)
         end
       end
     end

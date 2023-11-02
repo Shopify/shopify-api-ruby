@@ -45,6 +45,7 @@ module ShopifyAPITest
         access_token: ENV["TOKEN"],
       )
 
+      # Create admin client exactly the same way as before, and query it the same way
       client = ::ShopifyAPI::Clients::Graphql::Admin.new(session: session)
       products = client.query(query: products)
       variables = {
