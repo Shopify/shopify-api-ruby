@@ -13,7 +13,7 @@ module ShopifyAPI
             access_token: "",
             is_online: false,
           )
-          super(session: session, base_path: "/api", api_version: api_version)
+          super(session: session, api_name: "storefront", base_path: "/api", api_version: api_version)
           @storefront_access_token = storefront_access_token
         end
 

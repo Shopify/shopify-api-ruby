@@ -7,7 +7,7 @@ module ShopifyAPI
       class Admin < Client
         sig { params(session: T.nilable(Auth::Session), api_version: T.nilable(String)).void }
         def initialize(session:, api_version: nil)
-          super(session: session, base_path: "/admin/api", api_version: api_version)
+          super(session: session, api_name: "admin", base_path: "/admin/api", api_version: api_version)
         end
       end
     end

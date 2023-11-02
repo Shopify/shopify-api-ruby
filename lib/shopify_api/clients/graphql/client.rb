@@ -7,8 +7,15 @@ module ShopifyAPI
       class Client
         extend T::Sig
 
-        sig { params(session: T.nilable(Auth::Session), base_path: String, api_version: T.nilable(String)).void }
-        def initialize(session:, base_path:, api_version: nil)
+        sig do
+          params(
+            session: T.nilable(Auth::Session),
+            api_name: String,
+            base_path: String,
+            api_version: T.nilable(String),
+          ).void
+        end
+        def initialize(session:, api_name:, base_path:, api_version: nil)
           @http_client = T.let(HttpClient.new(session: session, base_path: base_path), HttpClient)
           @api_version = T.let(api_version || Context.api_version, String)
           if api_version
@@ -21,10 +28,19 @@ module ShopifyAPI
             end
           end
 
-          schema = GraphQL::Client.load_schema("data/graphql_schemas/#{@api_version}.json")
+          # TODO #GRAPHQL_TODO
+          # 1. Schemas for stoefront would also have to be retrieved and stored to data/graphql_schemas/storefront
+          # We'll need to figure out a way of either having developers pull the schemas manually in rake task similar to
+          # previous versions of this gem (https://github.com/Shopify/shopify-api-ruby/blob/v9.5.1/lib/shopify_api/graphql/task.rake)
+          # Or supply the schema as a part of the gem files
+          #
+          # 2. Cache the loaded schemas for each version of the API?
+          # It might not be performant to load the schema on every new instance of the client
+          schema = GraphQL::Client.load_schema("data/graphql_schemas/#{api_name}/#{@api_version}.json")
           @graphql_client = GraphQL::Client.new(schema: schema, execute: self)
 
-          # This might be something concerning we need to do:
+          # TODO #GRAPHQL_TODO
+          # This might be something concerning we need to figure out:
           # "Deprecated: Allow dynamically generated queries to be passed to Client#query."
           # "This ability will eventually be removed in future versions."
           # https://github.com/github/graphql-client/blob/master/guides/dynamic-query-error.md
@@ -40,6 +56,8 @@ module ShopifyAPI
           ).returns(GraphQL::Client::Response)
         end
         def query(query:, variables: nil, headers: nil, tries: 1)
+          # using graphql-client gem's parse method will validate the query is correct before sending it to the server
+          # https://github.com/github/graphql-client/blob/master/guides/handling-errors.md#parsevalidation-errors
           query = @graphql_client.parse(query)
           context = {
             headers: headers,
@@ -48,7 +66,16 @@ module ShopifyAPI
           @graphql_client.query(query, variables: variables, context: context)
         end
 
-        ## Adaptor for graphql-client
+        # **************
+        # Adaptor for graphql-client gem
+        # graphql-client comes default with basic Net::HTTP adaptor for us to use,
+        # We can specify the HTTP client by ovriding this method and
+        # passing the http execution object into the client constructor:
+        #   GraphQL::Client.new(schema: schema, execute: self)
+        # https://github.com/github/graphql-client/blob/master/guides/remote-queries.md
+        # This way we can still use our shared HTTPClient for setting headers, error handling and logging
+        # TODO: GRAPHQL_TODO
+        #   Determine if this is the best appoach, should we create a seperate adaptor class, etc
         def execute(document:, operation_name:, variables:, context:)
           body = {
             query: document.to_query_string,
