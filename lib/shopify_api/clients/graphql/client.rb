@@ -89,6 +89,7 @@ module ShopifyAPI
             query: document.to_query_string,
             variables: variables,
           }
+          puts "Making request to server ---"
           response = @http_client.request(
             HttpRequest.new(
               http_method: :post,
