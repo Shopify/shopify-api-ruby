@@ -56,24 +56,30 @@ module ShopifyAPITest
         access_token: ENV["TOKEN"],
       )
 
-      # Create admin client exactly the same way as before, and query it the same way
+      #------- Create admin client exactly the same way as before, and query it the same way
       client = ::ShopifyAPI::Clients::Graphql::Admin.new(session: session)
 
-      # Get all products
-      products = client.query(query: products_query)
-      first_product_id = products.data.products.edges.first.node.id
-      puts "First productId: #{first_product_id}"
+      #-------  Get all products using original HTTPClient ---------------------------------
+      http_response = client.query_bypass_schema_check(query: products_query)
+      product_id_from_http_response = http_response.body["data"]["products"]["edges"][0]["node"]["id"]
+      puts "ProductId from using original HTTPClient: #{product_id_from_http_response}"
       puts " ---------------- "
 
-      # Get single product from productID in variable
+      #------- Get all products using graphql-client       ---------------------------------
+      products = client.query(query: products_query)
+      product_id = products.data.products.edges.first.node.id
+      puts "First productId from list: #{product_id}"
+      puts " ---------------- "
+
+      #------- Get single product from productID in variable -------------------------------
       product_query_variables = {
-        id: first_product_id,
+        id: product_id,
       }
       product = client.query(query: product_query, variables: product_query_variables)
-      puts "Product description: #{product.data.product.description} for ID: #{first_product_id}"
+      puts "Product description: #{product.data.product.description} for ID: #{product_id}"
       puts " ---------------- "
 
-      # Create product
+      #------- Create product --------------------------------------------------------------
       product_create_input = {
         input: {
           title: "My product- #{Time.now.strftime("%m%d%H%M")}",
