@@ -37,7 +37,8 @@ module ShopifyAPI
           # 2. Cache the loaded schemas for each version of the API?
           # It might not be performant to load the schema on every new instance of the client
           schema = GraphQL::Client.load_schema("data/graphql_schemas/#{api_name}/#{@api_version}.json")
-          @graphql_client = GraphQL::Client.new(schema: schema, execute: self)
+          http_adapter = GraphqlClientAdapter.new(http_client: @http_client, api_version: @api_version)
+          @graphql_client = GraphQL::Client.new(schema: schema, execute: http_adapter)
 
           # TODO #GRAPHQL_TODO
           # This might be something concerning we need to figure out:
@@ -61,6 +62,10 @@ module ShopifyAPI
           # https://github.com/github/graphql-client/blob/master/guides/handling-errors.md#parsevalidation-errors
           # This also means that we won't be able to make queries that don't exist on the schema
           # Do we need to add a way to bypass validation? e.g. for experimental features, first party apps, etc?
+          #   Update: Current solution is that I added `query_bypass_schema_check` method that uses our original HTTPClient
+          #     method to make queries, and return HTTPResponse like before. This would make migration to the new version of library easier as well
+          #     so they don't need to use the new response object if they don't want to, and can just use the new `query_bypass_schema_check`
+          #     to get the same result they would've before this change.
           query = @graphql_client.parse(query)
           context = {
             headers: headers,
@@ -74,47 +79,28 @@ module ShopifyAPI
           Response.new(response: response)
         end
 
-        # **************
-        # Adaptor for graphql-client gem
-        # graphql-client comes default with basic Net::HTTP adaptor for us to use,
-        # We can specify the HTTP client by ovriding this method and
-        # passing the http execution object into the client constructor:
-        #   GraphQL::Client.new(schema: schema, execute: self)
-        # https://github.com/github/graphql-client/blob/master/guides/remote-queries.md
-        # This way we can still use our shared HTTPClient for setting headers, error handling and logging
-        # TODO: GRAPHQL_TODO
-        #   Determine if this is the best appoach, should we create a seperate adaptor class, etc
-        def execute(document:, operation_name:, variables:, context:)
-          body = {
-            query: document.to_query_string,
-            variables: variables,
-          }
-          puts "Making request to server ---"
-          response = @http_client.request(
+        sig do
+          params(
+            query: String,
+            variables: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
+            headers: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
+            tries: Integer,
+          ).returns(HttpResponse)
+        end
+        def query_bypass_schema_check(query:, variables: nil, headers: nil, tries: 1)
+          body = { query: query, variables: variables }
+          puts "Making request to server through HTTPClient  -------------------"
+          @http_client.request(
             HttpRequest.new(
               http_method: :post,
               path: "#{@api_version}/graphql.json",
               body: body,
               query: nil,
-              extra_headers: context[:headers],
+              extra_headers: headers,
               body_type: "application/json",
-              tries: context[:tries],
+              tries: tries,
             ),
           )
-
-          # TODO: GRAPHQL_TODO
-          # This is so that we can convert graphql-client results back into our HTTPResponse class
-          # By default, the graphql-client only accepts the body of the HTTP response as the output of this method,
-          # but we need more data like headers to construct our response object
-          # Hack is to add those data as a part of the body hash and retrieve it later for use -
-          # See "lib/shopify_api/clients/graphql/reponse.rb" for its usage
-          result = response.body
-          extra = {
-            "response_body" => response.body,
-            "response_code" => response.code,
-            "response_headers" => response.headers,
-          }
-          result.merge(extra)
         end
       end
     end
