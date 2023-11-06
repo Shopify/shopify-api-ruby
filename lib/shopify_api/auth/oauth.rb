@@ -70,15 +70,25 @@ module ShopifyAPI
           raise Errors::InvalidOauthError,
             "Invalid state in OAuth callback." unless state == auth_query.state
 
-          # TODO: replace this call with the HTTP client once it is built
+          null_session = Auth::Session.new(shop: auth_query.shop)
           body = { client_id: Context.api_key, client_secret: Context.api_secret_key, code: auth_query.code }
-          response = HTTParty.post("https://#{auth_query.shop}/admin/oauth/access_token", body: body)
-          unless response.ok?
-            raise Errors::RequestAccessTokenError,
-              "Cannot complete OAuth process. Received a #{response.code} error while requesting access token."
-          end
-          session_params = response.to_h
 
+          client = Clients::HttpClient.new(session: null_session, base_path: "/admin/oauth")
+          response = begin
+            client.request(
+              Clients::HttpRequest.new(
+                http_method: :post,
+                path: "access_token",
+                body: body,
+                body_type: "application/json",
+              ),
+            )
+          rescue ShopifyAPI::Errors::HttpResponseError => e
+            raise Errors::RequestAccessTokenError,
+              "Cannot complete OAuth process. Received a #{e.code} error while requesting access token."
+          end
+
+          session_params = T.cast(response.body, T::Hash[String, T.untyped]).to_h
           session = create_new_session(session_params, auth_query.shop)
 
           cookie = if Context.embedded?
