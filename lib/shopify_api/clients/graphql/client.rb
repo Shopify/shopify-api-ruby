@@ -34,7 +34,7 @@ module ShopifyAPI
           # previous versions of this gem (https://github.com/Shopify/shopify-api-ruby/blob/v9.5.1/lib/shopify_api/graphql/task.rake)
           # Or supply the schema as a part of the gem files
           #
-          # 2. Cache the loaded schemas for each version of the API?
+          # 2. Cache the loaded schemas for each version of the API similar to v9 of this libary gem
           # It might not be performant to load the schema on every new instance of the client
           schema = GraphQL::Client.load_schema("data/graphql_schemas/#{api_name}/#{@api_version}.json")
           http_adapter = GraphqlClientAdapter.new(http_client: @http_client, api_version: @api_version)

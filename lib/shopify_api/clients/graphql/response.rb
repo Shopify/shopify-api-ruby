@@ -15,6 +15,21 @@ module ShopifyAPI
         # that's why I made the decision to use our HttpResponse class to parse the headers to get this
         # behavior for free
         delegate :code, :headers, :prev_page_info, :next_page_info, to: :@http_response
+
+        # TODO: GRAPHQL_TODO
+        # Do we want to map `:errors` method to user errors from response body if it exists?
+        # e.g.
+        # mutation ($input: ProductInput!) {
+        #  createProduct(input: $input) {
+        #    id
+        #  }
+        #  userErrors {
+        #    field
+        #    message
+        #  }
+        # }
+        # Right now if there are userErrors returned from the mutation, we don't do anything with it, user would have to query for it
+        # Do we want to parse it and return the error from `:errors` so that it's easier for user to see the errors?
         delegate :original_hash, :data, :errors, :extensions, to: :@graphql_client_response
 
         sig { params(response: GraphQL::Client::Response).void }
