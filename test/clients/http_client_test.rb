@@ -54,6 +54,30 @@ module ShopifyAPITest
         simple_http_test(:get)
       end
 
+      def test_request_with_api_host_set
+        @success_body = {}
+
+        ShopifyAPI::Context.setup(
+          api_key: "key",
+          api_secret_key: "secret",
+          api_version: "2023-10",
+          scope: ["scope1", "scope2"],
+          is_private: true,
+          is_embedded: true,
+          api_host: "example.com",
+        )
+        @client = ShopifyAPI::Clients::HttpClient.new(session: @session, base_path: @base_path)
+
+        headers = @expected_headers.dup
+        headers["Host"] = @session.shop
+
+        stub_request(@request.http_method, "https://example.com#{@base_path}/#{@request.path}")
+          .with(body: @request.body.to_json, query: @request.query, headers: headers)
+          .to_return(body: "", headers: @response_headers, status: 204)
+
+        verify_http_request
+      end
+
       def test_request_using_active_session
         ShopifyAPI::Context.activate_session(@session)
         @client = ShopifyAPI::Clients::HttpClient.new(base_path: @base_path)

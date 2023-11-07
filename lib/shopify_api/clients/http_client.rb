@@ -13,7 +13,9 @@ module ShopifyAPI
         session ||= Context.active_session
         raise Errors::NoActiveSessionError, "No passed or active session" unless session
 
-        @base_uri = T.let("https://#{session.shop}", String)
+        api_host = Context.api_host
+
+        @base_uri = T.let("https://#{api_host || session.shop}", String)
         @base_uri_and_path = T.let("#{@base_uri}#{base_path}", String)
 
         user_agent_prefix = Context.user_agent_prefix.nil? ? "" : "#{Context.user_agent_prefix} | "
@@ -22,6 +24,8 @@ module ShopifyAPI
           "User-Agent": "#{user_agent_prefix}Shopify API Library v#{VERSION} | Ruby #{RUBY_VERSION}",
           "Accept": "application/json",
         }, T::Hash[T.any(Symbol, String), T.untyped])
+
+        @headers["Host"] = session.shop unless api_host.nil?
 
         unless session.access_token.nil? || T.must(session.access_token).empty?
           @headers["X-Shopify-Access-Token"] = T.cast(session.access_token, String)
