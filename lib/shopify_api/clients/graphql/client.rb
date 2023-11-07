@@ -58,8 +58,7 @@ module ShopifyAPI
 
           http_response = make_http_request(query: query, variables: variables, headers: headers, tries: tries)
 
-          result = Graphql::Response.new(response: http_response, query_definition: query_definition)
-          result
+          Graphql::Response.new(response: http_response, query_definition: query_definition)
         end
 
         private
