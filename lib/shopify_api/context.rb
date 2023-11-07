@@ -8,6 +8,7 @@ module ShopifyAPI
     @api_key = T.let("", String)
     @api_secret_key = T.let("", String)
     @api_version = T.let(LATEST_SUPPORTED_ADMIN_VERSION, String)
+    @api_host = T.let(nil, T.nilable(String))
     @scope = T.let(Auth::AuthScopes.new, Auth::AuthScopes)
     @is_private = T.let(false, T::Boolean)
     @private_shop = T.let(nil, T.nilable(String))
@@ -41,6 +42,7 @@ module ShopifyAPI
           private_shop: T.nilable(String),
           user_agent_prefix: T.nilable(String),
           old_api_secret_key: T.nilable(String),
+          api_host: T.nilable(String),
         ).void
       end
       def setup(
@@ -56,7 +58,8 @@ module ShopifyAPI
         host: ENV["HOST"] || "https://#{host_name}",
         private_shop: nil,
         user_agent_prefix: nil,
-        old_api_secret_key: nil
+        old_api_secret_key: nil,
+        api_host: nil
       )
         unless ShopifyAPI::AdminVersions::SUPPORTED_ADMIN_VERSIONS.include?(api_version)
           raise Errors::UnsupportedVersionError,
@@ -66,6 +69,7 @@ module ShopifyAPI
         @api_key = api_key
         @api_secret_key = api_secret_key
         @api_version = api_version
+        @api_host = api_host
         @host = T.let(host, T.nilable(String))
         @is_private = is_private
         @scope = Auth::AuthScopes.new(scope)
@@ -130,7 +134,7 @@ module ShopifyAPI
       end
 
       sig { returns(T.nilable(String)) }
-      attr_reader :private_shop, :user_agent_prefix, :old_api_secret_key, :host
+      attr_reader :private_shop, :user_agent_prefix, :old_api_secret_key, :host, :api_host
 
       sig { returns(T::Boolean) }
       def embedded?

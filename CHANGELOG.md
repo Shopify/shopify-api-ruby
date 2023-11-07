@@ -3,6 +3,7 @@
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
+- []() Add `api_host` to `ShopifyAPI::Context.setup`, allowing the API host to be overridden in `ShopifyAPI::Clients::HttpClient`
 - [#1237](https://github.com/Shopify/shopify-api-ruby/pull/1237) Skip mandatory webhook topic registration/unregistrations
 
 ## 13.2.0

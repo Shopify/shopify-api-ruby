@@ -21,6 +21,7 @@ module ShopifyAPITest
         private_shop: "privateshop.myshopify.com",
         user_agent_prefix: "user_agent_prefix1",
         old_api_secret_key: "old_secret",
+        api_host: "example.com",
       )
     end
 
@@ -44,6 +45,7 @@ module ShopifyAPITest
       assert_equal("old_secret", ShopifyAPI::Context.old_api_secret_key)
       assert_equal("http", ShopifyAPI::Context.host_scheme)
       assert_equal("localhost", ShopifyAPI::Context.host_name)
+      assert_equal("example.com", ShopifyAPI::Context.api_host)
     end
 
     def test_active_session_is_thread_safe
