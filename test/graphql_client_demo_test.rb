@@ -30,23 +30,12 @@ module ShopifyAPITest
         }
       QUERY
 
-      product_query = <<~QUERY
+      bad_query = <<~QUERY
         query($id: ID!) {
           product(id: $id) {
             title
-            id
+            imaginaryField
             description
-          }
-        }
-      QUERY
-
-      product_create_query = <<~QUERY
-        mutation($input: ProductInput!) {
-          productCreate(input: $input) {
-            product {
-              id
-              title
-            }
           }
         }
       QUERY
@@ -59,37 +48,30 @@ module ShopifyAPITest
       #------- Create admin client exactly the same way as before, and query it the same way
       client = ::ShopifyAPI::Clients::Graphql::Admin.new(session: session)
 
-      #-------  Get all products using original HTTPClient ---------------------------------
-      http_response = client.query_bypass_schema_check(query: products_query)
-      product_id_from_http_response = http_response.body["data"]["products"]["edges"][0]["node"]["id"]
-      puts "ProductId from using original HTTPClient: #{product_id_from_http_response}"
+      #-------  Get all products and use the result in hash and object ----------------------
+      http_response = client.query(query: products_query)
+      hash_access_result = http_response.body["data"]["products"]["edges"][0]["node"]["id"]
+      object_access_result = http_response.data.products.edges[0].node.id
+      puts " ---------------- "
+      puts ">>> http_response.body[\"data\"][\"products\"][\"edges\"][0][\"node\"][\"id\"]"
+      puts "ProductId from hash retreival: #{hash_access_result}"
+      puts " ---------------- "
+      puts ">>> http_response.data.products.edges[0].node.id"
+      puts "ProductId from data object retreival: #{object_access_result}"
       puts " ---------------- "
 
-      #------- Get all products using graphql-client       ---------------------------------
-      products = client.query(query: products_query)
-      product_id = products.data.products.edges.first.node.id
-      puts "First productId from list: #{product_id}"
+      # ------- Making bad queries or experimental queries that requires by passing schema check
+      puts "Making sure that bad queries will raise error"
+      error = assert_raises(GraphQL::Client::ValidationError) do
+        client.query(query: bad_query)
+      end
+      puts "graphql-client raised error: #{error.message}"
       puts " ---------------- "
 
-      #------- Get single product from productID in variable -------------------------------
-      product_query_variables = {
-        id: product_id,
-      }
-      product = client.query(query: product_query, variables: product_query_variables)
-      puts "Product description: #{product.data.product.description} for ID: #{product_id}"
-      puts " ---------------- "
-
-      #------- Create product --------------------------------------------------------------
-      product_create_input = {
-        input: {
-          title: "My product- #{Time.now.strftime("%m%d%H%M")}",
-        },
-      }
-      created_product = client.query(query: product_create_query, variables: product_create_input)
-      created_product_id = created_product.data.product_create.product.id
-      created_product_title = created_product.data.product_create.product.title
-      puts "Created product: [#{created_product_title}]-ID [#{created_product_id}]"
-      puts " ---------------- "
+      puts "Making sure that bad queries will raise error from server side if schema check is disabled"
+      result = client.query(query: bad_query, bypass_schema_check: true)
+      error = result.body["errors"]
+      puts "Error from server : #{error}"
     end
   end
 end

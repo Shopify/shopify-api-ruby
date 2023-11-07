@@ -1,4 +1,4 @@
-# typed: strict
+# typed: true
 # frozen_string_literal: true
 
 module ShopifyAPI
@@ -29,23 +29,15 @@ module ShopifyAPI
           end
 
           # TODO #GRAPHQL_TODO
-          # 1. Schemas for stoefront would also have to be retrieved and stored to data/graphql_schemas/storefront
+          # 1. Schemas for stoerfront would also have to be retrieved and stored to data/graphql_schemas/storefront
           # We'll need to figure out a way of either having developers pull the schemas manually in rake task similar to
           # previous versions of this gem (https://github.com/Shopify/shopify-api-ruby/blob/v9.5.1/lib/shopify_api/graphql/task.rake)
           # Or supply the schema as a part of the gem files
           #
-          # 2. Cache the loaded schemas for each version of the API similar to v9 of this libary gem
+          # 2. Add a repository class to cache the loaded schemas for each version of the API similar to v9 of this libary gem
           # It might not be performant to load the schema on every new instance of the client
           schema = GraphQL::Client.load_schema("data/graphql_schemas/#{api_name}/#{@api_version}.json")
-          http_adapter = GraphqlClientAdapter.new(http_client: @http_client, api_version: @api_version)
-          @graphql_client = GraphQL::Client.new(schema: schema, execute: http_adapter)
-
-          # TODO #GRAPHQL_TODO
-          # This might be something concerning we need to figure out:
-          # "Deprecated: Allow dynamically generated queries to be passed to Client#query."
-          # "This ability will eventually be removed in future versions."
-          # https://github.com/github/graphql-client/blob/master/guides/dynamic-query-error.md
-          @graphql_client.allow_dynamic_queries = true
+          @graphql_client = GraphQL::Client.new(schema: schema)
         end
 
         sig do
@@ -54,42 +46,26 @@ module ShopifyAPI
             variables: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             headers: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             tries: Integer,
+            bypass_schema_check: T::Boolean,
           ).returns(Response)
         end
-        def query(query:, variables: nil, headers: nil, tries: 1)
-          # TODO: GRAPHQL_TODO
-          # using graphql-client gem's parse method will validate the query is correct before sending it to the server
-          # https://github.com/github/graphql-client/blob/master/guides/handling-errors.md#parsevalidation-errors
-          # This also means that we won't be able to make queries that don't exist on the schema
-          # Do we need to add a way to bypass validation? e.g. for experimental features, first party apps, etc?
-          #   Update: Current solution is that I added `query_bypass_schema_check` method that uses our original HTTPClient
-          #     method to make queries, and return HTTPResponse like before. This would make migration to the new version of library easier as well
-          #     so they don't need to use the new response object if they don't want to, and can just use the new `query_bypass_schema_check`
-          #     to get the same result they would've before this change.
-          query = @graphql_client.parse(query)
-          context = {
-            headers: headers,
-            tries: tries,
-          }
+        def query(query:, variables: nil, headers: nil, tries: 1, bypass_schema_check: false)
+          # TODO #GRAPHQL_TODO
+          # This was added so that if the schema file hasn't updated and they want to make an experimental query,
+          # they can bypass the schema check and directly call the HTTPClient
+          # Do we need this feature?
+          query_definition = bypass_schema_check ? nil : @graphql_client.parse(query)
 
-          # TODO: GRAPHQL_TODO
-          # Error handling from graphql-gem?
-          # What should we do if an error is raised during these graphql-client method calls?
-          response = @graphql_client.query(query, variables: variables, context: context)
-          Response.new(response: response)
+          http_response = make_http_request(query: query, variables: variables, headers: headers, tries: tries)
+
+          result = Graphql::Response.new(response: http_response, query_definition: query_definition)
+          result
         end
 
-        sig do
-          params(
-            query: String,
-            variables: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
-            headers: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
-            tries: Integer,
-          ).returns(HttpResponse)
-        end
-        def query_bypass_schema_check(query:, variables: nil, headers: nil, tries: 1)
+        private
+
+        def make_http_request(query:, variables:, headers:, tries:)
           body = { query: query, variables: variables }
-          puts "Making request to server through HTTPClient  -------------------"
           @http_client.request(
             HttpRequest.new(
               http_method: :post,
