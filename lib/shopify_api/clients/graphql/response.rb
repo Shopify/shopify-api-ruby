@@ -14,7 +14,7 @@ module ShopifyAPI
         # it seems like we get `next_page_info` and `prev_page_info` from the HTTP Response headers
         # that's why I made the decision to use our HttpResponse class to parse the headers to get this
         # behavior for free
-        delegate :code, :headers, :prev_page_info, :next_page_info, to: :@http_response
+        delegate :body, :code, :headers, :prev_page_info, :next_page_info, to: :@http_response
 
         # TODO: GRAPHQL_TODO
         # Do we want to map `:errors` method to user errors from response body if it exists?
