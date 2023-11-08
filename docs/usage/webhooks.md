@@ -45,6 +45,17 @@ registration = ShopifyAPI::Webhooks::Registry.add_registration(
 )
 ```
 
+If you are storing metafields on an object you are receiving webhooks for, you can specify them on registration to make sure that they are also sent through the `metafieldNamespaces` parameter. Note if you are also using the `fields` parameter you will need to add `metafields` into that as well.
+
+```ruby
+registration = ShopifyAPI::Webhooks::Registry.add_registration(
+  topic: "orders/create",
+  delivery_method: :http,
+  handler: WebhookHandler,
+  metafieldNamespaces: ["custom"]
+)
+```
+
 **Note**: The webhooks you register with Shopify are saved in the Shopify platform, but the local `ShopifyAPI::Webhooks::Registry` needs to be reloaded whenever your server restarts.
 
 ### EventBridge and PubSub Webhooks

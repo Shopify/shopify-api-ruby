@@ -8,11 +8,14 @@ module ShopifyAPI
     @api_key = T.let("", String)
     @api_secret_key = T.let("", String)
     @api_version = T.let(LATEST_SUPPORTED_ADMIN_VERSION, String)
+    @api_host = T.let(nil, T.nilable(String))
     @scope = T.let(Auth::AuthScopes.new, Auth::AuthScopes)
     @is_private = T.let(false, T::Boolean)
     @private_shop = T.let(nil, T.nilable(String))
     @is_embedded = T.let(true, T::Boolean)
-    @logger = T.let(::Logger.new($stdout), ::Logger)
+    # Logger can either be a Logger or an ActiveSupport::BroadcastLogger, which is new in Rails 7.1.0. To avoid adding a
+    # dependency Active Support >= 7.1.0, we go with T.untyped
+    @logger = T.let(::Logger.new($stdout), T.untyped)
     @log_level = T.let(:info, Symbol)
     @notified_missing_resources_folder = T.let({}, T::Hash[String, T::Boolean])
     @active_session = T.let(Concurrent::ThreadLocalVar.new { nil }, T.nilable(Concurrent::ThreadLocalVar))
@@ -33,12 +36,13 @@ module ShopifyAPI
           is_private: T::Boolean,
           is_embedded: T::Boolean,
           log_level: T.any(String, Symbol),
-          logger: ::Logger,
+          logger: T.untyped,
           host_name: T.nilable(String),
           host: T.nilable(String),
           private_shop: T.nilable(String),
           user_agent_prefix: T.nilable(String),
           old_api_secret_key: T.nilable(String),
+          api_host: T.nilable(String),
         ).void
       end
       def setup(
@@ -54,7 +58,8 @@ module ShopifyAPI
         host: ENV["HOST"] || "https://#{host_name}",
         private_shop: nil,
         user_agent_prefix: nil,
-        old_api_secret_key: nil
+        old_api_secret_key: nil,
+        api_host: nil
       )
         unless ShopifyAPI::AdminVersions::SUPPORTED_ADMIN_VERSIONS.include?(api_version)
           raise Errors::UnsupportedVersionError,
@@ -64,6 +69,7 @@ module ShopifyAPI
         @api_key = api_key
         @api_secret_key = api_secret_key
         @api_version = api_version
+        @api_host = api_host
         @host = T.let(host, T.nilable(String))
         @is_private = is_private
         @scope = Auth::AuthScopes.new(scope)
@@ -116,7 +122,7 @@ module ShopifyAPI
       sig { returns(Auth::AuthScopes) }
       attr_reader :scope
 
-      sig { returns(::Logger) }
+      sig { returns(T.untyped) }
       attr_reader :logger
 
       sig { returns(Symbol) }
@@ -128,7 +134,7 @@ module ShopifyAPI
       end
 
       sig { returns(T.nilable(String)) }
-      attr_reader :private_shop, :user_agent_prefix, :old_api_secret_key, :host
+      attr_reader :private_shop, :user_agent_prefix, :old_api_secret_key, :host, :api_host
 
       sig { returns(T::Boolean) }
       def embedded?

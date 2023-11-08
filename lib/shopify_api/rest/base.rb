@@ -97,9 +97,9 @@ module ShopifyAPI
           class_name.underscore
         end
 
-        sig { returns(String) }
-        def json_response_body_name
-          class_name
+        sig { returns(T::Array[String]) }
+        def json_response_body_names
+          [class_name]
         end
 
         sig { returns(T.nilable(String)) }
@@ -210,14 +210,16 @@ module ShopifyAPI
 
           body = T.cast(response.body, T::Hash[String, T.untyped])
 
-          response_name = json_response_body_name
+          response_names = json_response_body_names
 
-          if body.key?(response_name.pluralize) || (body.key?(response_name) && body[response_name].is_a?(Array))
-            (body[response_name.pluralize] || body[response_name]).each do |entry|
-              objects << create_instance(data: entry, session: session)
+          response_names.each do |response_name|
+            if body.key?(response_name.pluralize) || (body.key?(response_name) && body[response_name].is_a?(Array))
+              (body[response_name.pluralize] || body[response_name]).each do |entry|
+                objects << create_instance(data: entry, session: session)
+              end
+            elsif body.key?(response_name)
+              objects << create_instance(data: body[response_name], session: session)
             end
-          elsif body.key?(response_name)
-            objects << create_instance(data: body[response_name], session: session)
           end
 
           objects
@@ -347,10 +349,8 @@ module ShopifyAPI
         )
 
         if update_object
-          self.class.create_instance(
-            data: response.body[self.class.class_name.downcase],
-            session: @session, instance: self
-          )
+          response_name = self.class.json_response_body_names & response.body.keys
+          self.class.create_instance(data: response.body[response_name.first], session: @session, instance: self)
         end
       rescue ShopifyAPI::Errors::HttpResponseError => e
         @errors.errors << e

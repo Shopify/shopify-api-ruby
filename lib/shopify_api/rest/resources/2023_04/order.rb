@@ -28,6 +28,7 @@ module ShopifyAPI
       @client_details = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
       @closed_at = T.let(nil, T.nilable(String))
       @company = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @confirmation_number = T.let(nil, T.nilable(String))
       @created_at = T.let(nil, T.nilable(String))
       @currency = T.let(nil, T.nilable(String))
       @current_subtotal_price = T.let(nil, T.nilable(String))
@@ -143,6 +144,8 @@ module ShopifyAPI
     attr_reader :closed_at
     sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :company
+    sig { returns(T.nilable(String)) }
+    attr_reader :confirmation_number
     sig { returns(T.nilable(String)) }
     attr_reader :created_at
     sig { returns(T.nilable(String)) }

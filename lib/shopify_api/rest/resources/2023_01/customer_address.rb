@@ -88,6 +88,16 @@ module ShopifyAPI
       end
 
       sig do
+        returns(T::Array[String])
+      end
+      def json_response_body_names()
+        [
+          "customer_address",
+          "address"
+        ]
+      end
+
+      sig do
         params(
           id: T.any(Integer, String),
           customer_id: T.nilable(T.any(Integer, String)),

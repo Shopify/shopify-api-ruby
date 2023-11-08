@@ -3,8 +3,16 @@
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
+- [#1241](https://github.com/Shopify/shopify-api-ruby/pull/1241) Add `api_host` to `ShopifyAPI::Context.setup`, allowing the API host to be overridden in `ShopifyAPI::Clients::HttpClient`. This context option is intended for internal Shopify use only. 
+- [#1237](https://github.com/Shopify/shopify-api-ruby/pull/1237) Skip mandatory webhook topic registration/unregistrations
+- [#1239](https://github.com/Shopify/shopify-api-ruby/pull/1239) Update `OAuth.validate_auth_callback` to use `ShopifyApi::Clients::HttpClient`.
+
+## 13.2.0
 
 - [#1183](https://github.com/Shopify/shopify-api-ruby/pull/1189) Added string array support for fields parameter in Webhook::Registry
+- [1208](https://github.com/Shopify/shopify-api-ruby/pull/1208) Fix CustomerAddress and FulfillmentRequest methods
+- [1225](https://github.com/Shopify/shopify-api-ruby/pull/1225) Support for 2023_10 API version
+- [#1186](https://github.com/Shopify/shopify-api-ruby/pull/1186) Extend webhook registration to support metafield_namespaces
 
 ## 13.1.0
 
@@ -16,7 +24,7 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 - [#1140](https://github.com/Shopify/shopify-api-ruby/pull/1140) ⚠️ [Breaking] Reformat Http error messages to be JSON parsable.
 - [#1142](https://github.com/Shopify/shopify-api-ruby/issues/1142) Restore API version 2022-04, in alignment with [this](https://shopify.dev/changelog/action-required-support-for-api-version-2022-04-extended-to-june-30-2023) changelog notice.
-- [#1155](https://github.com/Shopify/shopify-api-ruby/pull/1155) ⚠️ [Breaking] Remove session storage that was deprecated with [#1055](https://github.com/Shopify/shopify-api-ruby/pull/1055). ⚠️ [Breaking] GraphQL Proxy now requires `session` to be passed as an argument.
+- [#1155](https://github.com/Shopify/shopify-api-ruby/pull/1155) ⚠️ [Breaking] Remove session storage that was deprecated with [#1055](https://github.com/Shopify/shopify-api-ruby/pull/1055). To upgrade, remove `session_storage` from your API context block. ⚠️ [Breaking] GraphQL Proxy now requires `session` to be passed as an argument.
 - [#1150](https://github.com/Shopify/shopify-api-ruby/pull/1150) [Patch] Add support for Event topic names.
 
 ## 12.5.0
