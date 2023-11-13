@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    shopify_api (13.2.0)
+    shopify_api (13.3.0)
       activesupport
       concurrent-ruby
       hash_diff
