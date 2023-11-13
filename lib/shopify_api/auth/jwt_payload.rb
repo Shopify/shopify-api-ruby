@@ -75,8 +75,8 @@ module ShopifyAPI
       def decode_token(token, api_secret_key)
         JWT.decode(token, api_secret_key, true,
           { exp_leeway: JWT_EXPIRATION_LEEWAY, algorithm: "HS256" })[0]
-      rescue
-        raise ShopifyAPI::Errors::InvalidJwtTokenError, "Failed to parse session token '#{token}'"
+      rescue JWT::DecodeError => err
+        raise ShopifyAPI::Errors::InvalidJwtTokenError, "Error decoding session token: #{err.message}"
       end
     end
   end
