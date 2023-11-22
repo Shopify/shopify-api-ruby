@@ -12,7 +12,7 @@ module ShopifyAPI
       sig { returns(T::Hash[String, T::Array[String]]) }
       attr_reader :headers
 
-      sig { returns(T.any(T::Hash[String, T.untyped], String)) }
+      sig { returns(T.any(T::Hash[String, T.untyped], String, OpenStruct)) }
       attr_reader :body
 
       sig { returns(T.nilable(String)) }
@@ -28,7 +28,12 @@ module ShopifyAPI
       def initialize(code:, headers:, body:)
         @code = code
         @headers = headers
-        @body = body
+        @body = T.let(body, T.any(OpenStruct, T::Hash[String, T.untyped], String))
+
+        if Context.graphql_response_object && body.is_a?(Hash)
+          json_body = body.to_json
++         @body = JSON.parse(json_body, object_class: OpenStruct)
+        end
 
         @prev_page_info = T.let(nil, T.nilable(String))
         @next_page_info = T.let(nil, T.nilable(String))

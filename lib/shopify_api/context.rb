@@ -21,6 +21,7 @@ module ShopifyAPI
     @active_session = T.let(Concurrent::ThreadLocalVar.new { nil }, T.nilable(Concurrent::ThreadLocalVar))
     @user_agent_prefix = T.let(nil, T.nilable(String))
     @old_api_secret_key = T.let(nil, T.nilable(String))
+    @graphql_response_object = T.let(false, T.nilable(T::Boolean))
 
     @rest_resource_loader = T.let(nil, T.nilable(Zeitwerk::Loader))
 
@@ -43,6 +44,7 @@ module ShopifyAPI
           user_agent_prefix: T.nilable(String),
           old_api_secret_key: T.nilable(String),
           api_host: T.nilable(String),
+          graphql_response_object: T.nilable(T::Boolean),
         ).void
       end
       def setup(
@@ -59,7 +61,8 @@ module ShopifyAPI
         private_shop: nil,
         user_agent_prefix: nil,
         old_api_secret_key: nil,
-        api_host: nil
+        api_host: nil,
+        graphql_response_object: false
       )
         unless ShopifyAPI::AdminVersions::SUPPORTED_ADMIN_VERSIONS.include?(api_version)
           raise Errors::UnsupportedVersionError,
@@ -78,6 +81,7 @@ module ShopifyAPI
         @private_shop = private_shop
         @user_agent_prefix = user_agent_prefix
         @old_api_secret_key = old_api_secret_key
+        @graphql_response_object = graphql_response_object
         @log_level = if valid_log_level?(log_level)
           log_level.to_sym
         else
@@ -127,6 +131,9 @@ module ShopifyAPI
 
       sig { returns(Symbol) }
       attr_reader :log_level
+
+      sig { returns T.nilable(T::Boolean) }
+      attr_reader :graphql_response_object
 
       sig { returns(T::Boolean) }
       def private?

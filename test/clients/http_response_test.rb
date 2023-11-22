@@ -45,6 +45,15 @@ module ShopifyAPITest
         assert_equal("page-info", response.prev_page_info)
         assert_equal("other-page-info", response.next_page_info)
       end
+
+      def test_object_response
+        modify_context(graphql_response_object: true)
+
+        # We need to verify that the response body is an OpenStruct object
+        response = ShopifyAPI::Clients::HttpResponse.new(code: 200, headers: {}, body: { "key" => { "nested_key" => "nested_value" }})
+        assert_kind_of(OpenStruct, response.body)
+        assert_equal("nested_value", response.body.key.nested_key)
+      end
     end
   end
 end
