@@ -35,6 +35,11 @@ module ShopifyAPI
         @is_online
       end
 
+      sig { returns(T::Boolean) }
+      def expired?
+        @expires ? @expires < Time.now : false
+      end
+
       sig do
         params(
           shop: String,
