@@ -270,6 +270,16 @@ module ShopifyAPITest
         assert_equal(502, error.code)
       end
 
+      def test_response_as_struct
+        stub_request(@request.http_method, "https://#{@shop}#{@base_path}/#{@request.path}")
+          .with(body: @request.body.to_json, query: @request.query, headers: @expected_headers)
+          .to_return(body: { "key" => { "nested_key" => "nested_value" } }.to_json, headers: @response_headers)
+
+        response = @client.request(@request, response_as_struct: true)
+        assert_kind_of(OpenStruct, response.body)
+        assert_equal("nested_value", response.body.key.nested_key)
+      end
+
       private
 
       def simple_http_test(http_method)

@@ -22,18 +22,13 @@ module ShopifyAPI
         params(
           code: Integer,
           headers: T::Hash[String, T::Array[String]],
-          body: T.any(T::Hash[String, T.untyped], String),
+          body: T.any(T::Hash[String, T.untyped], String, OpenStruct),
         ).void
       end
       def initialize(code:, headers:, body:)
         @code = code
         @headers = headers
-        @body = T.let(body, T.any(OpenStruct, T::Hash[String, T.untyped], String))
-
-        if Context.graphql_response_object && body.is_a?(Hash)
-          json_body = body.to_json
-+         @body = JSON.parse(json_body, object_class: OpenStruct)
-        end
+        @body = body
 
         @prev_page_info = T.let(nil, T.nilable(String))
         @next_page_info = T.let(nil, T.nilable(String))

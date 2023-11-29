@@ -32,8 +32,8 @@ module ShopifyAPI
         end
       end
 
-      sig { params(request: HttpRequest).returns(HttpResponse) }
-      def request(request)
+      sig { params(request: HttpRequest, response_as_struct: T::Boolean).returns(HttpResponse) }
+      def request(request, response_as_struct: false)
         request.verify
 
         headers = @headers
@@ -58,6 +58,11 @@ module ShopifyAPI
             raise if res.code.to_i < 500
 
             body = res.body
+          end
+
+          if response_as_struct && body.is_a?(Hash)
+            json_body = body.to_json
+            body = JSON.parse(json_body, object_class: OpenStruct)
           end
 
           response = HttpResponse.new(code: res.code.to_i, headers: res.headers.to_h, body: body)
