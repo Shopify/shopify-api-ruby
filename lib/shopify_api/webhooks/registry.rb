@@ -87,7 +87,11 @@ module ShopifyAPI
           params(topic: String).returns(RegisterResult)
         end
         def mandatory_registration_result(topic)
-          RegisterResult.new(topic: topic, success: false, body: "Mandatory webhooks are to be registered in the partners dashboard")
+          RegisterResult.new(
+            topic: topic,
+            success: false,
+            body: "Mandatory webhooks are to be registered in the partners dashboard",
+          )
         end
 
         sig do
