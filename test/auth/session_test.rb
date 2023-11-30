@@ -34,6 +34,24 @@ module ShopifyAPITest
         assert(session.online?)
       end
 
+      def test_expired_with_no_expiry_date
+        session = ShopifyAPI::Auth::Session.new(shop: "test-shop")
+
+        assert_equal(false, session.expired?)
+      end
+
+      def test_expired_with_future_expiry_date
+        session = ShopifyAPI::Auth::Session.new(shop: "test-shop", expires: Time.now + 1 * 60 * 60)
+
+        assert_equal(false, session.expired?)
+      end
+
+      def test_expired_with_passed_expiry_date
+        session = ShopifyAPI::Auth::Session.new(shop: "test-shop", expires: Time.now - 1)
+
+        assert(session.expired?)
+      end
+
       def test_temp
         session = ShopifyAPI::Auth::Session.new(shop: "test-shop1", access_token: "token1")
 

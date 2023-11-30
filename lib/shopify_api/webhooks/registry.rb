@@ -22,8 +22,6 @@ module ShopifyAPI
             metafield_namespaces: T.nilable(T::Array[String])).void
         end
         def add_registration(topic:, delivery_method:, path:, handler: nil, fields: nil, metafield_namespaces: nil)
-          return if mandatory_webhook_topic?(topic)
-
           @registry[topic] = case delivery_method
           when :pub_sub
             Registrations::PubSub.new(topic: topic, path: path, fields: fields,
@@ -56,6 +54,8 @@ module ShopifyAPI
           ).returns(RegisterResult)
         end
         def register(topic:, session:)
+          return mandatory_registration_result(topic) if mandatory_webhook_topic?(topic)
+
           registration = @registry[topic]
 
           unless registration
@@ -81,6 +81,17 @@ module ShopifyAPI
           end
 
           RegisterResult.new(topic: topic, success: registered, body: register_body)
+        end
+
+        sig do
+          params(topic: String).returns(RegisterResult)
+        end
+        def mandatory_registration_result(topic)
+          RegisterResult.new(
+            topic: topic,
+            success: false,
+            body: "Mandatory webhooks are to be registered in the partners dashboard",
+          )
         end
 
         sig do

@@ -276,17 +276,12 @@ module ShopifyAPITest
       def test_registrations_to_mandatory_topics_are_ignored
         ShopifyAPI::Webhooks::Registry.clear
 
-        ShopifyAPI::Webhooks::Registrations::Http.expects(:new).never
+        ShopifyAPI::Clients::Graphql::Admin.expects(:new).never
 
         ShopifyAPI::Webhooks::Registry::MANDATORY_TOPICS.each do |topic|
-          ShopifyAPI::Webhooks::Registry.add_registration(
+          ShopifyAPI::Webhooks::Registry.register(
             topic: topic,
-            delivery_method: :http,
-            path: "some_path_under_the_rainbow",
-            handler: TestHelpers::FakeWebhookHandler.new(
-              lambda do |topic, shop, body|
-              end,
-            ),
+            session: @session,
           )
         end
       end
