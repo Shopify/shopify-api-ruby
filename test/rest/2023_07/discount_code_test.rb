@@ -324,4 +324,26 @@ class DiscountCode202307Test < Test::Unit::TestCase
     end
   end
 
+  sig do
+    void
+  end
+  def test_11
+    stub_request(:put, "https://test-shop.myshopify.io/admin/api/2023-07/price_rules/507328175/discount_codes/507328175.json")
+      .with(
+        headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
+        body: { "discount_code" => hash_including({"code" => "WINTERSALE20OFF"}) }
+      )
+      .to_return(status: 404, body: { errors: "Not Found" }.to_json, headers: {})
+
+    discount_code = ShopifyAPI::DiscountCode.new
+    discount_code.price_rule_id = 507328175
+    discount_code.id = 507328175
+    discount_code.code = "WINTERSALE20OFF"
+    begin
+      discount_code.save
+    rescue ShopifyAPI::Errors::HttpResponseError
+    end
+    assert_equal(ShopifyAPI::Rest::BaseErrors, discount_code.errors.class)
+    assert_equal(404, discount_code.errors.errors[0].code)
+   end
 end
