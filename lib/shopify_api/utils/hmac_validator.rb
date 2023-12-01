@@ -14,7 +14,7 @@ module ShopifyAPI
           return false unless verifiable_query.hmac
 
           result = validate_signature(verifiable_query, Context.api_secret_key)
-          if result || Context.old_api_secret_key.blank?
+          if result || Context.old_api_secret_key.nil? || T.must(Context.old_api_secret_key).empty?
             result
           else
             validate_signature(verifiable_query, T.must(Context.old_api_secret_key))
