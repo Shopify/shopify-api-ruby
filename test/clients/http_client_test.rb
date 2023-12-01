@@ -162,8 +162,8 @@ module ShopifyAPITest
           @client.request(@request)
         end
         parsed_error = JSON.parse(response.message)
-        assert(parsed_error["errors"].present?)
-        assert(parsed_error["error_reference"].present?)
+        assert(parsed_error["errors"])
+        assert(parsed_error["error_reference"])
       end
 
       def test_non_retriable_error_code

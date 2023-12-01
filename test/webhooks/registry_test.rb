@@ -297,16 +297,16 @@ module ShopifyAPITest
           .with(body: JSON.dump(check_query_body))
           .to_return({ status: 200, body: JSON.dump(queries[delivery_method][:check_empty_response]) })
 
-        add_query_type = if fields.present?
+        add_query_type = if fields
           :register_add_query_with_fields
-        elsif metafield_namespaces.present?
+        elsif metafield_namespaces
           :register_add_query_with_metafield_namespaces
         else
           :register_add_query
         end
-        add_response_type = if fields.present?
+        add_response_type = if fields
           :register_add_with_fields_response
-        elsif metafield_namespaces.present?
+        elsif metafield_namespaces
           :register_add_with_metafield_namespaces_response
         else
           :register_add_response

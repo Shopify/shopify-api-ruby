@@ -5,8 +5,11 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
 [#1210](https://github.com/Shopify/shopify-api-ruby/pull/1246) Add context option `response_as_struct` to allow GraphQL API responses to be accessed via dot notation.
 
+## 13.3.1
+
 - [#1244](https://github.com/Shopify/shopify-api-ruby/pull/1244) Add `expired?` to `ShopifyAPI::Auth::Session` to check if the session is expired (mainly for user sessions)
 - [#1249](https://github.com/Shopify/shopify-api-ruby/pull/1249) Fix bug where mandatory webhooks could not be processed
+- [#1250](https://github.com/Shopify/shopify-api-ruby/pull/1250) Remove rails methods .empty? .present? that were breaking CI
 
 ## 13.3.0
 

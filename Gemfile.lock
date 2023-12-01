@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    shopify_api (13.3.0)
+    shopify_api (13.3.1)
       activesupport
       concurrent-ruby
       hash_diff
@@ -16,20 +16,30 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (7.0.7.2)
+    activesupport (7.1.2)
+      base64
+      bigdecimal
       concurrent-ruby (~> 1.0, >= 1.0.2)
+      connection_pool (>= 2.2.5)
+      drb
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
+      mutex_m
       tzinfo (~> 2.0)
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
     ast (2.4.2)
+    base64 (0.2.0)
+    bigdecimal (3.1.4)
     byebug (11.1.3)
     coderay (1.1.3)
     concurrent-ruby (1.2.2)
+    connection_pool (2.4.1)
     crack (0.4.5)
       rexml
     diff-lcs (1.5.0)
+    drb (2.2.0)
+      ruby2_keywords
     fakefs (1.4.1)
     hash_diff (1.1.1)
     hashdiff (1.0.1)
@@ -45,9 +55,10 @@ GEM
     minitest (5.15.0)
     mocha (1.13.0)
     multi_xml (0.6.0)
+    mutex_m (0.2.0)
     netrc (0.11.0)
-    oj (3.16.0)
-    openssl (3.1.0)
+    oj (3.16.1)
+    openssl (3.2.0)
     parallel (1.22.1)
     parser (3.2.2.4)
       ast (~> 2.4.1)
@@ -86,7 +97,8 @@ GEM
     rubocop-sorbet (0.6.11)
       rubocop (>= 0.90.0)
     ruby-progressbar (1.11.0)
-    securerandom (0.2.2)
+    ruby2_keywords (0.0.5)
+    securerandom (0.3.0)
     sorbet (0.5.10438)
       sorbet-static (= 0.5.10438)
     sorbet-runtime (0.5.10438)
@@ -127,7 +139,7 @@ GEM
     yard-sorbet (0.7.0)
       sorbet-runtime (>= 0.5)
       yard (>= 0.9)
-    zeitwerk (2.6.11)
+    zeitwerk (2.6.12)
 
 PLATFORMS
   arm64-darwin-21
