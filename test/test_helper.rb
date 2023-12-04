@@ -51,6 +51,7 @@ module Test
           private_shop: T.nilable(String),
           user_agent_prefix: T.nilable(String),
           old_api_secret_key: T.nilable(String),
+          response_as_struct: T.nilable(T::Boolean),
         ).void
       end
       def modify_context(
@@ -64,7 +65,8 @@ module Test
         logger: nil,
         private_shop: "do-not-set",
         user_agent_prefix: nil,
-        old_api_secret_key: nil
+        old_api_secret_key: nil,
+        response_as_struct: nil
       )
         ShopifyAPI::Context.setup(
           api_key: api_key ? api_key : ShopifyAPI::Context.api_key,
@@ -79,6 +81,7 @@ module Test
           user_agent_prefix: user_agent_prefix ? user_agent_prefix : ShopifyAPI::Context.user_agent_prefix,
           old_api_secret_key: old_api_secret_key ? old_api_secret_key : ShopifyAPI::Context.old_api_secret_key,
           log_level: :off,
+          response_as_struct: response_as_struct || ShopifyAPI::Context.response_as_struct,
         )
       end
     end

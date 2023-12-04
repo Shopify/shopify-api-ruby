@@ -12,7 +12,7 @@ module ShopifyAPI
       sig { returns(T::Hash[String, T::Array[String]]) }
       attr_reader :headers
 
-      sig { returns(T.any(T::Hash[String, T.untyped], String)) }
+      sig { returns(T.any(T::Hash[String, T.untyped], String, OpenStruct)) }
       attr_reader :body
 
       sig { returns(T.nilable(String)) }
@@ -22,7 +22,7 @@ module ShopifyAPI
         params(
           code: Integer,
           headers: T::Hash[String, T::Array[String]],
-          body: T.any(T::Hash[String, T.untyped], String),
+          body: T.any(T::Hash[String, T.untyped], String, OpenStruct),
         ).void
       end
       def initialize(code:, headers:, body:)

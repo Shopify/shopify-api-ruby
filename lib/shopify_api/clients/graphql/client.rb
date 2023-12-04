@@ -42,6 +42,7 @@ module ShopifyAPI
               body_type: "application/json",
               tries: tries,
             ),
+            response_as_struct: Context.response_as_struct || false,
           )
         end
       end
