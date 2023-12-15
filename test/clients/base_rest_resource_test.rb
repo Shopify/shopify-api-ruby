@@ -354,6 +354,21 @@ module ShopifyAPITest
         refute(TestHelpers::FakeResource.next_page?)
       end
 
+      def test_api_limit_headers
+        body = { fake_resources: [] }.to_json
+
+        stub_request(:get, "#{@prefix}/fake_resources.json")
+          .to_return(body: body, headers: {
+            "X-Shopify-Shop-Api-Call-Limit" => "40/40",
+            "Retry-After" => "2.0",
+          })
+
+        TestHelpers::FakeResource.all(session: @session)
+        assert(TestHelpers::FakeResource.retry_request_after, 2.0)
+        assert(TestHelpers::FakeResource.api_call_limit[:request_count], 40)
+        assert(TestHelpers::FakeResource.api_call_limit[:bucket_size], 40)
+      end
+
       def test_pagination_is_thread_safe
         response_body = { fake_resources: [] }.to_json
         request_made = false

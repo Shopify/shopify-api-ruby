@@ -18,6 +18,12 @@ module ShopifyAPI
       sig { returns(T.nilable(String)) }
       attr_reader :prev_page_info, :next_page_info
 
+      sig { returns(T.nilable(T::Hash[String, Integer])) }
+      attr_reader :api_call_limit
+
+      sig { returns(T.nilable(Float)) }
+      attr_reader :retry_request_after
+
       sig do
         params(
           code: Integer,
@@ -33,6 +39,11 @@ module ShopifyAPI
         @prev_page_info = T.let(nil, T.nilable(String))
         @next_page_info = T.let(nil, T.nilable(String))
         @prev_page_info, @next_page_info = parse_link_header
+
+        @api_call_limit = T.let(nil, T.nilable(T::Hash[String, Integer]))
+        @retry_request_after = T.let(nil, T.nilable(Float))
+        @api_call_limit = parse_api_call_limit_header
+        @retry_request_after = parse_retry_header
       end
 
       sig { returns(T::Boolean) }
@@ -60,6 +71,22 @@ module ShopifyAPI
         end
 
         [page_info["previous"], page_info["next"]]
+      end
+
+      sig { returns(T.nilable(Float)) }
+      def parse_retry_header
+        return nil if @headers["retry-after"].nil?
+
+        T.must(@headers["retry-after"])[0].to_f
+      end
+
+      sig { returns(T.nilable(T::Hash[String, Integer])) }
+      def parse_api_call_limit_header
+        rate_limit_info = headers["x-shopify-shop-api-call-limit"]&.first
+        return if rate_limit_info.nil?
+
+        request_count, bucket_size = rate_limit_info.split("/").map(&:to_i)
+        { request_count: request_count, bucket_size: bucket_size }
       end
     end
   end

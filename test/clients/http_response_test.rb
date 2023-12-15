@@ -45,6 +45,17 @@ module ShopifyAPITest
         assert_equal("page-info", response.prev_page_info)
         assert_equal("other-page-info", response.next_page_info)
       end
+
+      def test_retry_request_after
+        response = ShopifyAPI::Clients::HttpResponse.new(code: 200, headers: { "retry-after" => ["2.0"] }, body: "")
+        assert_equal(2.0, response.retry_request_after)
+      end
+
+      def test_api_call_limit
+        response = ShopifyAPI::Clients::HttpResponse.new(code: 200, headers: { "x-shopify-shop-api-call-limit" => ["1/40"] }, body: "")
+        assert_equal(1, response.api_call_limit[:request_count])
+        assert_equal(40, response.api_call_limit[:bucket_size])
+      end
     end
   end
 end

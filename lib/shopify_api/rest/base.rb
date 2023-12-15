@@ -79,6 +79,9 @@ module ShopifyAPI
           instance_variable_get(:"@prev_page_info").value = response.prev_page_info
           instance_variable_get(:"@next_page_info").value = response.next_page_info
 
+          instance_variable_get(:"@retry_request_after").value = response.retry_request_after
+          instance_variable_get(:"@api_call_limit").value = response.api_call_limit
+
           create_instances_from_response(response: response, session: T.must(session))
         end
 
@@ -120,6 +123,16 @@ module ShopifyAPI
         sig { returns(T::Boolean) }
         def next_page?
           !instance_variable_get(:"@next_page_info").value.nil?
+        end
+
+        sig { returns T.nilable(Float) }
+        def retry_request_after
+          instance_variable_get(:"@retry_request_after").value
+        end
+
+        sig { returns T.nilable(T::Hash[String, Integer]) }
+        def api_call_limit
+          instance_variable_get(:"@api_call_limit").value
         end
 
         sig { params(attribute: Symbol).returns(T::Boolean) }
