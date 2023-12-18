@@ -38,7 +38,7 @@ class FulfillmentOrder202304Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"fulfillment_orders" => [{"id" => 1046000789, "shop_id" => 548380009, "order_id" => 450789469, "assigned_location_id" => 24826418, "request_status" => "submitted", "status" => "open", "supported_actions" => ["cancel_fulfillment_order"], "destination" => {"id" => 1046000785, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "company" => nil, "country" => "United States", "email" => "bob.norman@mail.example.com", "first_name" => "Bob", "last_name" => "Norman", "phone" => "+1(502)-459-2181", "province" => "Kentucky", "zip" => "40202"}, "line_items" => [{"id" => 1058737491, "shop_id" => 548380009, "fulfillment_order_id" => 1046000789, "quantity" => 1, "line_item_id" => 518995019, "inventory_item_id" => 49148385, "fulfillable_quantity" => 1, "variant_id" => 49148385}], "fulfillment_service_handle" => "mars-fulfillment", "assigned_location" => {"address1" => nil, "address2" => nil, "city" => nil, "country_code" => "DE", "location_id" => 24826418, "name" => "Apple Api Shipwire", "phone" => nil, "province" => nil, "zip" => nil}, "merchant_requests" => []}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"fulfillment_orders" => [{"id" => 1046000840, "shop_id" => 548380009, "order_id" => 450789469, "assigned_location_id" => 24826418, "request_status" => "submitted", "status" => "open", "supported_actions" => ["cancel_fulfillment_order"], "destination" => {"id" => 1046000840, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "company" => nil, "country" => "United States", "email" => "bob.norman@mail.example.com", "first_name" => "Bob", "last_name" => "Norman", "phone" => "+1(502)-459-2181", "province" => "Kentucky", "zip" => "40202"}, "line_items" => [{"id" => 1058737541, "shop_id" => 548380009, "fulfillment_order_id" => 1046000840, "quantity" => 1, "line_item_id" => 518995019, "inventory_item_id" => 49148385, "fulfillable_quantity" => 1, "variant_id" => 49148385}], "fulfill_at" => nil, "fulfill_by" => nil, "international_duties" => nil, "fulfillment_holds" => [], "created_at" => "2023-10-19T15:59:19-04:00", "updated_at" => "2023-10-19T15:59:19-04:00", "delivery_method" => nil, "assigned_location" => {"address1" => nil, "address2" => nil, "city" => nil, "country_code" => "DE", "location_id" => 24826418, "name" => "Apple Api Shipwire", "phone" => nil, "province" => nil, "zip" => nil}, "merchant_requests" => []}]}), headers: {})
 
     response = ShopifyAPI::FulfillmentOrder.all(
       order_id: 450789469,
@@ -65,18 +65,18 @@ class FulfillmentOrder202304Test < Test::Unit::TestCase
     void
   end
   def test_2()
-    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000786.json")
+    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000842.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"fulfillment_order" => {"id" => 1046000786, "shop_id" => 548380009, "order_id" => 450789469, "assigned_location_id" => 24826418, "request_status" => "submitted", "status" => "open", "supported_actions" => ["cancel_fulfillment_order"], "destination" => {"id" => 1046000782, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "company" => nil, "country" => "United States", "email" => "bob.norman@mail.example.com", "first_name" => "Bob", "last_name" => "Norman", "phone" => "+1(502)-459-2181", "province" => "Kentucky", "zip" => "40202"}, "line_items" => [{"id" => 1058737488, "shop_id" => 548380009, "fulfillment_order_id" => 1046000786, "quantity" => 1, "line_item_id" => 518995019, "inventory_item_id" => 49148385, "fulfillable_quantity" => 1, "variant_id" => 49148385}], "fulfillment_service_handle" => "mars-fulfillment", "assigned_location" => {"address1" => nil, "address2" => nil, "city" => nil, "country_code" => "DE", "location_id" => 24826418, "name" => "Apple Api Shipwire", "phone" => nil, "province" => nil, "zip" => nil}, "merchant_requests" => []}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"fulfillment_order" => {"id" => 1046000842, "shop_id" => 548380009, "order_id" => 450789469, "assigned_location_id" => 24826418, "request_status" => "submitted", "status" => "open", "supported_actions" => ["cancel_fulfillment_order"], "destination" => {"id" => 1046000842, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "company" => nil, "country" => "United States", "email" => "bob.norman@mail.example.com", "first_name" => "Bob", "last_name" => "Norman", "phone" => "+1(502)-459-2181", "province" => "Kentucky", "zip" => "40202"}, "line_items" => [{"id" => 1058737543, "shop_id" => 548380009, "fulfillment_order_id" => 1046000842, "quantity" => 1, "line_item_id" => 518995019, "inventory_item_id" => 49148385, "fulfillable_quantity" => 1, "variant_id" => 49148385}], "fulfill_at" => nil, "fulfill_by" => nil, "international_duties" => nil, "fulfillment_holds" => [], "created_at" => "2023-10-19T15:59:23-04:00", "updated_at" => "2023-10-19T15:59:23-04:00", "delivery_method" => nil, "assigned_location" => {"address1" => nil, "address2" => nil, "city" => nil, "country_code" => "DE", "location_id" => 24826418, "name" => "Apple Api Shipwire", "phone" => nil, "province" => nil, "zip" => nil}, "merchant_requests" => []}}), headers: {})
 
     response = ShopifyAPI::FulfillmentOrder.find(
-      id: 1046000786,
+      id: 1046000842,
     )
 
-    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000786.json")
+    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000842.json")
 
     response = response.first if response.respond_to?(:first)
 
@@ -97,18 +97,18 @@ class FulfillmentOrder202304Test < Test::Unit::TestCase
     void
   end
   def test_3()
-    stub_request(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000783/cancel.json")
+    stub_request(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000854/cancel.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"fulfillment_order" => {"id" => 1046000783, "shop_id" => 548380009, "order_id" => 450789469, "assigned_location_id" => 24826418, "request_status" => "submitted", "status" => "closed", "supported_actions" => [], "destination" => {"id" => 1046000779, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "company" => nil, "country" => "United States", "email" => "bob.norman@mail.example.com", "first_name" => "Bob", "last_name" => "Norman", "phone" => "+1(502)-459-2181", "province" => "Kentucky", "zip" => "40202"}, "line_items" => [], "fulfillment_service_handle" => "mars-fulfillment", "assigned_location" => {"address1" => nil, "address2" => nil, "city" => nil, "country_code" => "DE", "location_id" => 24826418, "name" => "Apple Api Shipwire", "phone" => nil, "province" => nil, "zip" => nil}, "merchant_requests" => []}, "replacement_fulfillment_order" => {"id" => 1046000784, "shop_id" => 548380009, "order_id" => 450789469, "assigned_location_id" => 24826418, "request_status" => "unsubmitted", "status" => "open", "supported_actions" => ["request_fulfillment", "create_fulfillment"], "destination" => {"id" => 1046000780, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "company" => nil, "country" => "United States", "email" => "bob.norman@mail.example.com", "first_name" => "Bob", "last_name" => "Norman", "phone" => "+1(502)-459-2181", "province" => "Kentucky", "zip" => "40202"}, "line_items" => [{"id" => 1058737486, "shop_id" => 548380009, "fulfillment_order_id" => 1046000784, "quantity" => 1, "line_item_id" => 518995019, "inventory_item_id" => 49148385, "fulfillable_quantity" => 1, "variant_id" => 49148385}], "fulfillment_service_handle" => "mars-fulfillment", "assigned_location" => {"address1" => nil, "address2" => nil, "city" => nil, "country_code" => "DE", "location_id" => 24826418, "name" => "Apple Api Shipwire", "phone" => nil, "province" => nil, "zip" => nil}, "merchant_requests" => []}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"fulfillment_order" => {"id" => 1046000854, "shop_id" => 548380009, "order_id" => 450789469, "assigned_location_id" => 24826418, "request_status" => "submitted", "status" => "closed", "supported_actions" => [], "destination" => {"id" => 1046000854, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "company" => nil, "country" => "United States", "email" => "bob.norman@mail.example.com", "first_name" => "Bob", "last_name" => "Norman", "phone" => "+1(502)-459-2181", "province" => "Kentucky", "zip" => "40202"}, "line_items" => [], "fulfillment_service_handle" => "mars-fulfillment", "assigned_location" => {"address1" => nil, "address2" => nil, "city" => nil, "country_code" => "DE", "location_id" => 24826418, "name" => "Apple Api Shipwire", "phone" => nil, "province" => nil, "zip" => nil}, "merchant_requests" => []}, "replacement_fulfillment_order" => {"id" => 1046000855, "shop_id" => 548380009, "order_id" => 450789469, "assigned_location_id" => 24826418, "request_status" => "unsubmitted", "status" => "open", "supported_actions" => ["request_fulfillment", "create_fulfillment"], "destination" => {"id" => 1046000855, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "company" => nil, "country" => "United States", "email" => "bob.norman@mail.example.com", "first_name" => "Bob", "last_name" => "Norman", "phone" => "+1(502)-459-2181", "province" => "Kentucky", "zip" => "40202"}, "line_items" => [{"id" => 1058737555, "shop_id" => 548380009, "fulfillment_order_id" => 1046000855, "quantity" => 1, "line_item_id" => 518995019, "inventory_item_id" => 49148385, "fulfillable_quantity" => 1, "variant_id" => 49148385}], "fulfillment_service_handle" => "mars-fulfillment", "assigned_location" => {"address1" => nil, "address2" => nil, "city" => nil, "country_code" => "DE", "location_id" => 24826418, "name" => "Apple Api Shipwire", "phone" => nil, "province" => nil, "zip" => nil}, "merchant_requests" => []}}), headers: {})
 
     response = fulfillment_order = ShopifyAPI::FulfillmentOrder.new
-    fulfillment_order.id = 1046000783
+    fulfillment_order.id = 1046000854
     fulfillment_order.cancel
 
-    assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000783/cancel.json")
+    assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000854/cancel.json")
 
     response = response.first if response.respond_to?(:first)
 
@@ -129,20 +129,20 @@ class FulfillmentOrder202304Test < Test::Unit::TestCase
     void
   end
   def test_4()
-    stub_request(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000785/close.json")
+    stub_request(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000844/close.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "fulfillment_order" => hash_including({"message" => "Not enough inventory to complete this work."}) }
       )
-      .to_return(status: 200, body: JSON.generate({"fulfillment_order" => {"id" => 1046000785, "shop_id" => 548380009, "order_id" => 450789469, "assigned_location_id" => 24826418, "request_status" => "closed", "status" => "incomplete", "supported_actions" => ["request_fulfillment", "create_fulfillment"], "destination" => {"id" => 1046000781, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "company" => nil, "country" => "United States", "email" => "bob.norman@mail.example.com", "first_name" => "Bob", "last_name" => "Norman", "phone" => "+1(502)-459-2181", "province" => "Kentucky", "zip" => "40202"}, "line_items" => [{"id" => 1058737487, "shop_id" => 548380009, "fulfillment_order_id" => 1046000785, "quantity" => 1, "line_item_id" => 518995019, "inventory_item_id" => 49148385, "fulfillable_quantity" => 1, "variant_id" => 49148385}], "fulfillment_service_handle" => "mars-fulfillment", "assigned_location" => {"address1" => nil, "address2" => nil, "city" => nil, "country_code" => "DE", "location_id" => 24826418, "name" => "Apple Api Shipwire", "phone" => nil, "province" => nil, "zip" => nil}, "merchant_requests" => []}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"fulfillment_order" => {"id" => 1046000844, "shop_id" => 548380009, "order_id" => 450789469, "assigned_location_id" => 24826418, "request_status" => "closed", "status" => "incomplete", "supported_actions" => ["request_fulfillment", "create_fulfillment"], "destination" => {"id" => 1046000844, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "company" => nil, "country" => "United States", "email" => "bob.norman@mail.example.com", "first_name" => "Bob", "last_name" => "Norman", "phone" => "+1(502)-459-2181", "province" => "Kentucky", "zip" => "40202"}, "line_items" => [{"id" => 1058737545, "shop_id" => 548380009, "fulfillment_order_id" => 1046000844, "quantity" => 1, "line_item_id" => 518995019, "inventory_item_id" => 49148385, "fulfillable_quantity" => 1, "variant_id" => 49148385}], "fulfillment_service_handle" => "mars-fulfillment", "assigned_location" => {"address1" => nil, "address2" => nil, "city" => nil, "country_code" => "DE", "location_id" => 24826418, "name" => "Apple Api Shipwire", "phone" => nil, "province" => nil, "zip" => nil}, "merchant_requests" => []}}), headers: {})
 
     response = fulfillment_order = ShopifyAPI::FulfillmentOrder.new
-    fulfillment_order.id = 1046000785
+    fulfillment_order.id = 1046000844
     fulfillment_order.close(
       body: {"fulfillment_order" => {"message" => "Not enough inventory to complete this work."}},
     )
 
-    assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000785/close.json")
+    assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000844/close.json")
 
     response = response.first if response.respond_to?(:first)
 
@@ -163,20 +163,20 @@ class FulfillmentOrder202304Test < Test::Unit::TestCase
     void
   end
   def test_5()
-    stub_request(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000787/move.json")
+    stub_request(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000852/move.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "fulfillment_order" => hash_including({"new_location_id" => 655441491, "fulfillment_order_line_items" => [{"id" => 1058737489, "quantity" => 1}]}) }
+        body: { "fulfillment_order" => hash_including({"new_location_id" => 655441491, "fulfillment_order_line_items" => [{"id" => 1058737553, "quantity" => 1}]}) }
       )
-      .to_return(status: 200, body: JSON.generate({"original_fulfillment_order" => {"id" => 1046000787, "shop_id" => 548380009, "order_id" => 450789469, "assigned_location_id" => 487838322, "request_status" => "submitted", "status" => "closed", "supported_actions" => [], "destination" => {"id" => 1046000783, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "company" => nil, "country" => "United States", "email" => "bob.norman@mail.example.com", "first_name" => "Bob", "last_name" => "Norman", "phone" => "+1(502)-459-2181", "province" => "Kentucky", "zip" => "40202"}, "line_items" => [{"id" => 1058737489, "shop_id" => 548380009, "fulfillment_order_id" => 1046000787, "quantity" => 1, "line_item_id" => 518995019, "inventory_item_id" => 49148385, "fulfillable_quantity" => 1, "variant_id" => 49148385}], "fulfillment_service_handle" => "manual", "assigned_location" => {"address1" => nil, "address2" => nil, "city" => nil, "country_code" => "DE", "location_id" => 24826418, "name" => "Apple Api Shipwire", "phone" => nil, "province" => nil, "zip" => nil}, "merchant_requests" => []}, "moved_fulfillment_order" => {"id" => 1046000788, "shop_id" => 548380009, "order_id" => 450789469, "assigned_location_id" => 655441491, "request_status" => "unsubmitted", "status" => "open", "supported_actions" => ["create_fulfillment", "move"], "destination" => {"id" => 1046000784, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "company" => nil, "country" => "United States", "email" => "bob.norman@mail.example.com", "first_name" => "Bob", "last_name" => "Norman", "phone" => "+1(502)-459-2181", "province" => "Kentucky", "zip" => "40202"}, "line_items" => [{"id" => 1058737490, "shop_id" => 548380009, "fulfillment_order_id" => 1046000788, "quantity" => 1, "line_item_id" => 518995019, "inventory_item_id" => 49148385, "fulfillable_quantity" => 1, "variant_id" => 49148385}], "fulfillment_service_handle" => "manual", "assigned_location" => {"address1" => "50 Rideau Street", "address2" => nil, "city" => "Ottawa", "country_code" => "CA", "location_id" => 655441491, "name" => "50 Rideau Street", "phone" => nil, "province" => "Ontario", "zip" => "K1N 9J7"}, "merchant_requests" => []}, "remaining_fulfillment_order" => nil}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"original_fulfillment_order" => {"id" => 1046000852, "shop_id" => 548380009, "order_id" => 450789469, "assigned_location_id" => 487838322, "request_status" => "submitted", "status" => "closed", "supported_actions" => [], "destination" => {"id" => 1046000852, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "company" => nil, "country" => "United States", "email" => "bob.norman@mail.example.com", "first_name" => "Bob", "last_name" => "Norman", "phone" => "+1(502)-459-2181", "province" => "Kentucky", "zip" => "40202"}, "line_items" => [{"id" => 1058737553, "shop_id" => 548380009, "fulfillment_order_id" => 1046000852, "quantity" => 1, "line_item_id" => 518995019, "inventory_item_id" => 49148385, "fulfillable_quantity" => 1, "variant_id" => 49148385}], "fulfillment_service_handle" => "manual", "assigned_location" => {"address1" => nil, "address2" => nil, "city" => nil, "country_code" => "DE", "location_id" => 24826418, "name" => "Apple Api Shipwire", "phone" => nil, "province" => nil, "zip" => nil}, "merchant_requests" => []}, "moved_fulfillment_order" => {"id" => 1046000853, "shop_id" => 548380009, "order_id" => 450789469, "assigned_location_id" => 655441491, "request_status" => "unsubmitted", "status" => "open", "supported_actions" => ["create_fulfillment", "move"], "destination" => {"id" => 1046000853, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "company" => nil, "country" => "United States", "email" => "bob.norman@mail.example.com", "first_name" => "Bob", "last_name" => "Norman", "phone" => "+1(502)-459-2181", "province" => "Kentucky", "zip" => "40202"}, "line_items" => [{"id" => 1058737554, "shop_id" => 548380009, "fulfillment_order_id" => 1046000853, "quantity" => 1, "line_item_id" => 518995019, "inventory_item_id" => 49148385, "fulfillable_quantity" => 1, "variant_id" => 49148385}], "fulfillment_service_handle" => "manual", "assigned_location" => {"address1" => "50 Rideau Street", "address2" => nil, "city" => "Ottawa", "country_code" => "CA", "location_id" => 655441491, "name" => "50 Rideau Street", "phone" => nil, "province" => "Ontario", "zip" => "K1N 9J7"}, "merchant_requests" => []}, "remaining_fulfillment_order" => nil}), headers: {})
 
     response = fulfillment_order = ShopifyAPI::FulfillmentOrder.new
-    fulfillment_order.id = 1046000787
+    fulfillment_order.id = 1046000852
     fulfillment_order.move(
-      body: {"fulfillment_order" => {"new_location_id" => 655441491, "fulfillment_order_line_items" => [{"id" => 1058737489, "quantity" => 1}]}},
+      body: {"fulfillment_order" => {"new_location_id" => 655441491, "fulfillment_order_line_items" => [{"id" => 1058737553, "quantity" => 1}]}},
     )
 
-    assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000787/move.json")
+    assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000852/move.json")
 
     response = response.first if response.respond_to?(:first)
 
@@ -197,18 +197,18 @@ class FulfillmentOrder202304Test < Test::Unit::TestCase
     void
   end
   def test_6()
-    stub_request(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000793/open.json")
+    stub_request(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000851/open.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"fulfillment_order" => {"id" => 1046000793, "shop_id" => 548380009, "order_id" => 450789469, "assigned_location_id" => 24826418, "request_status" => "unsubmitted", "status" => "open", "supported_actions" => ["request_fulfillment", "create_fulfillment"], "destination" => {"id" => 1046000789, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "company" => nil, "country" => "United States", "email" => "bob.norman@mail.example.com", "first_name" => "Bob", "last_name" => "Norman", "phone" => "+1(502)-459-2181", "province" => "Kentucky", "zip" => "40202"}, "line_items" => [{"id" => 1058737495, "shop_id" => 548380009, "fulfillment_order_id" => 1046000793, "quantity" => 1, "line_item_id" => 518995019, "inventory_item_id" => 49148385, "fulfillable_quantity" => 1, "variant_id" => 49148385}], "fulfillment_service_handle" => "mars-fulfillment", "fulfill_at" => nil, "assigned_location" => {"address1" => nil, "address2" => nil, "city" => nil, "country_code" => "DE", "location_id" => 24826418, "name" => "Apple Api Shipwire", "phone" => nil, "province" => nil, "zip" => nil}, "merchant_requests" => []}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"fulfillment_order" => {"id" => 1046000851, "shop_id" => 548380009, "order_id" => 450789469, "assigned_location_id" => 24826418, "request_status" => "unsubmitted", "status" => "open", "supported_actions" => ["request_fulfillment", "create_fulfillment"], "destination" => {"id" => 1046000851, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "company" => nil, "country" => "United States", "email" => "bob.norman@mail.example.com", "first_name" => "Bob", "last_name" => "Norman", "phone" => "+1(502)-459-2181", "province" => "Kentucky", "zip" => "40202"}, "line_items" => [{"id" => 1058737552, "shop_id" => 548380009, "fulfillment_order_id" => 1046000851, "quantity" => 1, "line_item_id" => 518995019, "inventory_item_id" => 49148385, "fulfillable_quantity" => 1, "variant_id" => 49148385}], "fulfillment_service_handle" => "mars-fulfillment", "fulfill_at" => nil, "assigned_location" => {"address1" => nil, "address2" => nil, "city" => nil, "country_code" => "DE", "location_id" => 24826418, "name" => "Apple Api Shipwire", "phone" => nil, "province" => nil, "zip" => nil}, "merchant_requests" => []}}), headers: {})
 
     response = fulfillment_order = ShopifyAPI::FulfillmentOrder.new
-    fulfillment_order.id = 1046000793
+    fulfillment_order.id = 1046000851
     fulfillment_order.open
 
-    assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000793/open.json")
+    assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000851/open.json")
 
     response = response.first if response.respond_to?(:first)
 
@@ -229,20 +229,20 @@ class FulfillmentOrder202304Test < Test::Unit::TestCase
     void
   end
   def test_7()
-    stub_request(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000794/reschedule.json")
+    stub_request(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000850/reschedule.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: { "fulfillment_order" => hash_including({"new_fulfill_at" => "2024-11-03 17:21 UTC"}) }
+        body: { "fulfillment_order" => hash_including({"new_fulfill_at" => "2024-11-19 19:59 UTC"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"fulfillment_order" => {"id" => 1046000794, "shop_id" => 548380009, "order_id" => 450789469, "assigned_location_id" => 24826418, "request_status" => "unsubmitted", "status" => "scheduled", "supported_actions" => ["mark_as_open"], "destination" => {"id" => 1046000790, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "company" => nil, "country" => "United States", "email" => "bob.norman@mail.example.com", "first_name" => "Bob", "last_name" => "Norman", "phone" => "+1(502)-459-2181", "province" => "Kentucky", "zip" => "40202"}, "line_items" => [{"id" => 1058737496, "shop_id" => 548380009, "fulfillment_order_id" => 1046000794, "quantity" => 1, "line_item_id" => 518995019, "inventory_item_id" => 49148385, "fulfillable_quantity" => 1, "variant_id" => 49148385}], "fulfillment_service_handle" => "mars-fulfillment", "fulfill_at" => "2024-11-03T12:21:00-05:00", "assigned_location" => {"address1" => nil, "address2" => nil, "city" => nil, "country_code" => "DE", "location_id" => 24826418, "name" => "Apple Api Shipwire", "phone" => nil, "province" => nil, "zip" => nil}, "merchant_requests" => []}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"fulfillment_order" => {"id" => 1046000850, "shop_id" => 548380009, "order_id" => 450789469, "assigned_location_id" => 24826418, "request_status" => "unsubmitted", "status" => "scheduled", "supported_actions" => ["mark_as_open"], "destination" => {"id" => 1046000850, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "company" => nil, "country" => "United States", "email" => "bob.norman@mail.example.com", "first_name" => "Bob", "last_name" => "Norman", "phone" => "+1(502)-459-2181", "province" => "Kentucky", "zip" => "40202"}, "line_items" => [{"id" => 1058737551, "shop_id" => 548380009, "fulfillment_order_id" => 1046000850, "quantity" => 1, "line_item_id" => 518995019, "inventory_item_id" => 49148385, "fulfillable_quantity" => 1, "variant_id" => 49148385}], "fulfillment_service_handle" => "mars-fulfillment", "fulfill_at" => "2024-11-19T14:59:00-05:00", "assigned_location" => {"address1" => nil, "address2" => nil, "city" => nil, "country_code" => "DE", "location_id" => 24826418, "name" => "Apple Api Shipwire", "phone" => nil, "province" => nil, "zip" => nil}, "merchant_requests" => []}}), headers: {})
 
     response = fulfillment_order = ShopifyAPI::FulfillmentOrder.new
-    fulfillment_order.id = 1046000794
+    fulfillment_order.id = 1046000850
     fulfillment_order.reschedule(
-      body: {"fulfillment_order" => {"new_fulfill_at" => "2024-11-03 17:21 UTC"}},
+      body: {"fulfillment_order" => {"new_fulfill_at" => "2024-11-19 19:59 UTC"}},
     )
 
-    assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000794/reschedule.json")
+    assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000850/reschedule.json")
 
     response = response.first if response.respond_to?(:first)
 
@@ -263,20 +263,20 @@ class FulfillmentOrder202304Test < Test::Unit::TestCase
     void
   end
   def test_8()
-    stub_request(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000792/hold.json")
+    stub_request(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000843/hold.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: hash_including({"fulfillment_hold" => {"reason" => "inventory_out_of_stock", "reason_notes" => "Not enough inventory to complete this work.", "fulfillment_order_line_items" => [{"id" => 1058737494, "quantity" => 1}]}})
+        body: hash_including({"fulfillment_hold" => {"reason" => "inventory_out_of_stock", "reason_notes" => "Not enough inventory to complete this work.", "fulfillment_order_line_items" => [{"id" => 1058737544, "quantity" => 1}]}})
       )
-      .to_return(status: 200, body: JSON.generate({"fulfillment_order" => {"id" => 1046000792, "shop_id" => 548380009, "order_id" => 450789469, "assigned_location_id" => 24826418, "request_status" => "unsubmitted", "status" => "on_hold", "supported_actions" => ["release_hold"], "destination" => {"id" => 1046000788, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "company" => nil, "country" => "United States", "email" => "bob.norman@mail.example.com", "first_name" => "Bob", "last_name" => "Norman", "phone" => "+1(502)-459-2181", "province" => "Kentucky", "zip" => "40202"}, "line_items" => [{"id" => 1058737494, "shop_id" => 548380009, "fulfillment_order_id" => 1046000792, "quantity" => 1, "line_item_id" => 518995019, "inventory_item_id" => 49148385, "fulfillable_quantity" => 1, "variant_id" => 49148385}], "fulfill_at" => nil, "international_duties" => {"incoterm" => nil}, "fulfillment_holds" => [{"reason" => "inventory_out_of_stock", "reason_notes" => "Not enough inventory to complete this work."}], "delivery_method" => nil, "assigned_location" => {"address1" => nil, "address2" => nil, "city" => nil, "country_code" => "DE", "location_id" => 24826418, "name" => "Apple Api Shipwire", "phone" => nil, "province" => nil, "zip" => nil}, "merchant_requests" => []}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"fulfillment_order" => {"id" => 1046000843, "shop_id" => 548380009, "order_id" => 450789469, "assigned_location_id" => 24826418, "request_status" => "unsubmitted", "status" => "on_hold", "supported_actions" => ["release_hold"], "destination" => {"id" => 1046000843, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "company" => nil, "country" => "United States", "email" => "bob.norman@mail.example.com", "first_name" => "Bob", "last_name" => "Norman", "phone" => "+1(502)-459-2181", "province" => "Kentucky", "zip" => "40202"}, "line_items" => [{"id" => 1058737544, "shop_id" => 548380009, "fulfillment_order_id" => 1046000843, "quantity" => 1, "line_item_id" => 518995019, "inventory_item_id" => 49148385, "fulfillable_quantity" => 1, "variant_id" => 49148385}], "fulfill_at" => nil, "international_duties" => nil, "fulfillment_holds" => [{"reason" => "inventory_out_of_stock", "reason_notes" => "Not enough inventory to complete this work."}], "delivery_method" => nil, "assigned_location" => {"address1" => nil, "address2" => nil, "city" => nil, "country_code" => "DE", "location_id" => 24826418, "name" => "Apple Api Shipwire", "phone" => nil, "province" => nil, "zip" => nil}, "merchant_requests" => []}}), headers: {})
 
     response = fulfillment_order = ShopifyAPI::FulfillmentOrder.new
-    fulfillment_order.id = 1046000792
+    fulfillment_order.id = 1046000843
     fulfillment_order.hold(
-      body: {"fulfillment_hold" => {"reason" => "inventory_out_of_stock", "reason_notes" => "Not enough inventory to complete this work.", "fulfillment_order_line_items" => [{"id" => 1058737494, "quantity" => 1}]}},
+      body: {"fulfillment_hold" => {"reason" => "inventory_out_of_stock", "reason_notes" => "Not enough inventory to complete this work.", "fulfillment_order_line_items" => [{"id" => 1058737544, "quantity" => 1}]}},
     )
 
-    assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000792/hold.json")
+    assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000843/hold.json")
 
     response = response.first if response.respond_to?(:first)
 
@@ -300,14 +300,14 @@ class FulfillmentOrder202304Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/set_fulfillment_orders_deadline.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: hash_including({"fulfillment_order_ids" => [1046000791], "fulfillment_deadline" => "2021-05-26T10:00:00-04:00"})
+        body: hash_including({"fulfillment_order_ids" => [1046000838], "fulfillment_deadline" => "2021-05-26T10:00:00-04:00"})
       )
       .to_return(status: 200, body: JSON.generate({}), headers: {})
 
     response = fulfillment_order = ShopifyAPI::FulfillmentOrder.new
 
     fulfillment_order.set_fulfillment_orders_deadline(
-      body: {"fulfillment_order_ids" => [1046000791], "fulfillment_deadline" => "2021-05-26T10:00:00-04:00"},
+      body: {"fulfillment_order_ids" => [1046000838], "fulfillment_deadline" => "2021-05-26T10:00:00-04:00"},
     )
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/set_fulfillment_orders_deadline.json")
@@ -331,18 +331,18 @@ class FulfillmentOrder202304Test < Test::Unit::TestCase
     void
   end
   def test_10()
-    stub_request(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000795/release_hold.json")
+    stub_request(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000841/release_hold.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"fulfillment_order" => {"id" => 1046000795, "shop_id" => 548380009, "order_id" => 450789469, "assigned_location_id" => 24826418, "request_status" => "submitted", "status" => "open", "supported_actions" => ["cancel_fulfillment_order"], "destination" => {"id" => 1046000791, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "company" => nil, "country" => "United States", "email" => "bob.norman@mail.example.com", "first_name" => "Bob", "last_name" => "Norman", "phone" => "+1(502)-459-2181", "province" => "Kentucky", "zip" => "40202"}, "origin" => {"address1" => nil, "address2" => nil, "city" => nil, "country_code" => "DE", "location_id" => 24826418, "name" => "Apple Api Shipwire", "phone" => nil, "province" => nil, "zip" => nil}, "line_items" => [{"id" => 1058737497, "shop_id" => 548380009, "fulfillment_order_id" => 1046000795, "quantity" => 1, "line_item_id" => 518995019, "inventory_item_id" => 49148385, "fulfillable_quantity" => 1, "variant_id" => 49148385}], "outgoing_requests" => [], "fulfill_at" => nil, "international_duties" => {"incoterm" => nil}, "fulfillment_holds" => [], "delivery_method" => nil}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"fulfillment_order" => {"id" => 1046000841, "shop_id" => 548380009, "order_id" => 450789469, "assigned_location_id" => 24826418, "request_status" => "submitted", "status" => "open", "supported_actions" => ["cancel_fulfillment_order"], "destination" => {"id" => 1046000841, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "company" => nil, "country" => "United States", "email" => "bob.norman@mail.example.com", "first_name" => "Bob", "last_name" => "Norman", "phone" => "+1(502)-459-2181", "province" => "Kentucky", "zip" => "40202"}, "origin" => {"address1" => nil, "address2" => nil, "city" => nil, "country_code" => "DE", "location_id" => 24826418, "name" => "Apple Api Shipwire", "phone" => nil, "province" => nil, "zip" => nil}, "line_items" => [{"id" => 1058737542, "shop_id" => 548380009, "fulfillment_order_id" => 1046000841, "quantity" => 1, "line_item_id" => 518995019, "inventory_item_id" => 49148385, "fulfillable_quantity" => 1, "variant_id" => 49148385}], "outgoing_requests" => [], "fulfill_at" => nil, "international_duties" => nil, "fulfillment_holds" => [], "delivery_method" => nil}}), headers: {})
 
     response = fulfillment_order = ShopifyAPI::FulfillmentOrder.new
-    fulfillment_order.id = 1046000795
+    fulfillment_order.id = 1046000841
     fulfillment_order.release_hold
 
-    assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000795/release_hold.json")
+    assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-04/fulfillment_orders/1046000841/release_hold.json")
 
     response = response.first if response.respond_to?(:first)
 
