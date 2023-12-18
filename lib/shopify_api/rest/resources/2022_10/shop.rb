@@ -12,6 +12,9 @@ module ShopifyAPI
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
+    @api_call_limit = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+    @retry_request_after = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
     def initialize(session: ShopifyAPI::Context.active_session)
       super(session: session)
@@ -20,7 +23,6 @@ module ShopifyAPI
       @address2 = T.let(nil, T.nilable(String))
       @checkout_api_supported = T.let(nil, T.nilable(T::Boolean))
       @city = T.let(nil, T.nilable(String))
-      @cookie_consent_level = T.let(nil, T.nilable(String))
       @country = T.let(nil, T.nilable(String))
       @country_code = T.let(nil, T.nilable(String))
       @country_name = T.let(nil, T.nilable(String))
@@ -88,8 +90,6 @@ module ShopifyAPI
     attr_reader :checkout_api_supported
     sig { returns(T.nilable(String)) }
     attr_reader :city
-    sig { returns(T.nilable(String)) }
-    attr_reader :cookie_consent_level
     sig { returns(T.nilable(String)) }
     attr_reader :country
     sig { returns(T.nilable(String)) }

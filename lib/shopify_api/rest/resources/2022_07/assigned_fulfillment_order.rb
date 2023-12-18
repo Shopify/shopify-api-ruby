@@ -12,6 +12,9 @@ module ShopifyAPI
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
+    @api_call_limit = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+    @retry_request_after = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
     def initialize(session: ShopifyAPI::Context.active_session)
       super(session: session)
@@ -51,10 +54,12 @@ module ShopifyAPI
 
     class << self
       sig do
-        returns(String)
+        returns(T::Array[String])
       end
-      def json_response_body_name()
-        "fulfillment_order"
+      def json_response_body_names()
+        [
+          "fulfillment_order"
+        ]
       end
 
       sig do

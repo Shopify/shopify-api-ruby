@@ -12,6 +12,9 @@ module ShopifyAPI
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
+    @api_call_limit = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+    @retry_request_after = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
     def initialize(session: ShopifyAPI::Context.active_session)
       super(session: session)

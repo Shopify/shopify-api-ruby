@@ -38,7 +38,7 @@ class ApplePayCertificate202207Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "apple_pay_certificate" => hash_including({}) }
       )
-      .to_return(status: 200, body: JSON.generate({"apple_pay_certificate" => {"id" => 1068938276, "status" => "issuing", "merchant_id" => nil}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"apple_pay_certificate" => {"id" => 1068938275, "status" => "issuing", "merchant_id" => nil}}), headers: {})
 
     response = apple_pay_certificate = ShopifyAPI::ApplePayCertificate.new
 
@@ -65,18 +65,18 @@ class ApplePayCertificate202207Test < Test::Unit::TestCase
     void
   end
   def test_2()
-    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-07/apple_pay_certificates/1068938275.json")
+    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-07/apple_pay_certificates/1068938276.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"apple_pay_certificate" => {"id" => 1068938275, "status" => "csr", "merchant_id" => nil}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"apple_pay_certificate" => {"id" => 1068938276, "status" => "csr", "merchant_id" => nil}}), headers: {})
 
     response = ShopifyAPI::ApplePayCertificate.find(
-      id: 1068938275,
+      id: 1068938276,
     )
 
-    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-07/apple_pay_certificates/1068938275.json")
+    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-07/apple_pay_certificates/1068938276.json")
 
     response = response.first if response.respond_to?(:first)
 
@@ -132,7 +132,7 @@ class ApplePayCertificate202207Test < Test::Unit::TestCase
     void
   end
   def test_4()
-    stub_request(:delete, "https://test-shop.myshopify.io/admin/api/2022-07/apple_pay_certificates/1068938278.json")
+    stub_request(:delete, "https://test-shop.myshopify.io/admin/api/2022-07/apple_pay_certificates/1068938274.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
@@ -140,10 +140,10 @@ class ApplePayCertificate202207Test < Test::Unit::TestCase
       .to_return(status: 200, body: JSON.generate({}), headers: {})
 
     response = ShopifyAPI::ApplePayCertificate.delete(
-      id: 1068938278,
+      id: 1068938274,
     )
 
-    assert_requested(:delete, "https://test-shop.myshopify.io/admin/api/2022-07/apple_pay_certificates/1068938278.json")
+    assert_requested(:delete, "https://test-shop.myshopify.io/admin/api/2022-07/apple_pay_certificates/1068938274.json")
 
     response = response.first if response.respond_to?(:first)
 
@@ -164,7 +164,7 @@ class ApplePayCertificate202207Test < Test::Unit::TestCase
     void
   end
   def test_5()
-    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-07/apple_pay_certificates/1068938274/csr.json")
+    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-07/apple_pay_certificates/1068938278/csr.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
@@ -172,10 +172,10 @@ class ApplePayCertificate202207Test < Test::Unit::TestCase
       .to_return(status: 200, body: JSON.generate({"csr" => {"key" => "YXBwbGUtcGF5LWNzcg==\n"}}), headers: {})
 
     response = ShopifyAPI::ApplePayCertificate.csr(
-      id: 1068938274,
+      id: 1068938278,
     )
 
-    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-07/apple_pay_certificates/1068938274/csr.json")
+    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-07/apple_pay_certificates/1068938278/csr.json")
 
     response = response.first if response.respond_to?(:first)
 

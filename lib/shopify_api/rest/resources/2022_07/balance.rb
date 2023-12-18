@@ -12,10 +12,14 @@ module ShopifyAPI
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
+    @api_call_limit = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+    @retry_request_after = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
     def initialize(session: ShopifyAPI::Context.active_session)
       super(session: session)
 
+      @balance = T.let(nil, T.nilable(T::Array[T.untyped]))
     end
 
     @has_one = T.let({}, T::Hash[Symbol, Class])
@@ -23,6 +27,9 @@ module ShopifyAPI
     @paths = T.let([
       {http_method: :get, operation: :get, ids: [], path: "shopify_payments/balance.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
+
+    sig { returns(T.nilable(T::Array[T::Hash[T.untyped, T.untyped]])) }
+    attr_reader :balance
 
     class << self
       sig do

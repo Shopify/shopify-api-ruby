@@ -12,6 +12,9 @@ module ShopifyAPI
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
+    @api_call_limit = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+    @retry_request_after = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
     sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
     def initialize(session: ShopifyAPI::Context.active_session)
       super(session: session)
@@ -27,6 +30,7 @@ module ShopifyAPI
       @checkout_token = T.let(nil, T.nilable(String))
       @client_details = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
       @closed_at = T.let(nil, T.nilable(String))
+      @confirmation_number = T.let(nil, T.nilable(String))
       @created_at = T.let(nil, T.nilable(String))
       @currency = T.let(nil, T.nilable(String))
       @current_subtotal_price = T.let(nil, T.nilable(String))
@@ -138,6 +142,8 @@ module ShopifyAPI
     attr_reader :client_details
     sig { returns(T.nilable(String)) }
     attr_reader :closed_at
+    sig { returns(T.nilable(String)) }
+    attr_reader :confirmation_number
     sig { returns(T.nilable(String)) }
     attr_reader :created_at
     sig { returns(T.nilable(String)) }
