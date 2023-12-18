@@ -46,6 +46,19 @@ module ShopifyAPITest
       assert_equal("http", ShopifyAPI::Context.host_scheme)
       assert_equal("localhost", ShopifyAPI::Context.host_name)
       assert_equal("example.com", ShopifyAPI::Context.api_host)
+
+      ShopifyAPI::Context.setup(
+        api_key: "key",
+        api_secret_key: "secret",
+        api_version: "2023-10",
+        scope: ["scope1", "scope2"],
+        is_private: true,
+        is_embedded: true,
+        log_level: :off,
+        private_shop: "privateshop.myshopify.com",
+        user_agent_prefix: "user_agent_prefix1",
+        old_api_secret_key: "old_secret",
+      )
     end
 
     def test_active_session_is_thread_safe
