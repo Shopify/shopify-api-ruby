@@ -122,7 +122,7 @@ Create an instance of [`ShopifyAPI::Clients::Rest::Admin`](https://github.com/Sh
 
 Examples:
 ```ruby
-# Create a default client with `ShopifyAPI::Context.api_version` 
+# Create a default client with `ShopifyAPI::Context.api_version`
 # and the active session from `ShopifyAPI::Context.active_session`
 client = ShopifyAPI::Clients::Rest::Admin.new
 
@@ -147,7 +147,7 @@ The `ShopifyAPI::Clients::Rest::Admin` client offers the 4 core request methods:
 
 #### Input Parameters
 
-Each method can take the parameters outlined in the table below. 
+Each method can take the parameters outlined in the table below.
 
 | Parameter      | Type                                                     | Required in Methods | Default Value | Notes                                                                                                                                                                                                                                                                                  |
 | -------------- | -------------------------------------------------------- | :-----------------: | :-----------: | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -161,7 +161,7 @@ Each method can take the parameters outlined in the table below.
 
 #### Output
 ##### Success
-If the request is successful these methods will all return a [`ShopifyAPI::Clients::HttpResponse`](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/clients/http_response.rb) object, which has the following methods: 
+If the request is successful these methods will all return a [`ShopifyAPI::Clients::HttpResponse`](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/clients/http_response.rb) object, which has the following methods:
 | Methods | Type | Notes |
 |---------|------|-------|
 | `code`  |`Integer`| HTTP Response code, e.g. `200`|
@@ -246,6 +246,21 @@ _For more information on the `products` endpoint, [check out our API reference g
 ```
 
 _For more information on the `products` endpoint, [check out our API reference guide](https://shopify.dev/docs/api/admin-rest/latest/resources/product)._
+
+#### Accessing Rate Limit information
+
+The REST resources have `api_call_limit` and `retry_after` can be found on the Resource class. These values correspond to the `X-Shopify-Shop-Api-Call-Limit` and `Retry-After` [headers](https://shopify.dev/docs/api/usage/rate-limits#rest-admin-api-rate-limits) respectively.
+
+```ruby
+product = ShopifyAPI::Product.find(session: session, id: 12345)
+
+# X-Shopify-Shop-Api-Call-Limit: 32/40
+request_count = ShopifyAPI::Product.api_call_limit[:request_count] # 32
+bucket_size = ShopifyAPI::Product.api_call_limit[:bucket_size] # 40
+
+retry_after = ShopifyAPI::Product.retry_request_after
+
+```
 
 ### Pagination
 
