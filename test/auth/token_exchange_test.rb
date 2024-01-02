@@ -34,6 +34,7 @@ module ShopifyAPITest
         @offline_token_response = {
           access_token: SecureRandom.alphanumeric(10),
           scope: "scope1,scope2",
+          session: SecureRandom.alphanumeric(10),
         }
         @online_token_response = {
           access_token: SecureRandom.alphanumeric(10),
@@ -50,6 +51,7 @@ module ShopifyAPITest
             locale: "en",
             collaborator: false,
           },
+          session: SecureRandom.alphanumeric(10),
         }
 
         @expected_associated_user = ShopifyAPI::Auth::AssociatedUser.new(
@@ -143,6 +145,7 @@ module ShopifyAPITest
           scope: @offline_token_response[:scope],
           is_online: false,
           expires: nil,
+          shopify_session_id: @offline_token_response[:session],
         )
 
         session = ShopifyAPI::Auth::TokenExchange.exchange_token(
@@ -169,6 +172,7 @@ module ShopifyAPITest
           associated_user_scope: @online_token_response[:associated_user_scope],
           expires: @stubbed_time_now + @online_token_response[:expires_in].to_i,
           associated_user: @expected_associated_user,
+          shopify_session_id: @online_token_response[:session],
         )
 
         session = Time.stub(:now, @stubbed_time_now) do

@@ -89,6 +89,32 @@ module ShopifyAPI
           end
         end
 
+        sig { params(shop: String, access_token_response: Oauth::AccessTokenResponse).returns(Session) }
+        def from(shop:, access_token_response:)
+          is_online = access_token_response.online_token?
+
+          if is_online
+            associated_user = T.must(access_token_response.associated_user)
+            expires = Time.now + access_token_response.expires_in.to_i
+            associated_user_scope = access_token_response.associated_user_scope
+            id = "#{shop}_#{associated_user.id}"
+          else
+            id = "offline_#{shop}"
+          end
+
+          new(
+            id: id,
+            shop: shop,
+            access_token: access_token_response.access_token,
+            scope: access_token_response.scope,
+            is_online: is_online,
+            associated_user_scope: associated_user_scope,
+            associated_user: associated_user,
+            expires: expires,
+            shopify_session_id: access_token_response.session,
+          )
+        end
+
         sig { params(str: String).returns(Session) }
         def deserialize(str)
           Oj.load(str)

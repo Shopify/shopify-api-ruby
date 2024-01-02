@@ -79,6 +79,70 @@ module ShopifyAPITest
         assert_equal(session, ShopifyAPI::Context.active_session)
       end
 
+      def test_from_with_offline_access_token_response
+        shop = "test-shop"
+        response = ShopifyAPI::Auth::Oauth::AccessTokenResponse.new(
+          access_token: "token",
+          scope: "scope1, scope2",
+          session: "session",
+        )
+        expected_session = ShopifyAPI::Auth::Session.new(
+          id: "offline_#{shop}",
+          shop: shop,
+          access_token: response.access_token,
+          scope: response.scope,
+          is_online: false,
+          associated_user_scope: nil,
+          associated_user: nil,
+          expires: nil,
+          shopify_session_id: response.session,
+        )
+
+        session = ShopifyAPI::Auth::Session.from(shop: shop, access_token_response: response)
+
+        assert_equal(expected_session, session)
+      end
+
+      def test_from_with_online_access_token_response
+        shop = "test-shop"
+        associated_user = ShopifyAPI::Auth::AssociatedUser.new(
+          id: 902541635,
+          first_name: "first",
+          last_name: "last",
+          email: "firstlast@example.com",
+          email_verified: true,
+          account_owner: true,
+          locale: "en",
+          collaborator: false,
+        )
+        response = ShopifyAPI::Auth::Oauth::AccessTokenResponse.new(
+          access_token: "token",
+          scope: "scope1, scope2",
+          session: "session",
+          expires_in: 1000,
+          associated_user: associated_user,
+          associated_user_scope: "scope1",
+        )
+        time_now = Time.now
+        expected_session = ShopifyAPI::Auth::Session.new(
+          id: "#{shop}_#{associated_user.id}",
+          shop: shop,
+          access_token: response.access_token,
+          scope: response.scope,
+          is_online: false,
+          associated_user_scope: response.associated_user_scope,
+          associated_user: associated_user,
+          expires: time_now + response.expires_in,
+          shopify_session_id: response.session,
+        )
+
+        session = Time.stub(:now, time_now) do
+          ShopifyAPI::Auth::Session.from(shop: shop, access_token_response: response)
+        end
+
+        assert_equal(expected_session, session)
+      end
+
       def teardown
         ShopifyAPI::Context.deactivate_session
       end
