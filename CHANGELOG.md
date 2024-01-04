@@ -11,6 +11,10 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 - [#1249](https://github.com/Shopify/shopify-api-ruby/pull/1249) Fix bug where mandatory webhooks could not be processed
 - [#1250](https://github.com/Shopify/shopify-api-ruby/pull/1250) Remove rails methods .empty? .present? that were breaking CI
 
+- [#1071](https://github.com/Shopify/shopify-api-ruby/issues/1071) Fix FulfillmentEvent class types
+- Fix: InventoryItem class `harmonized_system_code` attribute type which can be either integer, string or nil
+- Fix: Variant class `inventory_quantity` attribute type which can be either integer, string or nil
+
 ## 13.3.0
 
 - [#1241](https://github.com/Shopify/shopify-api-ruby/pull/1241) Add `api_host` to `ShopifyAPI::Context.setup`, allowing the API host to be overridden in `ShopifyAPI::Clients::HttpClient`. This context option is intended for internal Shopify use only.
