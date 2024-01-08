@@ -33,7 +33,7 @@ class LocationsForMove202301Test < Test::Unit::TestCase
     void
   end
   def test_1()
-    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2023-01/fulfillment_orders/1046000780/locations_for_move.json")
+    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2023-01/fulfillment_orders/1046000782/locations_for_move.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
@@ -41,10 +41,10 @@ class LocationsForMove202301Test < Test::Unit::TestCase
       .to_return(status: 200, body: JSON.generate({"locations_for_move" => [{"location" => {"id" => 1072404542, "name" => "Alpha Location"}, "message" => "Current location.", "movable" => false}, {"location" => {"id" => 1072404543, "name" => "Bravo Location"}, "message" => "No items are stocked at this location.", "movable" => false}]}), headers: {})
 
     response = ShopifyAPI::LocationsForMove.all(
-      fulfillment_order_id: 1046000780,
+      fulfillment_order_id: 1046000782,
     )
 
-    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-01/fulfillment_orders/1046000780/locations_for_move.json")
+    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-01/fulfillment_orders/1046000782/locations_for_move.json")
 
     response = response.first if response.respond_to?(:first)
 

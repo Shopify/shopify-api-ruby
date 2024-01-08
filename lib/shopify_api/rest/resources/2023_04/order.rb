@@ -12,9 +12,11 @@ module ShopifyAPI
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
-    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: ShopifyAPI::Context.active_session)
-      super(session: session)
+    @api_call_limit = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+    @retry_request_after = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session), from_hash: T.nilable(T::Hash[T.untyped, T.untyped])).void }
+    def initialize(session: ShopifyAPI::Context.active_session, from_hash: nil)
 
       @line_items = T.let(nil, T.nilable(T::Array[T.untyped]))
       @app_id = T.let(nil, T.nilable(Integer))
@@ -63,13 +65,11 @@ module ShopifyAPI
       @order_status_url = T.let(nil, T.nilable(String))
       @original_total_additional_fees_set = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
       @original_total_duties_set = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
-      @payment_details = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
       @payment_gateway_names = T.let(nil, T.nilable(T::Array[T.untyped]))
       @payment_terms = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
       @phone = T.let(nil, T.nilable(String))
       @presentment_currency = T.let(nil, T.nilable(String))
       @processed_at = T.let(nil, T.nilable(String))
-      @processing_method = T.let(nil, T.nilable(String))
       @referring_site = T.let(nil, T.nilable(String))
       @refunds = T.let(nil, T.nilable(T::Array[T.untyped]))
       @shipping_address = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
@@ -98,6 +98,8 @@ module ShopifyAPI
       @total_weight = T.let(nil, T.nilable(Integer))
       @updated_at = T.let(nil, T.nilable(String))
       @user_id = T.let(nil, T.nilable(Integer))
+
+      super(session: session, from_hash: from_hash)
     end
 
     @has_one = T.let({
@@ -214,8 +216,6 @@ module ShopifyAPI
     attr_reader :original_total_additional_fees_set
     sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :original_total_duties_set
-    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
-    attr_reader :payment_details
     sig { returns(T.nilable(T::Array[String])) }
     attr_reader :payment_gateway_names
     sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
@@ -226,8 +226,6 @@ module ShopifyAPI
     attr_reader :presentment_currency
     sig { returns(T.nilable(String)) }
     attr_reader :processed_at
-    sig { returns(T.nilable(String)) }
-    attr_reader :processing_method
     sig { returns(T.nilable(String)) }
     attr_reader :referring_site
     sig { returns(T.nilable(T::Array[Refund])) }

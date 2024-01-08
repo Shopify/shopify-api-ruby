@@ -12,10 +12,13 @@ module ShopifyAPI
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
-    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: ShopifyAPI::Context.active_session)
-      super(session: session)
+    @api_call_limit = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+    @retry_request_after = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session), from_hash: T.nilable(T::Hash[T.untyped, T.untyped])).void }
+    def initialize(session: ShopifyAPI::Context.active_session, from_hash: nil)
+
+      @adjustment_order_transactions = T.let(nil, T.nilable(T::Array[T.untyped]))
       @amount = T.let(nil, T.nilable(String))
       @currency = T.let(nil, T.nilable(Currency))
       @fee = T.let(nil, T.nilable(String))
@@ -26,10 +29,12 @@ module ShopifyAPI
       @processed_at = T.let(nil, T.nilable(String))
       @source_id = T.let(nil, T.nilable(Integer))
       @source_order_id = T.let(nil, T.nilable(Integer))
-      @source_order_transaction_id = T.let(nil, T.nilable(Integer))
+      @source_order_transaction_id = T.let(nil, T.nilable(String))
       @source_type = T.let(nil, T.nilable(String))
       @test = T.let(nil, T.nilable(T::Boolean))
       @type = T.let(nil, T.nilable(String))
+
+      super(session: session, from_hash: from_hash)
     end
 
     @has_one = T.let({
@@ -40,6 +45,8 @@ module ShopifyAPI
       {http_method: :get, operation: :transactions, ids: [], path: "shopify_payments/balance/transactions.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
+    sig { returns(T.nilable(T::Array[T::Hash[T.untyped, T.untyped]])) }
+    attr_reader :adjustment_order_transactions
     sig { returns(T.nilable(String)) }
     attr_reader :amount
     sig { returns(T.nilable(Currency)) }
@@ -60,7 +67,7 @@ module ShopifyAPI
     attr_reader :source_id
     sig { returns(T.nilable(Integer)) }
     attr_reader :source_order_id
-    sig { returns(T.nilable(Integer)) }
+    sig { returns(T.nilable(String)) }
     attr_reader :source_order_transaction_id
     sig { returns(T.nilable(String)) }
     attr_reader :source_type

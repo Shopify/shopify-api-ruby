@@ -294,7 +294,7 @@ class Redirect202207Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "redirect" => hash_including({"path" => "/ipod", "target" => "/pages/itunes"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"redirect" => {"id" => 984542200, "path" => "/ipod", "target" => "/pages/itunes"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"redirect" => {"id" => 984542199, "path" => "/ipod", "target" => "/pages/itunes"}}), headers: {})
 
     response = redirect = ShopifyAPI::Redirect.new
     redirect.path = "/ipod"
@@ -327,7 +327,7 @@ class Redirect202207Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "redirect" => hash_including({"path" => "http://www.apple.com/forums", "target" => "http://forums.apple.com"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"redirect" => {"id" => 984542199, "path" => "/forums", "target" => "http://forums.apple.com/"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"redirect" => {"id" => 984542200, "path" => "/forums", "target" => "http://forums.apple.com/"}}), headers: {})
 
     response = redirect = ShopifyAPI::Redirect.new
     redirect.path = "http://www.apple.com/forums"

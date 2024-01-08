@@ -33,19 +33,19 @@ class CancellationRequest202301Test < Test::Unit::TestCase
     void
   end
   def test_1()
-    stub_request(:post, "https://test-shop.myshopify.io/admin/api/2023-01/fulfillment_orders/1046000831/cancellation_request.json")
+    stub_request(:post, "https://test-shop.myshopify.io/admin/api/2023-01/fulfillment_orders/1046000839/cancellation_request.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "cancellation_request" => hash_including({"message" => "The customer changed his mind."}) }
       )
-      .to_return(status: 200, body: JSON.generate({"fulfillment_order" => {"id" => 1046000831, "shop_id" => 548380009, "order_id" => 450789469, "assigned_location_id" => 24826418, "request_status" => "cancellation_requested", "status" => "in_progress", "supported_actions" => ["cancel_fulfillment_order", "create_fulfillment"], "destination" => {"id" => 1046000818, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "company" => nil, "country" => "United States", "email" => "bob.norman@mail.example.com", "first_name" => "Bob", "last_name" => "Norman", "phone" => "+1(502)-459-2181", "province" => "Kentucky", "zip" => "40202"}, "origin" => {"address1" => nil, "address2" => nil, "city" => nil, "country_code" => "DE", "location_id" => 24826418, "name" => "Apple Api Shipwire", "phone" => nil, "province" => nil, "zip" => nil}, "line_items" => [{"id" => 1058737573, "shop_id" => 548380009, "fulfillment_order_id" => 1046000831, "quantity" => 1, "line_item_id" => 518995019, "inventory_item_id" => 49148385, "fulfillable_quantity" => 1, "variant_id" => 49148385}], "outgoing_requests" => [], "fulfillment_service_handle" => "shipwire-app"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"fulfillment_order" => {"id" => 1046000839, "shop_id" => 548380009, "order_id" => 450789469, "assigned_location_id" => 24826418, "request_status" => "cancellation_requested", "status" => "in_progress", "supported_actions" => ["cancel_fulfillment_order"], "destination" => {"id" => 1046000823, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "company" => nil, "country" => "United States", "email" => "bob.norman@mail.example.com", "first_name" => "Bob", "last_name" => "Norman", "phone" => "+1(502)-459-2181", "province" => "Kentucky", "zip" => "40202"}, "origin" => {"address1" => nil, "address2" => nil, "city" => nil, "country_code" => "DE", "location_id" => 24826418, "name" => "Apple Api Shipwire", "phone" => nil, "province" => nil, "zip" => nil}, "line_items" => [{"id" => 1058737579, "shop_id" => 548380009, "fulfillment_order_id" => 1046000839, "quantity" => 1, "line_item_id" => 518995019, "inventory_item_id" => 49148385, "fulfillable_quantity" => 1, "variant_id" => 49148385}], "outgoing_requests" => [], "international_duties" => nil, "fulfillment_service_handle" => "shipwire-app"}}), headers: {})
 
     response = cancellation_request = ShopifyAPI::CancellationRequest.new
-    cancellation_request.fulfillment_order_id = 1046000831
+    cancellation_request.fulfillment_order_id = 1046000839
     cancellation_request.message = "The customer changed his mind."
     cancellation_request.save
 
-    assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-01/fulfillment_orders/1046000831/cancellation_request.json")
+    assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-01/fulfillment_orders/1046000839/cancellation_request.json")
 
     response = response.first if response.respond_to?(:first)
 
@@ -66,20 +66,20 @@ class CancellationRequest202301Test < Test::Unit::TestCase
     void
   end
   def test_2()
-    stub_request(:post, "https://test-shop.myshopify.io/admin/api/2023-01/fulfillment_orders/1046000832/cancellation_request/accept.json")
+    stub_request(:post, "https://test-shop.myshopify.io/admin/api/2023-01/fulfillment_orders/1046000840/cancellation_request/accept.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "cancellation_request" => hash_including({"message" => "We had not started any processing yet."}) }
       )
-      .to_return(status: 200, body: JSON.generate({"fulfillment_order" => {"id" => 1046000832, "shop_id" => 548380009, "order_id" => 450789469, "assigned_location_id" => 24826418, "request_status" => "cancellation_accepted", "status" => "cancelled", "supported_actions" => ["request_fulfillment", "create_fulfillment"], "destination" => {"id" => 1046000819, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "company" => nil, "country" => "United States", "email" => "bob.norman@mail.example.com", "first_name" => "Bob", "last_name" => "Norman", "phone" => "+1(502)-459-2181", "province" => "Kentucky", "zip" => "40202"}, "origin" => {"address1" => nil, "address2" => nil, "city" => nil, "country_code" => "DE", "location_id" => 24826418, "name" => "Apple Api Shipwire", "phone" => nil, "province" => nil, "zip" => nil}, "line_items" => [{"id" => 1058737574, "shop_id" => 548380009, "fulfillment_order_id" => 1046000832, "quantity" => 1, "line_item_id" => 518995019, "inventory_item_id" => 49148385, "fulfillable_quantity" => 1, "variant_id" => 49148385}], "outgoing_requests" => [], "fulfillment_service_handle" => "shipwire-app"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"fulfillment_order" => {"id" => 1046000840, "shop_id" => 548380009, "order_id" => 450789469, "assigned_location_id" => 24826418, "request_status" => "cancellation_accepted", "status" => "cancelled", "supported_actions" => ["request_fulfillment"], "destination" => {"id" => 1046000824, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "company" => nil, "country" => "United States", "email" => "bob.norman@mail.example.com", "first_name" => "Bob", "last_name" => "Norman", "phone" => "+1(502)-459-2181", "province" => "Kentucky", "zip" => "40202"}, "origin" => {"address1" => nil, "address2" => nil, "city" => nil, "country_code" => "DE", "location_id" => 24826418, "name" => "Apple Api Shipwire", "phone" => nil, "province" => nil, "zip" => nil}, "line_items" => [{"id" => 1058737580, "shop_id" => 548380009, "fulfillment_order_id" => 1046000840, "quantity" => 1, "line_item_id" => 518995019, "inventory_item_id" => 49148385, "fulfillable_quantity" => 1, "variant_id" => 49148385}], "outgoing_requests" => [], "international_duties" => nil, "fulfillment_service_handle" => "shipwire-app"}}), headers: {})
 
     response = cancellation_request = ShopifyAPI::CancellationRequest.new
-    cancellation_request.fulfillment_order_id = 1046000832
+    cancellation_request.fulfillment_order_id = 1046000840
     cancellation_request.accept(
       body: {"cancellation_request" => {"message" => "We had not started any processing yet."}},
     )
 
-    assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-01/fulfillment_orders/1046000832/cancellation_request/accept.json")
+    assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-01/fulfillment_orders/1046000840/cancellation_request/accept.json")
 
     response = response.first if response.respond_to?(:first)
 
@@ -100,20 +100,20 @@ class CancellationRequest202301Test < Test::Unit::TestCase
     void
   end
   def test_3()
-    stub_request(:post, "https://test-shop.myshopify.io/admin/api/2023-01/fulfillment_orders/1046000833/cancellation_request/reject.json")
+    stub_request(:post, "https://test-shop.myshopify.io/admin/api/2023-01/fulfillment_orders/1046000838/cancellation_request/reject.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "cancellation_request" => hash_including({"message" => "We have already send the shipment out."}) }
       )
-      .to_return(status: 200, body: JSON.generate({"fulfillment_order" => {"id" => 1046000833, "shop_id" => 548380009, "order_id" => 450789469, "assigned_location_id" => 24826418, "request_status" => "cancellation_rejected", "status" => "in_progress", "supported_actions" => [], "destination" => {"id" => 1046000820, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "company" => nil, "country" => "United States", "email" => "bob.norman@mail.example.com", "first_name" => "Bob", "last_name" => "Norman", "phone" => "+1(502)-459-2181", "province" => "Kentucky", "zip" => "40202"}, "origin" => {"address1" => nil, "address2" => nil, "city" => nil, "country_code" => "DE", "location_id" => 24826418, "name" => "Apple Api Shipwire", "phone" => nil, "province" => nil, "zip" => nil}, "line_items" => [{"id" => 1058737575, "shop_id" => 548380009, "fulfillment_order_id" => 1046000833, "quantity" => 1, "line_item_id" => 518995019, "inventory_item_id" => 49148385, "fulfillable_quantity" => 1, "variant_id" => 49148385}], "outgoing_requests" => [], "fulfillment_service_handle" => "shipwire-app"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"fulfillment_order" => {"id" => 1046000838, "shop_id" => 548380009, "order_id" => 450789469, "assigned_location_id" => 24826418, "request_status" => "cancellation_rejected", "status" => "in_progress", "supported_actions" => [], "destination" => {"id" => 1046000822, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "company" => nil, "country" => "United States", "email" => "bob.norman@mail.example.com", "first_name" => "Bob", "last_name" => "Norman", "phone" => "+1(502)-459-2181", "province" => "Kentucky", "zip" => "40202"}, "origin" => {"address1" => nil, "address2" => nil, "city" => nil, "country_code" => "DE", "location_id" => 24826418, "name" => "Apple Api Shipwire", "phone" => nil, "province" => nil, "zip" => nil}, "line_items" => [{"id" => 1058737578, "shop_id" => 548380009, "fulfillment_order_id" => 1046000838, "quantity" => 1, "line_item_id" => 518995019, "inventory_item_id" => 49148385, "fulfillable_quantity" => 1, "variant_id" => 49148385}], "outgoing_requests" => [], "international_duties" => nil, "fulfillment_service_handle" => "shipwire-app"}}), headers: {})
 
     response = cancellation_request = ShopifyAPI::CancellationRequest.new
-    cancellation_request.fulfillment_order_id = 1046000833
+    cancellation_request.fulfillment_order_id = 1046000838
     cancellation_request.reject(
       body: {"cancellation_request" => {"message" => "We have already send the shipment out."}},
     )
 
-    assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-01/fulfillment_orders/1046000833/cancellation_request/reject.json")
+    assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-01/fulfillment_orders/1046000838/cancellation_request/reject.json")
 
     response = response.first if response.respond_to?(:first)
 
