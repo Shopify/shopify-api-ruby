@@ -15,9 +15,8 @@ module ShopifyAPI
     @api_call_limit = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @retry_request_after = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
-    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: ShopifyAPI::Context.active_session)
-      super(session: session)
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session), from_hash: T.nilable(T::Hash[T.untyped, T.untyped])).void }
+    def initialize(session: ShopifyAPI::Context.active_session, from_hash: nil)
 
       @code = T.let(nil, T.nilable(String))
       @country_id = T.let(nil, T.nilable(Integer))
@@ -28,6 +27,8 @@ module ShopifyAPI
       @tax_name = T.let(nil, T.nilable(String))
       @tax_percentage = T.let(nil, T.nilable(Float))
       @tax_type = T.let(nil, T.nilable(String))
+
+      super(session: session, from_hash: from_hash)
     end
 
     @has_one = T.let({}, T::Hash[Symbol, Class])
