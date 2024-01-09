@@ -14,7 +14,7 @@ require "webmock/minitest"
 require "shopify_api"
 require_relative "../../test_helper"
 
-class Giftcardadjustment202301Test < Test::Unit::TestCase
+class GiftCardAdjustment202301Test < Test::Unit::TestCase
   def setup
     super
 
@@ -40,7 +40,7 @@ class Giftcardadjustment202301Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"adjustments" => [{"id" => 1064273908, "gift_card_id" => 1035197676, "api_client_id" => nil, "user_id" => nil, "order_transaction_id" => nil, "number" => nil, "amount" => "10.00", "processed_at" => nil, "created_at" => "2024-01-02T09:28:43-05:00", "updated_at" => "2024-01-02T09:28:43-05:00", "note" => "Customer refilled gift card by $10", "remote_transaction_ref" => nil, "remote_transaction_url" => nil}]}), headers: {})
 
-    response = ShopifyAPI::Giftcardadjustment.adjustments(
+    response = ShopifyAPI::GiftCardAdjustment.all(
       gift_card_id: 1035197676,
     )
 
@@ -68,15 +68,16 @@ class Giftcardadjustment202301Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2023-01/gift_cards/1035197676/adjustments.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: hash_including({"adjustment" => {"amount" => 10.0, "remote_transaction_ref" => "gift_card_app_transaction_193402", "remote_transaction_url" => "http://example.com/my-gift-card-app/gift_card_adjustments/193402"}})
+        body: { "adjustment" => hash_including({"amount" => 10.0, "remote_transaction_ref" => "gift_card_app_transaction_193402", "remote_transaction_url" => "http://example.com/my-gift-card-app/gift_card_adjustments/193402"}) }
       )
       .to_return(status: 200, body: JSON.generate({"adjustment" => {"id" => 1064273913, "gift_card_id" => 1035197676, "api_client_id" => 755357713, "user_id" => nil, "order_transaction_id" => nil, "number" => 1, "amount" => "10.00", "processed_at" => "2024-01-02T09:31:22-05:00", "created_at" => "2024-01-02T09:31:22-05:00", "updated_at" => "2024-01-02T09:31:22-05:00", "note" => nil, "remote_transaction_ref" => "gift_card_app_transaction_193402", "remote_transaction_url" => "http://example.com/my-gift-card-app/gift_card_adjustments/193402"}}), headers: {})
 
-    response = giftcardadjustment = ShopifyAPI::Giftcardadjustment.new
-    giftcardadjustment.gift_card_id = 1035197676
-    giftcardadjustment.adjustments(
-      body: {"adjustment" => {"amount" => 10.0, "remote_transaction_ref" => "gift_card_app_transaction_193402", "remote_transaction_url" => "http://example.com/my-gift-card-app/gift_card_adjustments/193402"}},
-    )
+    response = gift_card_adjustment = ShopifyAPI::GiftCardAdjustment.new
+    gift_card_adjustment.gift_card_id = 1035197676
+    gift_card_adjustment.amount = 10.0
+    gift_card_adjustment.remote_transaction_ref = "gift_card_app_transaction_193402"
+    gift_card_adjustment.remote_transaction_url = "http://example.com/my-gift-card-app/gift_card_adjustments/193402"
+    gift_card_adjustment.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-01/gift_cards/1035197676/adjustments.json")
 
@@ -102,15 +103,15 @@ class Giftcardadjustment202301Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2023-01/gift_cards/1035197676/adjustments.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: hash_including({"adjustment" => {"amount" => 10.0, "note" => "Customer refilled gift card by $10"}})
+        body: { "adjustment" => hash_including({"amount" => 10.0, "note" => "Customer refilled gift card by $10"}) }
       )
       .to_return(status: 200, body: JSON.generate({"adjustment" => {"id" => 1064273914, "gift_card_id" => 1035197676, "api_client_id" => 755357713, "user_id" => nil, "order_transaction_id" => nil, "number" => 1, "amount" => "10.00", "processed_at" => "2024-01-02T09:31:24-05:00", "created_at" => "2024-01-02T09:31:24-05:00", "updated_at" => "2024-01-02T09:31:24-05:00", "note" => "Customer refilled gift card by $10", "remote_transaction_ref" => nil, "remote_transaction_url" => nil}}), headers: {})
 
-    response = giftcardadjustment = ShopifyAPI::Giftcardadjustment.new
-    giftcardadjustment.gift_card_id = 1035197676
-    giftcardadjustment.adjustments(
-      body: {"adjustment" => {"amount" => 10.0, "note" => "Customer refilled gift card by $10"}},
-    )
+    response = gift_card_adjustment = ShopifyAPI::GiftCardAdjustment.new
+    gift_card_adjustment.gift_card_id = 1035197676
+    gift_card_adjustment.amount = 10.0
+    gift_card_adjustment.note = "Customer refilled gift card by $10"
+    gift_card_adjustment.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-01/gift_cards/1035197676/adjustments.json")
 
@@ -136,15 +137,15 @@ class Giftcardadjustment202301Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2023-01/gift_cards/1035197676/adjustments.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: hash_including({"adjustment" => {"amount" => -20.0, "note" => "Customer spent $20 via external service"}})
+        body: { "adjustment" => hash_including({"amount" => -20.0, "note" => "Customer spent $20 via external service"}) }
       )
       .to_return(status: 200, body: JSON.generate({"adjustment" => {"id" => 1064273912, "gift_card_id" => 1035197676, "api_client_id" => 755357713, "user_id" => nil, "order_transaction_id" => nil, "number" => 1, "amount" => "-20.00", "processed_at" => "2024-01-02T09:31:21-05:00", "created_at" => "2024-01-02T09:31:21-05:00", "updated_at" => "2024-01-02T09:31:21-05:00", "note" => "Customer spent $20 via external service", "remote_transaction_ref" => nil, "remote_transaction_url" => nil}}), headers: {})
 
-    response = giftcardadjustment = ShopifyAPI::Giftcardadjustment.new
-    giftcardadjustment.gift_card_id = 1035197676
-    giftcardadjustment.adjustments(
-      body: {"adjustment" => {"amount" => -20.0, "note" => "Customer spent $20 via external service"}},
-    )
+    response = gift_card_adjustment = ShopifyAPI::GiftCardAdjustment.new
+    gift_card_adjustment.gift_card_id = 1035197676
+    gift_card_adjustment.amount = -20.0
+    gift_card_adjustment.note = "Customer spent $20 via external service"
+    gift_card_adjustment.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-01/gift_cards/1035197676/adjustments.json")
 
@@ -170,15 +171,15 @@ class Giftcardadjustment202301Test < Test::Unit::TestCase
     stub_request(:post, "https://test-shop.myshopify.io/admin/api/2023-01/gift_cards/1035197676/adjustments.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
-        body: hash_including({"adjustment" => {"amount" => 10.0, "processed_at" => "2023-07-02T09:31:20-04:00"}})
+        body: { "adjustment" => hash_including({"amount" => 10.0, "processed_at" => "2023-07-02T09:31:20-04:00"}) }
       )
       .to_return(status: 200, body: JSON.generate({"adjustment" => {"id" => 1064273911, "gift_card_id" => 1035197676, "api_client_id" => 755357713, "user_id" => nil, "order_transaction_id" => nil, "number" => 1, "amount" => "10.00", "processed_at" => "2023-07-02T09:31:20-04:00", "created_at" => "2024-01-02T09:31:20-05:00", "updated_at" => "2024-01-02T09:31:20-05:00", "note" => nil, "remote_transaction_ref" => nil, "remote_transaction_url" => nil}}), headers: {})
 
-    response = giftcardadjustment = ShopifyAPI::Giftcardadjustment.new
-    giftcardadjustment.gift_card_id = 1035197676
-    giftcardadjustment.adjustments(
-      body: {"adjustment" => {"amount" => 10.0, "processed_at" => "2023-07-02T09:31:20-04:00"}},
-    )
+    response = gift_card_adjustment = ShopifyAPI::GiftCardAdjustment.new
+    gift_card_adjustment.gift_card_id = 1035197676
+    gift_card_adjustment.amount = 10.0
+    gift_card_adjustment.processed_at = "2023-07-02T09:31:20-04:00"
+    gift_card_adjustment.save
 
     assert_requested(:post, "https://test-shop.myshopify.io/admin/api/2023-01/gift_cards/1035197676/adjustments.json")
 
@@ -208,9 +209,9 @@ class Giftcardadjustment202301Test < Test::Unit::TestCase
       )
       .to_return(status: 200, body: JSON.generate({"adjustment" => {"id" => 1064273908, "gift_card_id" => 1035197676, "api_client_id" => nil, "user_id" => nil, "order_transaction_id" => nil, "number" => nil, "amount" => "10.00", "processed_at" => nil, "created_at" => "2024-01-02T09:28:43-05:00", "updated_at" => "2024-01-02T09:28:43-05:00", "note" => "Customer refilled gift card by $10", "remote_transaction_ref" => nil, "remote_transaction_url" => nil}}), headers: {})
 
-    response = ShopifyAPI::Giftcardadjustment.get_all(
+    response = ShopifyAPI::GiftCardAdjustment.find(
       gift_card_id: 1035197676,
-      adjustment_id: 1064273908,
+      id: 1064273908,
     )
 
     assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-01/gift_cards/1035197676/adjustments/1064273908.json")
