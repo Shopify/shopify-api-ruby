@@ -38,7 +38,7 @@ class UsageCharge202207Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "usage_charge" => hash_including({"description" => "Super Mega Plan 1000 emails", "price" => "1.00"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"usage_charge" => {"id" => 1034618210, "description" => "Super Mega Plan 1000 emails", "price" => "1.00", "created_at" => "2023-07-05T18:50:44-04:00", "currency" => "USD", "billing_on" => nil, "balance_used" => 11.0, "balance_remaining" => 89.0, "risk_level" => 0}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"usage_charge" => {"id" => 1034618208, "description" => "Super Mega Plan 1000 emails", "price" => "1.00", "created_at" => "2023-07-11T18:18:06-04:00", "currency" => "USD", "billing_on" => nil, "balance_used" => 11.0, "balance_remaining" => 89.0, "risk_level" => 0}}), headers: {})
 
     response = usage_charge = ShopifyAPI::UsageCharge.new
     usage_charge.recurring_application_charge_id = 455696195
@@ -72,7 +72,7 @@ class UsageCharge202207Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"usage_charges" => [{"id" => 1034618208, "description" => "Super Mega Plan Add-ons", "price" => "10.00", "created_at" => "2023-07-05T18:50:42-04:00", "currency" => "USD", "billing_on" => nil, "balance_used" => 10.0, "balance_remaining" => 90.0, "risk_level" => 0}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"usage_charges" => [{"id" => 1034618206, "description" => "Super Mega Plan Add-ons", "price" => "10.00", "created_at" => "2023-07-11T18:18:03-04:00", "currency" => "USD", "billing_on" => nil, "balance_used" => 10.0, "balance_remaining" => 90.0, "risk_level" => 0}]}), headers: {})
 
     response = ShopifyAPI::UsageCharge.all(
       recurring_application_charge_id: 455696195,
@@ -99,19 +99,19 @@ class UsageCharge202207Test < Test::Unit::TestCase
     void
   end
   def test_3()
-    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-07/recurring_application_charges/455696195/usage_charges/1034618206.json")
+    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2022-07/recurring_application_charges/455696195/usage_charges/1034618211.json")
       .with(
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"usage_charge" => {"id" => 1034618206, "description" => "Super Mega Plan Add-ons", "price" => "10.00", "created_at" => "2023-07-05T18:50:40-04:00", "currency" => "USD", "billing_on" => nil, "balance_used" => 10.0, "balance_remaining" => 90.0, "risk_level" => 0}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"usage_charge" => {"id" => 1034618211, "description" => "Super Mega Plan Add-ons", "price" => "10.00", "created_at" => "2023-07-11T18:18:08-04:00", "currency" => "USD", "billing_on" => nil, "balance_used" => 10.0, "balance_remaining" => 90.0, "risk_level" => 0}}), headers: {})
 
     response = ShopifyAPI::UsageCharge.find(
       recurring_application_charge_id: 455696195,
-      id: 1034618206,
+      id: 1034618211,
     )
 
-    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-07/recurring_application_charges/455696195/usage_charges/1034618206.json")
+    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2022-07/recurring_application_charges/455696195/usage_charges/1034618211.json")
 
     response = response.first if response.respond_to?(:first)
 

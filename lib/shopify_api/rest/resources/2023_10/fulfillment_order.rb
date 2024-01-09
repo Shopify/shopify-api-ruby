@@ -12,9 +12,11 @@ module ShopifyAPI
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
-    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: ShopifyAPI::Context.active_session)
-      super(session: session)
+    @api_call_limit = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+    @retry_request_after = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session), from_hash: T.nilable(T::Hash[T.untyped, T.untyped])).void }
+    def initialize(session: ShopifyAPI::Context.active_session, from_hash: nil)
 
       @assigned_location = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
       @assigned_location_id = T.let(nil, T.nilable(Integer))
@@ -33,7 +35,9 @@ module ShopifyAPI
       @shop_id = T.let(nil, T.nilable(Integer))
       @status = T.let(nil, T.nilable(String))
       @supported_actions = T.let(nil, T.nilable(T::Array[T.untyped]))
-      @updated_at = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @updated_at = T.let(nil, T.nilable(String))
+
+      super(session: session, from_hash: from_hash)
     end
 
     @has_one = T.let({}, T::Hash[Symbol, Class])
@@ -85,7 +89,7 @@ module ShopifyAPI
     attr_reader :status
     sig { returns(T.nilable(T::Array[String])) }
     attr_reader :supported_actions
-    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
+    sig { returns(T.nilable(String)) }
     attr_reader :updated_at
 
     class << self
@@ -264,11 +268,13 @@ module ShopifyAPI
 
     sig do
       params(
+        new_fulfill_at: T.untyped,
         body: T.untyped,
         kwargs: T.untyped
       ).returns(T.untyped)
     end
     def reschedule(
+      new_fulfill_at: nil,
       body: nil,
       **kwargs
     )
@@ -277,7 +283,7 @@ module ShopifyAPI
         operation: :reschedule,
         session: @session,
         ids: {id: @id},
-        params: {}.merge(kwargs).compact,
+        params: {new_fulfill_at: new_fulfill_at}.merge(kwargs).compact,
         body: body,
         entity: self,
       )

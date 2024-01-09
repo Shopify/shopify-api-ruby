@@ -12,9 +12,11 @@ module ShopifyAPI
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
-    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: ShopifyAPI::Context.active_session)
-      super(session: session)
+    @api_call_limit = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+    @retry_request_after = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session), from_hash: T.nilable(T::Hash[T.untyped, T.untyped])).void }
+    def initialize(session: ShopifyAPI::Context.active_session, from_hash: nil)
 
       @checkout = T.let(nil, T.nilable(Checkout))
       @credit_card = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
@@ -23,6 +25,8 @@ module ShopifyAPI
       @payment_processing_error_message = T.let(nil, T.nilable(String))
       @transaction = T.let(nil, T.nilable(Transaction))
       @unique_token = T.let(nil, T.nilable(String))
+
+      super(session: session, from_hash: from_hash)
     end
 
     @has_one = T.let({

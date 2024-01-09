@@ -70,7 +70,7 @@ class Asset202304Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "asset" => hash_including({"key" => "templates/index.liquid", "value" => "<img src='backsoon-postit.png'><p>We are busy updating the store for you and will be back within the hour.</p>"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"asset" => {"key" => "templates/index.liquid", "public_url" => nil, "created_at" => "2010-07-12T15:31:50-04:00", "updated_at" => "2023-10-03T13:32:54-04:00", "content_type" => "application/x-liquid", "size" => 110, "checksum" => "cd71db2e14df976c8aa44b44c8dae77b", "theme_id" => 828155753}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"asset" => {"key" => "templates/index.liquid", "public_url" => nil, "created_at" => "2010-07-12T15:31:50-04:00", "updated_at" => "2024-01-02T09:03:26-05:00", "content_type" => "application/x-liquid", "size" => 110, "checksum" => "cd71db2e14df976c8aa44b44c8dae77b", "theme_id" => 828155753}}), headers: {})
 
     response = asset = ShopifyAPI::Asset.new
     asset.theme_id = 828155753
@@ -104,7 +104,7 @@ class Asset202304Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "asset" => hash_including({"key" => "assets/empty.gif", "attachment" => "R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==\n"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"asset" => {"key" => "assets/empty.gif", "public_url" => "https://cdn.shopify.com/s/files/1/0005/4838/0009/t/1/assets/empty.gif?v=1696354376", "created_at" => "2023-10-03T13:32:56-04:00", "updated_at" => "2023-10-03T13:32:56-04:00", "content_type" => "image/gif", "size" => 43, "checksum" => "45cf913e5d9d3c9b2058033056d3dd23", "theme_id" => 828155753}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"asset" => {"key" => "assets/empty.gif", "public_url" => "https://cdn.shopify.com/s/files/1/0005/4838/0009/t/1/assets/empty.gif?v=1704204207", "created_at" => "2024-01-02T09:03:27-05:00", "updated_at" => "2024-01-02T09:03:27-05:00", "content_type" => "image/gif", "size" => 43, "checksum" => "45cf913e5d9d3c9b2058033056d3dd23", "theme_id" => 828155753}}), headers: {})
 
     response = asset = ShopifyAPI::Asset.new
     asset.theme_id = 828155753
@@ -138,7 +138,7 @@ class Asset202304Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "asset" => hash_including({"key" => "assets/bg-body.gif", "src" => "http://example.com/new_bg.gif"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"asset" => {"key" => "assets/bg-body.gif", "public_url" => "https://cdn.shopify.com/s/files/1/0005/4838/0009/t/1/assets/bg-body.gif?v=1696354378", "created_at" => "2010-07-12T15:31:50-04:00", "updated_at" => "2023-10-03T13:32:58-04:00", "content_type" => "image/gif", "size" => 43, "checksum" => "45cf913e5d9d3c9b2058033056d3dd23", "theme_id" => 828155753}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"asset" => {"key" => "assets/bg-body.gif", "public_url" => "https://cdn.shopify.com/s/files/1/0005/4838/0009/t/1/assets/bg-body.gif?v=1704204204", "created_at" => "2010-07-12T15:31:50-04:00", "updated_at" => "2024-01-02T09:03:24-05:00", "content_type" => "image/gif", "size" => 43, "checksum" => "45cf913e5d9d3c9b2058033056d3dd23", "theme_id" => 828155753}}), headers: {})
 
     response = asset = ShopifyAPI::Asset.new
     asset.theme_id = 828155753
@@ -172,7 +172,7 @@ class Asset202304Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "asset" => hash_including({"key" => "layout/alternate.liquid", "source_key" => "layout/theme.liquid"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"asset" => {"key" => "layout/alternate.liquid", "public_url" => nil, "created_at" => "2023-10-03T13:32:52-04:00", "updated_at" => "2023-10-03T13:32:52-04:00", "content_type" => "application/x-liquid", "size" => 3049, "checksum" => "1879a06996941b2ff1ff485a1fe60a97", "theme_id" => 828155753}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"asset" => {"key" => "layout/alternate.liquid", "public_url" => nil, "created_at" => "2024-01-02T09:03:21-05:00", "updated_at" => "2024-01-02T09:03:21-05:00", "content_type" => "application/x-liquid", "size" => 3049, "checksum" => "1879a06996941b2ff1ff485a1fe60a97", "theme_id" => 828155753}}), headers: {})
 
     response = asset = ShopifyAPI::Asset.new
     asset.theme_id = 828155753

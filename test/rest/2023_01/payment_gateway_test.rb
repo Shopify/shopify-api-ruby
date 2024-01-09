@@ -38,7 +38,7 @@ class PaymentGateway202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"payment_gateways" => [{"disabled" => true, "id" => 170508070, "name" => "Cash on Delivery (COD)", "provider_id" => 140, "sandbox" => false, "supports_network_tokenization" => nil, "type" => "ManualPaymentGateway", "enabled_card_brands" => [], "processing_method" => "manual", "service_name" => "Cash on Delivery (COD)", "metadata" => {}, "created_at" => "2023-10-03T13:17:01-04:00", "updated_at" => "2023-10-03T13:17:01-04:00"}, {"disabled" => false, "id" => 431363653, "name" => "shopify_payments", "provider_id" => 87, "sandbox" => false, "supports_network_tokenization" => nil, "type" => "DirectPaymentGateway", "enabled_card_brands" => ["visa", "master", "american_express", "discover", "diners_club"], "processing_method" => "direct", "service_name" => "Shopify Payments", "metadata" => {"google_pay_merchant_id" => 548380009}, "created_at" => "2011-12-31T19:00:00-05:00", "updated_at" => "2023-10-03T13:17:30-04:00", "credential4" => nil, "attachment" => nil}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"payment_gateways" => [{"disabled" => true, "id" => 170508070, "name" => "Cash on Delivery (COD)", "provider_id" => 140, "sandbox" => false, "supports_network_tokenization" => nil, "type" => "ManualPaymentGateway", "enabled_card_brands" => [], "processing_method" => "manual", "service_name" => "Cash on Delivery (COD)", "metadata" => {}, "created_at" => "2024-01-02T08:59:11-05:00", "updated_at" => "2024-01-02T08:59:11-05:00"}, {"disabled" => false, "id" => 431363653, "name" => "shopify_payments", "provider_id" => 87, "sandbox" => false, "supports_network_tokenization" => nil, "type" => "DirectPaymentGateway", "enabled_card_brands" => ["visa", "master", "american_express", "discover", "diners_club"], "processing_method" => "direct", "service_name" => "Shopify Payments", "metadata" => {"google_pay_merchant_id" => 548380009}, "created_at" => "2011-12-31T19:00:00-05:00", "updated_at" => "2024-01-02T09:02:13-05:00", "credential4" => nil, "attachment" => nil}]}), headers: {})
 
     response = ShopifyAPI::PaymentGateway.all
 
@@ -68,7 +68,7 @@ class PaymentGateway202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"payment_gateways" => [{"disabled" => false, "id" => 431363653, "name" => "shopify_payments", "provider_id" => 87, "sandbox" => false, "supports_network_tokenization" => nil, "type" => "DirectPaymentGateway", "enabled_card_brands" => ["visa", "master", "american_express", "discover", "diners_club"], "processing_method" => "direct", "service_name" => "Shopify Payments", "metadata" => {"google_pay_merchant_id" => 548380009}, "created_at" => "2011-12-31T19:00:00-05:00", "updated_at" => "2023-10-03T13:17:29-04:00", "credential4" => nil, "attachment" => nil}]}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"payment_gateways" => [{"disabled" => false, "id" => 431363653, "name" => "shopify_payments", "provider_id" => 87, "sandbox" => false, "supports_network_tokenization" => nil, "type" => "DirectPaymentGateway", "enabled_card_brands" => ["visa", "master", "american_express", "discover", "diners_club"], "processing_method" => "direct", "service_name" => "Shopify Payments", "metadata" => {"google_pay_merchant_id" => 548380009}, "created_at" => "2011-12-31T19:00:00-05:00", "updated_at" => "2024-01-02T09:02:10-05:00", "credential4" => nil, "attachment" => nil}]}), headers: {})
 
     response = ShopifyAPI::PaymentGateway.all(
       disabled: "false",
@@ -100,7 +100,7 @@ class PaymentGateway202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "payment_gateway" => hash_including({"credential1" => "someone@example.com", "provider_id" => 7}) }
       )
-      .to_return(status: 200, body: JSON.generate({"payment_gateway" => {"disabled" => false, "id" => 1070028413, "name" => "authorize_net", "provider_id" => 7, "sandbox" => false, "supports_network_tokenization" => nil, "type" => "DirectPaymentGateway", "enabled_card_brands" => ["visa", "master", "american_express", "discover", "diners_club", "jcb"], "processing_method" => "direct", "service_name" => "Authorize.net", "metadata" => {}, "created_at" => "2023-10-03T13:17:32-04:00", "updated_at" => "2023-10-03T13:17:32-04:00", "credential1" => "someone@example.com", "credential3" => nil, "credential4" => nil, "attachment" => nil}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"payment_gateway" => {"disabled" => false, "id" => 1070028413, "name" => "authorize_net", "provider_id" => 7, "sandbox" => false, "supports_network_tokenization" => nil, "type" => "DirectPaymentGateway", "enabled_card_brands" => ["visa", "master", "american_express", "discover", "diners_club", "jcb"], "processing_method" => "direct", "service_name" => "Authorize.net", "metadata" => {}, "created_at" => "2024-01-02T09:02:15-05:00", "updated_at" => "2024-01-02T09:02:15-05:00", "credential1" => "someone@example.com", "credential3" => nil, "credential4" => nil, "attachment" => nil}}), headers: {})
 
     response = payment_gateway = ShopifyAPI::PaymentGateway.new
     payment_gateway.credential1 = "someone@example.com"
@@ -133,7 +133,7 @@ class PaymentGateway202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
         body: {}
       )
-      .to_return(status: 200, body: JSON.generate({"payment" => {"disabled" => false, "id" => 431363653, "name" => "shopify_payments", "provider_id" => 87, "sandbox" => false, "supports_network_tokenization" => nil, "type" => "DirectPaymentGateway", "enabled_card_brands" => ["visa", "master", "american_express", "discover", "diners_club"], "processing_method" => "direct", "service_name" => "Shopify Payments", "metadata" => {"google_pay_merchant_id" => 548380009}, "created_at" => "2011-12-31T19:00:00-05:00", "updated_at" => "2023-10-03T13:17:30-04:00", "credential4" => nil, "attachment" => nil}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"payment" => {"disabled" => false, "id" => 431363653, "name" => "shopify_payments", "provider_id" => 87, "sandbox" => false, "supports_network_tokenization" => nil, "type" => "DirectPaymentGateway", "enabled_card_brands" => ["visa", "master", "american_express", "discover", "diners_club"], "processing_method" => "direct", "service_name" => "Shopify Payments", "metadata" => {"google_pay_merchant_id" => 548380009}, "created_at" => "2011-12-31T19:00:00-05:00", "updated_at" => "2024-01-02T09:02:14-05:00", "credential4" => nil, "attachment" => nil}}), headers: {})
 
     response = ShopifyAPI::PaymentGateway.find(
       id: 431363653,
@@ -165,7 +165,7 @@ class PaymentGateway202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "payment_gateway" => hash_including({"sandbox" => true}) }
       )
-      .to_return(status: 200, body: JSON.generate({"payment_gateway" => {"disabled" => false, "id" => 170508070, "name" => "Cash on Delivery (COD)", "provider_id" => 140, "sandbox" => true, "supports_network_tokenization" => nil, "type" => "ManualPaymentGateway", "enabled_card_brands" => [], "processing_method" => "manual", "service_name" => "Cash on Delivery (COD)", "metadata" => {}, "created_at" => "2023-10-03T13:17:01-04:00", "updated_at" => "2023-10-03T13:17:29-04:00"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"payment_gateway" => {"disabled" => false, "id" => 170508070, "name" => "Cash on Delivery (COD)", "provider_id" => 140, "sandbox" => true, "supports_network_tokenization" => nil, "type" => "ManualPaymentGateway", "enabled_card_brands" => [], "processing_method" => "manual", "service_name" => "Cash on Delivery (COD)", "metadata" => {}, "created_at" => "2024-01-02T08:59:11-05:00", "updated_at" => "2024-01-02T09:02:13-05:00"}}), headers: {})
 
     response = payment_gateway = ShopifyAPI::PaymentGateway.new
     payment_gateway.id = 170508070

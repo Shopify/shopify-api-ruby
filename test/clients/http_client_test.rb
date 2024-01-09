@@ -76,6 +76,15 @@ module ShopifyAPITest
           .to_return(body: "", headers: @response_headers, status: 204)
 
         verify_http_request
+
+        ShopifyAPI::Context.setup(
+          api_key: "key",
+          api_secret_key: "secret",
+          api_version: "2023-10",
+          scope: ["scope1", "scope2"],
+          is_private: true,
+          is_embedded: true,
+        )
       end
 
       def test_request_using_active_session

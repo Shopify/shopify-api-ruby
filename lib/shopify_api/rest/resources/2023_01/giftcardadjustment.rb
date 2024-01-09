@@ -6,20 +6,21 @@
 ########################################################################################################################
 
 module ShopifyAPI
-  class GiftCardAdjustment < ShopifyAPI::Rest::Base
+  class Giftcardadjustment < ShopifyAPI::Rest::Base
     extend T::Sig
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
-    sig { params(session: T.nilable(ShopifyAPI::Auth::Session)).void }
-    def initialize(session: ShopifyAPI::Context.active_session)
-      super(session: session)
+    @api_call_limit = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+    @retry_request_after = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
+
+    sig { params(session: T.nilable(ShopifyAPI::Auth::Session), from_hash: T.nilable(T::Hash[T.untyped, T.untyped])).void }
+    def initialize(session: ShopifyAPI::Context.active_session, from_hash: nil)
 
       @amount = T.let(nil, T.nilable(Float))
       @api_client_id = T.let(nil, T.nilable(Integer))
       @created_at = T.let(nil, T.nilable(String))
-      @gift_card_id = T.let(nil, T.nilable(Integer))
       @id = T.let(nil, T.nilable(Integer))
       @note = T.let(nil, T.nilable(String))
       @number = T.let(nil, T.nilable(Integer))
@@ -28,14 +29,16 @@ module ShopifyAPI
       @remote_transaction_ref = T.let(nil, T.nilable(String))
       @remote_transaction_url = T.let(nil, T.nilable(String))
       @user_id = T.let(nil, T.nilable(Integer))
+
+      super(session: session, from_hash: from_hash)
     end
 
     @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
     @paths = T.let([
-      {http_method: :get, operation: :get, ids: [:gift_card_id], path: "gift_cards/<gift_card_id>/adjustments.json"},
-      {http_method: :get, operation: :get, ids: [:gift_card_id, :id], path: "gift_cards/<gift_card_id>/adjustments/<id>.json"},
-      {http_method: :post, operation: :post, ids: [:gift_card_id], path: "gift_cards/<gift_card_id>/adjustments.json"}
+      {http_method: :get, operation: :adjustments, ids: [:gift_card_id], path: "gift_cards/<gift_card_id>/adjustments.json"},
+      {http_method: :get, operation: :get_all, ids: [:gift_card_id, :adjustment_id], path: "gift_cards/<gift_card_id>/adjustments/<adjustment_id>.json"},
+      {http_method: :post, operation: :adjustments, ids: [:gift_card_id], path: "gift_cards/<gift_card_id>/adjustments.json"}
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
 
     sig { returns(T.nilable(Float)) }
@@ -44,8 +47,6 @@ module ShopifyAPI
     attr_reader :api_client_id
     sig { returns(T.nilable(String)) }
     attr_reader :created_at
-    sig { returns(T.nilable(Integer)) }
-    attr_reader :gift_card_id
     sig { returns(T.nilable(Integer)) }
     attr_reader :id
     sig { returns(T.nilable(String)) }
@@ -65,53 +66,74 @@ module ShopifyAPI
 
     class << self
       sig do
-        returns(String)
-      end
-      def json_body_name()
-        "adjustment"
-      end
-
-      sig do
-        params(
-          id: T.any(Integer, String),
-          gift_card_id: T.nilable(T.any(Integer, String)),
-          session: Auth::Session
-        ).returns(T.nilable(GiftCardAdjustment))
-      end
-      def find(
-        id:,
-        gift_card_id: nil,
-        session: ShopifyAPI::Context.active_session
-      )
-        result = base_find(
-          session: session,
-          ids: {id: id, gift_card_id: gift_card_id},
-          params: {},
-        )
-        T.cast(result[0], T.nilable(GiftCardAdjustment))
-      end
-
-      sig do
         params(
           gift_card_id: T.nilable(T.any(Integer, String)),
           session: Auth::Session,
           kwargs: T.untyped
-        ).returns(T::Array[GiftCardAdjustment])
+        ).returns(T.untyped)
       end
-      def all(
+      def adjustments(
         gift_card_id: nil,
         session: ShopifyAPI::Context.active_session,
         **kwargs
       )
-        response = base_find(
+        request(
+          http_method: :get,
+          operation: :adjustments,
           session: session,
           ids: {gift_card_id: gift_card_id},
           params: {}.merge(kwargs).compact,
+          body: {},
+          entity: nil,
         )
-
-        T.cast(response, T::Array[GiftCardAdjustment])
       end
 
+      sig do
+        params(
+          gift_card_id: T.nilable(T.any(Integer, String)),
+          adjustment_id: T.nilable(T.any(Integer, String)),
+          session: Auth::Session,
+          kwargs: T.untyped
+        ).returns(T.untyped)
+      end
+      def get_all(
+        gift_card_id: nil,
+        adjustment_id: nil,
+        session: ShopifyAPI::Context.active_session,
+        **kwargs
+      )
+        request(
+          http_method: :get,
+          operation: :get_all,
+          session: session,
+          ids: {gift_card_id: gift_card_id, adjustment_id: adjustment_id},
+          params: {}.merge(kwargs).compact,
+          body: {},
+          entity: nil,
+        )
+      end
+
+    end
+
+    sig do
+      params(
+        body: T.untyped,
+        kwargs: T.untyped
+      ).returns(T.untyped)
+    end
+    def adjustments(
+      body: nil,
+      **kwargs
+    )
+      self.class.request(
+        http_method: :post,
+        operation: :adjustments,
+        session: @session,
+        ids: {gift_card_id: @gift_card_id},
+        params: {}.merge(kwargs).compact,
+        body: body,
+        entity: self,
+      )
     end
 
   end
