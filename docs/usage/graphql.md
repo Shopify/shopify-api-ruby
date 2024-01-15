@@ -117,7 +117,7 @@ response = client.query(query: query, variables: variables)
 
 ### Output
 #### Success
-If the request is successful these methods will all return a [`ShopifyAPI::Clients::HttpResponse`](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/clients/http_response.rb) object, which has the following methods: 
+If the request is successful these methods will all return a [`ShopifyAPI::Clients::HttpResponse`](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/clients/http_response.rb) object, which has the following methods:
 | Methods | Type | Notes |
 |---------|------|-------|
 | `code`  |`Integer`| HTTP Response code, e.g. `200`|
@@ -136,6 +136,35 @@ and output error messages with `errors.full_messages`
 This library also supports cursor-based pagination for GraphQL Admin API requests. [Learn more about GraphQL request pagination](https://shopify.dev/docs/api/usage/pagination-graphql).
 
 After making a request, the `next_page_info` and `prev_page_info` can be found on the response object and be used in the query param in other requests.
+
+## Response as Struct
+By default the response body is returned as a `Hash{String, Untyped}`. If you would like to return the response body as a `Struct`, you can pass `response_as_struct: true` to the `ShopifyAPI::Context.setup` method.
+Then you can access the object with both dot and hash notation.
+
+```ruby
+    ShopifyAPI::Context.setup(
+      api_key: ShopifyApp.configuration.api_key,
+      api_secret_key: ShopifyApp.configuration.secret,
+      ...
+      response_as_struct: true
+    )
+
+    # Make a graphql query
+      response = client.query(
+        query: CREATE_PRODUCTS_MUTATION,
+        variables: {
+          input: {
+            title: random_title,
+            variants: [{ price: random_price }],
+          },
+        },
+      )
+      # Access result with dot notation
+      created_product2 = response.body.data.productCreate.product
+      # Access result with hash notation
+      created_product = response.body["data"]["productCreate"]["product"]
+
+```
 
 ## Proxy a GraphQL Query
 
