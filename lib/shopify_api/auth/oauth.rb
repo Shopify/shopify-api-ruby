@@ -89,7 +89,8 @@ module ShopifyAPI
           end
 
           session_params = T.cast(response.body, T::Hash[String, T.untyped]).to_h
-          session = create_new_session(session_params, auth_query.shop)
+          session = Session.from(shop: auth_query.shop,
+            access_token_response: Oauth::AccessTokenResponse.from_hash(session_params))
 
           cookie = if Context.embedded?
             SessionCookie.new(
@@ -104,38 +105,6 @@ module ShopifyAPI
           end
 
           { session: session, cookie: cookie }
-        end
-
-        private
-
-        sig { params(session_params: T::Hash[String, T.untyped], shop: String).returns(Session) }
-        def create_new_session(session_params, shop)
-          session_params = session_params.to_h { |k, v| [k.to_sym, v] }
-
-          scope = session_params[:scope]
-
-          is_online = !session_params[:associated_user].nil?
-
-          if is_online
-            associated_user = AssociatedUser.new(session_params[:associated_user].to_h { |k, v| [k.to_sym, v] })
-            expires = Time.now + session_params[:expires_in].to_i
-            associated_user_scope = session_params[:associated_user_scope]
-            id = "#{shop}_#{associated_user.id}"
-          else
-            id = "offline_#{shop}"
-          end
-
-          Session.new(
-            id: id,
-            shop: shop,
-            access_token: session_params[:access_token],
-            scope: scope,
-            is_online: is_online,
-            associated_user_scope: associated_user_scope,
-            associated_user: associated_user,
-            expires: expires,
-            shopify_session_id: session_params[:session],
-          )
         end
       end
     end
