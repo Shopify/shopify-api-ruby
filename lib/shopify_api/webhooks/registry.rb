@@ -193,7 +193,16 @@ module ShopifyAPI
             raise Errors::NoWebhookHandler, "No webhook handler found for topic: #{request.topic}."
           end
 
-          handler.handle(topic: request.topic, shop: request.shop, body: request.parsed_body)
+          if handler.use_handle_webhook?
+            handler.handle_webhook({ topic: request.topic, shop: request.shop, body: request.parsed_body,
+              webhook_id: request.webhook_id, api_version: request.api_version, })
+          else
+            handler.handle(topic: request.topic, shop: request.shop, body: request.parsed_body)
+            ShopifyAPI::Logger.warn(<<~WARNING)
+              DEPRECATED: Use ShopifyAPI::Webhooks::Handler#handle_webhook
+              instead of ShopifyAPI::Webhooks::Handler#handle
+            WARNING
+          end
         end
 
         private
