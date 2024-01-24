@@ -198,11 +198,12 @@ module ShopifyAPI
               body: request.parsed_body, api_version: request.api_version, webhook_id: request.webhook_id))
           else
             handler.handle(topic: request.topic, shop: request.shop, body: request.parsed_body)
-            ShopifyAPI::Logger.warn(<<~WARNING)
-              DEPRECATED: Use ShopifyAPI::Webhooks::WebhookHandler#handle
+            ShopifyAPI::Logger.deprecated(
+              "DEPRECATED: Use ShopifyAPI::Webhooks::WebhookHandler#handle \
               instead of ShopifyAPI::Webhooks::Handler#handle.
-              https://github.com/Shopify/shopify-api-ruby/blob/main/docs/usage/webhooks.md#create-a-webhook-handler
-            WARNING
+              https://github.com/Shopify/shopify-api-ruby/blob/main/docs/usage/webhooks.md#create-a-webhook-handler",
+              "14.0.0",
+            )
           end
         end
 
