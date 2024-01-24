@@ -200,7 +200,8 @@ module ShopifyAPI
             handler.handle(topic: request.topic, shop: request.shop, body: request.parsed_body)
             ShopifyAPI::Logger.warn(<<~WARNING)
               DEPRECATED: Use ShopifyAPI::Webhooks::Handler#handle_webhook
-              instead of ShopifyAPI::Webhooks::Handler#handle
+              instead of ShopifyAPI::Webhooks::Handler#handle.
+              https://github.com/Shopify/shopify-api-ruby/blob/main/docs/usage/webhooks.md#create-a-webhook-handler
             WARNING
           end
         end
