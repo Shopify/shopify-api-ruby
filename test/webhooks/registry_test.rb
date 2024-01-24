@@ -64,11 +64,11 @@ module ShopifyAPITest
 
         handler = TestHelpers::NewFakeWebhookHandler.new(
           lambda do |data|
-            assert_equal(@topic, data[:topic])
-            assert_equal(@shop, data[:shop])
-            assert_equal({}, data[:body])
-            assert_equal("b1234-eefd-4c9e-9520-049845a02082", data[:webhook_id])
-            assert_equal("2024-01", data[:api_version])
+            assert_equal(@topic, data.topic)
+            assert_equal(@shop, data.shop)
+            assert_equal({}, data.body)
+            assert_equal("b1234-eefd-4c9e-9520-049845a02082", data.webhook_id)
+            assert_equal("2024-01", data.api_version)
             handler_called = true
           end,
         )

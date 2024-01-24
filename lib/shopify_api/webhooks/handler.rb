@@ -3,30 +3,36 @@
 
 module ShopifyAPI
   module Webhooks
+    class WebhookMetadata < T::Struct
+      const :topic, String
+      const :shop, String
+      const :body, T::Hash[String, T.untyped]
+      const :api_version, String
+      const :webhook_id, String
+    end
+
     module Handler
       include Kernel
       extend T::Sig
       extend T::Helpers
-      abstract!
-
-      sig do
-        params(data: T::Hash[Symbol, T.untyped]).void
-      end
-      def handle_webhook(data)
-        if use_handle_webhook?
-          raise NotImplementedError, "You must implement the `handle_webhook` method in your webhook handler class."
-        end
-      end
+      interface!
 
       sig do
         abstract.params(topic: String, shop: String, body: T::Hash[String, T.untyped]).void
       end
       def handle(topic:, shop:, body:); end
+    end
 
-      sig { returns(T::Boolean) }
-      def use_handle_webhook?
-        false
+    module WebhookHandler
+      include Kernel
+      extend T::Sig
+      extend T::Helpers
+      interface!
+
+      sig do
+        abstract.params(data: WebhookMetadata).void
       end
+      def handle(data:); end
     end
   end
 end
