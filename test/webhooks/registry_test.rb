@@ -384,7 +384,7 @@ module ShopifyAPITest
         assert_equal(queries[delivery_method][:register_update_response], update_registration_response.body)
       end
 
-      def do_registration_test_new_handler(delivery_method, path, fields: nil, metafield_namespaces: nil)
+      def do_registration_new_handler_test(delivery_method, path, fields: nil, metafield_namespaces: nil)
         ShopifyAPI::Webhooks::Registry.clear
 
         check_query_body = { query: queries[delivery_method][:check_query], variables: nil }
