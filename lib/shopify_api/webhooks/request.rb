@@ -22,6 +22,16 @@ module ShopifyAPI
         T.cast(@headers["x-shopify-shop-domain"], String)
       end
 
+      sig { returns(String) }
+      def api_version
+        T.cast(@headers["x-shopify-api-version"], String)
+      end
+
+      sig { returns(String) }
+      def webhook_id
+        T.cast(@headers["x-shopify-webhook-id"], String)
+      end
+
       sig { override.returns(String) }
       def to_signable_string
         @raw_body
