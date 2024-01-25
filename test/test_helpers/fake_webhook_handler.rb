@@ -1,6 +1,7 @@
 # typed: false
 # frozen_string_literal: true
 
+require_relative "../../lib/shopify_api/webhooks/handler"
 module TestHelpers
   class FakeWebhookHandler
     include ShopifyAPI::Webhooks::Handler
