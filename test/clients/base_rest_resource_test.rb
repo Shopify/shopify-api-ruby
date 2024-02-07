@@ -76,6 +76,17 @@ module ShopifyAPITest
         assert_equal([2, "attribute2"], [got[1].id, got[1].attribute])
       end
 
+      def test_finds_all_resources_with_headers
+        ShopifyAPI::Rest::Base.headers = { "X-Shopify-Test" => "test" }
+
+        stub_request(:get, "#{@prefix}/fake_resources.json")
+          .with(headers: { "X-Shopify-Test" => "test" })
+
+        TestHelpers::FakeResource.all(session: @session)
+
+        ShopifyAPI::Rest::Base.headers = {}
+      end
+
       def test_saves
         request_body = { fake_resource: { attribute: "attribute" } }.to_json
         response_body = { fake_resource: { id: 1, attribute: "attribute" } }.to_json
@@ -428,6 +439,7 @@ module ShopifyAPITest
           body: { "product" => { "metafields" => [{ "key" => "new", "value" => "newvalue", "type" => "single_line_text_field",
                                                     "namespace" => "global", }], "id" => 632910392, } },
           path: "products/632910392.json",
+          headers: nil,
         )
         product.metafields = [
           {
@@ -452,6 +464,7 @@ module ShopifyAPITest
         customer.client.expects(:put).with(
           body: { "customer" => { "tags" => "New Customer, Repeat Customer", "id" => 207119551 } },
           path: "customers/207119551.json",
+          headers: nil,
         )
         customer.tags = "New Customer, Repeat Customer"
 
@@ -500,6 +513,7 @@ module ShopifyAPITest
         variant.client.expects(:put).with(
           body: { "variant" => { "barcode" => "1234", "id" => 169 } },
           path: "variants/169.json",
+          headers: nil,
         )
         variant.barcode = "1234"
         variant.save
