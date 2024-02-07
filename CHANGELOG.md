@@ -3,6 +3,7 @@
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
+- [#1279](https://github.com/Shopify/shopify-api-ruby/pull/1276) Fixes DiscountCode errors type, adds new BatchResult type
 - [#1254](https://github.com/Shopify/shopify-api-ruby/pull/1254) Introduce token exchange API for fetching access tokens. This feature is currently unstable and cannot be used yet.
 - [#1268](https://github.com/Shopify/shopify-api-ruby/pull/1268) Add [new webhook handler interface](https://github.com/Shopify/shopify-api-ruby/blob/main/docs/usage/webhooks.md#create-a-webhook-handler) to provide `webhook_id ` and `api_version` information to webhook handlers.
 
