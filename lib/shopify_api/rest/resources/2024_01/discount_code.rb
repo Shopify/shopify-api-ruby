@@ -20,7 +20,6 @@ module ShopifyAPI
 
       @code = T.let(nil, T.nilable(String))
       @created_at = T.let(nil, T.nilable(String))
-      @errors = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
       @id = T.let(nil, T.nilable(Integer))
       @price_rule_id = T.let(nil, T.nilable(Integer))
       @updated_at = T.let(nil, T.nilable(String))
@@ -35,6 +34,7 @@ module ShopifyAPI
       {http_method: :delete, operation: :delete, ids: [:price_rule_id, :id], path: "price_rules/<price_rule_id>/discount_codes/<id>.json"},
       {http_method: :get, operation: :count, ids: [], path: "discount_codes/count.json"},
       {http_method: :get, operation: :get, ids: [:price_rule_id, :batch_id], path: "price_rules/<price_rule_id>/batch/<batch_id>/discount_codes.json"},
+      {http_method: :get, operation: :get_batch_results, ids: [:price_rule_id, :batch_id], path: "price_rules/<price_rule_id>/batch/<batch_id>/discount_codes.json"},
       {http_method: :get, operation: :get, ids: [:price_rule_id], path: "price_rules/<price_rule_id>/discount_codes.json"},
       {http_method: :get, operation: :get, ids: [:price_rule_id, :id], path: "price_rules/<price_rule_id>/discount_codes/<id>.json"},
       {http_method: :get, operation: :get_all, ids: [:price_rule_id, :batch_id], path: "price_rules/<price_rule_id>/batch/<batch_id>.json"},
@@ -48,8 +48,6 @@ module ShopifyAPI
     attr_reader :code
     sig { returns(T.nilable(String)) }
     attr_reader :created_at
-    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
-    attr_reader :errors
     sig { returns(T.nilable(Integer)) }
     attr_reader :id
     sig { returns(T.nilable(Integer)) }
@@ -58,6 +56,12 @@ module ShopifyAPI
     attr_reader :updated_at
     sig { returns(T.nilable(Integer)) }
     attr_reader :usage_count
+
+    class BatchResult < T::Struct
+      const :id, T.nilable(Integer)
+      const :code, T.nilable(String)
+      const :errors, T.nilable(T::Hash[T.untyped, T.untyped])
+    end
 
     class << self
       sig do
@@ -115,6 +119,17 @@ module ShopifyAPI
         session: ShopifyAPI::Context.active_session,
         **kwargs
       )
+        unless batch_id.nil?
+          deprecation_msg = <<~MSG
+            DEPRECATED: Use `.get_batch_results`
+            instead of `.all` with `batch_id` argument to get the right return type.
+          MSG
+          ShopifyAPI::Logger.deprecated(
+            deprecation_msg,
+            "14.0.0",
+          )
+        end
+
         response = base_find(
           session: session,
           ids: {price_rule_id: price_rule_id, batch_id: batch_id},
@@ -174,6 +189,52 @@ module ShopifyAPI
           body: {},
           entity: nil,
         )
+      end
+
+      sig do
+        params(
+          price_rule_id: T.nilable(T.any(Integer, String)),
+          batch_id: T.nilable(T.any(Integer, String)),
+          session: Auth::Session,
+          kwargs: T.untyped
+        ).returns(T::Array[BatchResult])
+      end
+      def get_batch_results(
+        price_rule_id: nil,
+        batch_id: nil,
+        session: ShopifyAPI::Context.active_session,
+        **kwargs
+      )
+        response = request(
+          http_method: :get,
+          operation: :get_batch_results,
+          session: session,
+          ids: {price_rule_id: price_rule_id, batch_id: batch_id},
+          params: {}.merge(kwargs).compact,
+          body: {},
+          entity: nil,
+        )
+
+        body = T.cast(response.body, T::Hash[String, T.untyped])
+        results = T.let([], T::Array[BatchResult])
+
+        response_names = json_response_body_names
+        response_names.each do |response_name|
+          root = response_name.pluralize
+          batch_results = body[root]
+
+          results = batch_results.map do |result|
+            original_state = result.transform_keys(&:to_sym)
+
+            BatchResult.new(
+              id: original_state[:id],
+              code: original_state[:code],
+              errors: original_state[:errors],
+            )
+          end
+        end
+
+        results
       end
 
       sig do

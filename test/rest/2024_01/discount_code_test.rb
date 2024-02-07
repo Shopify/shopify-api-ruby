@@ -324,4 +324,44 @@ class DiscountCode202401Test < Test::Unit::TestCase
     end
   end
 
+  sig do
+    void
+  end
+  def test_10()
+    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2024-01/price_rules/507328175/batch/173232803/discount_codes.json")
+      .with(
+        headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
+        body: {}
+      )
+      .to_return(
+        status: 200,
+        body: JSON.generate(
+          {
+            "discount_codes" => [
+              {"id" => nil, "code" => "foo", "errors" => { "code": ["Must be unique, please try a different code"] }},
+            ]
+          }
+        ), headers: {})
+
+    response = ShopifyAPI::DiscountCode.get_batch_results(
+      price_rule_id: 507328175,
+      batch_id: 173232803,
+    )
+
+    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2024-01/price_rules/507328175/batch/173232803/discount_codes.json")
+
+    response = response.first if response.respond_to?(:first)
+
+    # Assert attributes are correctly typed preventing Sorbet errors downstream
+    if response.respond_to?(:original_state)
+      response&.original_state&.each do |key, value|
+        begin
+          response.send(key)
+        rescue TypeError => error
+          fail TypeError.new("#{self.class}##{key} is mistyped: #{error.message}")
+        end
+        response.send(key)
+      end
+    end
+  end
 end
