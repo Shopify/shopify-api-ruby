@@ -10,8 +10,8 @@ module TestHelpers
     @api_call_limit = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @retry_request_after = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
 
-    @has_one = T.let({}, T::Hash[Symbol, Class])
-    @has_many = T.let({}, T::Hash[Symbol, Class])
+    @has_one = T.let({}, T::Hash[Symbol, T::Class[T.anything]])
+    @has_many = T.let({}, T::Hash[Symbol, T::Class[T.anything]])
     @paths = T.let([
       { http_method: :get, operation: :get, ids: [:id], path: "fake_resource_with_custom_prefix/<id>.json" },
     ], T::Array[T::Hash[String, T.any(T::Array[Symbol], String, Symbol)]])
