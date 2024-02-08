@@ -64,6 +64,15 @@ module ShopifyAPI
         sig { returns(T.nilable(T::Hash[T.any(Symbol, String), String])) }
         attr_accessor :headers
 
+        sig { params(subclass: T::Class[T.anything]).returns(T.untyped) }
+        def inherited(subclass)
+          super
+
+          subclass.define_singleton_method(:headers) do
+            ShopifyAPI::Rest::Base.headers
+          end
+        end
+
         sig do
           params(
             session: T.nilable(Auth::Session),
