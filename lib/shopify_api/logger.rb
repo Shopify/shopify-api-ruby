@@ -75,7 +75,7 @@ module ShopifyAPI
       def valid_version(version)
         current_version = Gem::Version.create(ShopifyAPI::VERSION)
         deprecate_version = Gem::Version.create(version)
-        current_version < deprecate_version
+        T.must(current_version) < deprecate_version
       end
     end
   end

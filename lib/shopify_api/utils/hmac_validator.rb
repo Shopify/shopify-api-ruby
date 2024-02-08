@@ -27,7 +27,7 @@ module ShopifyAPI
         def validate_signature(verifiable_query, secret)
           received_signature = verifiable_query.hmac
           computed_signature = compute_signature(verifiable_query.to_signable_string, secret)
-          OpenSSL.secure_compare(computed_signature, received_signature)
+          OpenSSL.secure_compare(computed_signature, T.must(received_signature))
         end
 
         sig { params(signable_string: String, secret: String).returns(String) }

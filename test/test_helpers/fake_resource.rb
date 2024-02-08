@@ -7,11 +7,11 @@ module TestHelpers
 
     @has_one = T.let({
       has_one_attribute: FakeResource,
-    }, T::Hash[Symbol, Class])
+    }, T::Hash[Symbol, T::Class[T.anything]])
 
     @has_many = T.let({
       has_many_attribute: FakeResource,
-    }, T::Hash[Symbol, Class])
+    }, T::Hash[Symbol, T::Class[T.anything]])
 
     @prev_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
     @next_page_info = T.let(Concurrent::ThreadLocalVar.new { nil }, Concurrent::ThreadLocalVar)
