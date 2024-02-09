@@ -127,6 +127,16 @@ draft_order.save!
 
 When updating a resource, only the modified attributes, the resource's primary key, and required parameters are sent to the API. The primary key is usually the `id` attribute of the resource, but it can vary if the `primary_key` method is overwritten in the resource's class. The required parameters are identified using the path parameters of the `PUT` endpoint of the resource.
 
+### Headers
+You can add custom headers to the HTTP calls made by methods like `find`, `delete`, `all`, `count`
+by setting the `headers` attribute on the `ShopifyAPI::Rest::Base` class in an initializer, like so:
+
+```ruby
+ShopifyAPI::Rest::Base.headers = { "X-Custom-Header" => "Custom Value" }
+# `find` will call the API endpoint with the custom header
+ShopifyAPI::Customer.find(id: customer_id)
+```
+
 ### Usage Examples
 ⚠️ The [API reference documentation](https://shopify.dev/docs/api/admin-rest) contains more examples on how to use each REST Resources.
 
