@@ -77,14 +77,12 @@ module ShopifyAPITest
       end
 
       def test_finds_all_resources_with_headers
-        ShopifyAPI::Rest::Base.headers = { "X-Shopify-Test" => "test" }
+        ShopifyAPI::Rest::Base.stubs(:headers).returns({ "X-Shopify-Test" => "test" })
 
         stub_request(:get, "#{@prefix}/fake_resources.json")
           .with(headers: { "X-Shopify-Test" => "test" })
 
         TestHelpers::FakeResource.all(session: @session)
-
-        ShopifyAPI::Rest::Base.headers = {}
       end
 
       def test_saves
