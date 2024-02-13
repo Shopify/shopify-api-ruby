@@ -3,8 +3,9 @@ name: shopify-api
 type: ruby
 
 up:
-  - ruby: 3.0.3
-  - bundler
+  - ruby: 3.0.6
+  - bundler:
+      gemfile: Gemfile
 
 commands:
   console:
