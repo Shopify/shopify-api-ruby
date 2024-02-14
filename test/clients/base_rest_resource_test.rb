@@ -376,7 +376,7 @@ module ShopifyAPITest
         stub_request(:get, "#{@prefix}/fake_resources.json")
           .to_return(body: response_body, headers: {
             "link" => "<#{@prefix}/fake_resources.json?page_info=page-info>; rel=\"next\"",
-          })
+          }).times(2)
 
         threads = []
 
