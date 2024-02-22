@@ -1,6 +1,8 @@
 # typed: strict
 # frozen_string_literal: true
 
+require "hash_diff"
+
 module ShopifyAPI
   module Utils
     module AttributesComparator
