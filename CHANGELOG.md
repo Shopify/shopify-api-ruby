@@ -3,6 +3,7 @@
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
+- [#1282](https://github.com/Shopify/shopify-api-ruby/pull/1282) Fixes a bug where diffing attributes to update not take into account of Array changes and required ids.
 - [#1254](https://github.com/Shopify/shopify-api-ruby/pull/1254) Introduce token exchange API for fetching access tokens. This feature is currently unstable and cannot be used yet.
 - [#1268](https://github.com/Shopify/shopify-api-ruby/pull/1268) Add [new webhook handler interface](https://github.com/Shopify/shopify-api-ruby/blob/main/docs/usage/webhooks.md#create-a-webhook-handler) to provide `webhook_id ` and `api_version` information to webhook handlers.
 - [#1274](https://github.com/Shopify/shopify-api-ruby/pull/1274) Update sorbet and rbi dependencies. Remove support for ruby 2.7.
