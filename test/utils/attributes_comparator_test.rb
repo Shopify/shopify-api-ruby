@@ -29,8 +29,8 @@ module ShopifyAPITest
           {
             name: "overwrites nested arrays with updated array values",
             original_attributes: { "a" => { "b" => [{ "c" => 1 }, { "c" => 2 }] } },
-            updated_attributes: { "a" => { "b" => [{ "c" => 1 }] } },
-            expected: { "a" => { "b" => [{ "c" => 1 }] } },
+            updated_attributes: { "a" => { "b" => [{ "c" => 2 }] } },
+            expected: { "a" => { "b" => [{ "c" => 2 }] } },
           },
           {
             name: "returns diff values for nested hashes",
@@ -58,9 +58,9 @@ module ShopifyAPITest
           },
           {
             name: "updates explicitly empty value",
-            original_attributes: { "a" => { "b" => 2 } },
-            updated_attributes: { "a" => {} },
-            expected: { "a" => {} },
+            original_attributes: { "a" => { "b" => { "c" => 1 } } },
+            updated_attributes: { "a" => { "b" => {} } },
+            expected: { "a" => { "b" => {} } },
           },
           {
             name: "returns nil values",
@@ -73,6 +73,12 @@ module ShopifyAPITest
             original_attributes: { "a" => { "b" => 1 } },
             updated_attributes: { "a" => { "b" => nil } },
             expected: { "a" => { "b" => nil } },
+          },
+          {
+            name: "hash with numbered key not overwritten if updated value not array",
+            original_attributes: { "a" => { 0 => "test", 1 => "test2" } },
+            updated_attributes: { "a" => { 0 => "test3", 1 => "test4" } },
+            expected: { "a" => { 0 => "test3", 1 => "test4" } },
           },
         ]
 
