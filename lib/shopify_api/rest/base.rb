@@ -3,7 +3,6 @@
 
 require "active_support/inflector"
 require "hash_diff"
-require "pry-byebug"
 
 module ShopifyAPI
   module Rest
