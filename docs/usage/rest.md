@@ -69,8 +69,78 @@ Typical methods provided for each resources are:
 Full list of methods can be found on each of the resource class.
 - Path:
   - https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/rest/resources/#{version}/#{resource}.rb
-- Example for `Order` resource on `2023-04` version:
-  - https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/rest/resources/2023_04/order.rb
+- Example for `Order` resource on `2024-01` version:
+  - https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/rest/resources/2024_01/order.rb
+
+### The `save` method
+
+The `save` or `save!` method on a resource allows you to `create` or `update` that resource.
+
+#### Create a new resource
+
+To create a new resource using the `save` or `save!` method, you can initialize the resource with a hash of values or simply assigning them manually. For example:
+
+```Ruby
+# Create a new product from hash
+product_properties = {
+  title: "My awesome product"
+}
+product = ShopifyAPI::Product.new(from_hash: product_properties)
+product.save!
+
+# Create a new product manually
+product = ShopifyAPI::Product.new
+product.title = "Another one"
+product.save!
+```
+
+#### Update an existing resource
+
+To update an existing resource using the `save` or `save!` method, you'll need to fetch the resource from Shopify first. Then, you can manually assign new values to the resource before calling `save` or `save!`. For example:
+
+```Ruby
+# Update a product's title
+product = ShopifyAPI::Product.find(id: product_id)
+product.title = "My new title"
+product.save!
+
+# Remove a line item from a draft order
+draft_order = ShopifyAPI::DraftOrder.find(id: draft_order_id)
+
+new_line_items = draft_order.line_items.reject { |line_item| line_item["id"] == 12345 }
+draft_order.line_items = new_line_items
+
+draft_order.save!
+```
+
+> [!IMPORTANT]
+> If you need to unset an existing value,
+> please explicitly set that attribute to `nil` or empty values such as `[]` or `{}`. For example:
+>
+> ```Ruby
+>   # Removes shipping address from draft_order
+>   draft_order.shipping_address = {}
+>   draft_order.save!
+> ```
+>
+> This is because only changed values are sent to the API, so if `shipping_address` is not "changed" to `{}`. It won't be part of the PUT request payload
+
+When `save` is called to update a resource, only changed attributes, the resource's primary key and required parameters are sent to the API. Most resources' primary key will be its `id` value. It could be different if the `primary_key` method in the `ShopifyAPI::Rest::Base` class is overwritten. Required parameters are determined using the `ids` key in each resource's `@path` instance variable. For example:
+
+The `put` operation in the [Asset resource](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/rest/resources/2024_01/asset.rb)'s `@paths` instance variable has `theme_id` as part of the `ids` array. It has a `primary_key` method overwrite to use `key` as its primary key. Therefore, the `theme_id`, and `key` values are attached to the payload whenever you call `save` or `save!` to update an Asset resource.
+
+This results in a payload as follow:
+
+```Ruby
+PUT "themes/12345/assets.json"
+{
+    "asset" => {
+        "key" => "template/index.liquid", # primary key
+        "theme_id" => 12345, # required parameter
+        # ... any changed values
+    }
+}
+```
 
 ### Usage Examples
 ⚠️ Reference documentation on [shopify.dev](https://shopify.dev/docs/api/admin-rest) contains more examples on how to use each REST Resources.
@@ -80,18 +150,6 @@ Full list of methods can be found on each of the resource class.
 customer = ShopifyAPI::Customer.find(id: customer_id)
 customer.email = "steve-lastnameson@example.com"
 customer.save!
-
-# Create a new product from hash
-product_properties = {
-  title: "My awesome product"
-}
-product = ShopifyAPI::Product.new(from_hash: product_properties)
-product.save!
-
-# Create a product manually
-product = ShopifyAPI::Product.new
-product.title = "Another one"
-product.save!
 
 # Get all orders
 orders = ShopifyAPI::Orders.all
