@@ -143,7 +143,7 @@ PUT "themes/12345/assets.json"
 ```
 
 ### Usage Examples
-⚠️ Reference documentation on [shopify.dev](https://shopify.dev/docs/api/admin-rest) contains more examples on how to use each REST Resources.
+⚠️ The [API reference documentation](https://shopify.dev/docs/api/admin-rest) contains more examples on how to use each REST Resources.
 
 ```Ruby
 # Find and update a customer email
