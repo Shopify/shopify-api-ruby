@@ -2,7 +2,6 @@
 # frozen_string_literal: true
 
 require "active_support/inflector"
-require "hash_diff"
 
 module ShopifyAPI
   module Rest
@@ -190,6 +189,21 @@ module ShopifyAPI
         sig do
           params(
             http_method: Symbol,
+            operation: Symbol,
+          ).returns(T.nilable(T::Array[Symbol]))
+        end
+        def get_path_ids(http_method:, operation:)
+          found_path = @paths.find do |path|
+            http_method == path[:http_method] && operation == path[:operation]
+          end
+          return nil if found_path.nil?
+
+          T.cast(found_path[:ids], T::Array[Symbol])
+        end
+
+        sig do
+          params(
+            http_method: Symbol,
             operation: T.any(String, Symbol),
             session: T.nilable(Auth::Session),
             ids: T::Hash[Symbol, String],
@@ -355,9 +369,14 @@ module ShopifyAPI
       sig { params(update_object: T::Boolean).void }
       def save(update_object: false)
         method = deduce_write_verb
+
+        body = {
+          self.class.json_body_name => attributes_to_update.merge(build_required_attributes(http_method: method)),
+        }
+
         response = @client.public_send(
           method,
-          body: { self.class.json_body_name => attributes_to_update },
+          body: body,
           path: deduce_write_path(method),
         )
 
@@ -374,22 +393,34 @@ module ShopifyAPI
 
       sig { returns(T::Hash[String, String]) }
       def attributes_to_update
-        original_state_for_update = original_state.reject do |attribute, _|
+        updatable_attributes = original_state.reject do |attribute, _|
           self.class.read_only_attributes&.include?("@#{attribute}".to_sym)
         end
 
-        diff = HashDiff::Comparison.new(
-          deep_stringify_keys(original_state_for_update),
-          deep_stringify_keys(to_hash(true)),
-        ).left_diff
+        stringified_updatable_attributes = deep_stringify_keys(updatable_attributes)
+        stringified_new_attributes = deep_stringify_keys(to_hash(true))
+        ShopifyAPI::Utils::AttributesComparator.compare(
+          stringified_updatable_attributes,
+          stringified_new_attributes,
+        )
+      end
 
-        diff.each do |attribute, value|
-          if value.is_a?(Hash) && value[0] == HashDiff::NO_VALUE
-            diff[attribute] = send(attribute)
-          end
+      sig { params(http_method: Symbol).returns(T::Hash[String, T.untyped]) }
+      def build_required_attributes(http_method:)
+        required_attributes = {}
+
+        primary_key_value = send(self.class.primary_key)
+        unless primary_key_value.nil?
+          required_attributes[self.class.primary_key] = primary_key_value
         end
 
-        diff
+        path_ids = deduce_path_ids(http_method)
+        path_ids&.each do |path_id|
+          path_id_value = send(path_id)
+          required_attributes[path_id.to_s] = path_id_value unless path_id_value.nil?
+        end
+
+        required_attributes
       end
 
       sig { returns(Symbol) }
@@ -407,6 +438,18 @@ module ShopifyAPI
         end
 
         path
+      end
+
+      sig { params(method: Symbol).returns(T.nilable(T::Array[Symbol])) }
+      def deduce_path_ids(method)
+        path_ids = self.class.get_path_ids(http_method: method, operation: method)
+
+        if path_ids.nil?
+          method = method == :post ? :put : :post
+          path_ids = self.class.get_path_ids(http_method: method, operation: method)
+        end
+
+        path_ids
       end
 
       sig { params(hash: T::Hash[T.any(String, Symbol), T.untyped]).returns(T::Hash[String, String]) }

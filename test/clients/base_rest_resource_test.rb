@@ -237,7 +237,7 @@ module ShopifyAPITest
         body = draft_order_data.dup
         body["line_items"] = []
         stubbed_request = stub_request(:put, "#{@prefix}/draft_orders/#{draft_order_data.dig("id")}.json")
-          .with(body: hash_including("draft_order": { line_items: [] }))
+          .with(body: hash_including("draft_order": { line_items: [], id: 1124601987358 }))
           .to_return(status: 200)
 
         draft_order.line_items = []
@@ -416,15 +416,17 @@ module ShopifyAPITest
             headers: { "X-Shopify-Access-Token" => "this_is_a_test_token", "Accept" => "application/json",
                        "Content-Type" => "application/json", },
             body: { "product" => hash_including({ "metafields" => [{ "key" => "new", "value" => "newvalue",
-                                                                     "type" => "single_line_text_field", "namespace" => "global", }] }) },
+                                                                     "type" => "single_line_text_field", "namespace" => "global", }],
+                                                  "id" => 632910392, }) },
           )
           .to_return(status: 200, body: JSON.generate({ "product" => { "id" => 632910392, "title" => "IPod Nano - 8GB",
                                                                        "body_html" => "<p>It's the small iPod with one very big idea: Video. Now the world's most popular music player, available in 4GB and 8GB models, lets you enjoy TV shows, movies, video podcasts, and more. The larger, brighter display means amazing picture quality. In six eye-catching colors, iPod nano is stunning all around. And with models starting at just $149, little speaks volumes.</p>", "vendor" => "Apple", "product_type" => "Cult Products", "created_at" => "2023-02-02T09:09:49-05:00", "handle" => "ipod-nano", "updated_at" => "2023-02-02T09:28:31-05:00", "published_at" => "2007-12-31T19:00:00-05:00", "template_suffix" => nil, "status" => "active", "published_scope" => "web", "tags" => "Emotive, Flash Memory, MP3, Music", "admin_graphql_api_id" => "gid://shopify/Product/632910392", "variants" => [{ "id" => 808950810, "product_id" => 632910392, "title" => "Pink", "price" => "199.00", "sku" => "IPOD2008PINK", "position" => 1, "inventory_policy" => "continue", "compare_at_price" => nil, "fulfillment_service" => "manual", "inventory_management" => "shopify", "option1" => "Pink", "option2" => nil, "option3" => nil, "created_at" => "2023-02-02T09:09:49-05:00", "updated_at" => "2023-02-02T09:09:49-05:00", "taxable" => true, "barcode" => "1234_pink", "grams" => 567, "image_id" => 562641783, "weight" => 1.25, "weight_unit" => "lb", "inventory_item_id" => 808950810, "inventory_quantity" => 10, "old_inventory_quantity" => 10, "presentment_prices" => [{ "price" => { "amount" => "199.00", "currency_code" => "USD" }, "compare_at_price" => nil }], "requires_shipping" => true, "admin_graphql_api_id" => "gid://shopify/ProductVariant/808950810" }, { "id" => 49148385, "product_id" => 632910392, "title" => "Red", "price" => "199.00", "sku" => "IPOD2008RED", "position" => 2, "inventory_policy" => "continue", "compare_at_price" => nil, "fulfillment_service" => "manual", "inventory_management" => "shopify", "option1" => "Red", "option2" => nil, "option3" => nil, "created_at" => "2023-02-02T09:09:49-05:00", "updated_at" => "2023-02-02T09:09:49-05:00", "taxable" => true, "barcode" => "1234_red", "grams" => 567, "image_id" => nil, "weight" => 1.25, "weight_unit" => "lb", "inventory_item_id" => 49148385, "inventory_quantity" => 20, "old_inventory_quantity" => 20, "presentment_prices" => [{ "price" => { "amount" => "199.00", "currency_code" => "USD" }, "compare_at_price" => nil }], "requires_shipping" => true, "admin_graphql_api_id" => "gid://shopify/ProductVariant/49148385" }, { "id" => 39072856, "product_id" => 632910392, "title" => "Green", "price" => "199.00", "sku" => "IPOD2008GREEN", "position" => 3, "inventory_policy" => "continue", "compare_at_price" => nil, "fulfillment_service" => "manual", "inventory_management" => "shopify", "option1" => "Green", "option2" => nil, "option3" => nil, "created_at" => "2023-02-02T09:09:49-05:00", "updated_at" => "2023-02-02T09:09:49-05:00", "taxable" => true, "barcode" => "1234_green", "grams" => 567, "image_id" => nil, "weight" => 1.25, "weight_unit" => "lb", "inventory_item_id" => 39072856, "inventory_quantity" => 30, "old_inventory_quantity" => 30, "presentment_prices" => [{ "price" => { "amount" => "199.00", "currency_code" => "USD" }, "compare_at_price" => nil }], "requires_shipping" => true, "admin_graphql_api_id" => "gid://shopify/ProductVariant/39072856" }, { "id" => 457924702, "product_id" => 632910392, "title" => "Black", "price" => "199.00", "sku" => "IPOD2008BLACK", "position" => 4, "inventory_policy" => "continue", "compare_at_price" => nil, "fulfillment_service" => "manual", "inventory_management" => "shopify", "option1" => "Black", "option2" => nil, "option3" => nil, "created_at" => "2023-02-02T09:09:49-05:00", "updated_at" => "2023-02-02T09:09:49-05:00", "taxable" => true, "barcode" => "1234_black", "grams" => 567, "image_id" => nil, "weight" => 1.25, "weight_unit" => "lb", "inventory_item_id" => 457924702, "inventory_quantity" => 40, "old_inventory_quantity" => 40, "presentment_prices" => [{ "price" => { "amount" => "199.00", "currency_code" => "USD" }, "compare_at_price" => nil }], "requires_shipping" => true, "admin_graphql_api_id" => "gid://shopify/ProductVariant/457924702" }], "options" => [{ "id" => 594680422, "product_id" => 632910392, "name" => "Color", "position" => 1, "values" => ["Pink", "Red", "Green", "Black"] }], "images" => [{ "id" => 850703190, "product_id" => 632910392, "position" => 1, "created_at" => "2023-02-02T09:09:49-05:00", "updated_at" => "2023-02-02T09:09:49-05:00", "alt" => nil, "width" => 123, "height" => 456, "src" => "https://cdn.shopify.com/s/files/1/0005/4838/0009/products/ipod-nano.png?v=1675346989", "variant_ids" => [], "admin_graphql_api_id" => "gid://shopify/ProductImage/850703190" }, { "id" => 562641783, "product_id" => 632910392, "position" => 2, "created_at" => "2023-02-02T09:09:49-05:00", "updated_at" => "2023-02-02T09:09:49-05:00", "alt" => nil, "width" => 123, "height" => 456, "src" => "https://cdn.shopify.com/s/files/1/0005/4838/0009/products/ipod-nano-2.png?v=1675346989", "variant_ids" => [808950810], "admin_graphql_api_id" => "gid://shopify/ProductImage/562641783" }, { "id" => 378407906, "product_id" => 632910392, "position" => 3, "created_at" => "2023-02-02T09:09:49-05:00", "updated_at" => "2023-02-02T09:09:49-05:00", "alt" => nil, "width" => 123, "height" => 456, "src" => "https://cdn.shopify.com/s/files/1/0005/4838/0009/products/ipod-nano.png?v=1675346989", "variant_ids" => [], "admin_graphql_api_id" => "gid://shopify/ProductImage/378407906" }], "image" => { "id" => 850703190, "product_id" => 632910392, "position" => 1, "created_at" => "2023-02-02T09:09:49-05:00", "updated_at" => "2023-02-02T09:09:49-05:00", "alt" => nil, "width" => 123, "height" => 456, "src" => "https://cdn.shopify.com/s/files/1/0005/4838/0009/products/ipod-nano.png?v=1675346989", "variant_ids" => [], "admin_graphql_api_id" => "gid://shopify/ProductImage/850703190" }, } }), headers: {})
 
         product = ShopifyAPI::Product.find(id: 632910392, session: @session)
+
         product.client.expects(:put).with(
           body: { "product" => { "metafields" => [{ "key" => "new", "value" => "newvalue", "type" => "single_line_text_field",
-                                                    "namespace" => "global", }] } },
+                                                    "namespace" => "global", }], "id" => 632910392, } },
           path: "products/632910392.json",
         )
         product.metafields = [
@@ -438,7 +440,7 @@ module ShopifyAPITest
         product.save
       end
 
-      def test_put_request_for_has_one_associaiton_works
+      def test_put_request_for_has_one_association_works
         stub_request(:get, "https://test-shop.myshopify.com/admin/api/#{ShopifyAPI::Context.api_version}/customers/207119551.json")
           .to_return(status: 200, body: JSON.generate({ "customer" => { "id" => 207119551,
                                                                         "email" => "bob.norman@mail.example.com", "accepts_marketing" => false, "created_at" => "2023-02-02T09:42:27-05:00", "updated_at" => "2023-02-02T09:42:27-05:00", "first_name" => "Bob", "last_name" => "Norman", "orders_count" => 1, "state" => "disabled", "total_spent" => "199.65", "last_order_id" => 450789469, "note" => nil, "verified_email" => true, "multipass_identifier" => nil, "tax_exempt" => false, "tags" => "L\u00E9on, No\u00EBl", "last_order_name" => "#1001", "currency" => "USD", "phone" => "+16136120707", "addresses" => [{ "id" => 207119551, "customer_id" => 207119551, "first_name" => nil, "last_name" => nil, "company" => nil, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "province" => "Kentucky", "country" => "United States", "zip" => "40202", "phone" => "555-625-1199", "name" => "", "province_code" => "KY", "country_code" => "US", "country_name" => "United States", "default" => true }], "accepts_marketing_updated_at" => "2005-06-12T11:57:11-04:00", "marketing_opt_in_level" => nil, "tax_exemptions" => [], "email_marketing_consent" => { "state" => "not_subscribed", "opt_in_level" => nil, "consent_updated_at" => "2004-06-13T11:57:11-04:00" }, "sms_marketing_consent" => { "state" => "not_subscribed", "opt_in_level" => "single_opt_in", "consent_updated_at" => "2023-02-02T09:42:27-05:00", "consent_collected_from" => "OTHER" }, "admin_graphql_api_id" => "gid://shopify/Customer/207119551", "default_address" => { "id" => 207119551, "customer_id" => 207119551, "first_name" => nil, "last_name" => nil, "company" => nil, "address1" => "Chestnut Street 92", "address2" => "", "city" => "Louisville", "province" => "Kentucky", "country" => "United States", "zip" => "40202", "phone" => "555-625-1199", "name" => "", "province_code" => "KY", "country_code" => "US", "country_name" => "United States", "default" => true }, } }), headers: {})
@@ -448,7 +450,7 @@ module ShopifyAPITest
           session: @session,
         )
         customer.client.expects(:put).with(
-          body: { "customer" => { "tags" => "New Customer, Repeat Customer" } },
+          body: { "customer" => { "tags" => "New Customer, Repeat Customer", "id" => 207119551 } },
           path: "customers/207119551.json",
         )
         customer.tags = "New Customer, Repeat Customer"
@@ -496,7 +498,7 @@ module ShopifyAPITest
 
         variant = ShopifyAPI::Variant.find(id: 169, session: @session)
         variant.client.expects(:put).with(
-          body: { "variant" => { "barcode" => "1234" } },
+          body: { "variant" => { "barcode" => "1234", "id" => 169 } },
           path: "variants/169.json",
         )
         variant.barcode = "1234"
