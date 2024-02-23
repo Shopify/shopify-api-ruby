@@ -51,7 +51,26 @@ module ShopifyAPI
               else
                 new_value = build_update_value(value, path: current_path, reference_values: reference_values)
 
-                new_hash[key] = new_value unless new_value.empty? && !ref_value.empty?
+                # Only add to new_hash if the user intentionally updates
+                # to empty value like `{}` or `[]`. For example:
+                #
+                # original = { "a" => { "foo" => 1 } }
+                # updated = { "a" => {} }
+                # diff = { "a" => { "foo" => HashDiff::NO_VALUE } }
+                # key = "a", new_value = {}, ref_value = {}
+                # new_hash = { "a" => {} }
+                #
+                # In addition, we omit cases where after removing `HashDiff::NO_VALUE`
+                # we only have `{}` left. For example:
+                #
+                # original = { "a" => { "foo" => 1, "bar" => 2} }
+                # updated = { "a" => { "foo" => 1 } }
+                # diff = { "a" => { "bar" => HashDiff::NO_VALUE } }
+                # key = "a", new_value = {}, ref_value = { "foo" => 1 }
+                # new_hash = {}
+                #
+                # new_hash is empty because nothing changes
+                new_hash[key] = new_value if !new_value.empty? || ref_value.empty?
               end
             elsif value != HashDiff::NO_VALUE
               new_hash[key] = value

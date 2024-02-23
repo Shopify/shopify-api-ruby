@@ -27,6 +27,12 @@ module ShopifyAPITest
             expected: { "a" => ["x", "y"] },
           },
           {
+            name: "allows setting empty array",
+            original_attributes: { "a" => ["x", "y"] },
+            updated_attributes: { "a" => [] },
+            expected: { "a" => [] },
+          },
+          {
             name: "overwrites nested arrays with updated array values",
             original_attributes: { "a" => { "b" => [{ "c" => 1 }, { "c" => 2 }] } },
             updated_attributes: { "a" => { "b" => [{ "c" => 2 }] } },
