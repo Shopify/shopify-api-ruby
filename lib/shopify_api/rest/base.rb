@@ -10,6 +10,7 @@ module ShopifyAPI
       extend T::Helpers
       abstract!
 
+      @headers = T.let(nil, T.nilable(T::Hash[T.any(Symbol, String), String]))
       @has_one = T.let({}, T::Hash[Symbol, T::Class[T.anything]])
       @has_many = T.let({}, T::Hash[Symbol, T::Class[T.anything]])
       @paths = T.let([], T::Array[T::Hash[Symbol, T.any(T::Array[Symbol], String, Symbol)]])
@@ -60,6 +61,18 @@ module ShopifyAPI
         sig { returns(T::Hash[Symbol, T::Class[T.anything]]) }
         attr_reader :has_one
 
+        sig { returns(T.nilable(T::Hash[T.any(Symbol, String), String])) }
+        attr_accessor :headers
+
+        sig { params(subclass: T::Class[T.anything]).returns(T.untyped) }
+        def inherited(subclass)
+          super
+
+          subclass.define_singleton_method(:headers) do
+            ShopifyAPI::Rest::Base.headers
+          end
+        end
+
         sig do
           params(
             session: T.nilable(Auth::Session),
@@ -73,7 +86,7 @@ module ShopifyAPI
           client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
 
           path = T.must(get_path(http_method: :get, operation: :get, ids: ids))
-          response = client.get(path: path, query: params.compact)
+          response = client.get(path: path, query: params.compact, headers: headers)
 
           instance_variable_get(:"@prev_page_info").value = response.prev_page_info
           instance_variable_get(:"@next_page_info").value = response.next_page_info
@@ -219,13 +232,13 @@ module ShopifyAPI
 
           case http_method
           when :get
-            client.get(path: T.must(path), query: params.compact)
+            client.get(path: T.must(path), query: params.compact, headers: headers)
           when :post
-            client.post(path: T.must(path), query: params.compact, body: body || {})
+            client.post(path: T.must(path), query: params.compact, body: body || {}, headers: headers)
           when :put
-            client.put(path: T.must(path), query: params.compact, body: body || {})
+            client.put(path: T.must(path), query: params.compact, body: body || {}, headers: headers)
           when :delete
-            client.delete(path: T.must(path), query: params.compact)
+            client.delete(path: T.must(path), query: params.compact, headers: headers)
           else
             raise Errors::InvalidHttpRequestError, "Invalid HTTP method: #{http_method}"
           end
@@ -355,6 +368,7 @@ module ShopifyAPI
         @client.delete(
           path: T.must(self.class.get_path(http_method: :delete, operation: :delete, entity: self)),
           query: params.compact,
+          headers: self.class.headers,
         )
       rescue ShopifyAPI::Errors::HttpResponseError => e
         @errors.errors << e
@@ -378,6 +392,7 @@ module ShopifyAPI
           method,
           body: body,
           path: deduce_write_path(method),
+          headers: self.class.headers,
         )
 
         if update_object
