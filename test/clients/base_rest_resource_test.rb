@@ -95,7 +95,7 @@ module ShopifyAPITest
         fake_resource.id = 1
         fake_resource.attribute = "updated"
 
-        assert fake_resource.save
+        assert(fake_resource.save)
       end
 
       def test_create_resource_with_headers
@@ -107,7 +107,7 @@ module ShopifyAPITest
         fake_resource = TestHelpers::FakeResource.new(session: @session)
         fake_resource.attribute = "create"
 
-        assert fake_resource.save
+        assert(fake_resource.save)
       end
 
       def test_delete_resource_with_headers
@@ -118,7 +118,7 @@ module ShopifyAPITest
 
         fake_resource = TestHelpers::FakeResource.new(session: @session)
         fake_resource.id = 1
-        assert fake_resource.delete
+        assert(fake_resource.delete)
       end
 
       def test_saves
