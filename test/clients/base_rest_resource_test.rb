@@ -85,6 +85,42 @@ module ShopifyAPITest
         TestHelpers::FakeResource.all(session: @session)
       end
 
+      def test_update_resource_with_headers
+        ShopifyAPI::Rest::Base.stubs(:headers).returns({ "X-Shopify-Test" => "test" })
+
+        stub_request(:put, "#{@prefix}/fake_resources/1.json")
+          .with(headers: { "X-Shopify-Test" => "test" })
+
+        fake_resource = TestHelpers::FakeResource.new(session: @session)
+        fake_resource.id = 1
+        fake_resource.attribute = "updated"
+
+        assert fake_resource.save
+      end
+
+      def test_create_resource_with_headers
+        ShopifyAPI::Rest::Base.stubs(:headers).returns({ "X-Shopify-Test" => "test" })
+
+        stub_request(:post, "#{@prefix}/fake_resources.json")
+          .with(headers: { "X-Shopify-Test" => "test" })
+
+        fake_resource = TestHelpers::FakeResource.new(session: @session)
+        fake_resource.attribute = "create"
+
+        assert fake_resource.save
+      end
+
+      def test_delete_resource_with_headers
+        ShopifyAPI::Rest::Base.stubs(:headers).returns({ "X-Shopify-Test" => "test" })
+
+        stub_request(:delete, "#{@prefix}/fake_resources/1.json")
+          .with(headers: { "X-Shopify-Test" => "test" })
+
+        fake_resource = TestHelpers::FakeResource.new(session: @session)
+        fake_resource.id = 1
+        assert fake_resource.delete
+      end
+
       def test_saves
         request_body = { fake_resource: { attribute: "attribute" } }.to_json
         response_body = { fake_resource: { id: 1, attribute: "attribute" } }.to_json
