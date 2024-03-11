@@ -4,6 +4,8 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
 
+- [#1288](https://github.com/Shopify/shopify-api-ruby/pull/1288) Fix FeatureDeprecatedError being raised without a message.
+
 ## 14.0.0
 - [#1274](https://github.com/Shopify/shopify-api-ruby/pull/1274) ⚠️ [Breaking] Update sorbet and rbi dependencies. Remove support for ruby 2.7. Minimum required Ruby version is 3.0
 - [#1282](https://github.com/Shopify/shopify-api-ruby/pull/1282) Fixes a bug where diffing attributes to update not take into account of Array changes and required ids.

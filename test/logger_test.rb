@@ -8,9 +8,11 @@ module ShopifyAPITest
     def test_deprecated_should_raise_an_error_if_version_is_lower_or_equal_to_current
       ShopifyAPI::Context.stubs(:log_level).returns(:warn)
 
-      assert_raises(ShopifyAPI::Errors::FeatureDeprecatedError) do
+      error = assert_raises(ShopifyAPI::Errors::FeatureDeprecatedError) do
         ShopifyAPI::Logger.deprecated("deprecated feature", ShopifyAPI::VERSION)
       end
+
+      assert_equal("deprecated feature", error.message)
     end
 
     def test_logging_with_log_levels
