@@ -18,10 +18,10 @@ If you want to register for an http webhook you need to implement a webhook hand
 
 ```ruby
 module WebhookHandler
-  extend ShopifyAPI::Webhooks::Handler
+  extend ShopifyAPI::Webhooks::WebhookHandler
 
   class << self
-    def handle_webhook(data)
+    def handle_webhook(data:)
       puts "Received webhook! topic: #{data.topic} shop: #{data.shop} body: #{data.body} webhook_id: #{data.webhook_id} api_version: #{data.api_version"
     end
   end
