@@ -5,6 +5,7 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
 
 - [#1288](https://github.com/Shopify/shopify-api-ruby/pull/1288) Fix FeatureDeprecatedError being raised without a message.
+- [1290](https://github.com/Shopify/shopify-api-ruby/pull/1290) Move deprecation of `ShopifyAPI::Webhooks::Handler#handle` to version 15.0.0
 
 ## 14.0.0
 - [#1274](https://github.com/Shopify/shopify-api-ruby/pull/1274) ⚠️ [Breaking] Update sorbet and rbi dependencies. Remove support for ruby 2.7. Minimum required Ruby version is 3.0
