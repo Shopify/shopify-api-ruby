@@ -33,7 +33,7 @@ module ShopifyAPI
       def deprecated(message, version)
         return unless enabled_for_log_level?(:warn)
 
-        raise Errors::FeatureDeprecatedError unless valid_version(version)
+        raise Errors::FeatureDeprecatedError, message unless valid_version(version)
 
         send_to_logger(:warn, message)
       end
