@@ -10,7 +10,7 @@ You can follow instructions for [initializing the session object](#initializing-
 Following is a basic example to construct a simple Session object. You can see full list of parameters for this object in the [class definition](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/auth/session.rb)
 ```ruby
 session = ShopifyAPI::Auth::Session.new(
-  shop: "#{your_shop_name}.myshopify.com"
+  shop: "#{your_shop_name}.myshopify.com",
   access_token: "the_token_for_your_custom_app_found_in_admin"
 )
 
@@ -23,7 +23,7 @@ Example:
 def make_api_request(shop)
   # 1. create session object
     session = ShopifyAPI::Auth::Session.new(
-      shop: "#{your_shop_name}.myshopify.com"
+      shop: "#{your_shop_name}.myshopify.com",
       access_token: "the_token_for_your_custom_app_found_in_admin"
     )
 
@@ -49,7 +49,7 @@ Example:
 def configure_app
   # This method is called before making authenticated API calls
   session = ShopifyAPI::Auth::Session.new(
-      shop: "#{your_shop_name}.myshopify.com"
+      shop: "#{your_shop_name}.myshopify.com",
       access_token: "the_token_for_your_custom_app_found_in_admin"
     )
 
