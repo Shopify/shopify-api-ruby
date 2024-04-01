@@ -22,7 +22,7 @@ module ShopifyAPI
       @country_code_of_origin = T.let(nil, T.nilable(String))
       @country_harmonized_system_codes = T.let(nil, T.nilable(T::Array[T.untyped]))
       @created_at = T.let(nil, T.nilable(String))
-      @harmonized_system_code = T.let(nil, T.nilable(Integer))
+      @harmonized_system_code = T.let(nil, T.nilable(T.any(Integer, String)))
       @id = T.let(nil, T.nilable(Integer))
       @province_code_of_origin = T.let(nil, T.nilable(String))
       @requires_shipping = T.let(nil, T.nilable(T::Boolean))
@@ -49,7 +49,7 @@ module ShopifyAPI
     attr_reader :country_harmonized_system_codes
     sig { returns(T.nilable(String)) }
     attr_reader :created_at
-    sig { returns(T.nilable(Integer)) }
+    sig { returns(T.nilable(T.any(Integer, String))) }
     attr_reader :harmonized_system_code
     sig { returns(T.nilable(Integer)) }
     attr_reader :id

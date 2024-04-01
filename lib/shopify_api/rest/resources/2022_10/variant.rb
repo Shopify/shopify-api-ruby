@@ -28,8 +28,8 @@ module ShopifyAPI
       @inventory_item_id = T.let(nil, T.nilable(Integer))
       @inventory_management = T.let(nil, T.nilable(String))
       @inventory_policy = T.let(nil, T.nilable(String))
-      @inventory_quantity = T.let(nil, T.nilable(Integer))
-      @old_inventory_quantity = T.let(nil, T.nilable(Integer))
+      @inventory_quantity = T.let(nil, T.nilable(T.any(Integer, String)))
+      @old_inventory_quantity = T.let(nil, T.nilable(T.any(Integer, String)))
       @option = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
       @position = T.let(nil, T.nilable(Integer))
       @presentment_prices = T.let(nil, T.nilable(T::Array[T.untyped]))
@@ -81,9 +81,9 @@ module ShopifyAPI
     attr_reader :inventory_management
     sig { returns(T.nilable(String)) }
     attr_reader :inventory_policy
-    sig { returns(T.nilable(Integer)) }
+    sig { returns(T.nilable(T.any(Integer, String))) }
     attr_reader :inventory_quantity
-    sig { returns(T.nilable(Integer)) }
+    sig { returns(T.nilable(T.any(Integer, String))) }
     attr_reader :old_inventory_quantity
     sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :option

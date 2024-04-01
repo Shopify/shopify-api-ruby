@@ -102,11 +102,12 @@ class InventoryItem202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "inventory_item" => hash_including({"sku" => "new sku"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"inventory_item" => {"id" => 808950810, "sku" => "new sku", "created_at" => "2024-01-02T09:28:43-05:00", "updated_at" => "2024-01-02T09:31:51-05:00", "requires_shipping" => true, "cost" => "25.00", "country_code_of_origin" => nil, "province_code_of_origin" => nil, "harmonized_system_code" => nil, "tracked" => true, "country_harmonized_system_codes" => [], "admin_graphql_api_id" => "gid://shopify/InventoryItem/808950810"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"inventory_item" => {"id" => 808950810, "sku" => "new sku", "created_at" => "2024-01-02T09:28:43-05:00", "updated_at" => "2024-01-02T09:31:51-05:00", "requires_shipping" => true, "cost" => "25.00", "country_code_of_origin" => nil, "province_code_of_origin" => nil, "harmonized_system_code" => 1, "tracked" => true, "country_harmonized_system_codes" => [], "admin_graphql_api_id" => "gid://shopify/InventoryItem/808950810"}}), headers: {})
 
     response = inventory_item = ShopifyAPI::InventoryItem.new
     inventory_item.id = 808950810
     inventory_item.sku = "new sku"
+    inventory_item.harmonized_system_code = 1
     inventory_item.save
 
     assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2023-01/inventory_items/808950810.json")
@@ -135,11 +136,12 @@ class InventoryItem202301Test < Test::Unit::TestCase
         headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json", "Content-Type"=>"application/json"},
         body: { "inventory_item" => hash_including({"cost" => "25.00"}) }
       )
-      .to_return(status: 200, body: JSON.generate({"inventory_item" => {"id" => 808950810, "sku" => "IPOD2008PINK", "created_at" => "2024-01-02T09:28:43-05:00", "updated_at" => "2024-01-02T09:28:43-05:00", "requires_shipping" => true, "cost" => "25.00", "country_code_of_origin" => nil, "province_code_of_origin" => nil, "harmonized_system_code" => nil, "tracked" => true, "country_harmonized_system_codes" => [], "admin_graphql_api_id" => "gid://shopify/InventoryItem/808950810"}}), headers: {})
+      .to_return(status: 200, body: JSON.generate({"inventory_item" => {"id" => 808950810, "sku" => "IPOD2008PINK", "created_at" => "2024-01-02T09:28:43-05:00", "updated_at" => "2024-01-02T09:28:43-05:00", "requires_shipping" => true, "cost" => "25.00", "country_code_of_origin" => nil, "province_code_of_origin" => nil, "harmonized_system_code" => "1", "tracked" => true, "country_harmonized_system_codes" => [], "admin_graphql_api_id" => "gid://shopify/InventoryItem/808950810"}}), headers: {})
 
     response = inventory_item = ShopifyAPI::InventoryItem.new
     inventory_item.id = 808950810
     inventory_item.cost = "25.00"
+    inventory_item.harmonized_system_code = "1"
     inventory_item.save
 
     assert_requested(:put, "https://test-shop.myshopify.io/admin/api/2023-01/inventory_items/808950810.json")

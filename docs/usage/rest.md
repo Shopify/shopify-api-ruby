@@ -218,7 +218,7 @@ If the request is successful these methods will all return a [`ShopifyAPI::Clien
 | Methods | Type | Notes |
 |---------|------|-------|
 | `code`  |`Integer`| HTTP Response code, e.g. `200`|
-| `header` |`Hash{String, [String]}` | HTTP Response headers |
+| `headers` |`Hash{String, [String]}` | HTTP Response headers |
 | `body`  | `Hash{String, Untyped}`  | HTTP Response body |
 | `prev_page_info` | `String` | See [Pagination](#pagination)|
 | `next_page_info` | `String` | See [Pagination](#pagination)|
