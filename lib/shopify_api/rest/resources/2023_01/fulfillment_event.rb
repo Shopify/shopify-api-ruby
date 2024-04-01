@@ -20,7 +20,7 @@ module ShopifyAPI
 
       @address1 = T.let(nil, T.nilable(String))
       @city = T.let(nil, T.nilable(String))
-      @country = T.let(nil, T.nilable(Country))
+      @country = T.let(nil, T.nilable(String))
       @created_at = T.let(nil, T.nilable(String))
       @estimated_delivery_at = T.let(nil, T.nilable(String))
       @fulfillment_id = T.let(nil, T.nilable(Integer))
@@ -30,7 +30,7 @@ module ShopifyAPI
       @longitude = T.let(nil, T.nilable(Float))
       @message = T.let(nil, T.nilable(String))
       @order_id = T.let(nil, T.nilable(Integer))
-      @province = T.let(nil, T.nilable(Province))
+      @province = T.let(nil, T.nilable(String))
       @shop_id = T.let(nil, T.nilable(Integer))
       @status = T.let(nil, T.nilable(String))
       @updated_at = T.let(nil, T.nilable(String))
@@ -39,10 +39,7 @@ module ShopifyAPI
       super(session: session, from_hash: from_hash)
     end
 
-    @has_one = T.let({
-      country: Country,
-      province: Province
-    }, T::Hash[Symbol, Class])
+    @has_one = T.let({}, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
     @paths = T.let([
       {http_method: :delete, operation: :delete, ids: [:order_id, :fulfillment_id, :id], path: "orders/<order_id>/fulfillments/<fulfillment_id>/events/<id>.json"},
@@ -55,7 +52,7 @@ module ShopifyAPI
     attr_reader :address1
     sig { returns(T.nilable(String)) }
     attr_reader :city
-    sig { returns(T.nilable(Country)) }
+    sig { returns(T.nilable(String)) }
     attr_reader :country
     sig { returns(T.nilable(String)) }
     attr_reader :created_at
@@ -75,7 +72,7 @@ module ShopifyAPI
     attr_reader :message
     sig { returns(T.nilable(Integer)) }
     attr_reader :order_id
-    sig { returns(T.nilable(Province)) }
+    sig { returns(T.nilable(String)) }
     attr_reader :province
     sig { returns(T.nilable(Integer)) }
     attr_reader :shop_id
