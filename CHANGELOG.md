@@ -4,6 +4,10 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
 
+- [#1071](https://github.com/Shopify/shopify-api-ruby/issues/1071) Fix FulfillmentEvent class types
+- Fix: InventoryItem class `harmonized_system_code` attribute type which can be either integer, string or nil
+- Fix: Variant class `inventory_quantity` attribute type which can be either integer, string or nil
+
 ## 14.0.1
 - [#1288](https://github.com/Shopify/shopify-api-ruby/pull/1288) Fix FeatureDeprecatedError being raised without a message.
 - [1290](https://github.com/Shopify/shopify-api-ruby/pull/1290) Move deprecation of `ShopifyAPI::Webhooks::Handler#handle` to version 15.0.0
