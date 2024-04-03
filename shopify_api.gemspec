@@ -42,12 +42,4 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency("securerandom")
   s.add_runtime_dependency("sorbet-runtime")
   s.add_runtime_dependency("zeitwerk", "~> 2.5")
-
-  s.add_development_dependency("pry-byebug")
-  s.add_development_dependency("rake")
-  s.add_development_dependency("rubocop")
-  s.add_development_dependency("rubocop-shopify")
-  s.add_development_dependency("rubocop-sorbet")
-  s.add_development_dependency("sorbet")
-  s.add_development_dependency("tapioca")
 end
