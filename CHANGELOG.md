@@ -7,6 +7,9 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 - [#1071](https://github.com/Shopify/shopify-api-ruby/issues/1071) Fix FulfillmentEvent class types
 - Fix: InventoryItem class `harmonized_system_code` attribute type which can be either integer, string or nil
 - Fix: Variant class `inventory_quantity` attribute type which can be either integer, string or nil
+- [1293](https://github.com/Shopify/shopify-api-ruby/issues/1293) Add support for using Storefront private access tokens.
+- Deprecated passing the public Storefront access token as a positional parameter to the Storefront GraphQL client in favor of using the named parameter. (You probably want to use the private access token for this client anyway.)
+- [1305](https://github.com/Shopify/shopify-api-ruby/pull/1305/) Adds support for the `2024-04` API version.
 
 ## 14.0.1
 - [#1288](https://github.com/Shopify/shopify-api-ruby/pull/1288) Fix FeatureDeprecatedError being raised without a message.
