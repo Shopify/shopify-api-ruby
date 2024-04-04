@@ -130,8 +130,8 @@ module ShopifyAPI
       sig { params(other: T.nilable(Session)).returns(T::Boolean) }
       def ==(other)
         if other
-          (
-            id == other.id &&
+
+          id == other.id &&
             shop == other.shop &&
             state == other.state &&
             scope == other.scope &&
@@ -140,7 +140,7 @@ module ShopifyAPI
             online? == other.online? &&
             associated_user == other.associated_user &&
             shopify_session_id == other.shopify_session_id
-          )
+
         else
           false
         end

@@ -12,7 +12,7 @@ require "mocha/minitest"
 require "shopify_api"
 require "pry-byebug"
 
-require_relative("./test_helpers/constants.rb")
+require_relative("test_helpers/constants.rb")
 
 Dir[File.dirname(__FILE__) + "/test_helpers/*.rb"].each { |file| require file }
 

@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 require_relative "../test_helper.rb"
-require_relative "./webhook_registration_queries.rb"
+require_relative "webhook_registration_queries.rb"
 
 module ShopifyAPITest
   module Webhooks

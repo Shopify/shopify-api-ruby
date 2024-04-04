@@ -5,7 +5,6 @@ require:
   - rubocop-sorbet
 
 AllCops:
-  TargetRubyVersion: 2.7
   NewCops: enable
   Exclude:
     - "sorbet/**/*"
