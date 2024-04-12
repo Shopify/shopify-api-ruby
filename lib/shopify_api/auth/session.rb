@@ -121,6 +121,17 @@ module ShopifyAPI
         end
       end
 
+      sig { params(other: Session).returns(Session) }
+      def copy_attributes_from(other)
+        JSON.parse(other.serialize).keys.each do |key|
+          next if key.include?("^")
+
+          variable_name = "@#{key}"
+          instance_variable_set(variable_name, other.instance_variable_get(variable_name))
+        end
+        self
+      end
+
       sig { returns(String) }
       def serialize
         Oj.dump(self)
