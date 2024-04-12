@@ -143,8 +143,62 @@ module ShopifyAPITest
         assert_equal(expected_session, session)
       end
 
+      def test_copy_attributes_from
+        session_to = ShopifyAPI::Auth::Session.new(
+          id: "session-id",
+          shop: "shop",
+          state: "some-state",
+          access_token: "to-token",
+          scope: "read_products,read_themes",
+          associated_user_scope: "read_products",
+          expires: Time.now - 3600,
+          associated_user: build_user,
+          is_online: true,
+          shopify_session_id: "123",
+        )
+
+        session_from = ShopifyAPI::Auth::Session.new(
+          id: "session-id",
+          shop: "shop",
+          state: nil,
+          access_token: "from-token",
+          scope: "write_products,read_themes",
+          associated_user_scope: "write_products",
+          expires: Time.now + 24 * 3600,
+          associated_user: build_user,
+          is_online: true,
+          shopify_session_id: "456",
+        )
+
+        assert_equal(session_to, session_to.copy_attributes_from(session_from))
+
+        assert_equal(session_from.shop, session_to.shop)
+        assert_nil(session_to.state)
+        assert_equal(session_from.access_token, session_to.access_token)
+        assert_equal(session_from.scope, session_to.scope)
+        assert_equal(session_from.associated_user_scope, session_to.associated_user_scope)
+        assert_equal(session_from.expires, session_to.expires)
+        assert_equal(session_from.associated_user, session_to.associated_user)
+        assert_equal(session_from.shopify_session_id, session_to.shopify_session_id)
+      end
+
       def teardown
         ShopifyAPI::Context.deactivate_session
+      end
+
+      private
+
+      def build_user
+        ShopifyAPI::Auth::AssociatedUser.new(
+          id: 1,
+          first_name: "Hello #{Time.now}",
+          last_name: "World",
+          email: "Email",
+          email_verified: true,
+          account_owner: true,
+          locale: "en",
+          collaborator: false,
+        )
       end
     end
   end
