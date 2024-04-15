@@ -3,7 +3,9 @@
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
-- Add `Session#copy_attributes_from` method
+
+## 14.2.0
+- [#1309](https://github.com/Shopify/shopify-api-ruby/pull/1309) Add `Session#copy_attributes_from` method
 
 ## 14.1.0
 - [#1071](https://github.com/Shopify/shopify-api-ruby/issues/1071) Fix FulfillmentEvent class types
