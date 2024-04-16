@@ -6,7 +6,8 @@ module ShopifyAPI
     class JwtPayload
       extend T::Sig
 
-      JWT_EXPIRATION_LEEWAY = 10
+      JWT_LEEWAY = 10
+      JWT_EXPIRATION_LEEWAY = JWT_LEEWAY
 
       sig { returns(String) }
       attr_reader :iss, :dest, :aud, :sub, :jti, :sid
@@ -73,7 +74,7 @@ module ShopifyAPI
 
       sig { params(token: String, api_secret_key: String).returns(T::Hash[String, T.untyped]) }
       def decode_token(token, api_secret_key)
-        JWT.decode(token, api_secret_key, true, leeway: JWT_EXPIRATION_LEEWAY, algorithm: "HS256")[0]
+        JWT.decode(token, api_secret_key, true, leeway: JWT_LEEWAY, algorithm: "HS256")[0]
       rescue JWT::DecodeError => err
         raise ShopifyAPI::Errors::InvalidJwtTokenError, "Error decoding session token: #{err.message}"
       end
