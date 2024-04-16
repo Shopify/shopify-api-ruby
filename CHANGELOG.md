@@ -3,6 +3,7 @@
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
+- [#1312](https://github.com/Shopify/shopify-api-ruby/pull/1312) Use same leeway for `exp` and `nbf` when parsing JWT
 
 ## 14.2.0
 - [#1309](https://github.com/Shopify/shopify-api-ruby/pull/1309) Add `Session#copy_attributes_from` method
