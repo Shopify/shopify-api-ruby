@@ -76,7 +76,7 @@ module ShopifyAPITest
 
       def test_decode_jwt_payload_fails_if_not_activated_yet
         payload = @jwt_payload.dup
-        payload[:nbf] = (Time.now + 10).to_i
+        payload[:nbf] = (Time.now + 12).to_i
         jwt_token = JWT.encode(payload, ShopifyAPI::Context.api_secret_key, "HS256")
         assert_raises(ShopifyAPI::Errors::InvalidJwtTokenError) do
           ShopifyAPI::Auth::JwtPayload.new(jwt_token)
@@ -91,6 +91,44 @@ module ShopifyAPITest
         assert_raises(ShopifyAPI::Errors::InvalidJwtTokenError) do
           ShopifyAPI::Auth::JwtPayload.new(jwt_token)
         end
+      end
+
+      def test_decode_jwt_payload_succeeds_with_expiration_in_the_past_within_10s_leeway
+        payload = @jwt_payload.merge(exp: Time.now.to_i - 8)
+        jwt_token = JWT.encode(payload, ShopifyAPI::Context.api_secret_key, "HS256")
+
+        decoded = ShopifyAPI::Auth::JwtPayload.new(jwt_token)
+
+        assert_equal(payload, {
+          iss: decoded.iss,
+          dest: decoded.dest,
+          aud: decoded.aud,
+          sub: decoded.sub,
+          exp: decoded.exp,
+          nbf: decoded.nbf,
+          iat: decoded.iat,
+          jti: decoded.jti,
+          sid: decoded.sid,
+        })
+      end
+
+      def test_decode_jwt_payload_succeeds_with_not_before_in_the_future_within_10s_leeway
+        payload = @jwt_payload.merge(nbf: Time.now.to_i + 8)
+        jwt_token = JWT.encode(payload, ShopifyAPI::Context.api_secret_key, "HS256")
+
+        decoded = ShopifyAPI::Auth::JwtPayload.new(jwt_token)
+
+        assert_equal(payload, {
+          iss: decoded.iss,
+          dest: decoded.dest,
+          aud: decoded.aud,
+          sub: decoded.sub,
+          exp: decoded.exp,
+          nbf: decoded.nbf,
+          iat: decoded.iat,
+          jti: decoded.jti,
+          sid: decoded.sid,
+        })
       end
     end
   end
