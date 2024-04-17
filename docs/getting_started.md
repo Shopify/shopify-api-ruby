@@ -46,12 +46,24 @@ Session persistence is handled by the [ShopifyApp](https://github.com/Shopify/sh
 #### Cookie
 Cookie based authentication is not supported for embedded apps due to browsers dropping support for third party cookies due to security concerns. Non-embedded apps are able to use cookies for session storage/retrieval.
 
-For *non-embedded* apps, you can pass the cookies into `ShopifyAPI::Utils::SessionUtils.current_session_id(nil, cookies, true)` for online (user) sessions or `ShopifyAPI::Utils::SessionUtils.current_session_id(nil, cookies, false)` for offline (store) sessions.
+For *non-embedded* apps, you can pass the cookies into:
+ - `ShopifyAPI::Utils::SessionUtils.current_session_id(nil, cookies, true)` for online (user) sessions or
+ - `ShopifyAPI::Utils::SessionUtils.current_session_id(nil, cookies, false)` for offline (store) sessions.
 
 #### Getting Session ID From Embedded Requests
-For *embedded* apps, you can pass the auth header into `ShopifyAPI::Utils::SessionUtils.current_session_id(auth_header, nil, true)` for online (user) sessions or `ShopifyAPI::Utils::SessionUtils.current_session_id(auth_header, nil, false)` for offline (store) sessions. This function needs an `auth_header` which is the `HTTP_AUTHORIZATION` header.
 
 If your app uses client side rendering instead of server side rendering, you will need to use App Bridge's [authenticatedFetch](https://shopify.dev/docs/apps/auth/oauth/session-tokens/getting-started) to make authenticated API requests from the client.
+
+For *embedded* apps:
+
+If you have an `HTTP_AUTHORIZATION` header, you can pass the auth header into:
+- `ShopifyAPI::Utils::SessionUtils.current_session_id(auth_header, nil, true)` for online (user) sessions or
+- `ShopifyAPI::Utils::SessionUtils.current_session_id(auth_header, nil, false)` for offline (store) sessions.
+
+You can also use `id_token` from the request URL params to get the session ID:
+- `ShopifyAPI::Utils::SessionUtils::session_id_from_shopify_id_token(id_token: id_token_from_param, online: true)` for online (user) sessions or
+- `ShopifyAPI::Utils::SessionUtils::session_id_from_shopify_id_token(id_token: id_token_from_param, online: false)` for offline (store) sessions.
+
 
 #### Start Making Authenticated Shopify Requests
 
