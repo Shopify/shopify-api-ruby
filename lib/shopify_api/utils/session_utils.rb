@@ -25,14 +25,7 @@ module ShopifyAPI
                 raise Errors::MissingJwtTokenError, "Missing Bearer token in authorization header"
               end
 
-              jwt_payload = Auth::JwtPayload.new(T.must(matches[1]))
-              shop = jwt_payload.shop
-
-              if online
-                jwt_session_id(shop, jwt_payload.sub)
-              else
-                offline_session_id(shop)
-              end
+              session_id_from_shopify_id_token(id_token: T.must(matches[1]), online: online)
             else
               # falling back to session cookie
               raise Errors::CookieNotFoundError, "JWT token or Session cookie not found for app" unless
