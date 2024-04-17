@@ -49,6 +49,14 @@ module ShopifyAPITest
         end
       end
 
+      def test_session_id_from_shopify_id_token_raises_missing_jwt_token_error
+        error = assert_raises(ShopifyAPI::Errors::MissingJwtTokenError) do
+          ShopifyAPI::Utils::SessionUtils.session_id_from_shopify_id_token(id_token: nil, online: true)
+        end
+
+        assert_equal("Missing Shopify ID Token", error.message)
+      end
+
       def test_non_embedded_app_current_session_id_raises_cookie_not_found_error
         ShopifyAPI::Context.stubs(:embedded?).returns(false)
 

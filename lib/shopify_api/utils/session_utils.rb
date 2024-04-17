@@ -43,11 +43,13 @@ module ShopifyAPI
 
         sig do
           params(
-            id_token: String,
+            id_token: T.nilable(String),
             online: T::Boolean,
           ).returns(String)
         end
         def session_id_from_shopify_id_token(id_token:, online:)
+          raise Errors::MissingJwtTokenError, "Missing Shopify ID Token" unless id_token
+
           payload = Auth::JwtPayload.new(id_token)
           shop = payload.shop
 
