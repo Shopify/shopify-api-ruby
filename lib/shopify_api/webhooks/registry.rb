@@ -141,7 +141,8 @@ module ShopifyAPI
           delete_response = client.query(query: delete_mutation)
           raise Errors::WebhookRegistrationError,
             "Failed to delete webhook from Shopify" unless delete_response.ok?
-          result = T.cast(delete_response.body, T::Hash[String, T.untyped])
+          result = T.cast(ShopifyAPI::Utils::OstructHashUtils.ensure_hash(delete_response.body),
+            T::Hash[String, T.untyped])
           errors = result["errors"] || {}
           raise Errors::WebhookRegistrationError,
             "Failed to delete webhook from Shopify: #{errors[0]["message"]}" unless errors.empty?
@@ -173,7 +174,8 @@ module ShopifyAPI
           fetch_id_response = client.query(query: fetch_id_query)
           raise Errors::WebhookRegistrationError,
             "Failed to fetch webhook from Shopify" unless fetch_id_response.ok?
-          body = T.cast(fetch_id_response.body, T::Hash[String, T.untyped])
+          body = T.cast(ShopifyAPI::Utils::OstructHashUtils.ensure_hash(fetch_id_response.body),
+            T::Hash[String, T.untyped])
           errors = body["errors"] || {}
           raise Errors::WebhookRegistrationError,
             "Failed to fetch webhook from Shopify: #{errors[0]["message"]}" unless errors.empty?
@@ -219,7 +221,10 @@ module ShopifyAPI
           check_response = client.query(query: registration.build_check_query)
           raise Errors::WebhookRegistrationError,
             "Failed to check if webhook was already registered" unless check_response.ok?
-          parsed_check_result = registration.parse_check_result(T.cast(check_response.body, T::Hash[String, T.untyped]))
+
+          response_body = ShopifyAPI::Utils::OstructHashUtils.ensure_hash(check_response.body)
+
+          parsed_check_result = registration.parse_check_result(T.cast(response_body, T::Hash[String, T.untyped]))
           must_register = parsed_check_result[:current_address] != registration.callback_address
 
           { webhook_id: parsed_check_result[:webhook_id], must_register: must_register }
@@ -237,7 +242,8 @@ module ShopifyAPI
 
           raise Errors::WebhookRegistrationError, "Failed to register webhook with Shopify" unless register_response.ok?
 
-          T.cast(register_response.body, T::Hash[String, T.untyped])
+          response_body = ShopifyAPI::Utils::OstructHashUtils.ensure_hash(register_response.body)
+          T.cast(response_body, T::Hash[String, T.untyped])
         end
 
         sig { params(body: T::Hash[String, T.untyped], mutation_name: String).returns(T::Boolean) }

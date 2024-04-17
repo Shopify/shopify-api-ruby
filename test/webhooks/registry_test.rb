@@ -59,6 +59,29 @@ module ShopifyAPITest
         assert(handler_called)
       end
 
+      def test_process_with_response_as_struct
+        modify_context(response_as_struct: true)
+
+        handler_called = false
+
+        handler = TestHelpers::FakeWebhookHandler.new(
+          lambda do |topic, shop, body,|
+            assert_equal(@topic, topic)
+            assert_equal(@shop, shop)
+            assert_equal({}, body)
+            handler_called = true
+          end,
+          )
+
+        ShopifyAPI::Webhooks::Registry.add_registration(
+          topic: @topic, path: "path", delivery_method: :http, handler: handler,
+          )
+
+        ShopifyAPI::Webhooks::Registry.process(@webhook_request)
+
+        assert(handler_called)
+      end
+
       def test_process_new_handler
         handler_called = false
 
