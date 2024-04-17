@@ -48,6 +48,23 @@ module ShopifyAPI
           end
         end
 
+        sig do
+          params(
+            id_token: String,
+            online: T::Boolean,
+          ).returns(String)
+        end
+        def session_id_from_shopify_id_token(id_token:, online:)
+          payload = Auth::JwtPayload.new(id_token)
+          shop = payload.shop
+
+          if online
+            jwt_session_id(shop, payload.sub)
+          else
+            offline_session_id(shop)
+          end
+        end
+
         sig { params(shop: String, user_id: String).returns(String) }
         def jwt_session_id(shop, user_id)
           "#{shop}_#{user_id}"
