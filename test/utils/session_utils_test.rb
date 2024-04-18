@@ -25,20 +25,20 @@ module ShopifyAPITest
 
         @jwt_token = JWT.encode(@jwt_payload, ShopifyAPI::Context.api_secret_key, "HS256")
         @auth_header = "Bearer #{@jwt_token}"
+        @expected_online_session_id = "#{@shop}_#{@user_id}"
+        @expected_offline_session_id = "offline_#{@shop}"
       end
 
       def test_gets_online_session_id_from_shopify_id_token
-        expected_session_id = "#{@shop}_#{@user_id}"
         assert_equal(
-          expected_session_id,
+          @expected_online_session_id,
           ShopifyAPI::Utils::SessionUtils.session_id_from_shopify_id_token(id_token: @jwt_token, online: true),
         )
       end
 
       def test_gets_offline_session_id_from_shopify_id_token
-        expected_session_id = "offline_#{@shop}"
         assert_equal(
-          expected_session_id,
+          @expected_offline_session_id,
           ShopifyAPI::Utils::SessionUtils.session_id_from_shopify_id_token(id_token: @jwt_token, online: false),
         )
       end
@@ -50,11 +50,16 @@ module ShopifyAPITest
       end
 
       def test_session_id_from_shopify_id_token_raises_missing_jwt_token_error
-        error = assert_raises(ShopifyAPI::Errors::MissingJwtTokenError) do
-          ShopifyAPI::Utils::SessionUtils.session_id_from_shopify_id_token(id_token: nil, online: true)
-        end
+        [
+          nil,
+          "",
+        ].each do |missing_jwt|
+          error = assert_raises(ShopifyAPI::Errors::MissingJwtTokenError) do
+            ShopifyAPI::Utils::SessionUtils.session_id_from_shopify_id_token(id_token: missing_jwt, online: true)
+          end
 
-        assert_equal("Missing Shopify ID Token", error.message)
+          assert_equal("Missing Shopify ID Token", error.message)
+        end
       end
 
       def test_non_embedded_app_current_session_id_raises_cookie_not_found_error
@@ -98,6 +103,19 @@ module ShopifyAPITest
         end
       end
 
+      def test_embedded_app_current_session_id_raises_invalid_jwt_token_error
+        ShopifyAPI::Context.stubs(:embedded?).returns(true)
+        [
+          "Bearer invalid_token",
+          "Bearer",
+          "invalid_token",
+        ].each do |invalid_token|
+          assert_raises(ShopifyAPI::Errors::InvalidJwtTokenError, " - #{invalid_token}") do
+            ShopifyAPI::Utils::SessionUtils.current_session_id(invalid_token, nil, true)
+          end
+        end
+      end
+
       def test_embedded_app_current_session_id_raises_missing_jwt_token_error
         ShopifyAPI::Context.stubs(:embedded?).returns(true)
 
@@ -105,36 +123,51 @@ module ShopifyAPITest
           ShopifyAPI::Utils::SessionUtils.current_session_id("", nil, true)
         end
 
-        assert_equal("Missing Bearer token in authorization header", error.message)
+        assert_equal("Missing Shopify ID Token", error.message)
       end
 
       def test_embedded_app_current_session_id_returns_online_id_from_auth_header
         ShopifyAPI::Context.stubs(:embedded?).returns(true)
-        expected_session_id = "#{@shop}_#{@user_id}"
 
         assert_equal(
-          expected_session_id,
+          @expected_online_session_id,
           ShopifyAPI::Utils::SessionUtils.current_session_id(@auth_header, nil, true),
         )
       end
 
       def test_embedded_app_current_session_id_returns_offline_id_from_auth_header
         ShopifyAPI::Context.stubs(:embedded?).returns(true)
-        expected_session_id = "offline_#{@shop}"
 
         assert_equal(
-          expected_session_id,
+          @expected_offline_session_id,
           ShopifyAPI::Utils::SessionUtils.current_session_id(@auth_header, nil, false),
+        )
+      end
+
+      def test_embedded_app_current_session_id_returns_online_id_from_shopify_id_token
+        ShopifyAPI::Context.stubs(:embedded?).returns(true)
+
+        assert_equal(
+          @expected_online_session_id,
+          ShopifyAPI::Utils::SessionUtils.current_session_id(@jwt_token, nil, true),
+        )
+      end
+
+      def test_embedded_app_current_session_id_returns_offline_id_from_shopify_id_token
+        ShopifyAPI::Context.stubs(:embedded?).returns(true)
+
+        assert_equal(
+          @expected_offline_session_id,
+          ShopifyAPI::Utils::SessionUtils.current_session_id(@jwt_token, nil, false),
         )
       end
 
       def test_embedded_app_current_session_id_returns_id_from_auth_header_even_with_cookies
         ShopifyAPI::Context.stubs(:embedded?).returns(true)
         cookies = { ShopifyAPI::Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME => "cookie_value" }
-        expected_session_id = "#{@shop}_#{@user_id}"
 
         assert_equal(
-          expected_session_id,
+          @expected_online_session_id,
           ShopifyAPI::Utils::SessionUtils.current_session_id(@auth_header, cookies, true),
         )
       end

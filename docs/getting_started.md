@@ -56,14 +56,17 @@ If your app uses client side rendering instead of server side rendering, you wil
 
 For *embedded* apps:
 
-If you have an `HTTP_AUTHORIZATION` header, you can pass the auth header into:
-- `ShopifyAPI::Utils::SessionUtils.current_session_id(auth_header, nil, true)` for online (user) sessions or
-- `ShopifyAPI::Utils::SessionUtils.current_session_id(auth_header, nil, false)` for offline (store) sessions.
+If you have an `HTTP_AUTHORIZATION` header or `id_token` from the request URL params , you can pass that as `shopify_id_token` into:
+- `ShopifyAPI::Utils::SessionUtils.current_session_id(shopify_id_token, nil, true)` for online (user) sessions or
+- `ShopifyAPI::Utils::SessionUtils.current_session_id(shopify_id_token, nil, false)` for offline (store) sessions.
 
-You can also use `id_token` from the request URL params to get the session ID:
-- `ShopifyAPI::Utils::SessionUtils::session_id_from_shopify_id_token(id_token: id_token_from_param, online: true)` for online (user) sessions or
-- `ShopifyAPI::Utils::SessionUtils::session_id_from_shopify_id_token(id_token: id_token_from_param, online: false)` for offline (store) sessions.
+`current_session_id` accepts shopify_id_token in the format of `Bearer this_token` or just `this_token`.
 
+You can also use this method to get session ID:
+- `ShopifyAPI::Utils::SessionUtils::session_id_from_shopify_id_token(id_token: id_token, online: true)` for online (user) sessions or
+- `ShopifyAPI::Utils::SessionUtils::session_id_from_shopify_id_token(id_token: id_token, online: false)` for offline (store) sessions.
+
+`session_id_from_shopify_id_token` does **NOT** accept shopify_id_token in the format of `Bearer this_token`, you must pass in `this_token`.
 
 #### Start Making Authenticated Shopify Requests
 
