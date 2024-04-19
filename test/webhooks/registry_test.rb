@@ -71,11 +71,11 @@ module ShopifyAPITest
             assert_equal({}, body)
             handler_called = true
           end,
-          )
+        )
 
         ShopifyAPI::Webhooks::Registry.add_registration(
           topic: @topic, path: "path", delivery_method: :http, handler: handler,
-          )
+        )
 
         ShopifyAPI::Webhooks::Registry.process(@webhook_request)
 
