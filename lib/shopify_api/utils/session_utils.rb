@@ -11,28 +11,16 @@ module ShopifyAPI
 
         sig do
           params(
-            auth_header: T.nilable(String),
+            shopify_id_token: T.nilable(String),
             cookies: T.nilable(T::Hash[String, String]),
             online: T::Boolean,
           ).returns(T.nilable(String))
         end
-        def current_session_id(auth_header, cookies, online)
+        def current_session_id(shopify_id_token, cookies, online)
           if Context.embedded?
-            if auth_header
-              matches = auth_header.match(/^Bearer (.+)$/)
-              unless matches
-                ShopifyAPI::Logger.warn("Missing Bearer token in authorization header")
-                raise Errors::MissingJwtTokenError, "Missing Bearer token in authorization header"
-              end
-
-              jwt_payload = Auth::JwtPayload.new(T.must(matches[1]))
-              shop = jwt_payload.shop
-
-              if online
-                jwt_session_id(shop, jwt_payload.sub)
-              else
-                offline_session_id(shop)
-              end
+            if shopify_id_token
+              id_token = shopify_id_token.gsub("Bearer ", "")
+              session_id_from_shopify_id_token(id_token: id_token, online: online)
             else
               # falling back to session cookie
               raise Errors::CookieNotFoundError, "JWT token or Session cookie not found for app" unless
@@ -45,6 +33,25 @@ module ShopifyAPI
               cookies && cookies[Auth::Oauth::SessionCookie::SESSION_COOKIE_NAME]
 
             cookie_session_id(cookies)
+          end
+        end
+
+        sig do
+          params(
+            id_token: T.nilable(String),
+            online: T::Boolean,
+          ).returns(String)
+        end
+        def session_id_from_shopify_id_token(id_token:, online:)
+          raise Errors::MissingJwtTokenError, "Missing Shopify ID Token" if id_token.nil? || id_token.empty?
+
+          payload = Auth::JwtPayload.new(id_token)
+          shop = payload.shop
+
+          if online
+            jwt_session_id(shop, payload.sub)
+          else
+            offline_session_id(shop)
           end
         end
 
