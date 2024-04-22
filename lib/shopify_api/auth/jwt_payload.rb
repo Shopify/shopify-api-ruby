@@ -15,6 +15,8 @@ module ShopifyAPI
       sig { returns(Integer) }
       attr_reader :exp, :nbf, :iat
 
+      alias_method :expire_at, :exp
+
       sig { params(token: String).void }
       def initialize(token)
         payload_hash = begin
@@ -42,6 +44,12 @@ module ShopifyAPI
       sig { returns(String) }
       def shop
         @dest.gsub("https://", "")
+      end
+      alias_method :shopify_domain, :shop
+
+      sig { returns(Integer) }
+      def shopify_user_id
+        @sub.to_i
       end
 
       # TODO: Remove before releasing v11
