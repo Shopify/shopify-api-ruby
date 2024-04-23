@@ -36,6 +36,12 @@ module ShopifyAPITest
             jti: decoded.jti,
             sid: decoded.sid,
           })
+
+        # Helper methods
+        assert_equal(decoded.expire_at, @jwt_payload[:exp])
+        assert_equal("test-shop.myshopify.io", decoded.shopify_domain)
+        assert_equal("test-shop.myshopify.io", decoded.shop)
+        assert_equal(1, decoded.shopify_user_id)
       end
 
       def test_decode_jwt_payload_succeeds_with_spin_domain
@@ -56,6 +62,9 @@ module ShopifyAPITest
             jti: decoded.jti,
             sid: decoded.sid,
           })
+
+        assert_equal("test-shop.other.spin.dev", decoded.shopify_domain)
+        assert_equal("test-shop.other.spin.dev", decoded.shop)
       end
 
       def test_decode_jwt_payload_fails_with_wrong_key

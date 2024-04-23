@@ -8,6 +8,10 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 - [#1314](https://github.com/Shopify/shopify-api-ruby/pull/1314)
   - Add new session util method `SessionUtils::session_id_from_shopify_id_token`
   - `SessionUtils::current_session_id` now accepts shopify Id token in the format of `Bearer this_token` or just `this_token`
+- [#1315](https://github.com/Shopify/shopify-api-ruby/pull/1315) Add helper/alias methods to `ShopifyAPI::Auth::JwtPayload`:
+  - `shopify_domain` alias for `shop` - returns the sanitized shop domain
+  - `shopify_user_id` - returns the user Id (`sub`) as an Integer value
+  - `expires_at` alias for `exp` - returns the expiration time
 
 ## 14.2.0
 - [#1309](https://github.com/Shopify/shopify-api-ruby/pull/1309) Add `Session#copy_attributes_from` method
