@@ -79,6 +79,9 @@ Once your app can perform OAuth, it can now make authenticated Shopify API calls
 
 ## Breaking Change Notices
 
+### Breaking change notice for version 15.0.0
+See [BREAKING_CHANGES_FOR_V15](BREAKING_CHANGES_FOR_V15.md)
+
 ### Breaking change notice for version 10.0.0
 See [BREAKING_CHANGES_FOR_V10](BREAKING_CHANGES_FOR_V10.md)
 
