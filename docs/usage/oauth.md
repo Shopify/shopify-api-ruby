@@ -5,31 +5,103 @@ Once the library is set up for your project, you'll be able to use it to start a
 To do this, you can follow the steps below.
 For more information on authenticating a Shopify app please see the [Types of Authentication](https://shopify.dev/docs/apps/auth#types-of-authentication) page.
 
+#### Table of contents
+- [Session Persistence](#session-persistence)
+- [Supported types of OAuth Flow](#supported-types-of-oauth)
+- [Note about Rails](#note-about-rails)
+- [Performing OAuth](#performing-oauth-1)
+  - [Token Exchange](#token-exchange)
+  - [Authorization Code Grant Flow](#authorization-code-grant-flow)
+- [Using OAuth Session to make authenticated API calls](#using-oauth-session-to-make-authenticated-api-calls)
+
 ## Session Persistence
 Session persistence is deprecated from the `ShopifyAPI` library gem since [version 12.3.0](https://github.com/Shopify/shopify-api-ruby/blob/main/CHANGELOG.md#version-1230). The responsibility of session storage typically is fulfilled by the web framework middleware.
 This API library's focus is on making requests and facilitate session creation.
 
 ⚠️ If you're not using the [ShopifyApp](https://github.com/Shopify/shopify_app) gem, you may use ShopifyAPI to perform OAuth to create sessions, but you must implement your own session storage method to persist the session information to be used in authenticated API calls.
 
+## Supported Types of OAuth
+> [!TIP]
+> If you are building an embedded app, we **strongly** recommend using [Shopify managed installation](https://shopify.dev/docs/apps/auth/installation#shopify-managed-installation)
+with [token exchange](#token-exchange) instead of the authorization code grant flow.
+
+1. [Token Exchange](#token-exchange)
+    - OAuth flow by exchanging the current user's [session token (shopify id token)](https://shopify.dev/docs/apps/auth/session-tokens) for an
+[access token](https://shopify.dev/docs/apps/auth/access-token-types/online.md).
+    - Recommended and is only available for embedded apps
+    - Doesn't require redirects, which makes authorization faster and prevents flickering when loading the app
+    - Access scope changes are handled by [Shopify managed installation](https://shopify.dev/docs/apps/auth/installation#shopify-managed-installation)
+2. [Authorization Code Grant Flow](#authorization-code-grant-flow)
+    - OAuth flow that requires the app to redirect the user to Shopify for installation/authorization of the app to access the shop's data.
+    - Suitable for non-embedded apps
+    - Installations, and access scope changes are managed by the app
+
 ## Note about Rails
 If using in the Rails framework, we highly recommend you use the [shopify_app](https://github.com/Shopify/shopify_app) gem to perform OAuth, you won't have to follow the instructions below to start your own OAuth flow.
   - See `ShopifyApp`'s [documentation on session storage](https://github.com/Shopify/shopify_app/blob/main/docs/shopify_app/sessions.md#sessions)
 
 If you aren't using Rails, you can look at how the `ShopifyApp` gem handles OAuth flow for further examples:
-- [Session Controller](https://github.com/Shopify/shopify_app/blob/main/app/controllers/shopify_app/sessions_controller.rb)
-  - Triggering and redirecting user to **begin** OAuth flow
-- [Callback Controller](https://github.com/Shopify/shopify_app/blob/main/app/controllers/shopify_app/callback_controller.rb)
-  - Creating / storing sessions to **complete** the OAuth flow
+- Token Exchange Flow
+  - [Token Exchange](https://github.com/Shopify/shopify_app/blob/main/lib/shopify_app/auth/token_exchange.rb)
+    - Completes token exchange flow to get online and offline access tokens
+- Authorization Code Grant Flow
+    - [Session Controller](https://github.com/Shopify/shopify_app/blob/main/app/controllers/shopify_app/sessions_controller.rb)
+      - Triggering and redirecting user to **begin** OAuth flow
+    - [Callback Controller](https://github.com/Shopify/shopify_app/blob/main/app/controllers/shopify_app/callback_controller.rb)
+      - Creating / storing sessions to **complete** the OAuth flow
 
 ## Performing OAuth
+### Token Exchange
 #### Steps
+1. Enable [Shopify managed installation](https://shopify.dev/docs/apps/auth/installation#shopify-managed-installation)
+    by configuring your scopes [through the Shopify CLI](https://shopify.dev/docs/apps/tools/cli/configuration).
+2. [Perform token exchange](#perform-token-exchange) to get an access token.
+
+#### Perform Token Exchange
+Use [`ShopifyAPI::Auth::TokenExchange`](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/auth/token_exchange.rb) to
+exchange a [session token](https://shopify.dev/docs/apps/auth/session-tokens) (Shopify Id Token) for an [access token](https://shopify.dev/docs/apps/auth/access-token-types/online.md).
+
+#### Input
+| Parameter      | Type                   | Required? | Default Value | Notes                                                                                                       |
+| -------------- | ---------------------- | :-------: | :-----------: | ----------------------------------------------------------------------------------------------------------- |
+| `shop`         | `String` | Yes | - | A Shopify domain name in the form `{exampleshop}.myshopify.com`. |
+| `session_token` | `String` | Yes| - | The session token (Shopify Id Token) provided by App Bridge in either the request 'Authorization' header or URL param when the app is loaded in Admin. |
+| `requested_token_type` | `TokenExchange::RequestedTokenType` | Yes | - | The type of token requested. Online: `TokenExchange::RequestedTokenType::ONLINE_ACCESS_TOKEN` or offline: `TokenExchange::RequestedTokenType::OFFLINE_ACCESS_TOKEN`. |
+
+#### Output
+This method returns the new `ShopifyAPI::Auth::Session` object from the token exchange, 
+your app should store this `Session` object to be used later [when making authenticated API calls](#using-oauth-session-to-make-authenticated-api-calls).
+
+#### Example
+```ruby
+
+# `shop` is the shop domain name - "this-is-my-example-shop.myshopify.com"
+# `session_token` is the session token provided by App Bridge either in:
+#   - the request 'Authorization' header as `Bearer this-is-the-session_token`
+#   - or as a URL param `id_token=this-is-the-session_token`
+
+def authenticate(shop, session_token)
+  session = ShopifyAPI::Auth::TokenExchange.exchange_token(
+     shop: shop,
+     session_token: session_token,
+     requested_token_type: ShopifyAPI::Auth::TokenExchange::RequestedTokenType::OFFLINE_ACCESS_TOKEN,
+     # or if you're requesting an online access token:
+     # requested_token_type: ShopifyAPI::Auth::TokenExchange::RequestedTokenType::ONLINE_ACCESS_TOKEN,
+   )
+
+  SessionRepository.store_session(session)
+end
+
+```
+
+### Authorization Code Grant Flow
+##### Steps
 1. [Add a route to start OAuth](#1-add-a-route-to-start-oauth)
 2. [Add an Oauth callback route](#2-add-an-oauth-callback-route)
 3. [Begin OAuth](#3-begin-oauth)
 4. [Handle OAuth Callback](#4-handle-oauth-callback)
-5. [Using OAuth Session to make authenticated API calls](#5-using-oauth-session-to-make-authenticated-api-calls)
 
-### 1. Add a route to start OAuth
+#### 1. Add a route to start OAuth
 Add a route to your app to start the OAuth process.
 
 ```ruby
@@ -40,7 +112,7 @@ class ShopifyAuthController < ApplicationController
 end
 ```
 
-### 2. Add an OAuth callback route
+#### 2. Add an OAuth callback route
 After the app is authenticated with Shopify, the Shopify platform will send a request back to your app using this route
 (which you will provide as the `redirect_path` parameter to `begin_auth` method, in [step 3 - Begin OAuth](#3-begin-oauth)).
 ```ruby
@@ -50,7 +122,7 @@ class ShopifyCallbackController < ApplicationController
   end
 ```
 
-### 3. Begin OAuth
+#### 3. Begin OAuth
 Use [`ShopifyAPI::Auth::Oauth.begin_auth`](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/auth/oauth.rb#L22) method to start OAuth process for your app.
 
 #### Input
@@ -74,7 +146,7 @@ Use [`ShopifyAPI::Auth::Oauth.begin_auth`](https://github.com/Shopify/shopify-ap
 |`auth_route`|`String`|URI that will be used for redirecting the user to the Shopify Authentication screen|
 |`cookie`|`ShopifyAPI::Auth::Oauth::SessionCookie`|A session cookie to store on the user's browser. |
 
-#### Example
+##### Example
 Your app should take the returned values from the `begin_auth` method and:
 
 1. Set the cookie in the user's browser. We strongly recommend that you use secure, httpOnly cookies for this to help prevent session hijacking.
@@ -109,19 +181,19 @@ end
 
 ⚠️ You can see a concrete example in the `ShopifyApp` gem's [SessionController](https://github.com/Shopify/shopify_app/blob/main/app/controllers/shopify_app/sessions_controller.rb).
 
-### 4. Handle OAuth Callback
+#### 4. Handle OAuth Callback
 When the user grants permission to the app in Shopify admin, they'll be redirected back to the app's callback route
 (configured in [Step 2 - Add an OAuth callback route](#2-add-an-oauth-callback-route)).
 
 Use [`ShopifyAPI::AuthL::Oauth.validate_auth_callback`](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/auth/oauth.rb#L60) method to finalize the OAuth process.
 
-#### Input
+##### Input
 | Parameter    | Type    | Notes                                                                                                       |
 | ------------ | --------| ----------------------------------------------------------------------------------------------------------- |
 | `cookies`    | `Hash`  | All browser cookies in a hash format with key and value as `String` |
 | `auth_query` | `ShopifyAPI::Auth::Oauth::AuthQuery`| An `AuthQuery` containing the authorization request information used to validate the request.|
 
-#### Output
+##### Output
 This method returns a hash containing the new session and a cookie to be set in the browser in form of:
 ```ruby
 {
@@ -134,12 +206,12 @@ This method returns a hash containing the new session and a cookie to be set in 
 |`session`|`ShopifyAPI::Auth::Session`|A session object that contains necessary information to identify the session like `shop`, `access_token`, `scope`, etc.|
 |`cookie` |`ShopifyAPI::Auth::Oauth::SessionCookie`|A session cookie to store on the user's browser. |
 
-#### Example
+##### Example
 Your app should call `validate_auth_callback` to construct the `Session` object and cookie that will be used later for authenticated API requests.
 
 1. Call `validate_auth_callback` to construct `Session` and `SessionCookie`.
 2. Update browser cookies with the new value for the session.
-3. Store the `Session` object to be used later when making authenticated API calls.
+3. Store the `Session` object to be used later when [making authenticated API calls](#using-oauth-session-to-make-authenticated-api-calls).
    - See [Make a GraphQL API call](https://github.com/Shopify/shopify-api-ruby/blob/main/docs/usage/graphql.md), or
    [Make a REST API call](https://github.com/Shopify/shopify-api-ruby/blob/main/docs/usage/rest.md) for examples on how to use the result `Session` object.
 
@@ -182,8 +254,8 @@ end
 
 ⚠️ You can see a concrete example in the `ShopifyApp` gem's [CallbackController](https://github.com/Shopify/shopify_app/blob/main/app/controllers/shopify_app/callback_controller.rb).
 
-### 5. Using OAuth Session to make authenticated API calls
-Once your OAuth flow is complete, and you have stored your `Session` object from [Step 4 - Handle OAuth Callback](#4-handle-oauth-callback), you may use that `Session` object to make authenticated API calls.
+## Using OAuth Session to make authenticated API calls
+Once your OAuth flow is complete, and you have persisted your `Session` object, you may use that `Session` object to make authenticated API calls.
 
 Example:
 ```ruby
