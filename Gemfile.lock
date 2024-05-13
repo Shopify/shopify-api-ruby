@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    shopify_api (14.2.0)
+    shopify_api (14.3.0)
       activesupport
       concurrent-ruby
       hash_diff
@@ -160,4 +160,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   2.3.4
+   2.5.9
