@@ -138,7 +138,7 @@ module ShopifyAPI
             }
           MUTATION
 
-          delete_response = client.query(query: delete_mutation)
+          delete_response = client.query(query: delete_mutation, response_as_struct: false)
           raise Errors::WebhookRegistrationError,
             "Failed to delete webhook from Shopify" unless delete_response.ok?
           result = T.cast(delete_response.body, T::Hash[String, T.untyped])
@@ -170,7 +170,7 @@ module ShopifyAPI
             }
           QUERY
 
-          fetch_id_response = client.query(query: fetch_id_query)
+          fetch_id_response = client.query(query: fetch_id_query, response_as_struct: false)
           raise Errors::WebhookRegistrationError,
             "Failed to fetch webhook from Shopify" unless fetch_id_response.ok?
           body = T.cast(fetch_id_response.body, T::Hash[String, T.untyped])
@@ -216,7 +216,7 @@ module ShopifyAPI
           ).returns(T::Hash[Symbol, T.untyped])
         end
         def webhook_registration_needed?(client, registration)
-          check_response = client.query(query: registration.build_check_query)
+          check_response = client.query(query: registration.build_check_query, response_as_struct: false)
           raise Errors::WebhookRegistrationError,
             "Failed to check if webhook was already registered" unless check_response.ok?
           parsed_check_result = registration.parse_check_result(T.cast(check_response.body, T::Hash[String, T.untyped]))
@@ -233,7 +233,8 @@ module ShopifyAPI
           ).returns(T::Hash[String, T.untyped])
         end
         def send_register_request(client, registration, webhook_id)
-          register_response = client.query(query: registration.build_register_query(webhook_id: webhook_id))
+          register_response = client.query(query: registration.build_register_query(webhook_id: webhook_id),
+            response_as_struct: false)
 
           raise Errors::WebhookRegistrationError, "Failed to register webhook with Shopify" unless register_response.ok?
 

@@ -28,9 +28,10 @@ module ShopifyAPI
             variables: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             headers: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             tries: Integer,
+            response_as_struct: T.nilable(T::Boolean),
           ).returns(HttpResponse)
         end
-        def query(query:, variables: nil, headers: nil, tries: 1)
+        def query(query:, variables: nil, headers: nil, tries: 1, response_as_struct: Context.response_as_struct)
           body = { query: query, variables: variables }
           @http_client.request(
             HttpRequest.new(
@@ -42,7 +43,7 @@ module ShopifyAPI
               body_type: "application/json",
               tries: tries,
             ),
-            response_as_struct: Context.response_as_struct || false,
+            response_as_struct: response_as_struct || false,
           )
         end
       end

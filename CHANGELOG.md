@@ -7,6 +7,7 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## 14.3.0
 - [#1312](https://github.com/Shopify/shopify-api-ruby/pull/1312) Use same leeway for `exp` and `nbf` when parsing JWT
+- [#1313](https://github.com/Shopify/shopify-api-ruby/pull/1313) Fix: Webhook Registry now working with response_as_struct enabled
 - [#1314](https://github.com/Shopify/shopify-api-ruby/pull/1314)
   - Add new session util method `SessionUtils::session_id_from_shopify_id_token`
   - `SessionUtils::current_session_id` now accepts shopify Id token in the format of `Bearer this_token` or just `this_token`
