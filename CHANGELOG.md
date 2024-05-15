@@ -3,6 +3,7 @@
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
+- [#1320](https://github.com/Shopify/shopify-api-ruby/pull/1320) Fix sorbet type on Shop.tax_shipping field
 
 ## 14.3.0
 - [#1312](https://github.com/Shopify/shopify-api-ruby/pull/1312) Use same leeway for `exp` and `nbf` when parsing JWT
