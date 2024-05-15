@@ -66,7 +66,7 @@ module ShopifyAPI
       @setup_required = T.let(nil, T.nilable(T::Boolean))
       @shop_owner = T.let(nil, T.nilable(String))
       @source = T.let(nil, T.nilable(String))
-      @tax_shipping = T.let(nil, T.nilable(String))
+      @tax_shipping = T.let(nil, T.nilable(T::Boolean))
       @taxes_included = T.let(nil, T.nilable(T::Boolean))
       @timezone = T.let(nil, T.nilable(String))
       @transactional_sms_disabled = T.let(nil, T.nilable(T::Boolean))
@@ -179,7 +179,7 @@ module ShopifyAPI
     attr_reader :shop_owner
     sig { returns(T.nilable(String)) }
     attr_reader :source
-    sig { returns(T.nilable(String)) }
+    sig { returns(T.nilable(T::Boolean)) }
     attr_reader :tax_shipping
     sig { returns(T.nilable(T::Boolean)) }
     attr_reader :taxes_included
