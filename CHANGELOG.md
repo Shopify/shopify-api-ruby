@@ -3,9 +3,12 @@
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
+
 - [#1320](https://github.com/Shopify/shopify-api-ruby/pull/1320) Fix sorbet type on Shop.tax_shipping field
+- [#1325](https://github.com/Shopify/shopify-api-ruby/pull/1325) Add support for 2024-07 API version
 
 ## 14.3.0
+
 - [#1312](https://github.com/Shopify/shopify-api-ruby/pull/1312) Use same leeway for `exp` and `nbf` when parsing JWT
 - [#1313](https://github.com/Shopify/shopify-api-ruby/pull/1313) Fix: Webhook Registry now working with response_as_struct enabled
 - [#1314](https://github.com/Shopify/shopify-api-ruby/pull/1314)
@@ -17,9 +20,11 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
   - `expires_at` alias for `exp` - returns the expiration time
 
 ## 14.2.0
+
 - [#1309](https://github.com/Shopify/shopify-api-ruby/pull/1309) Add `Session#copy_attributes_from` method
 
 ## 14.1.0
+
 - [#1071](https://github.com/Shopify/shopify-api-ruby/issues/1071) Fix FulfillmentEvent class types
 - Fix: InventoryItem class `harmonized_system_code` attribute type which can be either integer, string or nil
 - Fix: Variant class `inventory_quantity` attribute type which can be either integer, string or nil
@@ -28,10 +33,12 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 - [1305](https://github.com/Shopify/shopify-api-ruby/pull/1305/) Adds support for the `2024-04` API version.
 
 ## 14.0.1
+
 - [#1288](https://github.com/Shopify/shopify-api-ruby/pull/1288) Fix FeatureDeprecatedError being raised without a message.
 - [1290](https://github.com/Shopify/shopify-api-ruby/pull/1290) Move deprecation of `ShopifyAPI::Webhooks::Handler#handle` to version 15.0.0
 
 ## 14.0.0
+
 - [#1274](https://github.com/Shopify/shopify-api-ruby/pull/1274) ⚠️ [Breaking] Update sorbet and rbi dependencies. Remove support for ruby 2.7. Minimum required Ruby version is 3.0
 - [#1282](https://github.com/Shopify/shopify-api-ruby/pull/1282) Fixes a bug where diffing attributes to update not take into account of Array changes and required ids.
 - [#1254](https://github.com/Shopify/shopify-api-ruby/pull/1254) Introduce token exchange API for fetching access tokens. This feature is currently unstable and cannot be used yet.
@@ -39,6 +46,7 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 - [#1275](https://github.com/Shopify/shopify-api-ruby/pull/1275) Allow adding custom headers in REST Resource HTTP calls.
 
 ## 13.4.0
+
 - [#1210](https://github.com/Shopify/shopify-api-ruby/pull/1246) Add context option `response_as_struct` to allow GraphQL API responses to be accessed via dot notation.
 - [#1257](https://github.com/Shopify/shopify-api-ruby/pull/1257) Add `api_call_limit` and `retry_request_after` to REST resources to expose rate limit information.
 - [#1257](https://github.com/Shopify/shopify-api-ruby/pull/1257) Added support for the 2024-01 API version. This also includes a fix for the `for_hash` option when creating resources.
