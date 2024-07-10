@@ -4,6 +4,8 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
 
+- [#1327](https://github.com/Shopify/shopify-api-ruby/pull/1327) Support `?debug=true` parameter in GraphQL client requests
+
 ## 14.4.0
 
 - [#1325](https://github.com/Shopify/shopify-api-ruby/pull/1325) Add support for 2024-07 API version

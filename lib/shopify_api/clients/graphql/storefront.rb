@@ -46,12 +46,20 @@ module ShopifyAPI
             headers: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             tries: Integer,
             response_as_struct: T.nilable(T::Boolean),
+            debug: T::Boolean,
           ).returns(HttpResponse)
         end
-        def query(query:, variables: nil, headers: {}, tries: 1, response_as_struct: Context.response_as_struct)
+        def query(
+          query:,
+          variables: nil,
+          headers: {},
+          tries: 1,
+          response_as_struct: Context.response_as_struct,
+          debug: false
+        )
           T.must(headers).merge!({ @storefront_auth_header => @storefront_access_token })
           super(query: query, variables: variables, headers: headers, tries: tries,
-                    response_as_struct: response_as_struct)
+                    response_as_struct: response_as_struct, debug: debug)
         end
       end
     end

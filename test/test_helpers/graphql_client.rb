@@ -83,5 +83,25 @@ module TestHelpers
 
       @client.query(query: query, variables: variables)
     end
+
+    def test_can_make_debug_requests
+      query = <<~QUERY
+        {
+          shop {
+            name
+          }
+        }
+      QUERY
+      body = { query: query, variables: nil }
+      success_body = { "success" => true }
+      response_headers = { "content-type" => "application/json" }
+
+      stub_request(:post, "https://test-shop.myshopify.com/#{@path}/#{ShopifyAPI::Context.api_version}/graphql.json?debug=true")
+        .with(body: body, headers: @expected_headers)
+        .to_return(body: success_body.to_json, headers: response_headers)
+
+      response = @client.query(query: query, debug: true)
+      assert_equal(success_body, response.body)
+    end
   end
 end

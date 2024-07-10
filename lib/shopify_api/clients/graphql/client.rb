@@ -29,14 +29,24 @@ module ShopifyAPI
             headers: T.nilable(T::Hash[T.any(Symbol, String), T.untyped]),
             tries: Integer,
             response_as_struct: T.nilable(T::Boolean),
+            debug: T::Boolean,
           ).returns(HttpResponse)
         end
-        def query(query:, variables: nil, headers: nil, tries: 1, response_as_struct: Context.response_as_struct)
+        def query(
+          query:,
+          variables: nil,
+          headers: nil,
+          tries: 1,
+          response_as_struct: Context.response_as_struct,
+          debug: false
+        )
           body = { query: query, variables: variables }
+          search_params = debug ? "?debug=true" : ""
+
           @http_client.request(
             HttpRequest.new(
               http_method: :post,
-              path: "#{@api_version}/graphql.json",
+              path: "#{@api_version}/graphql.json#{search_params}",
               body: body,
               query: nil,
               extra_headers: headers,
