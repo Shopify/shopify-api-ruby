@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 require "active_support/inflector"
-require 'active_support/all'
+require "active_support/core_ext/hash/indifferent_access"
 
 module ShopifyAPI
   module Rest
