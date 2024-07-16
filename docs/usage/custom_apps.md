@@ -62,9 +62,34 @@ end
 def make_api_request
   # 1. Create API client without session information
   # The graphql_client will use `ShopifyAPI::Context.active_session` when making API calls
-  graphql_client = ShopifyAPI::Clients::Graphql::Admin.new
+  # you can set the api version for your GraphQL client
+  graphql_client = ShopifyAPI::Clients::Graphql::Admin.new(api_version: "2024-07")
+
+  # REST example
+  ShopifyAPI::Context.load_rest_resources(api_version: "2024-07")
 
   # 2. Use API client to make queries
+  # Graphql
+  query = <<~QUERY
+    {
+      products(first: 10) {
+        edges {
+          cursor
+          node {
+            id
+            title
+            onlineStoreUrl
+          }
+        }
+      }
+    }
+  QUERY
+
+  response = graphql_client.query(query: query)
+
+  # REST
+  product_count = ShopifyAPI::Product.count
+  
   ...
 end
 
