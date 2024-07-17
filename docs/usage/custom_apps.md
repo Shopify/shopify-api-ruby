@@ -53,6 +53,15 @@ def configure_app
       access_token: "the_token_for_your_custom_app_found_in_admin"
     )
 
+  ShopifyAPI::Context.setup(
+    api_key: "<api-key>",
+    api_secret_key: "<api-secret-key>",
+    scope: "read_orders,read_products,etc",
+    is_embedded: true, # Set to true if you are building an embedded app
+    api_version: "2024-01", # The version of the API you would like to use
+    is_private: false, # Set to true if you have an existing private app
+  )
+
   # Activate session to be used in all API calls
   # session must be type `ShopifyAPI::Auth::Session`
   ShopifyAPI::Context.activate_session(session)
@@ -62,11 +71,8 @@ end
 def make_api_request
   # 1. Create API client without session information
   # The graphql_client will use `ShopifyAPI::Context.active_session` when making API calls
-  # you can set the api version for your GraphQL client
+  # you can set the api version for your GraphQL client to override the api version in ShopifyAPI::Context
   graphql_client = ShopifyAPI::Clients::Graphql::Admin.new(api_version: "2024-07")
-
-  # REST example
-  ShopifyAPI::Context.load_rest_resources(api_version: "2024-07")
 
   # 2. Use API client to make queries
   # Graphql
@@ -87,7 +93,7 @@ def make_api_request
 
   response = graphql_client.query(query: query)
 
-  # REST
+  # Use REST resources to make authenticated API call
   product_count = ShopifyAPI::Product.count
   
   ...
