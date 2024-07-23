@@ -5,6 +5,7 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
 
 - [#1327](https://github.com/Shopify/shopify-api-ruby/pull/1327) Support `?debug=true` parameter in GraphQL client requests
+- [#1308](https://github.com/Shopify/shopify-api-ruby/pull/1308) Support hash_with_indifferent_access when creating REST objects from Shopify responses. Closes #1296
 
 ## 14.4.0
 

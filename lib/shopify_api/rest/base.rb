@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require "active_support/inflector"
+require "active_support/core_ext/hash/indifferent_access"
 
 module ShopifyAPI
   module Rest
@@ -248,7 +249,7 @@ module ShopifyAPI
         def create_instances_from_response(response:, session:)
           objects = []
 
-          body = T.cast(response.body, T::Hash[String, T.untyped])
+          body = T.cast(response.body, T::Hash[String, T.untyped]).with_indifferent_access
 
           response_names = json_response_body_names
 
