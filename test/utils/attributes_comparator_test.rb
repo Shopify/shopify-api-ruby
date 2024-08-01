@@ -86,6 +86,13 @@ module ShopifyAPITest
             updated_attributes: { "a" => { 0 => "test3", 1 => "test4" } },
             expected: { "a" => { 0 => "test3", 1 => "test4" } },
           },
+          {
+            name: "applies hashes as a whole when key is in block_update_attributes",
+            original_attributes: { "a" => { "b" => 1, "c" => "abc" } },
+            updated_attributes: { "a" => { "b" => nil, "c" => "abc" } },
+            block_update_attributes: [:a],
+            expected: { "a" => { "b" => nil, "c" => "abc" } },
+          },
         ]
 
         test_cases.each do |test_case|
@@ -94,6 +101,7 @@ module ShopifyAPITest
             ShopifyAPI::Utils::AttributesComparator.compare(
               test_case[:original_attributes],
               test_case[:updated_attributes],
+              block_update_attributes: test_case[:block_update_attributes] || [],
             ),
             test_case[:name],
           )
