@@ -21,8 +21,9 @@ module WebhookHandler
   extend ShopifyAPI::Webhooks::WebhookHandler
 
   class << self
-    def handle_webhook(data:)
-      puts "Received webhook! topic: #{data.topic} shop: #{data.shop} body: #{data.body} webhook_id: #{data.webhook_id} api_version: #{data.api_version"
+    def handle(data:)
+      puts "Received webhook! topic: #{data.topic} shop: #{data.shop} body: #{data.body} webhook_id: #{data.webhook_id} api_version: #{data.api_version}"
+      perform_later(topic: data.topic, shop_domain: data.shop, webhook: data.body)
     end
   end
 end
