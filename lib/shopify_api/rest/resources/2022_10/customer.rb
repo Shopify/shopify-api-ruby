@@ -55,6 +55,7 @@ module ShopifyAPI
       metafield: Metafield
     }, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
+    @block_update_attributes = [:email_marketing_consent]
     @paths = T.let([
       {http_method: :delete, operation: :delete, ids: [:id], path: "customers/<id>.json"},
       {http_method: :get, operation: :count, ids: [], path: "customers/count.json"},
