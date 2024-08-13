@@ -17,7 +17,7 @@ module ShopifyAPI
       @paths = T.let([], T::Array[T::Hash[Symbol, T.any(T::Array[Symbol], String, Symbol)]])
       @custom_prefix = T.let(nil, T.nilable(String))
       @read_only_attributes = T.let([], T.nilable(T::Array[Symbol]))
-      @block_update_attributes = T.let([], T::Array[Symbol])
+      @atomic_hash_attributes = T.let([], T::Array[Symbol])
       @aliased_properties = T.let({}, T::Hash[String, String])
 
       sig { returns(T::Hash[Symbol, T.untyped]) }
@@ -64,7 +64,7 @@ module ShopifyAPI
         attr_reader :has_one
 
         sig { returns(T.nilable(T::Array[Symbol])) }
-        attr_reader :block_update_attributes
+        attr_reader :atomic_hash_attributes
 
         sig { returns(T.nilable(T::Hash[T.any(Symbol, String), String])) }
         attr_accessor :headers
@@ -422,7 +422,7 @@ module ShopifyAPI
         ShopifyAPI::Utils::AttributesComparator.compare(
           stringified_updatable_attributes,
           stringified_new_attributes,
-          block_update_attributes: self.class.block_update_attributes || [],
+          atomic_hash_attributes: self.class.atomic_hash_attributes || [],
         )
       end
 
