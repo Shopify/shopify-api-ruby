@@ -22,6 +22,7 @@ module ShopifyAPI
       @accepts_marketing_updated_at = T.let(nil, T.nilable(String))
       @addresses = T.let(nil, T.nilable(T::Array[T.untyped]))
       @created_at = T.let(nil, T.nilable(String))
+
       @currency = T.let(nil, T.nilable(String))
       @default_address = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
       @email = T.let(nil, T.nilable(String))
@@ -55,6 +56,7 @@ module ShopifyAPI
       metafield: Metafield
     }, T::Hash[Symbol, Class])
     @has_many = T.let({}, T::Hash[Symbol, Class])
+    @atomic_hash_attributes = [:email_marketing_consent]
     @paths = T.let([
       {http_method: :delete, operation: :delete, ids: [:id], path: "customers/<id>.json"},
       {http_method: :get, operation: :count, ids: [], path: "customers/count.json"},

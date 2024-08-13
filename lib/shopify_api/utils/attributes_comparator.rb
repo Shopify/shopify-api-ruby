@@ -13,9 +13,10 @@ module ShopifyAPI
           params(
             original_attributes: T::Hash[String, T.untyped],
             updated_attributes: T::Hash[String, T.untyped],
+            atomic_hash_attributes: T::Array[Symbol],
           ).returns(T::Hash[String, T.untyped])
         end
-        def compare(original_attributes, updated_attributes)
+        def compare(original_attributes, updated_attributes, atomic_hash_attributes: [])
           attributes_diff = HashDiff::Comparison.new(
             original_attributes,
             updated_attributes,
@@ -24,6 +25,7 @@ module ShopifyAPI
           update_value = build_update_value(
             attributes_diff,
             reference_values: updated_attributes,
+            atomic_hash_attributes: atomic_hash_attributes,
           )
 
           update_value
@@ -34,9 +36,10 @@ module ShopifyAPI
             diff: T::Hash[String, T.untyped],
             path: T::Array[String],
             reference_values: T::Hash[String, T.untyped],
+            atomic_hash_attributes: T::Array[Symbol],
           ).returns(T::Hash[String, T.untyped])
         end
-        def build_update_value(diff, path: [], reference_values: {})
+        def build_update_value(diff, path: [], reference_values: {}, atomic_hash_attributes: [])
           new_hash = {}
 
           diff.each do |key, value|
@@ -49,7 +52,19 @@ module ShopifyAPI
               if has_numbered_key && ref_value.is_a?(Array)
                 new_hash[key] = ref_value
               else
-                new_value = build_update_value(value, path: current_path, reference_values: reference_values)
+                new_value = build_update_value(
+                  value,
+                  path: current_path,
+                  reference_values: reference_values,
+                  atomic_hash_attributes: atomic_hash_attributes,
+                )
+
+                atomic_update = atomic_hash_attributes.include?(key.to_sym)
+
+                # If the key is in atomic_hash_attributes, we use the entire reference value
+                # so we update the hash as a whole.
+                if !new_value.empty? && !ref_value.empty? && atomic_update
+                  new_hash[key] = ref_value
 
                 # Only add to new_hash if the user intentionally updates
                 # to empty value like `{}` or `[]`. For example:
@@ -70,7 +85,9 @@ module ShopifyAPI
                 # new_hash = {}
                 #
                 # new_hash is empty because nothing changes
-                new_hash[key] = new_value if !new_value.empty? || ref_value.empty?
+                elsif !new_value.empty? || ref_value.empty?
+                  new_hash[key] = new_value
+                end
               end
             elsif value != HashDiff::NO_VALUE
               new_hash[key] = value
