@@ -4,6 +4,8 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 ## Unreleased
 
+- [#1337](https://github.com/Shopify/shopify-api-ruby/pull/1337) Fix type for Shop#google_apps_login_enabled
+
 ## 14.5.0
 
 - [#1327](https://github.com/Shopify/shopify-api-ruby/pull/1327) Support `?debug=true` parameter in GraphQL client requests
