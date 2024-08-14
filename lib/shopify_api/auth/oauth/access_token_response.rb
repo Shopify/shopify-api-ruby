@@ -13,6 +13,7 @@ module ShopifyAPI
         const :expires_in, T.nilable(Integer)
         const :associated_user, T.nilable(AssociatedUser)
         const :associated_user_scope, T.nilable(String)
+        const :refresh_token, T.nilable(String)
 
         sig { returns(T::Boolean) }
         def online_token?
@@ -29,7 +30,8 @@ module ShopifyAPI
             session == other.session &&
             expires_in == other.expires_in &&
             associated_user == other.associated_user &&
-            associated_user_scope == other.associated_user_scope
+            associated_user_scope == other.associated_user_scope &&
+            refresh_token == other.refresh_token
         end
       end
     end

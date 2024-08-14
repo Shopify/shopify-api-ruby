@@ -30,6 +30,9 @@ module ShopifyAPI
       sig { returns(T.nilable(String)) }
       attr_accessor :shopify_session_id
 
+      sig { returns(T.nilable(String)) }
+      attr_accessor :refresh_token
+
       sig { returns(T::Boolean) }
       def online?
         @is_online
@@ -52,10 +55,11 @@ module ShopifyAPI
           is_online: T.nilable(T::Boolean),
           associated_user: T.nilable(AssociatedUser),
           shopify_session_id: T.nilable(String),
+          refresh_token: T.nilable(String),
         ).void
       end
       def initialize(shop:, id: nil, state: nil, access_token: "", scope: [], associated_user_scope: nil, expires: nil,
-        is_online: nil, associated_user: nil, shopify_session_id: nil)
+        is_online: nil, associated_user: nil, shopify_session_id: nil, refresh_token: nil)
         @id = T.let(id || SecureRandom.uuid, String)
         @shop = shop
         @state = state
@@ -68,6 +72,7 @@ module ShopifyAPI
         @associated_user = associated_user
         @is_online = T.let(is_online || !associated_user.nil?, T::Boolean)
         @shopify_session_id = shopify_session_id
+        @refresh_token = refresh_token
       end
 
       class << self
@@ -91,6 +96,7 @@ module ShopifyAPI
 
         sig { params(shop: String, access_token_response: Oauth::AccessTokenResponse).returns(Session) }
         def from(shop:, access_token_response:)
+          puts "ACCESS_TOKEN_RESPONSE #{access_token_response.inspect}"
           is_online = access_token_response.online_token?
 
           if is_online
@@ -112,6 +118,7 @@ module ShopifyAPI
             associated_user: associated_user,
             expires: expires,
             shopify_session_id: access_token_response.session,
+            refresh_token: access_token_response.refresh_token
           )
         end
 
@@ -150,7 +157,8 @@ module ShopifyAPI
             (!(expires.nil? ^ other.expires.nil?) && (expires.nil? || expires.to_i == other.expires.to_i)) &&
             online? == other.online? &&
             associated_user == other.associated_user &&
-            shopify_session_id == other.shopify_session_id
+            shopify_session_id == other.shopify_session_id &&
+            refresh_token == other.refresh_token
 
         else
           false
