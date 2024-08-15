@@ -43,6 +43,11 @@ module ShopifyAPI
         @expires ? @expires < Time.now : false
       end
 
+      sig { returns(T::Boolean) }
+      def almost_expired?(time: 5.seconds)
+        @expires ? @expires < Time.now + time : false
+      end
+
       sig do
         params(
           shop: String,
