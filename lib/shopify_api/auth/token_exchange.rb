@@ -71,7 +71,7 @@ module ShopifyAPI
 
           Session.from(
             shop: shop,
-            access_token_response: Oauth::AccessTokenResponse.from_hash(session_params.merge({"refresh_token" => "cool-refresh"})),
+            access_token_response: Oauth::AccessTokenResponse.from_hash(session_params),
           )
         end
       end

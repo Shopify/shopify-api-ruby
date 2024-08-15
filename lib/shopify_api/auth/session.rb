@@ -103,10 +103,10 @@ module ShopifyAPI
         def from(shop:, access_token_response:)
           puts "ACCESS_TOKEN_RESPONSE #{access_token_response.inspect}"
           is_online = access_token_response.online_token?
+          expires = Time.now + access_token_response.expires_in.to_i unless access_token_response.expires_in.nil?
 
           if is_online
             associated_user = T.must(access_token_response.associated_user)
-            expires = Time.now + access_token_response.expires_in.to_i
             associated_user_scope = access_token_response.associated_user_scope
             id = "#{shop}_#{associated_user.id}"
           else
