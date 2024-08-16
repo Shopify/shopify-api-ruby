@@ -43,7 +43,7 @@ module ShopifyAPI
         @expires ? @expires < Time.now : false
       end
 
-      sig { returns(T::Boolean) }
+      sig { params(time: T.any(ActiveSupport::Duration, Numeric)).returns(T::Boolean) }
       def almost_expired?(time: 5.seconds)
         @expires ? @expires < Time.now + time : false
       end
@@ -123,7 +123,7 @@ module ShopifyAPI
             associated_user: associated_user,
             expires: expires,
             shopify_session_id: access_token_response.session,
-            refresh_token: access_token_response.refresh_token
+            refresh_token: access_token_response.refresh_token,
           )
         end
 
