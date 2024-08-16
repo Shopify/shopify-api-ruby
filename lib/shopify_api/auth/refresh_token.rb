@@ -42,8 +42,11 @@ module ShopifyAPI
               ),
             )
           rescue ShopifyAPI::Errors::HttpResponseError => error
+            puts "👇" * 50
+            puts error: error, code: error.code, response: error.response.inspect
+            puts "👆" * 50
             # TODO: errors
-            raise error
+            raise
           end
 
           session_params = T.cast(response.body, T::Hash[String, T.untyped]).to_h
