@@ -7,6 +7,7 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 - [#1327](https://github.com/Shopify/shopify-api-ruby/pull/1327) Support `?debug=true` parameter in GraphQL client requests
 - [#1308](https://github.com/Shopify/shopify-api-ruby/pull/1308) Support hash_with_indifferent_access when creating REST objects from Shopify responses. Closes #1296
 - [#1332](https://github.com/Shopify/shopify-api-ruby/pull/1332) Fixed an issue where `Customer` REST API PUT requests didn't send all of the fields in the `email_marketing_consent` attribute
+- [#1335](https://github.com/Shopify/shopify-api-ruby/pull/1335) Add back the `current` methods for `Shop` and `RecurringApplicationCharge` resources
 
 ## 14.4.0
 

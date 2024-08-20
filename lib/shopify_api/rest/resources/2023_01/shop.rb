@@ -216,6 +216,16 @@ module ShopifyAPI
         T.cast(response, T::Array[Shop])
       end
 
+      sig do
+        params(
+          fields: T.untyped,
+          session: Auth::Session,
+        ).returns(T.nilable(Shop))
+      end
+      def current(fields: nil, session: ShopifyAPI::Context.active_session)
+        all(session: session, fields: fields).first
+      end
+
     end
 
   end

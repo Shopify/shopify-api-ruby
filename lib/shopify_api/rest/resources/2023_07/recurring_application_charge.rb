@@ -149,6 +149,15 @@ module ShopifyAPI
         T.cast(response, T::Array[RecurringApplicationCharge])
       end
 
+      sig do
+        params(session: Auth::Session)
+          .returns(T.nilable(RecurringApplicationCharge))
+      end
+      def current(session: ShopifyAPI::Context.active_session)
+        charges = all(session: session)
+        charges.select { |charge| charge.status == "active" }.first
+      end
+
     end
 
     sig do
