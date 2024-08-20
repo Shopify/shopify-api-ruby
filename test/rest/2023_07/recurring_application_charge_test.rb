@@ -329,4 +329,26 @@ class RecurringApplicationCharge202307Test < Test::Unit::TestCase
     end
   end
 
+  sig do
+    void
+  end
+  def test_current()
+    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2023-07/recurring_application_charges.json")
+      .with(
+        headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
+        body: {}
+      )
+      .to_return(status: 200, body: JSON.generate({"recurring_application_charges" => [
+        {"id" => 455696195, "name" => "Super Mega Plan", "price" => "15.00", "billing_on" => "2023-07-02", "status" => "accepted", "created_at" => "2023-07-02T08:59:11-05:00", "updated_at" => "2023-07-02T09:03:16-05:00", "activated_on" => nil, "return_url" => "http://yourapp.example.org", "test" => nil, "cancelled_on" => nil, "trial_days" => 0, "trial_ends_on" => nil, "api_client_id" => 755357713, "decorated_return_url" => "http://yourapp.example.org?charge_id=455696195", "currency" => "USD"},
+        {"id" => 455696196, "name" => "Super Mega Plan", "price" => "15.00", "billing_on" => "2023-07-10", "status" => "active", "created_at" => "2023-07-10T08:59:11-05:00", "updated_at" => "2023-07-10T09:03:16-05:00", "activated_on" => nil, "return_url" => "http://yourapp.example.org", "test" => nil, "cancelled_on" => nil, "trial_days" => 0, "trial_ends_on" => nil, "api_client_id" => 755357714, "decorated_return_url" => "http://yourapp.example.org?charge_id=455696196", "currency" => "USD"},
+      ]}), headers: {})
+
+    charge = ShopifyAPI::RecurringApplicationCharge.current
+
+    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2023-07/recurring_application_charges.json")
+
+    assert_equal(455696196, charge.id)
+    assert_equal("active", charge.status)
+  end
+
 end

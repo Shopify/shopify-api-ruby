@@ -91,4 +91,21 @@ class Shop202404Test < Test::Unit::TestCase
     end
   end
 
+  sig do
+    void
+  end
+  def test_current
+    stub_request(:get, "https://test-shop.myshopify.io/admin/api/2024-07/shop.json")
+      .with(
+        headers: {"X-Shopify-Access-Token"=>"this_is_a_test_token", "Accept"=>"application/json"},
+        body: {}
+      )
+      .to_return(status: 200, body: JSON.generate({"shop" => {"province" => "California", "country" => "US", "address1" => "1 Infinite Loop", "city" => "Cupertino", "address2" => "Suite 100"}}), headers: {})
+
+    shop = ShopifyAPI::Shop.current
+
+    assert_requested(:get, "https://test-shop.myshopify.io/admin/api/2024-07/shop.json")
+
+    assert_equal(shop.province, "California")
+  end
 end
