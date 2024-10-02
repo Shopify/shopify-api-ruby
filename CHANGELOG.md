@@ -1,8 +1,9 @@
 # Changelog
 
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
-
 ## Unreleased
+
+## 14.6.0
 
 - [#1337](https://github.com/Shopify/shopify-api-ruby/pull/1337) Fix type for Shop#google_apps_login_enabled
 - [#1340](https://github.com/Shopify/shopify-api-ruby/pull/1340) Add support for 2024-10 API version
