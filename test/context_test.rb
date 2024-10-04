@@ -165,6 +165,19 @@ module ShopifyAPITest
       )
     end
 
+    def test_scope_config_can_be_optional_and_defaults_to_empty
+      ShopifyAPI::Context.setup(
+        api_key: "",
+        api_secret_key: "",
+        api_version: "2023-10",
+        host_name: "",
+        is_private: false,
+        is_embedded: true,
+      )
+
+      assert_equal(ShopifyAPI::Auth::AuthScopes.new, ShopifyAPI::Context.scope)
+    end
+
     def teardown
       ShopifyAPI::Context.deactivate_session
     end
