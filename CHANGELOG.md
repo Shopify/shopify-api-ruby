@@ -3,6 +3,8 @@
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
 
+- [#1343](https://github.com/Shopify/shopify-api-ruby/pull/1343) Make ShopifyAPI::Context::scope parameter optional. `scope` defaults to empty list `[]`.
+
 ## 14.6.0
 
 - [#1337](https://github.com/Shopify/shopify-api-ruby/pull/1337) Fix type for Shop#google_apps_login_enabled
