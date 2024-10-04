@@ -123,6 +123,19 @@ class ShopifyCallbackController < ApplicationController
 ```
 
 #### 3. Begin OAuth
+To request access scopes from the shop during authorization code grant OAuth flow, 
+configure access scopes needed by adding the `scope` parameter to the `ShopifyAPI::Context.setup` method in your configuration.
+
+```ruby
+ShopifyAPI::Context.setup(
+  api_key: <SHOPIFY_API_KEY>,
+  api_secret_key: <SHOPIFY_API_SECRET>,
+  api_version: <SHOPIFY_API_VERSION>,
+  scope: <SHOPIFY_API_SCOPES>, # Accepts array or string: "read_orders, write_products" or ["read_orders", "write_products"]
+  ...
+  )
+```
+
 Use [`ShopifyAPI::Auth::Oauth.begin_auth`](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/auth/oauth.rb#L22) method to start OAuth process for your app.
 
 #### Input
@@ -131,6 +144,7 @@ Use [`ShopifyAPI::Auth::Oauth.begin_auth`](https://github.com/Shopify/shopify-ap
 | `shop`          | `String`               |    Yes    |       -       | A Shopify domain name in the form `{exampleshop}.myshopify.com`.                                            |
 | `redirect_path` | `String`               |    Yes    |       -       | The redirect path used for callback with a leading `/`. The route should be allowed under the app settings. |
 | `is_online`     | `Boolean`              |    No     |    `true`     | `true` if the session is online and `false` otherwise.                                                      |
+| `scope_override`| `String` or `[String]` |    No     |     `nil`     |  `nil` will request access scopes configured in `ShopifyAPI::Context.setup` during OAuth flow. Modify this to override the access scopes being requested. Accepts array or string: "read_orders, write_products" or ["read_orders", "write_products"]. |
 
 #### Output
 `begin_auth` method will return a hash result in the form of:
