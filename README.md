@@ -97,11 +97,9 @@ After cloning the repository, you can install the dependencies with bundler:
 bundle install
 ```
 
-To run the automated tests:
-
-```bash
-bundle exec rake test
-```
+There are two sets of tests
+ - The "library" tests which test the base functionality of the API code. These tests can be run via `bundle exec rake test` (which is an alias to `bundle exec rake test:library`).
+ - The "rest_wrappers" tests which test the model-specific wrappers for the Shopify API. These tests can be run via `bundle exec rake test:rest_wrappers`.
 
 We use [rubocop](https://rubocop.org) to lint/format the code. You can run it with the following command:
 
