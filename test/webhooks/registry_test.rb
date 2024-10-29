@@ -407,77 +407,6 @@ module ShopifyAPITest
         assert_equal(queries[delivery_method][:register_update_response], update_registration_response.body)
       end
 
-      def do_registration_new_handler_test(delivery_method, path, fields: nil, metafield_namespaces: nil)
-        ShopifyAPI::Webhooks::Registry.clear
-
-        check_query_body = { query: queries[delivery_method][:check_query], variables: nil }
-
-        stub_request(:post, @url)
-          .with(body: JSON.dump(check_query_body))
-          .to_return({ status: 200, body: JSON.dump(queries[delivery_method][:check_empty_response]) })
-
-        add_query_type = if fields
-          :register_add_query_with_fields
-        elsif metafield_namespaces
-          :register_add_query_with_metafield_namespaces
-        else
-          :register_add_query
-        end
-        add_response_type = if fields
-          :register_add_with_fields_response
-        elsif metafield_namespaces
-          :register_add_with_metafield_namespaces_response
-        else
-          :register_add_response
-        end
-
-        stub_request(:post, @url)
-          .with(body: JSON.dump({ query: queries[delivery_method][add_query_type], variables: nil }))
-          .to_return({ status: 200, body: JSON.dump(queries[delivery_method][add_response_type]) })
-
-        ShopifyAPI::Webhooks::Registry.add_registration(
-          topic: @topic,
-          delivery_method: delivery_method,
-          path: path,
-          handler: TestHelpers::NewFakeWebhookHandler.new(
-            lambda do |data|
-            end,
-          ),
-          fields: fields,
-          metafield_namespaces: metafield_namespaces,
-        )
-        registration_response = ShopifyAPI::Webhooks::Registry.register_all(
-          session: @session,
-        )[0]
-
-        assert(registration_response.success)
-        assert_equal(queries[delivery_method][add_response_type], registration_response.body)
-
-        stub_request(:post, @url)
-          .with(body: JSON.dump(check_query_body))
-          .to_return({ status: 200, body: JSON.dump(queries[delivery_method][:check_existing_response]) })
-
-        stub_request(:post, @url)
-          .with(body: JSON.dump({ query: queries[delivery_method][:register_update_query], variables: nil }))
-          .to_return({ status: 200, body: JSON.dump(queries[delivery_method][:register_update_response]) })
-
-        ShopifyAPI::Webhooks::Registry.add_registration(
-          topic: @topic,
-          delivery_method: delivery_method,
-          path: "#{path}-updated",
-          handler: TestHelpers::NewFakeWebhookHandler.new(
-            lambda do |data|
-            end,
-          ),
-        )
-        update_registration_response = ShopifyAPI::Webhooks::Registry.register_all(
-          session: @session,
-        )[0]
-
-        assert(update_registration_response.success)
-        assert_equal(queries[delivery_method][:register_update_response], update_registration_response.body)
-      end
-
       def do_registration_check_error_test(delivery_method, path)
         ShopifyAPI::Webhooks::Registry.clear
         body = { query: queries[delivery_method][:check_query], variables: nil }
@@ -492,31 +421,6 @@ module ShopifyAPITest
           path: path,
           handler: TestHelpers::FakeWebhookHandler.new(
             lambda do |topic, shop, body|
-            end,
-          ),
-        )
-
-        assert_raises(StandardError) do
-          ShopifyAPI::Webhooks::Registry.register_all(
-          session: @session,
-        )
-        end
-      end
-
-      def do_registration_check_error_test_new_handler(delivery_method, path)
-        ShopifyAPI::Webhooks::Registry.clear
-        body = { query: queries[delivery_method][:check_query], variables: nil }
-
-        stub_request(:post, @url)
-          .with(body: JSON.dump(body))
-          .to_return(status: 304)
-
-        ShopifyAPI::Webhooks::Registry.add_registration(
-          topic: @topic,
-          delivery_method: delivery_method,
-          path: path,
-          handler: TestHelpers::NewFakeWebhookHandler.new(
-            lambda do |data|
             end,
           ),
         )
