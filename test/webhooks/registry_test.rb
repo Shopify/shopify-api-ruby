@@ -125,6 +125,16 @@ module ShopifyAPITest
         end
       end
 
+      def test_http_registraion_is_not_needed_if_identical_webhook_exists
+        do_no_registration_needed_test(
+          queries[:http][:check_existing_response_with_attributes],
+          :http,
+          "test-webhooks",
+          fields: "field1, field2",
+          metafield_namespaces: ["namespace1", "namespace2"],
+        )
+      end
+
       def test_http_registration_add_and_update
         # add webhook
         do_registration_test(
@@ -255,6 +265,16 @@ module ShopifyAPITest
         do_registration_check_error_test(:http, "test-webhooks")
       end
 
+      def test_pubsub_registration_is_not_needed_if_identical_webhook_exists
+        do_no_registration_needed_test(
+          queries[:pub_sub][:check_existing_response_with_attributes],
+          :pub_sub,
+          "pubsub://my-project-id:my-topic-id",
+          fields: "field1, field2",
+          metafield_namespaces: ["namespace1", "namespace2"],
+        )
+      end
+
       def test_pubsub_registration_add_and_update
         # add webhook
         do_registration_test(
@@ -343,6 +363,16 @@ module ShopifyAPITest
 
       def test_raises_on_pubsub_registration_check_error
         do_registration_check_error_test(:pub_sub, "pubsub://my-project-id:my-topic-id")
+      end
+
+      def test_eventbridge_registration_is_not_needed_if_identical_webhook_exists
+        do_no_registration_needed_test(
+          queries[:event_bridge][:check_existing_response_with_attributes],
+          :event_bridge,
+          "test-webhooks",
+          fields: "field1, field2",
+          metafield_namespaces: ["namespace1", "namespace2"],
+        )
       end
 
       def test_eventbridge_registration_add_and_update
@@ -587,10 +617,9 @@ module ShopifyAPITest
       )
         # Given
         ShopifyAPI::Webhooks::Registry.clear
-        check_query_body = { query: queries[delivery_method][:check_query], variables: nil }
 
         stub_request(:post, @url)
-          .with(body: JSON.dump(check_query_body))
+          .with(body: JSON.dump({ query: queries[delivery_method][:check_query], variables: nil }))
           .to_return({ status: 200, body: JSON.dump(expected_check_response) })
 
         stub_request(:post, @url)
@@ -641,6 +670,40 @@ module ShopifyAPITest
           session: @session,
         )
         end
+      end
+
+      def do_no_registration_needed_test(
+        expected_check_response,
+        delivery_method,
+        path,
+        fields: nil,
+        metafield_namespaces: nil
+      )
+        # Given
+        ShopifyAPI::Webhooks::Registry.clear
+
+        stub_request(:post, @url)
+          .with(body: JSON.dump({ query: queries[delivery_method][:check_query], variables: nil }))
+          .to_return({ status: 200, body: JSON.dump(expected_check_response) })
+
+        # When
+        ShopifyAPI::Webhooks::Registry.add_registration(
+          topic: @topic,
+          delivery_method: delivery_method,
+          path: path,
+          handler: TestHelpers::FakeWebhookHandler.new(
+            lambda do |topic, shop, body|
+            end,
+          ),
+          fields: fields,
+          metafield_namespaces: metafield_namespaces,
+        )
+        update_registration_response = ShopifyAPI::Webhooks::Registry.register_all(
+          session: @session,
+        )[0]
+
+        # Then
+        assert_nil(update_registration_response.body)
       end
     end
   end

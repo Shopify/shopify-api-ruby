@@ -125,6 +125,23 @@ module ShopifyAPITest
                 },
               },
             },
+            check_existing_response_with_attributes: {
+              "data" => {
+                "webhookSubscriptions" => {
+                  "edges" => [
+                    "node" => {
+                      "id" => "gid://shopify/WebhookSubscription/12345",
+                      "includeFields" => ["field1", "field2"],
+                      "metafieldNamespaces" => ["namespace1", "namespace2"],
+                      "endpoint" => {
+                        "typename" => "WebhookHttpEndpoint",
+                        "callbackUrl" => "https://app-address.com/test-webhooks",
+                      },
+                    },
+                  ],
+                },
+              },
+            },
             register_update_query:
               <<~QUERY,
                 mutation webhookSubscription {
@@ -313,6 +330,23 @@ module ShopifyAPITest
                         "typename" => "WebhookEventBridgeEndpoint",
                         "arn" => "test-webhooks",
                       },
+                    },
+                  ],
+                },
+              },
+            },
+            check_existing_response_with_attributes: {
+              "data" => {
+                "webhookSubscriptions" => {
+                  "edges" => [
+                    "node" => {
+                      "id" => "gid://shopify/WebhookSubscription/12345",
+                      "endpoint" => {
+                        "typename" => "WebhookEventBridgeEndpoint",
+                        "arn" => "test-webhooks",
+                      },
+                      "includeFields" => ["field1", "field2"],
+                      "metafieldNamespaces" => ["namespace1", "namespace2"],
                     },
                   ],
                 },
@@ -507,6 +541,24 @@ module ShopifyAPITest
                         "pubSubProject" => "my-project-id",
                         "pubSubTopic" => "my-topic-id",
                       },
+                    },
+                  ],
+                },
+              },
+            },
+            check_existing_response_with_attributes: {
+              "data" => {
+                "webhookSubscriptions" => {
+                  "edges" => [
+                    "node" => {
+                      "id" => "gid://shopify/WebhookSubscription/12345",
+                      "endpoint" => {
+                        "typename" => "WebhookPubSubEndpoint",
+                        "pubSubProject" => "my-project-id",
+                        "pubSubTopic" => "my-topic-id",
+                      },
+                      "includeFields" => ["field1", "field2"],
+                      "metafieldNamespaces" => ["namespace1", "namespace2"],
                     },
                   ],
                 },
