@@ -14,6 +14,8 @@ module ShopifyAPITest
                     edges {
                       node {
                         id
+                        includeFields
+                        metafieldNamespaces
                         endpoint {
                           __typename
                           ... on WebhookHttpEndpoint {
@@ -207,6 +209,8 @@ module ShopifyAPITest
                     edges {
                       node {
                         id
+                        includeFields
+                        metafieldNamespaces
                         endpoint {
                           __typename
                           ... on WebhookEventBridgeEndpoint {
@@ -397,6 +401,8 @@ module ShopifyAPITest
                     edges {
                       node {
                         id
+                        includeFields
+                        metafieldNamespaces
                         endpoint {
                           __typename
                           ... on WebhookPubSubEndpoint {

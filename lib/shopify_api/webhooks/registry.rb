@@ -221,7 +221,9 @@ module ShopifyAPI
             "Failed to check if webhook was already registered" unless check_response.ok?
 
           parsed_check_result = registration.parse_check_result(T.cast(check_response.body, T::Hash[String, T.untyped]))
-          must_register = parsed_check_result[:current_address] != registration.callback_address
+          must_register = parsed_check_result[:current_address] != registration.callback_address ||
+            parsed_check_result[:fields] != registration.fields ||
+            parsed_check_result[:metafield_namespaces] != registration.metafield_namespaces
 
           { webhook_id: parsed_check_result[:webhook_id], must_register: must_register }
         end

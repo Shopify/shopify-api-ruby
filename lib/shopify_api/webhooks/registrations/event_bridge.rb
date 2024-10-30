@@ -30,6 +30,8 @@ module ShopifyAPI
                 edges {
                   node {
                     id
+                    includeFields
+                    metafieldNamespaces
                     endpoint {
                       __typename
                       ... on WebhookEventBridgeEndpoint {
@@ -48,12 +50,17 @@ module ShopifyAPI
           edges = body.dig("data", "webhookSubscriptions", "edges") || {}
           webhook_id = nil
           current_address = nil
+          fields = nil
+          metafield_namespaces = nil
           unless edges.empty?
             node = edges[0]["node"]
             webhook_id = node["id"].to_s
             current_address = node["endpoint"]["arn"].to_s
+            fields = node["includeFields"]
+            metafield_namespaces = node["metafieldNamespaces"]
           end
-          { webhook_id: webhook_id, current_address: current_address }
+          { webhook_id: webhook_id, current_address: current_address, fields: fields,
+            metafield_namespaces: metafield_namespaces, }
         end
       end
     end
