@@ -45,7 +45,7 @@ module ShopifyAPI
           QUERY
         end
 
-        sig { override.params(body: T::Hash[String, T.untyped]).returns(T::Hash[Symbol, String]) }
+        sig { override.params(body: T::Hash[String, T.untyped]).returns(T::Hash[Symbol, T.untyped]) }
         def parse_check_result(body)
           edges = body.dig("data", "webhookSubscriptions", "edges") || {}
           webhook_id = nil

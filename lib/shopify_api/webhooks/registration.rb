@@ -48,7 +48,7 @@ module ShopifyAPI
       sig { abstract.returns(String) }
       def build_check_query; end
 
-      sig { abstract.params(body: T::Hash[String, T.untyped]).returns(T::Hash[Symbol, String]) }
+      sig { abstract.params(body: T::Hash[String, T.untyped]).returns(T::Hash[Symbol, T.untyped]) }
       def parse_check_result(body); end
 
       sig { params(webhook_id: T.nilable(String)).returns(String) }
