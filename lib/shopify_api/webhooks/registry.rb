@@ -219,9 +219,18 @@ module ShopifyAPI
           check_response = client.query(query: registration.build_check_query, response_as_struct: false)
           raise Errors::WebhookRegistrationError,
             "Failed to check if webhook was already registered" unless check_response.ok?
+
           parsed_check_result = registration.parse_check_result(T.cast(check_response.body, T::Hash[String, T.untyped]))
+
+          # update this to check for more than just the current address
           must_register = parsed_check_result[:current_address] != registration.callback_address
 
+          # any subscription arg (depends on what kind of registration i.e. pubsub, http, eventbridge) has changed
+          # all 3 have these fields: callbackUrl, subscriptionArgs (which includes includeFields, metafieldNamespaces)
+          # but the structure of subscriptionArgs is different for each type of registration
+          #
+
+          # webhook_id is nil if the webhook is not registered. This leads to a create mutation instead of an update
           { webhook_id: parsed_check_result[:webhook_id], must_register: must_register }
         end
 

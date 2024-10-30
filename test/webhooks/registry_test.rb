@@ -121,33 +121,110 @@ module ShopifyAPITest
         @headers["x-shopify-topic"] = "non_registered_topic"
 
         assert_raises(ShopifyAPI::Errors::NoWebhookHandler) do
-          ShopifyAPI::Webhooks::Registry.process(ShopifyAPI::Webhooks::Request.new(raw_body: "{}",
-            headers: @headers))
+          ShopifyAPI::Webhooks::Registry.process(ShopifyAPI::Webhooks::Request.new(raw_body: "{}", headers: @headers))
         end
       end
 
       def test_http_registration_add_and_update
-        do_registration_test(:http, "test-webhooks")
+        # add webhook
+        do_registration_test(
+          queries[:http][:check_empty_response],
+          queries[:http][:register_add_query],
+          queries[:http][:register_add_response],
+          :http,
+          "test-webhooks",
+        )
+
+        # update webhook path
+        do_registration_test(
+          queries[:http][:check_existing_response],
+          queries[:http][:register_update_query],
+          queries[:http][:register_update_response],
+          :http,
+          "test-webhooks-updated",
+        )
       end
 
       def test_http_registration_add_and_update_with_full_url
-        do_registration_test(:http, "https://app-address.com/test-webhooks")
+        # add webhook
+        do_registration_test(
+          queries[:http][:check_empty_response],
+          queries[:http][:register_add_query],
+          queries[:http][:register_add_response],
+          :http,
+          "https://app-address.com/test-webhooks",
+        )
+
+        # update webhook path
+        do_registration_test(
+          queries[:http][:check_existing_response],
+          queries[:http][:register_update_query],
+          queries[:http][:register_update_response],
+          :http,
+          "https://app-address.com/test-webhooks-updated",
+        )
       end
 
       def test_http_registration_add_and_update_with_schemeless_url
-        do_registration_test(:http, "app-address.com/test-webhooks")
+        # add webhook
+        do_registration_test(
+          queries[:http][:check_empty_response],
+          queries[:http][:register_add_query],
+          queries[:http][:register_add_response],
+          :http,
+          "app-address.com/test-webhooks",
+        )
+
+        # update webhook path
+        do_registration_test(
+          queries[:http][:check_existing_response],
+          queries[:http][:register_update_query],
+          queries[:http][:register_update_response],
+          :http,
+          "app-address.com/test-webhooks-updated",
+        )
       end
 
       def test_http_registration_with_fields_add_and_update
-        do_registration_test(:http, "test-webhooks", fields: "field1, field2")
+        # add webhook
+        do_registration_test(
+          queries[:http][:check_empty_response],
+          queries[:http][:register_add_query_with_fields],
+          queries[:http][:register_add_with_fields_response],
+          :http,
+          "app-address.com/test-webhooks",
+          fields: "field1, field2",
+        )
+
+        # TODO: update webhook fields
       end
 
       def test_http_registration_with_fields_array_add_and_update
-        do_registration_test(:http, "test-webhooks", fields: ["field1", "field2"])
+        # add webhook
+        do_registration_test(
+          queries[:http][:check_empty_response],
+          queries[:http][:register_add_query_with_fields],
+          queries[:http][:register_add_with_fields_response],
+          :http,
+          "app-address.com/test-webhooks",
+          fields: ["field1", "field2"],
+        )
+
+        # TODO: update webhook fields
       end
 
       def test_http_registration_with_metafield_namespaces_add_and_update
-        do_registration_test(:http, "test-webhooks", metafield_namespaces: ["namespace1", "namespace2"])
+        # add webhook
+        do_registration_test(
+          queries[:http][:check_empty_response],
+          queries[:http][:register_add_query_with_metafield_namespaces],
+          queries[:http][:register_add_with_metafield_namespaces_response],
+          :http,
+          "test-webhooks",
+          metafield_namespaces: ["namespace1", "namespace2"],
+        )
+
+        # TODO: update webhook metafield namespaces
       end
 
       def test_raises_on_http_registration_check_error
@@ -155,20 +232,65 @@ module ShopifyAPITest
       end
 
       def test_pubsub_registration_add_and_update
-        do_registration_test(:pub_sub, "pubsub://my-project-id:my-topic-id")
+        # add webhook
+        do_registration_test(
+          queries[:pub_sub][:check_empty_response],
+          queries[:pub_sub][:register_add_query],
+          queries[:pub_sub][:register_add_response],
+          :pub_sub,
+          "pubsub://my-project-id:my-topic-id",
+        )
+
+        # update webhook path
+        do_registration_test(
+          queries[:pub_sub][:check_existing_response],
+          queries[:pub_sub][:register_update_query],
+          queries[:pub_sub][:register_update_response],
+          :pub_sub,
+          "pubsub://my-project-id:my-topic-id-updated",
+        )
       end
 
       def test_pubsub_registration_with_fields_add_and_update
-        do_registration_test(:pub_sub, "pubsub://my-project-id:my-topic-id", fields: "field1, field2")
+        # add webhook
+        do_registration_test(
+          queries[:pub_sub][:check_empty_response],
+          queries[:pub_sub][:register_add_query_with_fields],
+          queries[:pub_sub][:register_add_with_fields_response],
+          :pub_sub,
+          "pubsub://my-project-id:my-topic-id",
+          fields: "field1, field2",
+        )
+
+        # TODO: update webhook fields
       end
 
       def test_pubsub_registration_with_fields_array_add_and_update
-        do_registration_test(:pub_sub, "pubsub://my-project-id:my-topic-id", fields: ["field1", "field2"])
+        # add webhook
+        do_registration_test(
+          queries[:pub_sub][:check_empty_response],
+          queries[:pub_sub][:register_add_query_with_fields],
+          queries[:pub_sub][:register_add_with_fields_response],
+          :pub_sub,
+          "pubsub://my-project-id:my-topic-id",
+          fields: ["field1", "field2"],
+        )
+
+        # TODO: update webhook fields
       end
 
       def test_pubsub_registration_with_metafield_namespaces_add_and_update
-        do_registration_test(:pub_sub, "pubsub://my-project-id:my-topic-id",
-          metafield_namespaces: ["namespace1", "namespace2"])
+        # add webhook
+        do_registration_test(
+          queries[:pub_sub][:check_empty_response],
+          queries[:pub_sub][:register_add_query_with_metafield_namespaces],
+          queries[:pub_sub][:register_add_with_metafield_namespaces_response],
+          :pub_sub,
+          "pubsub://my-project-id:my-topic-id",
+          metafield_namespaces: ["namespace1", "namespace2"],
+        )
+
+        # TODO: update webhook metafield namespaces
       end
 
       def test_raises_on_pubsub_registration_check_error
@@ -176,19 +298,65 @@ module ShopifyAPITest
       end
 
       def test_eventbridge_registration_add_and_update
-        do_registration_test(:event_bridge, "test-webhooks")
+        # add webhook
+        do_registration_test(
+          queries[:event_bridge][:check_empty_response],
+          queries[:event_bridge][:register_add_query],
+          queries[:event_bridge][:register_add_response],
+          :event_bridge,
+          "test-webhooks",
+        )
+
+        # update webhook path
+        do_registration_test(
+          queries[:event_bridge][:check_existing_response],
+          queries[:event_bridge][:register_update_query],
+          queries[:event_bridge][:register_update_response],
+          :event_bridge,
+          "test-webhooks-updated",
+        )
       end
 
       def test_eventbridge_registration_with_fields_add_and_update
-        do_registration_test(:event_bridge, "test-webhooks", fields: "field1, field2")
+        # add webhook
+        do_registration_test(
+          queries[:event_bridge][:check_empty_response],
+          queries[:event_bridge][:register_add_query_with_fields],
+          queries[:event_bridge][:register_add_with_fields_response],
+          :event_bridge,
+          "test-webhooks",
+          fields: "field1, field2",
+        )
+
+        # TODO: update webhook fields
       end
 
       def test_eventbridge_registration_with_fields_array_add_and_update
-        do_registration_test(:event_bridge, "test-webhooks", fields: ["field1", "field2"])
+        # add webhook
+        do_registration_test(
+          queries[:event_bridge][:check_empty_response],
+          queries[:event_bridge][:register_add_query_with_fields],
+          queries[:event_bridge][:register_add_with_fields_response],
+          :event_bridge,
+          "test-webhooks",
+          fields: ["field1", "field2"],
+        )
+
+        # TODO: update webhook fields
       end
 
       def test_eventbridge_registration_with_metafield_namespaces_add_and_update
-        do_registration_test(:event_bridge, "test-webhooks", metafield_namespaces: ["namespace1", "namespace2"])
+        # add webhook
+        do_registration_test(
+          queries[:event_bridge][:check_empty_response],
+          queries[:event_bridge][:register_add_query_with_metafield_namespaces],
+          queries[:event_bridge][:register_add_with_metafield_namespaces_response],
+          :event_bridge,
+          "test-webhooks",
+          metafield_namespaces: ["namespace1", "namespace2"],
+        )
+
+        # TODO: update webhook metafield namespaces
       end
 
       def test_raises_on_eventbridge_registration_check_error
@@ -336,34 +504,28 @@ module ShopifyAPITest
 
       private
 
-      def do_registration_test(delivery_method, path, fields: nil, metafield_namespaces: nil)
+      def do_registration_test(
+        expected_check_response,
+        expected_update_webhook_query,
+        expected_update_webhook_response,
+        delivery_method,
+        path,
+        fields: nil,
+        metafield_namespaces: nil
+      )
+        # Given
         ShopifyAPI::Webhooks::Registry.clear
-
         check_query_body = { query: queries[delivery_method][:check_query], variables: nil }
 
         stub_request(:post, @url)
           .with(body: JSON.dump(check_query_body))
-          .to_return({ status: 200, body: JSON.dump(queries[delivery_method][:check_empty_response]) })
-
-        add_query_type = if fields
-          :register_add_query_with_fields
-        elsif metafield_namespaces
-          :register_add_query_with_metafield_namespaces
-        else
-          :register_add_query
-        end
-        add_response_type = if fields
-          :register_add_with_fields_response
-        elsif metafield_namespaces
-          :register_add_with_metafield_namespaces_response
-        else
-          :register_add_response
-        end
+          .to_return({ status: 200, body: JSON.dump(expected_check_response) })
 
         stub_request(:post, @url)
-          .with(body: JSON.dump({ query: queries[delivery_method][add_query_type], variables: nil }))
-          .to_return({ status: 200, body: JSON.dump(queries[delivery_method][add_response_type]) })
+          .with(body: JSON.dump({ query: expected_update_webhook_query, variables: nil }))
+          .to_return({ status: 200, body: JSON.dump(expected_update_webhook_response) })
 
+        # When
         ShopifyAPI::Webhooks::Registry.add_registration(
           topic: @topic,
           delivery_method: delivery_method,
@@ -375,36 +537,13 @@ module ShopifyAPITest
           fields: fields,
           metafield_namespaces: metafield_namespaces,
         )
-        registration_response = ShopifyAPI::Webhooks::Registry.register_all(
-          session: @session,
-        )[0]
-
-        assert(registration_response.success)
-        assert_equal(queries[delivery_method][add_response_type], registration_response.body)
-
-        stub_request(:post, @url)
-          .with(body: JSON.dump(check_query_body))
-          .to_return({ status: 200, body: JSON.dump(queries[delivery_method][:check_existing_response]) })
-
-        stub_request(:post, @url)
-          .with(body: JSON.dump({ query: queries[delivery_method][:register_update_query], variables: nil }))
-          .to_return({ status: 200, body: JSON.dump(queries[delivery_method][:register_update_response]) })
-
-        ShopifyAPI::Webhooks::Registry.add_registration(
-          topic: @topic,
-          delivery_method: delivery_method,
-          path: "#{path}-updated",
-          handler: TestHelpers::FakeWebhookHandler.new(
-            lambda do |topic, shop, body|
-            end,
-          ),
-        )
         update_registration_response = ShopifyAPI::Webhooks::Registry.register_all(
           session: @session,
         )[0]
 
+        # Then
         assert(update_registration_response.success)
-        assert_equal(queries[delivery_method][:register_update_response], update_registration_response.body)
+        assert_equal(expected_update_webhook_response, update_registration_response.body)
       end
 
       def do_registration_check_error_test(delivery_method, path)
