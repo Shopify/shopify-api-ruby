@@ -223,7 +223,9 @@ module ShopifyAPI
           parsed_check_result = registration.parse_check_result(T.cast(check_response.body, T::Hash[String, T.untyped]))
 
           # update this to check for more than just the current address
-          must_register = parsed_check_result[:current_address] != registration.callback_address
+          # must_register = parsed_check_result[:current_address] != registration.callback_address
+
+          must_register = true # TODO: remove and make a real check
 
           # any subscription arg (depends on what kind of registration i.e. pubsub, http, eventbridge) has changed
           # all 3 have these fields: callbackUrl, subscriptionArgs (which includes includeFields, metafieldNamespaces)

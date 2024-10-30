@@ -196,7 +196,15 @@ module ShopifyAPITest
           fields: "field1, field2",
         )
 
-        # TODO: update webhook fields
+        # update webhook fields
+        do_registration_test(
+          queries[:http][:check_existing_response],
+          queries[:http][:register_update_query_with_fields],
+          queries[:http][:register_update_with_fields_response],
+          :http,
+          "app-address.com/test-webhooks",
+          fields: "field1, field2, field3",
+        )
       end
 
       def test_http_registration_with_fields_array_add_and_update
@@ -210,7 +218,15 @@ module ShopifyAPITest
           fields: ["field1", "field2"],
         )
 
-        # TODO: update webhook fields
+        # update webhook fields
+        do_registration_test(
+          queries[:http][:check_existing_response],
+          queries[:http][:register_update_query_with_fields],
+          queries[:http][:register_update_with_fields_response],
+          :http,
+          "app-address.com/test-webhooks",
+          fields: ["field1", "field2", "field3"],
+        )
       end
 
       def test_http_registration_with_metafield_namespaces_add_and_update
@@ -224,7 +240,15 @@ module ShopifyAPITest
           metafield_namespaces: ["namespace1", "namespace2"],
         )
 
-        # TODO: update webhook metafield namespaces
+        # update webhook metafield namespaces
+        do_registration_test(
+          queries[:http][:check_existing_response],
+          queries[:http][:register_update_query_with_metafield_namespaces],
+          queries[:http][:register_update_with_metafield_namespaces_response],
+          :http,
+          "test-webhooks",
+          metafield_namespaces: ["namespace1", "namespace2", "namespace3"],
+        )
       end
 
       def test_raises_on_http_registration_check_error
@@ -262,7 +286,15 @@ module ShopifyAPITest
           fields: "field1, field2",
         )
 
-        # TODO: update webhook fields
+        # update webhook fields
+        do_registration_test(
+          queries[:pub_sub][:check_existing_response],
+          queries[:pub_sub][:register_update_query_with_fields],
+          queries[:pub_sub][:register_update_with_fields_response],
+          :pub_sub,
+          "pubsub://my-project-id:my-topic-id",
+          fields: "field1, field2, field3",
+        )
       end
 
       def test_pubsub_registration_with_fields_array_add_and_update
@@ -276,7 +308,15 @@ module ShopifyAPITest
           fields: ["field1", "field2"],
         )
 
-        # TODO: update webhook fields
+        # update webhook fields
+        do_registration_test(
+          queries[:pub_sub][:check_existing_response],
+          queries[:pub_sub][:register_update_query_with_fields],
+          queries[:pub_sub][:register_update_with_fields_response],
+          :pub_sub,
+          "pubsub://my-project-id:my-topic-id",
+          fields: ["field1", "field2", "field3"],
+        )
       end
 
       def test_pubsub_registration_with_metafield_namespaces_add_and_update
@@ -290,7 +330,15 @@ module ShopifyAPITest
           metafield_namespaces: ["namespace1", "namespace2"],
         )
 
-        # TODO: update webhook metafield namespaces
+        # update webhook metafield namespaces
+        do_registration_test(
+          queries[:pub_sub][:check_existing_response],
+          queries[:pub_sub][:register_update_query_with_metafield_namespaces],
+          queries[:pub_sub][:register_update_with_metafield_namespaces_response],
+          :pub_sub,
+          "pubsub://my-project-id:my-topic-id",
+          metafield_namespaces: ["namespace1", "namespace2", "namespace3"],
+        )
       end
 
       def test_raises_on_pubsub_registration_check_error
@@ -328,7 +376,15 @@ module ShopifyAPITest
           fields: "field1, field2",
         )
 
-        # TODO: update webhook fields
+        # update webhook fields
+        do_registration_test(
+          queries[:event_bridge][:check_existing_response],
+          queries[:event_bridge][:register_update_query_with_fields],
+          queries[:event_bridge][:register_update_with_fields_response],
+          :event_bridge,
+          "test-webhooks",
+          fields: "field1, field2, field3",
+        )
       end
 
       def test_eventbridge_registration_with_fields_array_add_and_update
@@ -342,7 +398,15 @@ module ShopifyAPITest
           fields: ["field1", "field2"],
         )
 
-        # TODO: update webhook fields
+        # update webhook fields
+        do_registration_test(
+          queries[:event_bridge][:check_existing_response],
+          queries[:event_bridge][:register_update_query_with_fields],
+          queries[:event_bridge][:register_update_with_fields_response],
+          :event_bridge,
+          "test-webhooks",
+          fields: ["field1", "field2", "field3"],
+        )
       end
 
       def test_eventbridge_registration_with_metafield_namespaces_add_and_update
@@ -356,7 +420,15 @@ module ShopifyAPITest
           metafield_namespaces: ["namespace1", "namespace2"],
         )
 
-        # TODO: update webhook metafield namespaces
+        # update webhook metafield namespaces
+        do_registration_test(
+          queries[:event_bridge][:check_existing_response],
+          queries[:event_bridge][:register_update_query_with_metafield_namespaces],
+          queries[:event_bridge][:register_update_with_metafield_namespaces_response],
+          :event_bridge,
+          "test-webhooks",
+          metafield_namespaces: ["namespace1", "namespace2", "namespace3"],
+        )
       end
 
       def test_raises_on_eventbridge_registration_check_error
