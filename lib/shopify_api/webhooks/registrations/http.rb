@@ -51,27 +51,27 @@ module ShopifyAPI
           QUERY
         end
 
-        sig { override.params(body: T::Hash[String, T.untyped]).returns(T::Hash[Symbol, T.untyped]) }
+        sig do
+          params(body: T::Hash[String, T.untyped]).returns({
+            webhook_id: T.nilable(String),
+            current_address: T.nilable(String),
+            fields: T::Array[String],
+            metafield_namespaces: T::Array[String],
+          })
+        end
         def parse_check_result(body)
+          parse_results = super(body)
           edges = body.dig("data", "webhookSubscriptions", "edges") || {}
-          webhook_id = nil
-          current_address = nil
-          fields = nil
-          metafield_namespaces = nil
           unless edges.empty?
             node = edges[0]["node"]
-            webhook_id = node["id"].to_s
-            current_address =
+            parse_results[:current_address] =
               if node.key?("endpoint")
                 node["endpoint"]["callbackUrl"].to_s
               else
                 node["callbackUrl"].to_s
               end
-            fields = node["includeFields"]
-            metafield_namespaces = node["metafieldNamespaces"]
           end
-          { webhook_id: webhook_id, current_address: current_address, fields: fields,
-            metafield_namespaces: metafield_namespaces, }
+          parse_results
         end
       end
     end

@@ -133,6 +133,12 @@ module ShopifyAPITest
           fields: "field1, field2",
           metafield_namespaces: ["namespace1", "namespace2"],
         )
+
+        do_no_registration_needed_test(
+          queries[:http][:check_existing_response],
+          :http,
+          "test-webhooks",
+        )
       end
 
       def test_http_registration_add_and_update
@@ -273,6 +279,12 @@ module ShopifyAPITest
           fields: "field1, field2",
           metafield_namespaces: ["namespace1", "namespace2"],
         )
+
+        do_no_registration_needed_test(
+          queries[:pub_sub][:check_existing_response],
+          :pub_sub,
+          "pubsub://my-project-id:my-topic-id",
+        )
       end
 
       def test_pubsub_registration_add_and_update
@@ -372,6 +384,12 @@ module ShopifyAPITest
           "test-webhooks",
           fields: "field1, field2",
           metafield_namespaces: ["namespace1", "namespace2"],
+        )
+
+        do_no_registration_needed_test(
+          queries[:event_bridge][:check_existing_response],
+          :event_bridge,
+          "test-webhooks",
         )
       end
 
