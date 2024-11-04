@@ -137,7 +137,31 @@ module ShopifyAPITest
           end
 
           define_method("test_raises_on_#{protocol}_registration_check_error_with_address_#{address}") do
-            do_registration_check_error_test(protocol, address)
+            # Given
+            ShopifyAPI::Webhooks::Registry.clear
+            body = { query: queries[protocol][:check_query], variables: nil }
+
+            stub_request(:post, @url)
+              .with(body: JSON.dump(body))
+              .to_return(status: 304)
+
+            # When
+            ShopifyAPI::Webhooks::Registry.add_registration(
+              topic: @topic,
+              delivery_method: protocol,
+              path: address,
+              handler: TestHelpers::FakeWebhookHandler.new(
+                lambda do |topic, shop, body|
+                end,
+              ),
+            )
+
+            # Then
+            assert_raises(StandardError) do
+              ShopifyAPI::Webhooks::Registry.register_all(
+              session: @session,
+            )
+            end
           end
         end
       end
@@ -407,31 +431,6 @@ module ShopifyAPITest
         # Then
         assert(update_registration_response.success)
         assert_equal(expected_update_webhook_response, update_registration_response.body)
-      end
-
-      def do_registration_check_error_test(delivery_method, path)
-        ShopifyAPI::Webhooks::Registry.clear
-        body = { query: queries[delivery_method][:check_query], variables: nil }
-
-        stub_request(:post, @url)
-          .with(body: JSON.dump(body))
-          .to_return(status: 304)
-
-        ShopifyAPI::Webhooks::Registry.add_registration(
-          topic: @topic,
-          delivery_method: delivery_method,
-          path: path,
-          handler: TestHelpers::FakeWebhookHandler.new(
-            lambda do |topic, shop, body|
-            end,
-          ),
-        )
-
-        assert_raises(StandardError) do
-          ShopifyAPI::Webhooks::Registry.register_all(
-          session: @session,
-        )
-        end
       end
 
       def add_and_register_webhook(protocol, address, fields: nil, metafield_namespaces: nil)
