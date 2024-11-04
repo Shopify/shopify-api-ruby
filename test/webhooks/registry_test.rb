@@ -60,28 +60,29 @@ module ShopifyAPITest
             assert_nil(update_registration_response.body)
           end
 
-          define_method("test_#{protocol}_registration_add_and_update_on_#{address}") do
+          define_method("test_#{protocol}_add_registration_with_address_#{address}") do
             do_registration_test(
               queries[protocol][:check_empty_response],
               queries[protocol][:register_add_query],
               queries[protocol][:register_add_response],
               protocol,
               address,
+              fields: ["field1", "field2"],
+              metafield_namespaces: ["namespace1", "namespace2"],
             )
           end
 
-          define_method("test_#{protocol}_registration_with_fields_add_and_update_on_#{address}") do
-            # add webhook
+          define_method("test_#{protocol}_update_registration_address_with_original_address_#{address}") do
             do_registration_test(
-              queries[protocol][:check_empty_response],
-              queries[protocol][:register_add_query_with_fields],
-              queries[protocol][:register_add_with_fields_response],
+              queries[protocol][:check_existing_response],
+              queries[protocol][:register_update_query],
+              queries[protocol][:register_update_response],
               protocol,
-              address,
-              fields: "field1, field2",
+              address + "-updated",
             )
+          end
 
-            # update webhook fields
+          define_method("test_#{protocol}_update_registration_fields_with_address_#{address}") do
             do_registration_test(
               queries[protocol][:check_existing_response],
               queries[protocol][:register_update_query_with_fields],
@@ -92,18 +93,7 @@ module ShopifyAPITest
             )
           end
 
-          define_method("test_#{protocol}_registration_with_fields_array_add_and_update_on_#{address}") do
-            # add webhook
-            do_registration_test(
-              queries[protocol][:check_empty_response],
-              queries[protocol][:register_add_query_with_fields],
-              queries[protocol][:register_add_with_fields_response],
-              protocol,
-              address,
-              fields: ["field1", "field2"],
-            )
-
-            # update webhook fields
+          define_method("test_#{protocol}_update_registration_fields_array_with_address_#{address}") do
             do_registration_test(
               queries[protocol][:check_existing_response],
               queries[protocol][:register_update_query_with_fields],
@@ -114,18 +104,7 @@ module ShopifyAPITest
             )
           end
 
-          define_method("test_#{protocol}_registration_with_metafield_namespaces_add_and_update_on_#{address}") do
-            # add webhook
-            do_registration_test(
-              queries[protocol][:check_empty_response],
-              queries[protocol][:register_add_query_with_metafield_namespaces],
-              queries[protocol][:register_add_with_metafield_namespaces_response],
-              protocol,
-              address,
-              metafield_namespaces: ["namespace1", "namespace2"],
-            )
-
-            # update webhook metafield namespaces
+          define_method("test_#{protocol}_update_registration_metafield_namespaces_with_address_#{address}") do
             do_registration_test(
               queries[protocol][:check_existing_response],
               queries[protocol][:register_update_query_with_metafield_namespaces],

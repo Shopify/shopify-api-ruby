@@ -38,13 +38,15 @@ module ShopifyAPITest
             register_add_query:
               <<~QUERY,
                 mutation webhookSubscription {
-                  webhookSubscriptionCreate(topic: SOME_TOPIC, webhookSubscription: {callbackUrl: "https://app-address.com/test-webhooks"}) {
+                  webhookSubscriptionCreate(topic: SOME_TOPIC, webhookSubscription: {callbackUrl: "https://app-address.com/test-webhooks", includeFields: ["field1", "field2"], metafieldNamespaces: ["namespace1", "namespace2"]}) {
                     userErrors {
                       field
                       message
                     }
                     webhookSubscription {
                       id
+                      includeFields
+                      metafieldNamespaces
                     }
                   }
                 }
@@ -84,7 +86,11 @@ module ShopifyAPITest
               "data" => {
                 "webhookSubscriptionCreate" => {
                   "userErrors" => [],
-                  "webhookSubscription" => { "id" => "gid://shopify/WebhookSubscription/12345" },
+                  "webhookSubscription" => {
+                    "id" => "gid://shopify/WebhookSubscription/12345",
+                    "includeFields" => ["field1", "field2"],
+                    "metafieldNamespaces" => ["namespace1", "namespace2"],
+                  },
                 },
               },
             },
@@ -249,13 +255,15 @@ module ShopifyAPITest
             register_add_query:
               <<~QUERY,
                 mutation webhookSubscription {
-                  eventBridgeWebhookSubscriptionCreate(topic: SOME_TOPIC, webhookSubscription: {arn: "test-webhooks"}) {
+                  eventBridgeWebhookSubscriptionCreate(topic: SOME_TOPIC, webhookSubscription: {arn: "test-webhooks", includeFields: ["field1", "field2"], metafieldNamespaces: ["namespace1", "namespace2"]}) {
                     userErrors {
                       field
                       message
                     }
                     webhookSubscription {
                       id
+                      includeFields
+                      metafieldNamespaces
                     }
                   }
                 }
@@ -294,7 +302,11 @@ module ShopifyAPITest
               "data" => {
                 "eventBridgeWebhookSubscriptionCreate" => {
                   "userErrors" => [],
-                  "webhookSubscription" => { "id" => "gid://shopify/WebhookSubscription/12345" },
+                  "webhookSubscription" => {
+                    "id" => "gid://shopify/WebhookSubscription/12345",
+                    "includeFields" => ["field1", "field2"],
+                    "metafieldNamespaces" => ["namespace1", "namespace2"],
+                  },
                 },
               },
             },
@@ -459,13 +471,15 @@ module ShopifyAPITest
             register_add_query:
               <<~QUERY,
                 mutation webhookSubscription {
-                  pubSubWebhookSubscriptionCreate(topic: SOME_TOPIC, webhookSubscription: {pubSubProject: "my-project-id", pubSubTopic: "my-topic-id"}) {
+                  pubSubWebhookSubscriptionCreate(topic: SOME_TOPIC, webhookSubscription: {pubSubProject: "my-project-id", pubSubTopic: "my-topic-id", includeFields: ["field1", "field2"], metafieldNamespaces: ["namespace1", "namespace2"]}) {
                     userErrors {
                       field
                       message
                     }
                     webhookSubscription {
                       id
+                      includeFields
+                      metafieldNamespaces
                     }
                   }
                 }
@@ -504,7 +518,11 @@ module ShopifyAPITest
               "data" => {
                 "pubSubWebhookSubscriptionCreate" => {
                   "userErrors" => [],
-                  "webhookSubscription" => { "id" => "gid://shopify/WebhookSubscription/12345" },
+                  "webhookSubscription" => {
+                    "id" => "gid://shopify/WebhookSubscription/12345",
+                    "includeFields" => ["field1", "field2"],
+                    "metafieldNamespaces" => ["namespace1", "namespace2"],
+                  },
                 },
               },
             },
