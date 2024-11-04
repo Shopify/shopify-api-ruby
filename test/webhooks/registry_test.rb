@@ -439,20 +439,12 @@ module ShopifyAPITest
           .to_return({ status: 200, body: JSON.dump(expected_update_webhook_response) })
 
         # When
-        ShopifyAPI::Webhooks::Registry.add_registration(
-          topic: @topic,
-          delivery_method: delivery_method,
-          path: path,
-          handler: TestHelpers::FakeWebhookHandler.new(
-            lambda do |topic, shop, body|
-            end,
-          ),
+        update_registration_response = add_and_register_webhook(
+          delivery_method,
+          path,
           fields: fields,
           metafield_namespaces: metafield_namespaces,
         )
-        update_registration_response = ShopifyAPI::Webhooks::Registry.register_all(
-          session: @session,
-        )[0]
 
         # Then
         assert(update_registration_response.success)
@@ -499,10 +491,22 @@ module ShopifyAPITest
           .to_return({ status: 200, body: JSON.dump(expected_check_response) })
 
         # When
+        update_registration_response = add_and_register_webhook(
+          delivery_method,
+          path,
+          fields: fields,
+          metafield_namespaces: metafield_namespaces,
+        )
+
+        # Then
+        assert_nil(update_registration_response.body)
+      end
+
+      def add_and_register_webhook(protocol, address, fields: nil, metafield_namespaces: nil)
         ShopifyAPI::Webhooks::Registry.add_registration(
           topic: @topic,
-          delivery_method: delivery_method,
-          path: path,
+          delivery_method: protocol,
+          path: address,
           handler: TestHelpers::FakeWebhookHandler.new(
             lambda do |topic, shop, body|
             end,
@@ -514,8 +518,7 @@ module ShopifyAPITest
           session: @session,
         )[0]
 
-        # Then
-        assert_nil(update_registration_response.body)
+        update_registration_response
       end
     end
   end
