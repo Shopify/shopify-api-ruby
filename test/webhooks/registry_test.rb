@@ -40,7 +40,7 @@ module ShopifyAPITest
 
       VALID_PROTOCOL_ADDRESSES.each do |protocol, addresses|
         addresses.each do |address|
-          define_method("test_add_#{protocol}_registration_if_identical_webhook_exists_on_#{address}") do
+          define_method("test_add_#{protocol}_registration_if_identical_webhook_exists_using_#{address}") do
             do_no_registration_needed_test(
               queries[protocol][:check_existing_response],
               protocol,
@@ -56,7 +56,7 @@ module ShopifyAPITest
             )
           end
 
-          define_method("test_#{protocol}_registration_add_and_update_on_#{address}") do
+          define_method("test_#{protocol}_registration_add_and_update_using_#{address}") do
             do_registration_test(
               queries[protocol][:check_empty_response],
               queries[protocol][:register_add_query],
@@ -66,7 +66,7 @@ module ShopifyAPITest
             )
           end
 
-          define_method("test_#{protocol}_registration_with_fields_add_and_update_on_#{address}") do
+          define_method("test_#{protocol}_registration_with_fields_add_and_update_using_#{address}") do
             # add webhook
             do_registration_test(
               queries[protocol][:check_empty_response],
@@ -88,7 +88,7 @@ module ShopifyAPITest
             )
           end
 
-          define_method("test_#{protocol}_registration_with_fields_array_add_and_update_on_address_#{address}") do
+          define_method("test_#{protocol}_registration_with_fields_array_add_and_update_using_#{address}") do
             # add webhook
             do_registration_test(
               queries[protocol][:check_empty_response],
@@ -110,7 +110,7 @@ module ShopifyAPITest
             )
           end
 
-          define_method("test_#{protocol}_registration_with_metafield_namespaces_add_and_update_on_address_#{address}") do
+          define_method("test_#{protocol}_registration_with_metafield_namespaces_add_and_update_using_#{address}") do
             # add webhook
             do_registration_test(
               queries[protocol][:check_empty_response],
