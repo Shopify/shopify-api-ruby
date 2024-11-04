@@ -131,6 +131,10 @@ module ShopifyAPITest
               metafield_namespaces: ["namespace1", "namespace2", "namespace3"],
             )
           end
+
+          define_method("test_raises_on_#{protocol}_registration_check_error_with_address_#{address}") do
+            do_registration_check_error_test(protocol, address)
+          end
         end
       end
 
@@ -225,18 +229,6 @@ module ShopifyAPITest
         assert_raises(ShopifyAPI::Errors::NoWebhookHandler) do
           ShopifyAPI::Webhooks::Registry.process(ShopifyAPI::Webhooks::Request.new(raw_body: "{}", headers: @headers))
         end
-      end
-
-      def test_raises_on_http_registration_check_error
-        do_registration_check_error_test(:http, "test-webhooks")
-      end
-
-      def test_raises_on_pubsub_registration_check_error
-        do_registration_check_error_test(:pub_sub, "pubsub://my-project-id:my-topic-id")
-      end
-
-      def test_raises_on_eventbridge_registration_check_error
-        do_registration_check_error_test(:event_bridge, "test-webhooks")
       end
 
       def test_register_topic_not_not_registry
