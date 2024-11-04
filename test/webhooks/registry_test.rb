@@ -41,19 +41,23 @@ module ShopifyAPITest
       VALID_PROTOCOL_ADDRESSES.each do |protocol, addresses|
         addresses.each do |address|
           define_method("test_#{protocol}_no_registration_if_identical_webhook_exists_using_#{address}") do
-            do_no_registration_needed_test(
-              queries[protocol][:check_existing_response],
-              protocol,
-              address,
-            )
+            # Given
+            ShopifyAPI::Webhooks::Registry.clear
 
-            do_no_registration_needed_test(
-              queries[protocol][:check_existing_response_with_attributes],
+            stub_request(:post, @url)
+              .with(body: JSON.dump({ query: queries[protocol][:check_query], variables: nil }))
+              .to_return({ status: 200, body: JSON.dump(queries[protocol][:check_existing_response_with_attributes]) })
+
+            # When
+            update_registration_response = add_and_register_webhook(
               protocol,
               address,
               fields: "field1, field2",
               metafield_namespaces: ["namespace1", "namespace2"],
             )
+
+            # Then
+            assert_nil(update_registration_response.body)
           end
 
           define_method("test_#{protocol}_registration_add_and_update_using_#{address}") do
@@ -428,32 +432,6 @@ module ShopifyAPITest
           session: @session,
         )
         end
-      end
-
-      def do_no_registration_needed_test(
-        expected_check_response,
-        delivery_method,
-        path,
-        fields: nil,
-        metafield_namespaces: nil
-      )
-        # Given
-        ShopifyAPI::Webhooks::Registry.clear
-
-        stub_request(:post, @url)
-          .with(body: JSON.dump({ query: queries[delivery_method][:check_query], variables: nil }))
-          .to_return({ status: 200, body: JSON.dump(expected_check_response) })
-
-        # When
-        update_registration_response = add_and_register_webhook(
-          delivery_method,
-          path,
-          fields: fields,
-          metafield_namespaces: metafield_namespaces,
-        )
-
-        # Then
-        assert_nil(update_registration_response.body)
       end
 
       def add_and_register_webhook(protocol, address, fields: nil, metafield_namespaces: nil)
