@@ -32,13 +32,13 @@ module ShopifyAPITest
         @url = "#{ShopifyAPI::Context.host}/admin/api/#{ShopifyAPI::Context.api_version}/graphql.json"
       end
 
-      DEFAULT_PROTOCOL_ADDRESSES = {
+      VALID_PROTOCOL_ADDRESSES = {
         http: ["test-webhooks", "https://app-address.com/test-webhooks", "app-address.com/test-webhooks"],
         pub_sub: ["pubsub://my-project-id:my-topic-id"],
         event_bridge: ["test-webhooks"],
       }
 
-      DEFAULT_PROTOCOL_ADDRESSES.each do |protocol, addresses|
+      VALID_PROTOCOL_ADDRESSES.each do |protocol, addresses|
         addresses.each do |address|
           define_method("test_add_#{protocol}_registration_if_identical_webhook_exists_on_#{address}") do
             do_no_registration_needed_test(
