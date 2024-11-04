@@ -40,7 +40,7 @@ module ShopifyAPITest
 
       VALID_PROTOCOL_ADDRESSES.each do |protocol, addresses|
         addresses.each do |address|
-          define_method("test_add_#{protocol}_registration_if_identical_webhook_exists_using_#{address}") do
+          define_method("test_#{protocol}_no_registration_if_identical_webhook_exists_using_#{address}") do
             do_no_registration_needed_test(
               queries[protocol][:check_existing_response],
               protocol,
