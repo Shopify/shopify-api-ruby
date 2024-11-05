@@ -42,11 +42,10 @@ module ShopifyAPITest
         addresses.each do |address|
           define_method("test_#{protocol}_no_registration_if_identical_webhook_exists_on_#{address}") do
             # Given
-            ShopifyAPI::Webhooks::Registry.clear
-
-            stub_request(:post, @url)
-              .with(body: JSON.dump({ query: queries[protocol][:check_query], variables: nil }))
-              .to_return({ status: 200, body: JSON.dump(queries[protocol][:check_existing_response_with_attributes]) })
+            setup_queries_and_responses(
+              [queries[protocol][:check_query]],
+              [queries[protocol][:check_existing_response_with_attributes]],
+            )
 
             # When
             update_registration_response = add_and_register_webhook(
@@ -61,58 +60,100 @@ module ShopifyAPITest
           end
 
           define_method("test_#{protocol}_add_registration_with_address_#{address}") do
-            do_registration_test(
-              queries[protocol][:check_empty_response],
-              queries[protocol][:register_add_query],
-              queries[protocol][:register_add_response],
+            # Given
+            setup_queries_and_responses(
+              [queries[protocol][:check_query], queries[protocol][:register_add_query]],
+              [queries[protocol][:check_empty_response], queries[protocol][:register_add_response]],
+            )
+
+            # When
+            update_registration_response = add_and_register_webhook(
               protocol,
               address,
               fields: ["field1", "field2"],
               metafield_namespaces: ["namespace1", "namespace2"],
             )
+
+            # Then
+            assert(update_registration_response.success)
+            assert_equal(queries[protocol][:register_add_response], update_registration_response.body)
           end
 
           define_method("test_#{protocol}_update_registration_address_with_original_address_#{address}") do
-            do_registration_test(
-              queries[protocol][:check_existing_response],
-              queries[protocol][:register_update_query],
-              queries[protocol][:register_update_response],
+            # Given
+            setup_queries_and_responses(
+              [queries[protocol][:check_query], queries[protocol][:register_update_query]],
+              [queries[protocol][:check_existing_response], queries[protocol][:register_update_response]],
+            )
+
+            # When
+            update_registration_response = add_and_register_webhook(
               protocol,
               address + "-updated",
             )
+
+            # Then
+            assert(update_registration_response.success)
+            assert_equal(queries[protocol][:register_update_response], update_registration_response.body)
           end
 
           define_method("test_#{protocol}_update_registration_fields_with_address_#{address}") do
-            do_registration_test(
-              queries[protocol][:check_existing_response],
-              queries[protocol][:register_update_query_with_fields],
-              queries[protocol][:register_update_with_fields_response],
+            # Given
+            setup_queries_and_responses(
+              [queries[protocol][:check_query], queries[protocol][:register_update_query_with_fields]],
+              [queries[protocol][:check_existing_response], queries[protocol][:register_update_with_fields_response]],
+            )
+
+            # When
+            update_registration_response = add_and_register_webhook(
               protocol,
               address,
               fields: "field1, field2, field3",
             )
+
+            # Then
+            assert(update_registration_response.success)
+            assert_equal(queries[protocol][:register_update_with_fields_response], update_registration_response.body)
           end
 
           define_method("test_#{protocol}_update_registration_fields_array_with_address_#{address}") do
-            do_registration_test(
-              queries[protocol][:check_existing_response],
-              queries[protocol][:register_update_query_with_fields],
-              queries[protocol][:register_update_with_fields_response],
+            # Given
+            setup_queries_and_responses(
+              [queries[protocol][:check_query], queries[protocol][:register_update_query_with_fields]],
+              [queries[protocol][:check_existing_response], queries[protocol][:register_update_with_fields_response]],
+            )
+
+            # When
+            update_registration_response = add_and_register_webhook(
               protocol,
               address,
               fields: ["field1", "field2", "field3"],
             )
+
+            # Then
+            assert(update_registration_response.success)
+            assert_equal(queries[protocol][:register_update_with_fields_response], update_registration_response.body)
           end
 
           define_method("test_#{protocol}_update_registration_metafield_namespaces_with_address_#{address}") do
-            do_registration_test(
-              queries[protocol][:check_existing_response],
-              queries[protocol][:register_update_query_with_metafield_namespaces],
-              queries[protocol][:register_update_with_metafield_namespaces_response],
+            # Given
+            setup_queries_and_responses(
+              [queries[protocol][:check_query], queries[protocol][:register_update_query_with_metafield_namespaces]],
+              [queries[protocol][:check_existing_response],
+               queries[protocol][:register_update_with_metafield_namespaces_response],],
+            )
+
+            # When
+            update_registration_response = add_and_register_webhook(
               protocol,
               address,
               metafield_namespaces: ["namespace1", "namespace2", "namespace3"],
             )
+
+            # Then
+            assert(update_registration_response.success)
+            assert_equal(queries[protocol][:register_update_with_metafield_namespaces_response],
+              update_registration_response.body)
           end
 
           define_method("test_raises_on_#{protocol}_registration_check_error_with_address_#{address}") do
@@ -245,13 +286,10 @@ module ShopifyAPITest
       end
 
       def test_unregister_success
-        stub_request(:post, @url)
-          .with(body: JSON.dump({ query: queries[:fetch_id_query], variables: nil }))
-          .to_return({ status: 200, body: JSON.dump(queries[:fetch_id_response]) })
-
-        stub_request(:post, @url)
-          .with(body: JSON.dump({ query: queries[:delete_query], variables: nil }))
-          .to_return({ status: 200, body: JSON.dump(queries[:delete_response]) })
+        setup_queries_and_responses(
+          [queries[:fetch_id_query], queries[:delete_query]],
+          [queries[:fetch_id_response], queries[:delete_response]],
+        )
 
         delete_response = ShopifyAPI::Webhooks::Registry.unregister(
           topic: "some/topic",
@@ -262,13 +300,10 @@ module ShopifyAPITest
       end
 
       def test_unregister_fail_with_errors
-        stub_request(:post, @url)
-          .with(body: JSON.dump({ query: queries[:fetch_id_query], variables: nil }))
-          .to_return({ status: 200, body: JSON.dump(queries[:fetch_id_response]) })
-
-        stub_request(:post, @url)
-          .with(body: JSON.dump({ query: queries[:delete_query], variables: nil }))
-          .to_return({ status: 200, body: JSON.dump(queries[:delete_response_with_errors]) })
+        setup_queries_and_responses(
+          [queries[:fetch_id_query], queries[:delete_query]],
+          [queries[:fetch_id_response], queries[:delete_response_with_errors]],
+        )
 
         exception = assert_raises(ShopifyAPI::Errors::WebhookRegistrationError) do
           ShopifyAPI::Webhooks::Registry.unregister(
@@ -280,13 +315,10 @@ module ShopifyAPITest
       end
 
       def test_unregister_fail_with_user_errors
-        stub_request(:post, @url)
-          .with(body: JSON.dump({ query: queries[:fetch_id_query], variables: nil }))
-          .to_return({ status: 200, body: JSON.dump(queries[:fetch_id_response]) })
-
-        stub_request(:post, @url)
-          .with(body: JSON.dump({ query: queries[:delete_query], variables: nil }))
-          .to_return({ status: 200, body: JSON.dump(queries[:delete_response_with_user_errors]) })
+        setup_queries_and_responses(
+          [queries[:fetch_id_query], queries[:delete_query]],
+          [queries[:fetch_id_response], queries[:delete_response_with_user_errors]],
+        )
 
         exception = assert_raises(ShopifyAPI::Errors::WebhookRegistrationError) do
           ShopifyAPI::Webhooks::Registry.unregister(
@@ -309,9 +341,7 @@ module ShopifyAPITest
       end
 
       def test_get_webhook_id_success
-        stub_request(:post, @url)
-          .with(body: JSON.dump({ query: queries[:fetch_id_query], variables: nil }))
-          .to_return({ status: 200, body: JSON.dump(queries[:fetch_id_response]) })
+        setup_queries_and_responses([queries[:fetch_id_query]], [queries[:fetch_id_response]])
 
         webhook_id_response = ShopifyAPI::Webhooks::Registry.get_webhook_id(
           topic: "some/topic",
@@ -324,9 +354,7 @@ module ShopifyAPITest
       end
 
       def test_get_webhook_id_success_for_event
-        stub_request(:post, @url)
-          .with(body: JSON.dump({ query: queries[:fetch_id_event_query], variables: nil }))
-          .to_return({ status: 200, body: JSON.dump(queries[:fetch_id_response]) })
+        setup_queries_and_responses([queries[:fetch_id_event_query]], [queries[:fetch_id_response]])
 
         webhook_id_response = ShopifyAPI::Webhooks::Registry.get_webhook_id(
           topic: "domain.sub_domain.something_happened",
@@ -339,9 +367,7 @@ module ShopifyAPITest
       end
 
       def test_get_webhook_id_not_found
-        stub_request(:post, @url)
-          .with(body: JSON.dump({ query: queries[:fetch_id_query], variables: nil }))
-          .to_return({ status: 200, body: JSON.dump(queries[:fetch_id_response_not_found]) })
+        setup_queries_and_responses([queries[:fetch_id_query]], [queries[:fetch_id_response_not_found]])
 
         webhook_id_response = ShopifyAPI::Webhooks::Registry.get_webhook_id(
           topic: "some/topic",
@@ -351,9 +377,7 @@ module ShopifyAPITest
       end
 
       def test_get_webhook_id_with_graphql_errors
-        stub_request(:post, @url)
-          .with(body: JSON.dump({ query: queries[:fetch_id_query], variables: nil }))
-          .to_return({ status: 200, body: JSON.dump(queries[:fetch_id_response_with_errors]) })
+        setup_queries_and_responses([queries[:fetch_id_query]], [queries[:fetch_id_response_with_errors]])
 
         exception = assert_raises(ShopifyAPI::Errors::WebhookRegistrationError) do
           ShopifyAPI::Webhooks::Registry.get_webhook_id(
@@ -379,32 +403,13 @@ module ShopifyAPITest
 
       private
 
-      def do_registration_test(
-        expected_check_response,
-        expected_update_webhook_query,
-        expected_update_webhook_response,
-        delivery_method,
-        path,
-        fields: nil,
-        metafield_namespaces: nil
-      )
-        # Given
-        setup_queries_and_responses(
-          [queries[delivery_method][:check_query], expected_update_webhook_query],
-          [expected_check_response, expected_update_webhook_response],
-        )
-
-        # When
-        update_registration_response = add_and_register_webhook(
-          delivery_method,
-          path,
-          fields: fields,
-          metafield_namespaces: metafield_namespaces,
-        )
-
-        # Then
-        assert(update_registration_response.success)
-        assert_equal(expected_update_webhook_response, update_registration_response.body)
+      def setup_queries_and_responses(queries, responses)
+        ShopifyAPI::Webhooks::Registry.clear
+        queries.zip(responses).each do |query, response|
+          stub_request(:post, @url)
+            .with(body: JSON.dump({ query: query, variables: nil }))
+            .to_return({ status: 200, body: JSON.dump(response) })
+        end
       end
 
       def add_and_register_webhook(protocol, address, fields: nil, metafield_namespaces: nil)
@@ -424,15 +429,6 @@ module ShopifyAPITest
         )[0]
 
         update_registration_response
-      end
-
-      def setup_queries_and_responses(queries, responses)
-        ShopifyAPI::Webhooks::Registry.clear
-        queries.zip(responses).each do |query, response|
-          stub_request(:post, @url)
-            .with(body: JSON.dump({ query: query, variables: nil }))
-            .to_return({ status: 200, body: JSON.dump(response) })
-        end
       end
     end
   end
