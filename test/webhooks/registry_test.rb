@@ -389,15 +389,10 @@ module ShopifyAPITest
         metafield_namespaces: nil
       )
         # Given
-        ShopifyAPI::Webhooks::Registry.clear
-
-        stub_request(:post, @url)
-          .with(body: JSON.dump({ query: queries[delivery_method][:check_query], variables: nil }))
-          .to_return({ status: 200, body: JSON.dump(expected_check_response) })
-
-        stub_request(:post, @url)
-          .with(body: JSON.dump({ query: expected_update_webhook_query, variables: nil }))
-          .to_return({ status: 200, body: JSON.dump(expected_update_webhook_response) })
+        setup_queries_and_responses(
+          [queries[delivery_method][:check_query], expected_update_webhook_query],
+          [expected_check_response, expected_update_webhook_response],
+        )
 
         # When
         update_registration_response = add_and_register_webhook(
@@ -429,6 +424,15 @@ module ShopifyAPITest
         )[0]
 
         update_registration_response
+      end
+
+      def setup_queries_and_responses(queries, responses)
+        ShopifyAPI::Webhooks::Registry.clear
+        queries.zip(responses).each do |query, response|
+          stub_request(:post, @url)
+            .with(body: JSON.dump({ query: query, variables: nil }))
+            .to_return({ status: 200, body: JSON.dump(response) })
+        end
       end
     end
   end
