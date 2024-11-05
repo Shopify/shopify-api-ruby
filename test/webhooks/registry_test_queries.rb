@@ -14,6 +14,8 @@ module ShopifyAPITest
                     edges {
                       node {
                         id
+                        includeFields
+                        metafieldNamespaces
                         endpoint {
                           __typename
                           ... on WebhookHttpEndpoint {
@@ -36,13 +38,15 @@ module ShopifyAPITest
             register_add_query:
               <<~QUERY,
                 mutation webhookSubscription {
-                  webhookSubscriptionCreate(topic: SOME_TOPIC, webhookSubscription: {callbackUrl: "https://app-address.com/test-webhooks"}) {
+                  webhookSubscriptionCreate(topic: SOME_TOPIC, webhookSubscription: {callbackUrl: "https://app-address.com/test-webhooks", includeFields: ["field1", "field2"], metafieldNamespaces: ["namespace1", "namespace2"]}) {
                     userErrors {
                       field
                       message
                     }
                     webhookSubscription {
                       id
+                      includeFields
+                      metafieldNamespaces
                     }
                   }
                 }
@@ -82,7 +86,11 @@ module ShopifyAPITest
               "data" => {
                 "webhookSubscriptionCreate" => {
                   "userErrors" => [],
-                  "webhookSubscription" => { "id" => "gid://shopify/WebhookSubscription/12345" },
+                  "webhookSubscription" => {
+                    "id" => "gid://shopify/WebhookSubscription/12345",
+                    "includeFields" => ["field1", "field2"],
+                    "metafieldNamespaces" => ["namespace1", "namespace2"],
+                  },
                 },
               },
             },
@@ -123,6 +131,23 @@ module ShopifyAPITest
                 },
               },
             },
+            check_existing_response_with_attributes: {
+              "data" => {
+                "webhookSubscriptions" => {
+                  "edges" => [
+                    "node" => {
+                      "id" => "gid://shopify/WebhookSubscription/12345",
+                      "includeFields" => ["field1", "field2"],
+                      "metafieldNamespaces" => ["namespace1", "namespace2"],
+                      "endpoint" => {
+                        "typename" => "WebhookHttpEndpoint",
+                        "callbackUrl" => "https://app-address.com/test-webhooks",
+                      },
+                    },
+                  ],
+                },
+              },
+            },
             register_update_query:
               <<~QUERY,
                 mutation webhookSubscription {
@@ -137,11 +162,64 @@ module ShopifyAPITest
                   }
                 }
               QUERY
+            register_update_query_with_fields:
+              <<~QUERY,
+                mutation webhookSubscription {
+                  webhookSubscriptionUpdate(id: "gid://shopify/WebhookSubscription/12345", webhookSubscription: {callbackUrl: "https://app-address.com/test-webhooks", includeFields: ["field1", "field2", "field3"]}) {
+                    userErrors {
+                      field
+                      message
+                    }
+                    webhookSubscription {
+                      id
+                      includeFields
+                    }
+                  }
+                }
+              QUERY
+            register_update_query_with_metafield_namespaces:
+              <<~QUERY,
+                mutation webhookSubscription {
+                  webhookSubscriptionUpdate(id: "gid://shopify/WebhookSubscription/12345", webhookSubscription: {callbackUrl: "https://app-address.com/test-webhooks", metafieldNamespaces: ["namespace1", "namespace2", "namespace3"]}) {
+                    userErrors {
+                      field
+                      message
+                    }
+                    webhookSubscription {
+                      id
+                      metafieldNamespaces
+                    }
+                  }
+                }
+              QUERY
             register_update_response: {
               "data" => {
                 "webhookSubscriptionUpdate" => {
                   "userErrors" => [],
                   "webhookSubscription" => { "id" => "gid://shopify/WebhookSubscription/12345" },
+                },
+              },
+            },
+
+            register_update_with_fields_response: {
+              "data" => {
+                "webhookSubscriptionUpdate" => {
+                  "userErrors" => [],
+                  "webhookSubscription" => {
+                    "id" => "gid://shopify/WebhookSubscription/12345",
+                    "includeFields" => ["field1", "field2", "field3"],
+                  },
+                },
+              },
+            },
+            register_update_with_metafield_namespaces_response: {
+              "data" => {
+                "webhookSubscriptionUpdate" => {
+                  "userErrors" => [],
+                  "webhookSubscription" => {
+                    "id" => "gid://shopify/WebhookSubscription/12345",
+                    "metafieldNamespaces" => ["namespace1", "namespace2", "namespace3"],
+                  },
                 },
               },
             },
@@ -154,6 +232,8 @@ module ShopifyAPITest
                     edges {
                       node {
                         id
+                        includeFields
+                        metafieldNamespaces
                         endpoint {
                           __typename
                           ... on WebhookEventBridgeEndpoint {
@@ -175,13 +255,15 @@ module ShopifyAPITest
             register_add_query:
               <<~QUERY,
                 mutation webhookSubscription {
-                  eventBridgeWebhookSubscriptionCreate(topic: SOME_TOPIC, webhookSubscription: {arn: "test-webhooks"}) {
+                  eventBridgeWebhookSubscriptionCreate(topic: SOME_TOPIC, webhookSubscription: {arn: "test-webhooks", includeFields: ["field1", "field2"], metafieldNamespaces: ["namespace1", "namespace2"]}) {
                     userErrors {
                       field
                       message
                     }
                     webhookSubscription {
                       id
+                      includeFields
+                      metafieldNamespaces
                     }
                   }
                 }
@@ -220,7 +302,11 @@ module ShopifyAPITest
               "data" => {
                 "eventBridgeWebhookSubscriptionCreate" => {
                   "userErrors" => [],
-                  "webhookSubscription" => { "id" => "gid://shopify/WebhookSubscription/12345" },
+                  "webhookSubscription" => {
+                    "id" => "gid://shopify/WebhookSubscription/12345",
+                    "includeFields" => ["field1", "field2"],
+                    "metafieldNamespaces" => ["namespace1", "namespace2"],
+                  },
                 },
               },
             },
@@ -261,6 +347,23 @@ module ShopifyAPITest
                 },
               },
             },
+            check_existing_response_with_attributes: {
+              "data" => {
+                "webhookSubscriptions" => {
+                  "edges" => [
+                    "node" => {
+                      "id" => "gid://shopify/WebhookSubscription/12345",
+                      "endpoint" => {
+                        "typename" => "WebhookEventBridgeEndpoint",
+                        "arn" => "test-webhooks",
+                      },
+                      "includeFields" => ["field2", "field1"],
+                      "metafieldNamespaces" => ["namespace2", "namespace1"],
+                    },
+                  ],
+                },
+              },
+            },
             register_update_query:
               <<~QUERY,
                 mutation webhookSubscription {
@@ -275,11 +378,63 @@ module ShopifyAPITest
                   }
                 }
               QUERY
+            register_update_query_with_fields:
+              <<~QUERY,
+                mutation webhookSubscription {
+                  eventBridgeWebhookSubscriptionUpdate(id: "gid://shopify/WebhookSubscription/12345", webhookSubscription: {arn: "test-webhooks", includeFields: ["field1", "field2", "field3"]}) {
+                    userErrors {
+                      field
+                      message
+                    }
+                    webhookSubscription {
+                      id
+                      includeFields
+                    }
+                  }
+                }
+              QUERY
+            register_update_query_with_metafield_namespaces:
+              <<~QUERY,
+                mutation webhookSubscription {
+                  eventBridgeWebhookSubscriptionUpdate(id: "gid://shopify/WebhookSubscription/12345", webhookSubscription: {arn: "test-webhooks", metafieldNamespaces: ["namespace1", "namespace2", "namespace3"]}) {
+                    userErrors {
+                      field
+                      message
+                    }
+                    webhookSubscription {
+                      id
+                      metafieldNamespaces
+                    }
+                  }
+                }
+              QUERY
             register_update_response: {
               "data" => {
                 "eventBridgeWebhookSubscriptionUpdate" => {
                   "userErrors" => [],
                   "webhookSubscription" => { "id" => "gid://shopify/WebhookSubscription/12345" },
+                },
+              },
+            },
+            register_update_with_fields_response: {
+              "data" => {
+                "eventBridgeWebhookSubscriptionUpdate" => {
+                  "userErrors" => [],
+                  "webhookSubscription" => {
+                    "id" => "gid://shopify/WebhookSubscription/12345",
+                    "includeFields" => ["field1", "field2", "field3"],
+                  },
+                },
+              },
+            },
+            register_update_with_metafield_namespaces_response: {
+              "data" => {
+                "eventBridgeWebhookSubscriptionUpdate" => {
+                  "userErrors" => [],
+                  "webhookSubscription" => {
+                    "id" => "gid://shopify/WebhookSubscription/12345",
+                    "metafieldNamespaces" => ["namespace1", "namespace2", "namespace3"],
+                  },
                 },
               },
             },
@@ -292,6 +447,8 @@ module ShopifyAPITest
                     edges {
                       node {
                         id
+                        includeFields
+                        metafieldNamespaces
                         endpoint {
                           __typename
                           ... on WebhookPubSubEndpoint {
@@ -314,13 +471,15 @@ module ShopifyAPITest
             register_add_query:
               <<~QUERY,
                 mutation webhookSubscription {
-                  pubSubWebhookSubscriptionCreate(topic: SOME_TOPIC, webhookSubscription: {pubSubProject: "my-project-id", pubSubTopic: "my-topic-id"}) {
+                  pubSubWebhookSubscriptionCreate(topic: SOME_TOPIC, webhookSubscription: {pubSubProject: "my-project-id", pubSubTopic: "my-topic-id", includeFields: ["field1", "field2"], metafieldNamespaces: ["namespace1", "namespace2"]}) {
                     userErrors {
                       field
                       message
                     }
                     webhookSubscription {
                       id
+                      includeFields
+                      metafieldNamespaces
                     }
                   }
                 }
@@ -359,7 +518,11 @@ module ShopifyAPITest
               "data" => {
                 "pubSubWebhookSubscriptionCreate" => {
                   "userErrors" => [],
-                  "webhookSubscription" => { "id" => "gid://shopify/WebhookSubscription/12345" },
+                  "webhookSubscription" => {
+                    "id" => "gid://shopify/WebhookSubscription/12345",
+                    "includeFields" => ["field1", "field2"],
+                    "metafieldNamespaces" => ["namespace1", "namespace2"],
+                  },
                 },
               },
             },
@@ -401,6 +564,24 @@ module ShopifyAPITest
                 },
               },
             },
+            check_existing_response_with_attributes: {
+              "data" => {
+                "webhookSubscriptions" => {
+                  "edges" => [
+                    "node" => {
+                      "id" => "gid://shopify/WebhookSubscription/12345",
+                      "endpoint" => {
+                        "typename" => "WebhookPubSubEndpoint",
+                        "pubSubProject" => "my-project-id",
+                        "pubSubTopic" => "my-topic-id",
+                      },
+                      "includeFields" => ["field1", "field2"],
+                      "metafieldNamespaces" => ["namespace1", "namespace2"],
+                    },
+                  ],
+                },
+              },
+            },
             register_update_query:
               <<~QUERY,
                 mutation webhookSubscription {
@@ -415,11 +596,64 @@ module ShopifyAPITest
                   }
                 }
               QUERY
+            register_update_query_with_fields:
+              <<~QUERY,
+                mutation webhookSubscription {
+                  pubSubWebhookSubscriptionUpdate(id: "gid://shopify/WebhookSubscription/12345", webhookSubscription: {pubSubProject: "my-project-id", pubSubTopic: "my-topic-id", includeFields: ["field1", "field2", "field3"]}) {
+                    userErrors {
+                      field
+                      message
+                    }
+                    webhookSubscription {
+                      id
+                      includeFields
+                    }
+                  }
+                }
+              QUERY
+            register_update_query_with_metafield_namespaces:
+              <<~QUERY,
+                mutation webhookSubscription {
+                  pubSubWebhookSubscriptionUpdate(id: "gid://shopify/WebhookSubscription/12345", webhookSubscription: {pubSubProject: "my-project-id", pubSubTopic: "my-topic-id", metafieldNamespaces: ["namespace1", "namespace2", "namespace3"]}) {
+                    userErrors {
+                      field
+                      message
+                    }
+                    webhookSubscription {
+                      id
+                      metafieldNamespaces
+                    }
+                  }
+                }
+              QUERY
+
             register_update_response: {
               "data" => {
                 "pubSubWebhookSubscriptionUpdate" => {
                   "userErrors" => [],
                   "webhookSubscription" => { "id" => "gid://shopify/WebhookSubscription/12345" },
+                },
+              },
+            },
+            register_update_with_fields_response: {
+              "data" => {
+                "pubSubWebhookSubscriptionUpdate" => {
+                  "userErrors" => [],
+                  "webhookSubscription" => {
+                    "id" => "gid://shopify/WebhookSubscription/12345",
+                    "includeFields" => ["field1", "field2", "field3"],
+                  },
+                },
+              },
+            },
+            register_update_with_metafield_namespaces_response: {
+              "data" => {
+                "pubSubWebhookSubscriptionUpdate" => {
+                  "userErrors" => [],
+                  "webhookSubscription" => {
+                    "id" => "gid://shopify/WebhookSubscription/12345",
+                    "metafieldNamespaces" => ["namespace1", "namespace2", "namespace3"],
+                  },
                 },
               },
             },

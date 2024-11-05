@@ -3,6 +3,7 @@
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
 
+- [#1344](https://github.com/Shopify/shopify-api-ruby/pull/1344) Allow ShopifyAPI::Webhooks::Registry to update a webhook when fields or metafield_namespaces are changed.
 - [#1343](https://github.com/Shopify/shopify-api-ruby/pull/1343) Make ShopifyAPI::Context::scope parameter optional. `scope` defaults to empty list `[]`.
 
 ## 14.6.0
