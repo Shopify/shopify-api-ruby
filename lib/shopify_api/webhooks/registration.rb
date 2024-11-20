@@ -22,18 +22,23 @@ module ShopifyAPI
       sig { returns(T.nilable(T::Array[String])) }
       attr_reader :metafield_namespaces
 
+      sig { returns(T.nilable(String)) }
+      attr_reader :filter
+
       sig do
         params(topic: String, path: String, handler: T.nilable(T.any(Handler, WebhookHandler)),
           fields: T.nilable(T.any(String, T::Array[String])),
-          metafield_namespaces: T.nilable(T::Array[String])).void
+          metafield_namespaces: T.nilable(T::Array[String]),
+          filter: T.nilable(String)).void
       end
-      def initialize(topic:, path:, handler: nil, fields: nil, metafield_namespaces: nil)
+      def initialize(topic:, path:, handler: nil, fields: nil, metafield_namespaces: nil, filter: nil)
         @topic = T.let(topic.gsub("/", "_").upcase, String)
         @path = path
         @handler = handler
         fields_array = fields.is_a?(String) ? fields.split(FIELDS_DELIMITER) : fields
         @fields = T.let(fields_array&.map(&:strip)&.compact, T.nilable(T::Array[String]))
         @metafield_namespaces = T.let(metafield_namespaces&.map(&:strip)&.compact, T.nilable(T::Array[String]))
+        @filter = filter
       end
 
       sig { abstract.returns(String) }
@@ -54,6 +59,7 @@ module ShopifyAPI
           current_address: T.nilable(String),
           fields: T::Array[String],
           metafield_namespaces: T::Array[String],
+          filter: T.nilable(String),
         })
       end
       def parse_check_result(body); end
@@ -88,6 +94,7 @@ module ShopifyAPI
         attributes = ["id"]
         attributes << "includeFields" if @fields
         attributes << "metafieldNamespaces" if @metafield_namespaces
+        attributes << "filter" if @filter
         attributes
       end
     end

@@ -53,6 +53,7 @@ module ShopifyAPITest
               address,
               fields: "field1, field2",
               metafield_namespaces: ["namespace1", "namespace2"],
+              filter: "id:*",
             )
 
             # Then
@@ -72,6 +73,7 @@ module ShopifyAPITest
               address,
               fields: ["field1", "field2"],
               metafield_namespaces: ["namespace1", "namespace2"],
+              filter: "id:*",
             )
 
             # Then
@@ -153,6 +155,27 @@ module ShopifyAPITest
             # Then
             assert(update_registration_response.success)
             assert_equal(queries[protocol][:register_update_with_metafield_namespaces_response],
+              update_registration_response.body)
+          end
+
+          define_method("test_#{protocol}_update_registration_filter_with_address_#{address}") do
+            # Given
+            setup_queries_and_responses(
+              [queries[protocol][:check_query], queries[protocol][:register_update_query_with_filter]],
+              [queries[protocol][:check_existing_response],
+               queries[protocol][:register_update_with_filter_response],],
+            )
+
+            # When
+            update_registration_response = add_and_register_webhook(
+              protocol,
+              address,
+              filter: "id:*",
+            )
+
+            # Then
+            assert(update_registration_response.success)
+            assert_equal(queries[protocol][:register_update_with_filter_response],
               update_registration_response.body)
           end
 
@@ -412,7 +435,7 @@ module ShopifyAPITest
         end
       end
 
-      def add_and_register_webhook(protocol, address, fields: nil, metafield_namespaces: nil)
+      def add_and_register_webhook(protocol, address, fields: nil, metafield_namespaces: nil, filter: nil)
         ShopifyAPI::Webhooks::Registry.add_registration(
           topic: @topic,
           delivery_method: protocol,
@@ -423,6 +446,7 @@ module ShopifyAPITest
           ),
           fields: fields,
           metafield_namespaces: metafield_namespaces,
+          filter: filter,
         )
         update_registration_response = ShopifyAPI::Webhooks::Registry.register_all(
           session: @session,

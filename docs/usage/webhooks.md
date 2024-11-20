@@ -82,6 +82,17 @@ registration = ShopifyAPI::Webhooks::Registry.add_registration(
 )
 ```
 
+If you need to filter the webhooks you want to receive, you can use a [webhooks filter](https://shopify.dev/docs/apps/build/webhooks/customize/filters), which can be specified on registration through the `filter` parameter.
+
+```ruby
+registration = ShopifyAPI::Webhooks::Registry.add_registration(
+  topic: "products/update",
+  delivery_method: :http,
+  handler: WebhookHandler,
+  filter: "variants.price:>=10.00"
+)
+```
+
 **Note**: The webhooks you register with Shopify are saved in the Shopify platform, but the local `ShopifyAPI::Webhooks::Registry` needs to be reloaded whenever your server restarts.
 
 ### EventBridge and PubSub Webhooks
