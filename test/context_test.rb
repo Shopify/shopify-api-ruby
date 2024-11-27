@@ -178,6 +178,29 @@ module ShopifyAPITest
       assert_equal(ShopifyAPI::Auth::AuthScopes.new, ShopifyAPI::Context.scope)
     end
 
+    def test_rest_disabled_defaults_to_false
+      ShopifyAPI::Context.setup(
+        api_key: "test-key",
+        api_secret_key: "test-secret-key",
+        api_version: "2023-01",
+        is_private: true,
+        is_embedded: false,
+      )
+      refute(ShopifyAPI::Context.rest_disabled)
+    end
+
+    def test_rest_disabled_can_be_set_in_setup
+      ShopifyAPI::Context.setup(
+        api_key: "test-key",
+        api_secret_key: "test-secret-key",
+        api_version: "2023-01",
+        is_private: true,
+        is_embedded: false,
+        rest_disabled: true,
+      )
+      assert(ShopifyAPI::Context.rest_disabled)
+    end
+
     def teardown
       ShopifyAPI::Context.deactivate_session
     end

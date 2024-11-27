@@ -9,6 +9,11 @@ module ShopifyAPI
 
         sig { params(session: T.nilable(Auth::Session), api_version: T.nilable(String)).void }
         def initialize(session: nil, api_version: nil)
+          if Context.rest_disabled
+            raise Errors::DisabledResourceError,
+              "The Admin REST API has been deprecated. Please use the GraphQL Admin API. For more information see https://www.shopify.com/ca/partners/blog/all-in-on-graphql"
+          end
+
           @api_version = T.let(api_version || Context.api_version, String)
           if api_version
             if api_version == Context.api_version

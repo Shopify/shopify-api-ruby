@@ -14,6 +14,29 @@ module ShopifyAPITest
         ShopifyAPI::Context.load_rest_resources(api_version: ShopifyAPI::Context.api_version)
       end
 
+      def test_rest_disabled
+        ShopifyAPI::Context.setup(
+          api_key: "test-key",
+          api_secret_key: "test-secret-key",
+          api_version: "2023-01",
+          is_private: true,
+          is_embedded: false,
+          rest_disabled: true,
+        )
+        assert_raises(ShopifyAPI::Errors::DisabledResourceError) do
+          TestHelpers::FakeResource.find(id: 1, session: @session)
+        end
+
+        ShopifyAPI::Context.setup(
+          api_key: "test-key",
+          api_secret_key: "test-secret-key",
+          api_version: "2023-01",
+          is_private: true,
+          is_embedded: false,
+          rest_disabled: false,
+        )
+      end
+
       def test_finds_resource_by_id
         body = { fake_resource: { id: 1, attribute: "attribute" } }.to_json
 
