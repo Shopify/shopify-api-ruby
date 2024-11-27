@@ -4,6 +4,7 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
 
 - [#1343](https://github.com/Shopify/shopify-api-ruby/pull/1343) Make ShopifyAPI::Context::scope parameter optional. `scope` defaults to empty list `[]`.
+- [#1348](https://github.com/Shopify/shopify-api-ruby/pull/1348) Add config option that will disable the REST API client and REST resources. New apps should use the GraphQL Admin API
 
 ## 14.6.0
 
