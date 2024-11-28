@@ -19,23 +19,25 @@ module ShopifyAPI
             path: String,
             handler: T.nilable(T.any(Handler, WebhookHandler)),
             fields: T.nilable(T.any(String, T::Array[String])),
+            filter: T.nilable(String),
             metafield_namespaces: T.nilable(T::Array[String])).void
         end
-        def add_registration(topic:, delivery_method:, path:, handler: nil, fields: nil, metafield_namespaces: nil)
+        def add_registration(topic:, delivery_method:, path:, handler: nil, fields: nil, filter: nil,
+          metafield_namespaces: nil)
           @registry[topic] = case delivery_method
           when :pub_sub
             Registrations::PubSub.new(topic: topic, path: path, fields: fields,
-              metafield_namespaces: metafield_namespaces)
+              metafield_namespaces: metafield_namespaces, filter: filter)
           when :event_bridge
             Registrations::EventBridge.new(topic: topic, path: path, fields: fields,
-              metafield_namespaces: metafield_namespaces)
+              metafield_namespaces: metafield_namespaces, filter: filter)
           when :http
             unless handler
               raise Errors::InvalidWebhookRegistrationError, "Cannot create an Http registration without a handler."
             end
 
             Registrations::Http.new(topic: topic, path: path, handler: handler,
-              fields: fields, metafield_namespaces: metafield_namespaces)
+              fields: fields, metafield_namespaces: metafield_namespaces, filter: filter)
           else
             raise Errors::InvalidWebhookRegistrationError,
               "Unsupported delivery method #{delivery_method}. Allowed values: {:http, :pub_sub, :event_bridge}."
@@ -223,10 +225,12 @@ module ShopifyAPI
           parsed_check_result = registration.parse_check_result(T.cast(check_response.body, T::Hash[String, T.untyped]))
           registration_fields = registration.fields || []
           registration_metafield_namespaces = registration.metafield_namespaces || []
+          registration_filter = registration.filter
 
           must_register = parsed_check_result[:current_address] != registration.callback_address ||
             parsed_check_result[:fields].sort != registration_fields.sort ||
-            parsed_check_result[:metafield_namespaces].sort != registration_metafield_namespaces.sort
+            parsed_check_result[:metafield_namespaces].sort != registration_metafield_namespaces.sort ||
+            parsed_check_result[:filter] != registration_filter
 
           { webhook_id: parsed_check_result[:webhook_id], must_register: must_register }
         end
