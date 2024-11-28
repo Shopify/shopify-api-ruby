@@ -23,6 +23,7 @@ module ShopifyAPI
       @api_version = T.let(nil, T.nilable(String))
       @created_at = T.let(nil, T.nilable(String))
       @fields = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @filter = T.let(nil, T.nilable(String))
       @format = T.let(nil, T.nilable(String))
       @id = T.let(nil, T.nilable(Integer))
       @metafield_namespaces = T.let(nil, T.nilable(T::Array[T.untyped]))
