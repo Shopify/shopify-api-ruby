@@ -1,4 +1,6 @@
 # Make a REST API call
+> [!WARNING]
+> The Admin REST API has been deprecated. New apps should use the GraphQL Admin API. For more information see [All in on GraphQL](https://www.shopify.com/ca/partners/blog/all-in-on-graphql). New apps will be created with the config option `rest_disabled: true`. This will raise a `ShopifyAPI::Errors::DisabledResourceError` if you try to use the REST API.
 
 Once OAuth is complete, we can use `ShopifyAPI`'s REST library to make authenticated API calls to the Shopify Admin API.
 #### Required Session

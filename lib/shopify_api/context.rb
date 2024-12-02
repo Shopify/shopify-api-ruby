@@ -22,6 +22,7 @@ module ShopifyAPI
     @user_agent_prefix = T.let(nil, T.nilable(String))
     @old_api_secret_key = T.let(nil, T.nilable(String))
     @response_as_struct = T.let(false, T.nilable(T::Boolean))
+    @rest_disabled = T.let(false, T.nilable(T::Boolean))
 
     @rest_resource_loader = T.let(nil, T.nilable(Zeitwerk::Loader))
 
@@ -45,6 +46,7 @@ module ShopifyAPI
           old_api_secret_key: T.nilable(String),
           api_host: T.nilable(String),
           response_as_struct: T.nilable(T::Boolean),
+          rest_disabled: T.nilable(T::Boolean),
         ).void
       end
       def setup(
@@ -62,7 +64,8 @@ module ShopifyAPI
         user_agent_prefix: nil,
         old_api_secret_key: nil,
         api_host: nil,
-        response_as_struct: false
+        response_as_struct: false,
+        rest_disabled: false
       )
         unless ShopifyAPI::AdminVersions::SUPPORTED_ADMIN_VERSIONS.include?(api_version)
           raise Errors::UnsupportedVersionError,
@@ -82,6 +85,7 @@ module ShopifyAPI
         @user_agent_prefix = user_agent_prefix
         @old_api_secret_key = old_api_secret_key
         @response_as_struct = response_as_struct
+        @rest_disabled = rest_disabled
         @log_level = if valid_log_level?(log_level)
           log_level.to_sym
         else
@@ -176,6 +180,11 @@ module ShopifyAPI
       sig { returns(String) }
       def host_name
         T.must(URI(T.must(host)).host)
+      end
+
+      sig { returns(T::Boolean) }
+      def rest_disabled
+        T.must(@rest_disabled)
       end
 
       private

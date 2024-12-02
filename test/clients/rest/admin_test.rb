@@ -50,6 +50,44 @@ class AdminTest < Test::Unit::TestCase
     run_test(:post)
   end
 
+  def test_raises_error_when_rest_is_disabled
+    ShopifyAPI::Context.setup(
+      api_key: "test-key",
+      api_secret_key: "test-secret-key",
+      api_version: "2023-01",
+      is_private: true,
+      is_embedded: false,
+      rest_disabled: true,
+    )
+    session = ShopifyAPI::Auth::Session.new(
+      shop: "test-shop.myshopify.com",
+      access_token: SecureRandom.alphanumeric(10),
+    )
+
+    assert_raises(ShopifyAPI::Errors::DisabledResourceError,
+      "REST API access has been disabled via Context.rest_disabled") do
+      ShopifyAPI::Clients::Rest::Admin.new(session: session)
+    end
+  end
+
+  def test_client_works_normally_when_rest_is_not_disabled
+    ShopifyAPI::Context.setup(
+      api_key: "test-key",
+      api_secret_key: "test-secret-key",
+      api_version: "2023-01",
+      is_private: true,
+      is_embedded: false,
+      rest_disabled: false,
+    )
+    session = ShopifyAPI::Auth::Session.new(
+      shop: "test-shop.myshopify.com",
+      access_token: SecureRandom.alphanumeric(10),
+    )
+
+    client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
+    refute_nil(client)
+  end
+
   private
 
   def run_test(http_method, path = "/some-path", expected_path = "some-path.json")
