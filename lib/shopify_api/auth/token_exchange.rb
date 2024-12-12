@@ -39,12 +39,23 @@ module ShopifyAPI
           # Validate the session token content
           ShopifyAPI::Auth::JwtPayload.new(session_token)
 
+          call_token_exchange_endpoint(shop: shop, id_token: session_token, requested_token_type: requested_token_type)
+        end
+
+        sig do
+          params(
+            shop: String,
+            id_token: String,
+            requested_token_type: RequestedTokenType,
+          ).returns(ShopifyAPI::Auth::Session)
+        end
+        def call_token_exchange_endpoint(shop:, id_token:, requested_token_type:)
           shop_session = ShopifyAPI::Auth::Session.new(shop: shop)
           body = {
             client_id: ShopifyAPI::Context.api_key,
             client_secret: ShopifyAPI::Context.api_secret_key,
             grant_type: TOKEN_EXCHANGE_GRANT_TYPE,
-            subject_token: session_token,
+            subject_token: id_token,
             subject_token_type: ID_TOKEN_TYPE,
             requested_token_type: requested_token_type.serialize,
           }
@@ -61,7 +72,7 @@ module ShopifyAPI
             )
           rescue ShopifyAPI::Errors::HttpResponseError => error
             if error.code == 400 && error.response.body["error"] == "invalid_subject_token"
-              raise ShopifyAPI::Errors::InvalidJwtTokenError, "Session token was rejected by token exchange"
+              raise ShopifyAPI::Errors::InvalidJwtTokenError, "ID token was rejected by token exchange"
             end
 
             raise error
