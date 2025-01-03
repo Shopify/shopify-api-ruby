@@ -20,7 +20,7 @@ module ShopifyAPI
 
       @app_clip_application_id = T.let(nil, T.nilable(String))
       @application_id = T.let(nil, T.nilable(String))
-      @enabled_app_clips = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @enabled_app_clips = T.let(nil, T.nilable(T::Boolean))
       @enabled_shared_webcredentials = T.let(nil, T.nilable(T::Boolean))
       @enabled_universal_or_app_links = T.let(nil, T.nilable(T::Boolean))
       @id = T.let(nil, T.nilable(Integer))
@@ -44,7 +44,7 @@ module ShopifyAPI
     attr_reader :app_clip_application_id
     sig { returns(T.nilable(String)) }
     attr_reader :application_id
-    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
+    sig { returns(T.nilable(T::Boolean)) }
     attr_reader :enabled_app_clips
     sig { returns(T.nilable(T::Boolean)) }
     attr_reader :enabled_shared_webcredentials

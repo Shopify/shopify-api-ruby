@@ -25,7 +25,7 @@ module ShopifyAPI
       @name = T.let(nil, T.nilable(String))
       @notify_customer = T.let(nil, T.nilable(T::Boolean))
       @order_id = T.let(nil, T.nilable(Integer))
-      @origin_address = T.let(nil, T.nilable(T::Array[T.untyped]))
+      @origin_address = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
       @receipt = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
       @service = T.let(nil, T.nilable(String))
       @shipment_status = T.let(nil, T.nilable(String))
