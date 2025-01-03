@@ -63,7 +63,7 @@ module ShopifyAPI
     attr_reader :location_id
     sig { returns(T.nilable(String)) }
     attr_reader :name
-    sig { returns(T.nilable(Integer)) }
+    sig { returns(T.nilable(T::Boolean)) }
     attr_reader :notify_customer
     sig { returns(T.nilable(Integer)) }
     attr_reader :order_id
