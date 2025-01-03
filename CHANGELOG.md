@@ -3,6 +3,8 @@
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
 
+## 14.8.0
+
 - [#1355](https://github.com/Shopify/shopify-api-ruby/pull/1355) Add support for 2025-01 API version
 
 ## 14.7.0
