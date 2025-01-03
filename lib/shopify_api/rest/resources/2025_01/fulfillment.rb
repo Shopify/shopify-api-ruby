@@ -67,7 +67,7 @@ module ShopifyAPI
     attr_reader :notify_customer
     sig { returns(T.nilable(Integer)) }
     attr_reader :order_id
-    sig { returns(T.nilable(T::Array[T::Hash[T.untyped, T.untyped]])) }
+    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :origin_address
     sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
     attr_reader :receipt
