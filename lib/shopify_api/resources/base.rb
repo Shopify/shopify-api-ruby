@@ -164,3 +164,10 @@ module ShopifyAPI
     end
   end
 end
+
+
+if ShopifyAPI::Base.respond_to?(:connection_class)
+  ShopifyAPI::Base.connection_class = ShopifyAPI::Connection
+else
+  require 'active_resource/connection_ext'
+end

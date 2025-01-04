@@ -1,4 +1,7 @@
 # frozen_string_literal: true
+
+require "active_support/core_ext/hash"
+
 module ShopifyAPI
   class ApiVersion
     class UnknownVersion < StandardError; end

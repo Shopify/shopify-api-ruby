@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'active_resource/base'
+require 'active_resource/validations'
 
 module ActiveResource
   class Errors < ActiveModel::Errors
