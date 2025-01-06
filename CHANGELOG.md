@@ -1,5 +1,9 @@
 ## Unreleased
 
+## Version 9.5.2
+
+- [#1356](https://github.com/Shopify/shopify-api-ruby/pull/1356) Autoload ActiveResource classes to improve load time for Rails apps.
+
 ## Version 9.5.1
 
 - [#891](https://github.com/Shopify/shopify_api/pull/891) Removed the upper bound on the `activeresource` dependency to allow apps to use the latest version
