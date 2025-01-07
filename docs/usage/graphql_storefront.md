@@ -39,7 +39,7 @@ QUERY
 
 # You may not need the "Shopify-Storefront-Buyer-IP" header, see its documentation: 
 # https://shopify.dev/docs/api/usage/authentication#making-server-side-requests
-response = client.query(query: query, headers: { "Shopify-Storefront-Buyer-IP": request.ip })
+response = client.query(query: query, headers: { "Shopify-Storefront-Buyer-IP": request.remote_ip })
 # do something with the returned data
 ```
 
