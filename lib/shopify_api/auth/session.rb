@@ -117,7 +117,7 @@ module ShopifyAPI
 
         sig { params(str: String).returns(Session) }
         def deserialize(str)
-          Oj.load(str)
+          JSON.load(str)
         end
       end
 
@@ -134,7 +134,7 @@ module ShopifyAPI
 
       sig { returns(String) }
       def serialize
-        Oj.dump(self)
+        JSON.dump(self)
       end
 
       alias_method :eql?, :==
@@ -155,6 +155,27 @@ module ShopifyAPI
         else
           false
         end
+      end
+
+      sig { returns(T::Hash[Symbol, T.untyped]) }
+      def to_h
+        {
+          id: id,
+          shop: shop,
+          state: state,
+          access_token: access_token,
+          scope: scope.to_a,
+          associated_user_scope: associated_user_scope&.to_a,
+          expires: expires&.to_i,
+          is_online: online?,
+          associated_user: associated_user&.to_h,
+          shopify_session_id: shopify_session_id,
+        }
+      end
+
+      sig { returns(String) }
+      def to_json
+        to_h.to_json
       end
     end
   end

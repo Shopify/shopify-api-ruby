@@ -31,6 +31,25 @@ module ShopifyAPI
           false
         end
       end
+
+      sig { returns(Hash) }
+      def to_h
+        {
+          id: id,
+          first_name: first_name,
+          last_name: last_name,
+          email: email,
+          email_verified: email_verified,
+          account_owner: account_owner,
+          locale: locale,
+          collaborator: collaborator
+        }
+      end
+
+      sig { returns(String) }
+      def to_json
+        to_h.to_json
+      end
     end
   end
 end
