@@ -7,7 +7,6 @@ PATH
       hash_diff
       httparty
       jwt
-      oj
       openssl
       securerandom
       sorbet-runtime
@@ -65,11 +64,7 @@ GEM
     multi_xml (0.6.0)
     mutex_m (0.3.0)
     netrc (0.11.0)
-    oj (3.16.7)
-      bigdecimal (>= 3.0)
-      ostruct (>= 0.2)
     openssl (3.2.0)
-    ostruct (0.6.1)
     parallel (1.24.0)
     parser (3.3.0.5)
       ast (~> 2.4.1)
