@@ -43,7 +43,6 @@ GEM
     csv (3.3.0)
     drb (2.2.1)
     erubi (1.12.0)
-    fakefs (1.4.1)
     hash_diff (1.1.1)
     hashdiff (1.0.1)
     httparty (0.22.0)
@@ -150,7 +149,6 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  fakefs
   minitest
   mocha
   pry-byebug
