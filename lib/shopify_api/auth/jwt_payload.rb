@@ -27,7 +27,7 @@ module ShopifyAPI
           decode_token(token, T.must(Context.old_api_secret_key))
         end
 
-        @iss = T.let(payload_hash["iss"], String)
+        @iss = T.let(payload_hash["iss"], T.nilable(String))
         @dest = T.let(payload_hash["dest"], String)
         @aud = T.let(payload_hash["aud"], String)
         @sub = T.let(payload_hash["sub"], String)
@@ -35,7 +35,7 @@ module ShopifyAPI
         @nbf = T.let(payload_hash["nbf"], Integer)
         @iat = T.let(payload_hash["iat"], Integer)
         @jti = T.let(payload_hash["jti"], String)
-        @sid = T.let(payload_hash["sid"], String)
+        @sid = T.let(payload_hash["sid"], T.nilable(String))
 
         raise ShopifyAPI::Errors::InvalidJwtTokenError,
           "Session token had invalid API key" unless @aud == Context.api_key
@@ -49,7 +49,7 @@ module ShopifyAPI
 
       sig { returns(Integer) }
       def shopify_user_id
-        @sub.to_i
+        @sub.tr("^0-9", "").to_i
       end
 
       # TODO: Remove before releasing v11
