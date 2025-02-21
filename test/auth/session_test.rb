@@ -79,7 +79,7 @@ module ShopifyAPITest
         assert_equal(session, ShopifyAPI::Context.active_session)
       end
 
-      def test_from_with_offline_access_token_response
+      def test_from_with_offline_access_token_response_with_no_expires_in
         shop = "test-shop"
         response = ShopifyAPI::Auth::Oauth::AccessTokenResponse.new(
           access_token: "token",
@@ -100,6 +100,30 @@ module ShopifyAPITest
 
         session = ShopifyAPI::Auth::Session.from(shop: shop, access_token_response: response)
 
+        assert_equal(expected_session, session)
+      end
+
+      def test_from_with_offline_access_token_response_with_expires_in
+        shop = "test-shop"
+        response = ShopifyAPI::Auth::Oauth::AccessTokenResponse.new(
+          access_token: "token",
+          scope: "scope1, scope2",
+          expires_in: 1000,
+        )
+
+        expected_session = ShopifyAPI::Auth::Session.new(
+          id: "offline_#{shop}",
+          shop: shop,
+          access_token: response.access_token,
+          scope: response.scope,
+          is_online: false,
+          associated_user_scope: nil,
+          associated_user: nil,
+          expires: Time.now + response.expires_in,
+          shopify_session_id: response.session,
+        )
+
+        session = ShopifyAPI::Auth::Session.from(shop: shop, access_token_response: response)
         assert_equal(expected_session, session)
       end
 

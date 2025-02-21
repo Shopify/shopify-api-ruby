@@ -95,11 +95,14 @@ module ShopifyAPI
 
           if is_online
             associated_user = T.must(access_token_response.associated_user)
-            expires = Time.now + access_token_response.expires_in.to_i
             associated_user_scope = access_token_response.associated_user_scope
             id = "#{shop}_#{associated_user.id}"
           else
             id = "offline_#{shop}"
+          end
+
+          if access_token_response.expires_in
+            expires = Time.now + access_token_response.expires_in.to_i
           end
 
           new(

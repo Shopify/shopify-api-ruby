@@ -11,7 +11,8 @@ For more information on authenticating a Shopify app please see the [Types of Au
 - [Note about Rails](#note-about-rails)
 - [Performing OAuth](#performing-oauth-1)
   - [Token Exchange](#token-exchange)
-  - [Authorization Code Grant Flow](#authorization-code-grant-flow)
+  - [Authorization Code Grant](#authorization-code-grant)
+  - [Client Credentials Grant](#client-credentials-grant)
 - [Using OAuth Session to make authenticated API calls](#using-oauth-session-to-make-authenticated-api-calls)
 
 ## Session Persistence
@@ -31,10 +32,14 @@ with [token exchange](#token-exchange) instead of the authorization code grant f
     - Recommended and is only available for embedded apps
     - Doesn't require redirects, which makes authorization faster and prevents flickering when loading the app
     - Access scope changes are handled by [Shopify managed installation](https://shopify.dev/docs/apps/auth/installation#shopify-managed-installation)
-2. [Authorization Code Grant Flow](#authorization-code-grant-flow)
+2. [Authorization Code Grant](#authorization-code-grant)
     - OAuth flow that requires the app to redirect the user to Shopify for installation/authorization of the app to access the shop's data.
     - Suitable for non-embedded apps
     - Installations, and access scope changes are managed by the app
+3. [Client Credentials Grant](#client-credentials-grant)
+    - Suitable for apps without a UI
+    - Doesn't require user interaction in the browser
+    - Access scope changes are handled by [Shopify managed installation](https://shopify.dev/docs/apps/auth/installation#shopify-managed-installation)
 
 ## Note about Rails
 If using in the Rails framework, we highly recommend you use the [shopify_app](https://github.com/Shopify/shopify_app) gem to perform OAuth, you won't have to follow the instructions below to start your own OAuth flow.
@@ -94,7 +99,7 @@ end
 
 ```
 
-### Authorization Code Grant Flow
+### Authorization Code Grant
 ##### Steps
 1. [Add a route to start OAuth](#1-add-a-route-to-start-oauth)
 2. [Add an Oauth callback route](#2-add-an-oauth-callback-route)
@@ -265,8 +270,40 @@ def callback
   end
 end
 ```
-
 ⚠️ You can see a concrete example in the `ShopifyApp` gem's [CallbackController](https://github.com/Shopify/shopify_app/blob/main/app/controllers/shopify_app/callback_controller.rb).
+
+### Client Credentials Grant
+
+> [!NOTE]
+> You can only use the client credentials grant when building apps for your own organization.
+
+> [!WARNING]
+> [token exchange](#token-exchange) (for embedded apps) or the [authorization code grant](#authorization-code-grant) should be used instead of the client credentials grant, if your app is a browser based web app.
+
+#### Perform Client Credentials Grant
+Use [`ShopifyAPI::Auth::ClientCredentials`](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/auth/client_credentials.rb) to
+exchange the [app's client ID and client secret](https://shopify.dev/docs/apps/build/authentication-authorization/client-secrets) for an access token.
+#### Input
+| Parameter      | Type                   | Required? | Default Value | Notes                                                                                                       |
+| -------------- | ---------------------- | :-------: | :-----------: | ----------------------------------------------------------------------------------------------------------- |
+| `shop`         | `String` | Yes | - | A Shopify domain name in the form `{exampleshop}.myshopify.com`. |
+
+#### Output
+This method returns the new `ShopifyAPI::Auth::Session` object from the client credentials grant, your app should store this `Session` object to be used later [when making authenticated API calls](#using-oauth-session-to-make-authenticated-api-calls).
+
+#### Example
+```ruby
+
+# `shop` is the shop domain name - "this-is-my-example-shop.myshopify.com"
+
+def authenticate(shop)
+  session = ShopifyAPI::Auth::ClientCredentials.client_credentials(
+     shop: shop,
+   )
+  SessionRepository.store_session(session)
+end
+
+```
 
 ## Using OAuth Session to make authenticated API calls
 Once your OAuth flow is complete, and you have persisted your `Session` object, you may use that `Session` object to make authenticated API calls.
