@@ -12,5 +12,9 @@ module ShopifyAPITest
     def test_supported_latest_supported_admin_version
       assert_instance_of(String, ShopifyAPI::AdminVersions::LATEST_SUPPORTED_ADMIN_VERSION)
     end
+
+    def test_supported_release_candidate_admin_version
+      assert_instance_of(String, ShopifyAPI::AdminVersions::RELEASE_CANDIDATE_ADMIN_VERSION)
+    end
   end
 end
