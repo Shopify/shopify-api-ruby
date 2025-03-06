@@ -13,8 +13,8 @@ jobs:
           actions: 'close-issues'
           token: ${{ secrets.GITHUB_TOKEN }}
           labels: 'Waiting for Response'
-          inactive-day: 7
+          inactive-day: 14
           body: |
-            We are closing this issue because we did not hear back regarding additional details we needed to resolve this issue. If the issue persists and you are able to provide the missing clarification we need, feel free to respond and reopen this issue.
+            We are closing this issue because we did not hear back regarding additional details we needed to resolve this issue. If the issue persists and you are able to provide the missing clarification we need, feel free to create a new issue with the additional information.
 
             We appreciate your understanding as we try to manage our number of open issues.
