@@ -39,6 +39,10 @@ module ShopifyAPI
         headers = @headers
         headers["Content-Type"] = T.must(request.body_type) if request.body_type
         headers = headers.merge(T.must(request.extra_headers)) if request.extra_headers
+        if headers["Host"].include?(".my.shop.dev")
+          headers["x-forwarded-host"] = headers["Host"]
+          headers["Host"] = "app.shop.dev"
+        end
 
         tries = 0
         response = HttpResponse.new(code: 0, headers: {}, body: "")
