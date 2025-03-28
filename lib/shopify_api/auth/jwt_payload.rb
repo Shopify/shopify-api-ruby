@@ -30,12 +30,12 @@ module ShopifyAPI
         @iss = T.let(payload_hash["iss"], String)
         @dest = T.let(payload_hash["dest"], String)
         @aud = T.let(payload_hash["aud"], String)
-        @sub = T.let(payload_hash["sub"], String)
+        @sub = T.let(payload_hash["sub"], T.nilable(String))
         @exp = T.let(payload_hash["exp"], Integer)
         @nbf = T.let(payload_hash["nbf"], Integer)
         @iat = T.let(payload_hash["iat"], Integer)
         @jti = T.let(payload_hash["jti"], String)
-        @sid = T.let(payload_hash["sid"], String)
+        @sid = T.let(payload_hash["sid"], T.nilable(String))
 
         raise ShopifyAPI::Errors::InvalidJwtTokenError,
           "Session token had invalid API key" unless @aud == Context.api_key
@@ -47,19 +47,11 @@ module ShopifyAPI
       end
       alias_method :shopify_domain, :shop
 
-      sig { returns(Integer) }
+      sig { returns(T.nilable(Integer)) }
       def shopify_user_id
-        @sub.to_i
-      end
+        return unless @sub
 
-      # TODO: Remove before releasing v11
-      sig { params(shop: String).returns(T::Boolean) }
-      def validate_shop(shop)
-        Context.logger.warn(
-          "Deprecation notice: ShopifyAPI::Auth::JwtPayload.validate_shop no longer checks the given shop and always " \
-            "returns true. It will be removed in v11.",
-        )
-        true
+        @sub.tr("^0-9", "").to_i
       end
 
       alias_method :eql?, :==

@@ -139,6 +139,55 @@ module ShopifyAPITest
           sid: decoded.sid,
         })
       end
+
+      def test_decode_jwt_payload_coming_from_checkout_ui_extension
+        payload = @jwt_payload.dup
+        payload[:sid] = nil
+        jwt_token = JWT.encode(payload, ShopifyAPI::Context.api_secret_key, "HS256")
+        decoded = ShopifyAPI::Auth::JwtPayload.new(jwt_token)
+        assert_equal(payload,
+          {
+            iss: decoded.iss,
+            dest: decoded.dest,
+            aud: decoded.aud,
+            sub: decoded.sub,
+            exp: decoded.exp,
+            nbf: decoded.nbf,
+            iat: decoded.iat,
+            jti: decoded.jti,
+            sid: decoded.sid,
+          })
+
+        assert_equal(decoded.expire_at, @jwt_payload[:exp])
+        assert_equal("test-shop.myshopify.io", decoded.shopify_domain)
+        assert_equal("test-shop.myshopify.io", decoded.shop)
+        assert_equal(1, decoded.shopify_user_id)
+      end
+
+      def test_decode_jwt_payload_coming_from_checkout_ui_extension_without_user_logged_in
+        payload = @jwt_payload.dup
+        payload[:sid] = nil
+        payload[:sub] = nil
+        jwt_token = JWT.encode(payload, ShopifyAPI::Context.api_secret_key, "HS256")
+        decoded = ShopifyAPI::Auth::JwtPayload.new(jwt_token)
+        assert_equal(payload,
+          {
+            iss: decoded.iss,
+            dest: decoded.dest,
+            aud: decoded.aud,
+            sub: decoded.sub,
+            exp: decoded.exp,
+            nbf: decoded.nbf,
+            iat: decoded.iat,
+            jti: decoded.jti,
+            sid: decoded.sid,
+          })
+
+        assert_equal(decoded.expire_at, @jwt_payload[:exp])
+        assert_equal("test-shop.myshopify.io", decoded.shopify_domain)
+        assert_equal("test-shop.myshopify.io", decoded.shop)
+        assert_nil(decoded.shopify_user_id)
+      end
     end
   end
 end
