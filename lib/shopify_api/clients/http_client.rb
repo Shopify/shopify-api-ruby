@@ -25,7 +25,7 @@ module ShopifyAPI
           "Accept": "application/json",
         }, T::Hash[T.any(Symbol, String), T.untyped])
 
-        @headers["Host"] = session.shop unless api_host.nil?
+        @headers["Host"] = api_host || session.shop unless api_host.nil?
 
         unless session.access_token.nil? || T.must(session.access_token).empty?
           @headers["X-Shopify-Access-Token"] = T.cast(session.access_token, String)
