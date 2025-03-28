@@ -39,10 +39,10 @@ module ShopifyAPI
         headers = @headers
         headers["Content-Type"] = T.must(request.body_type) if request.body_type
         headers = headers.merge(T.must(request.extra_headers)) if request.extra_headers
-        if headers["Host"].include?(".my.shop.dev")
-          headers["x-forwarded-host"] = headers["Host"]
-          headers["Host"] = "app.shop.dev"
-        end
+
+        parsed_uri = URI(request_url(request))
+
+        headers = append_first_party_development_headers(headers, parsed_uri)
 
         tries = 0
         response = HttpResponse.new(code: 0, headers: {}, body: "")
@@ -50,7 +50,7 @@ module ShopifyAPI
           tries += 1
           res = T.cast(HTTParty.send(
             request.http_method,
-            request_url(request),
+            parsed_uri.to_s,
             headers: headers,
             query: request.query,
             body: request.body.class == Hash ? T.unsafe(request.body).to_json : request.body,
@@ -118,6 +118,27 @@ module ShopifyAPI
           body["error_reference"] = "If you report this error, please include this id: #{id}."
         end
         body.to_json
+      end
+
+      private
+
+      sig do
+        params(
+          headers: T::Hash[T.any(Symbol, String), T.untyped],
+          parsed_uri: URI::Generic,
+        ).returns(T::Hash[T.any(Symbol, String), T.untyped])
+      end
+      def append_first_party_development_headers(headers, parsed_uri)
+        return headers unless defined?(DevServer)
+        return headers unless headers["Host"]&.include?(".my.shop.dev") || parsed_uri.host&.include?(".my.shop.dev")
+
+        # These headers are only used for first party applications in development mode
+        headers["x-forwarded-host"] = headers["Host"] || parsed_uri.host
+        headers["Host"] = T.unsafe(
+          Object.const_get("DevServer::Core"), # rubocop:disable Sorbet/ConstantsFromStrings
+        ).new.host!(:app)
+
+        headers
       end
     end
   end
