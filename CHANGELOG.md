@@ -5,6 +5,7 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 
 - [#1362](https://github.com/Shopify/shopify-api-ruby/pull/1362) Add support for client credentials grant
 - [#1369](https://github.com/Shopify/shopify-api-ruby/pull/1369) Make `sub` and `sid` jwt claims optional (Checkout ui extension support)
+- [#1370](https://github.com/Shopify/shopify-api-ruby/pull/1370) Add support for Shopify internal hosts
 
 ## 14.8.0
 
