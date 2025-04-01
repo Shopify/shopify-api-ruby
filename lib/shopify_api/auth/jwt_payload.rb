@@ -49,9 +49,7 @@ module ShopifyAPI
 
       sig { returns(T.nilable(Integer)) }
       def shopify_user_id
-        return unless @sub
-
-        @sub.tr("^0-9", "").to_i
+        @sub.to_i if user_id_sub? && admin_session_token?
       end
 
       alias_method :eql?, :==
@@ -77,6 +75,16 @@ module ShopifyAPI
         JWT.decode(token, api_secret_key, true, leeway: JWT_LEEWAY, algorithm: "HS256")[0]
       rescue JWT::DecodeError => err
         raise ShopifyAPI::Errors::InvalidJwtTokenError, "Error decoding session token: #{err.message}"
+      end
+
+      sig { returns(T::Boolean) }
+      def admin_session_token?
+        @iss.end_with?("/admin")
+      end
+
+      sig { returns(T::Boolean) }
+      def user_id_sub?
+        @sub&.match?(/\A\d+\z/) || false
       end
     end
   end
