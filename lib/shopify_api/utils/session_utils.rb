@@ -49,7 +49,7 @@ module ShopifyAPI
           shop = payload.shop
 
           if online
-            jwt_session_id(shop, payload.sub)
+            jwt_session_id(shop, T.must(payload.sub))
           else
             offline_session_id(shop)
           end

@@ -10,10 +10,13 @@ module ShopifyAPI
       JWT_EXPIRATION_LEEWAY = JWT_LEEWAY
 
       sig { returns(String) }
-      attr_reader :iss, :dest, :aud, :sub, :jti, :sid
+      attr_reader :iss, :dest, :aud, :jti
 
       sig { returns(Integer) }
       attr_reader :exp, :nbf, :iat
+
+      sig { returns(T.nilable(String)) }
+      attr_reader :sub, :sid
 
       alias_method :expire_at, :exp
 
