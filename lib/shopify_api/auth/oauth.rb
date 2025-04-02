@@ -46,8 +46,8 @@ module ShopifyAPI
           }
 
           query_string = URI.encode_www_form(query)
+          auth_route = auth_base_uri(shop) + "/oauth/authorize?#{query_string}"
 
-          auth_route = "https://#{shop}/admin/oauth/authorize?#{query_string}"
           { auth_route: auth_route, cookie: cookie }
         end
 
@@ -105,6 +105,20 @@ module ShopifyAPI
           end
 
           { session: session, cookie: cookie }
+        end
+
+        private
+
+        sig { params(shop: String).returns(String) }
+        def auth_base_uri(shop)
+          return "https://#{shop}/admin" unless defined?(DevServer)
+
+          # For first-party apps in development only, we leverage DevServer to build the admin base URI
+          admin_web = T.unsafe(Object.const_get("DevServer")).new("web") # rubocop:disable Sorbet/ConstantsFromStrings
+          admin_host = admin_web.host!(nonstandard_host_prefix: "admin")
+          shop_name = shop.split(".").first
+
+          "https://#{admin_host}/store/#{shop_name}"
         end
       end
     end
