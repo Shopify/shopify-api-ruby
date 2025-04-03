@@ -101,10 +101,11 @@ module ShopifyAPI
         @rest_resource_loader&.setup
         @rest_resource_loader&.unload
 
-        # No resources for the unstable version
-        return if api_version == "unstable"
+        # No resources for the unstable version or the release candidate version
+        return if api_version == "unstable" || api_version == RELEASE_CANDIDATE_ADMIN_VERSION
 
         version_folder_name = api_version.gsub("-", "_")
+
         path = "#{__dir__}/rest/resources/#{version_folder_name}"
 
         unless Dir.exist?(path)
