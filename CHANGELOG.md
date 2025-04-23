@@ -2,6 +2,7 @@
 
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
+- [#1375](https://github.com/Shopify/shopify-api-ruby/pull/1375) add optional `ShopifyAPI::Context::httparty_params` to configure HTTP request params such as timeout, debug_output, or proxy settings.
 - [#1443](https://github.com/Shopify/shopify-api-ruby/pull/1443) Add `ShopifyAPI::Utils::ShopValidator` (module) with `sanitize_shop_domain` and `sanitize!`.
 - [#1443](https://github.com/Shopify/shopify-api-ruby/pull/1443) `ShopifyAPI::Auth::TokenExchange.exchange_token` always uses the session token's `dest` claim, instead of the `shop` parameter, that is now deprecated. It will show a deprecation warning and the argument will be removed in the next major version.
 
