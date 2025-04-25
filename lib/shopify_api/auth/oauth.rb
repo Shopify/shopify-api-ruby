@@ -111,7 +111,7 @@ module ShopifyAPI
 
         sig { params(shop: String).returns(String) }
         def auth_base_uri(shop)
-          return "https://#{shop}/admin" unless defined?(DevServer)
+          return "https://#{shop}/admin" unless defined?(DevServer) && shop.include?(".my.shop.dev")
 
           # For first-party apps in development only, we leverage DevServer to build the admin base URI
           admin_web = T.unsafe(Object.const_get("DevServer")).new("web") # rubocop:disable Sorbet/ConstantsFromStrings

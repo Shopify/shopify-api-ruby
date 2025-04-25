@@ -131,6 +131,7 @@ module ShopifyAPI
       def append_first_party_development_headers(headers, parsed_uri)
         return headers unless defined?(DevServer)
         return headers unless headers["Host"]&.include?(".my.shop.dev") || parsed_uri.host&.include?(".my.shop.dev")
+        return headers if headers["x-forwarded-host"]&.include?(".my.shop.dev")
 
         # These headers are only used for first party applications in development mode
         headers["x-forwarded-host"] = headers["Host"] || parsed_uri.host
