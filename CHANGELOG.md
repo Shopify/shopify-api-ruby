@@ -2,6 +2,9 @@
 
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
+
+## 14.10.0
+
 - [#1374](https://github.com/Shopify/shopify-api-ruby/pull/1374) Fix edge cases for Shopify internal hosts
 
 ## 14.9.0
