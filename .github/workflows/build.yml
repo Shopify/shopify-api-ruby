@@ -16,9 +16,9 @@ jobs:
           - 3.2
           - 3.3
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
       - name: Set up Ruby ${{ matrix.version }}
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@e34163cd15f4bb403dcd72d98e295997e6a55798 # v1.238.0
         with:
           ruby-version: ${{ matrix.version }}
       - name: Install OpenSSL
