@@ -2,6 +2,9 @@
 
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
+
+## 14.11.1
+
 - [#1395](https://github.com/Shopify/shopify-api-ruby/pull/1395) use correct internal admin host for 1P app development
 
 ## 14.11.0
