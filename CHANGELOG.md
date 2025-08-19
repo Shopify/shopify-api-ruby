@@ -3,6 +3,13 @@
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
 
+## 14.11.1
+
+- [#1395](https://github.com/Shopify/shopify-api-ruby/pull/1395) use correct internal admin host for 1P app development
+
+## 14.11.0
+- [#1386](https://github.com/Shopify/shopify-api-ruby/pull/1386) Add support for 2025-07 API version
+
 ## 14.10.0
 
 - [#1374](https://github.com/Shopify/shopify-api-ruby/pull/1374) Fix edge cases for Shopify internal hosts
