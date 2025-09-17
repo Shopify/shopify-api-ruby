@@ -32,7 +32,7 @@ module ShopifyAPI
           filter: T.nilable(String)).void
       end
       def initialize(topic:, path:, handler: nil, fields: nil, metafield_namespaces: nil, filter: nil)
-        @topic = T.let(topic.gsub("/", "_").upcase, String)
+        @topic = T.let(topic.gsub(%r{/|\.}, "_").upcase, String)
         @path = path
         @handler = handler
         fields_array = fields.is_a?(String) ? fields.split(FIELDS_DELIMITER) : fields
