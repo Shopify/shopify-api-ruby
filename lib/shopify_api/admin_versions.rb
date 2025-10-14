@@ -23,8 +23,8 @@ module ShopifyAPI
       "2022-01",
     ], T::Array[String])
 
-    LATEST_SUPPORTED_ADMIN_VERSION = T.let("2025-07", String)
-    RELEASE_CANDIDATE_ADMIN_VERSION = T.let("2025-10", String)
+    LATEST_SUPPORTED_ADMIN_VERSION = T.let("2025-10", String)
+    RELEASE_CANDIDATE_ADMIN_VERSION = T.let("2026-01", String)
   end
 
   SUPPORTED_ADMIN_VERSIONS = ShopifyAPI::AdminVersions::SUPPORTED_ADMIN_VERSIONS
