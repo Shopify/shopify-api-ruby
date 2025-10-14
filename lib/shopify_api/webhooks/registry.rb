@@ -17,7 +17,7 @@ module ShopifyAPI
           params(topic: String,
             delivery_method: Symbol,
             path: String,
-            handler: T.nilable(T.any(Handler, WebhookHandler)),
+            handler: T.nilable(WebhookHandler),
             fields: T.nilable(T.any(String, T::Array[String])),
             filter: T.nilable(String),
             metafield_namespaces: T.nilable(T::Array[String])).void
@@ -195,18 +195,8 @@ module ShopifyAPI
             raise Errors::NoWebhookHandler, "No webhook handler found for topic: #{request.topic}."
           end
 
-          if handler.is_a?(WebhookHandler)
-            handler.handle(data: WebhookMetadata.new(topic: request.topic, shop: request.shop,
-              body: request.parsed_body, api_version: request.api_version, webhook_id: request.webhook_id))
-          else
-            handler.handle(topic: request.topic, shop: request.shop, body: request.parsed_body)
-            warning = <<~WARNING
-              DEPRECATED: Use ShopifyAPI::Webhooks::WebhookHandler#handle instead of
-              ShopifyAPI::Webhooks::Handler#handle.
-              https://github.com/Shopify/shopify-api-ruby/blob/main/docs/usage/webhooks.md#create-a-webhook-handler
-            WARNING
-            ShopifyAPI::Logger.deprecated(warning, "15.0.0")
-          end
+          handler.handle(data: WebhookMetadata.new(topic: request.topic, shop: request.shop,
+            body: request.parsed_body, api_version: request.api_version, webhook_id: request.webhook_id))
         end
 
         private

@@ -3,6 +3,9 @@
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
 
+### 15.0.0
+
+- ⚠️ [Breaking] Removed deprecated `ShopifyAPI::Webhooks::Handler` interface. Apps must migrate to `ShopifyAPI::Webhooks::WebhookHandler` which provides `webhook_id` and `api_version` in addition to `topic`, `shop`, and `body`. See [BREAKING_CHANGES_FOR_V15.md](BREAKING_CHANGES_FOR_V15.md) for migration guide.
 - [#1405](https://github.com/Shopify/shopify-api-ruby/pull/1405) Fix webhook registration for topics containing dots (e.g., `customer.tags_added`, `customer.tags_removed`)
 
 ## 14.11.1
