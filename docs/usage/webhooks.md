@@ -29,25 +29,8 @@ module WebhookHandler
 end
 ```
 
-**Note:** As of version 13.5.0 the `ShopifyAPI::Webhooks::Handler` class is still available to be used but will be removed in a future version of the gem.
-
 ### Best Practices
 It is recommended that in order to respond quickly to the Shopify webhook request that the handler not do any heavy logic or network calls, rather it should simply enqueue the work in some job queue in order to be executed later.
-
-### Webhook Handler for versions 13.4.0 and prior
-If you want to register for an http webhook you need to implement a webhook handler which the `shopify_api` gem can use to determine how to process your webhook. You can make multiple implementations (one per topic) or you can make one implementation capable of handling all the topics you want to subscribe to. To do this simply make a module or class that includes or extends `ShopifyAPI::Webhooks::Handler` and implement the handle method which accepts the following named parameters: topic: `String`, shop: `String`, and body: `Hash[String, untyped]`. An example implementation is shown below:
-
-```ruby
-module WebhookHandler
-  extend ShopifyAPI::Webhooks::Handler
-
-  class << self
-    def handle(topic:, shop:, body:)
-      puts "Received webhook! topic: #{topic} shop: #{shop} body: #{body}"
-    end
-  end
-end
-```
 
 ## Add to Webhook Registry
 
