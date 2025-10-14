@@ -3,6 +3,9 @@
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
 
+- Add support for 2025-10 API version
+  - Removed deprecated REST resources: `AccessScope`, `Product`, `ProductImage`, `PriceRule`, `ProductListing`, `ProductResourceFeedback`
+  - Updated `LATEST_SUPPORTED_ADMIN_VERSION` to `2025-10`
 - [#1405](https://github.com/Shopify/shopify-api-ruby/pull/1405) Fix webhook registration for topics containing dots (e.g., `customer.tags_added`, `customer.tags_removed`)
 
 ## 14.11.1
