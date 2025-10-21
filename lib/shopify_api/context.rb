@@ -7,7 +7,7 @@ module ShopifyAPI
 
     @api_key = T.let("", String)
     @api_secret_key = T.let("", String)
-    @api_version = T.let(LATEST_SUPPORTED_ADMIN_VERSION, String)
+    @api_version = T.let("", String)
     @api_host = T.let(nil, T.nilable(String))
     @scope = T.let(Auth::AuthScopes.new, Auth::AuthScopes)
     @is_private = T.let(false, T::Boolean)
@@ -101,8 +101,8 @@ module ShopifyAPI
         @rest_resource_loader&.setup
         @rest_resource_loader&.unload
 
-        # No resources for the unstable version or the release candidate version
-        return if api_version == "unstable" || api_version == RELEASE_CANDIDATE_ADMIN_VERSION
+        # No resources for the unstable version
+        return if api_version == "unstable"
 
         version_folder_name = api_version.gsub("-", "_")
 
@@ -155,7 +155,7 @@ module ShopifyAPI
 
       sig { returns(T::Boolean) }
       def setup?
-        [api_key, api_secret_key, T.must(host)].none?(&:empty?)
+        [api_key, api_secret_key, api_version, T.must(host)].none?(&:empty?)
       end
 
       sig { returns(T.nilable(Auth::Session)) }
