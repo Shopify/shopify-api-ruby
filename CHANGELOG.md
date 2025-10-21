@@ -6,6 +6,11 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ### 15.0.0
 
 - ⚠️ [Breaking] Removed deprecated `ShopifyAPI::Webhooks::Handler` interface. Apps must migrate to `ShopifyAPI::Webhooks::WebhookHandler` which provides `webhook_id` and `api_version` in addition to `topic`, `shop`, and `body`. See [BREAKING_CHANGES_FOR_V15.md](BREAKING_CHANGES_FOR_V15.md) for migration guide.
+- Add support for 2025-10 API version
+  - Removed deprecated REST resources: `AccessScope`, `Product`, `ProductImage`, `PriceRule`, `ProductListing`, `ProductResourceFeedback`
+  - Updated `LATEST_SUPPORTED_ADMIN_VERSION` to `2025-10`
+- [#1411](https://github.com/Shopify/shopify-api-ruby/pull/1411) Remove `LATEST_SUPPORTED_ADMIN_VERSION` and `RELEASE_CANDIDATE_ADMIN_VERSION` constants to prevent semver violations. Developers must now explicitly specify API versions. See the [migration guide](BREAKING_CHANGES_FOR_V15.md#removal-of-latest_supported_admin_version-and-release_candidate_admin_version-constants) for details.
+
 - [#1405](https://github.com/Shopify/shopify-api-ruby/pull/1405) Fix webhook registration for topics containing dots (e.g., `customer.tags_added`, `customer.tags_removed`)
 
 ## 14.11.1

@@ -5,6 +5,7 @@ module ShopifyAPI
   module AdminVersions
     SUPPORTED_ADMIN_VERSIONS = T.let([
       "unstable",
+      "2026-01",
       "2025-10",
       "2025-07",
       "2025-04",
@@ -22,12 +23,7 @@ module ShopifyAPI
       "2022-04",
       "2022-01",
     ], T::Array[String])
-
-    LATEST_SUPPORTED_ADMIN_VERSION = T.let("2025-07", String)
-    RELEASE_CANDIDATE_ADMIN_VERSION = T.let("2025-10", String)
   end
 
   SUPPORTED_ADMIN_VERSIONS = ShopifyAPI::AdminVersions::SUPPORTED_ADMIN_VERSIONS
-  LATEST_SUPPORTED_ADMIN_VERSION = ShopifyAPI::AdminVersions::LATEST_SUPPORTED_ADMIN_VERSION
-  RELEASE_CANDIDATE_ADMIN_VERSION = ShopifyAPI::AdminVersions::RELEASE_CANDIDATE_ADMIN_VERSION
 end
