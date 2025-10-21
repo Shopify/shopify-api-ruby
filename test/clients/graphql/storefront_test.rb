@@ -22,9 +22,13 @@ module ShopifyAPITest
 
         def build_client
           if !defined?("@api_version")
-            ShopifyAPI::Clients::Graphql::Storefront.new(@shop, @storefront_access_token)
+            ShopifyAPI::Clients::Graphql::Storefront.new(@shop, public_token: @storefront_access_token)
           else
-            ShopifyAPI::Clients::Graphql::Storefront.new(@shop, @storefront_access_token, api_version: @api_version)
+            ShopifyAPI::Clients::Graphql::Storefront.new(
+              @shop,
+              public_token: @storefront_access_token,
+              api_version: @api_version,
+            )
           end
         end
 
@@ -81,7 +85,7 @@ module ShopifyAPITest
         end
 
         def test_error_raised_when_no_token_provided
-          assert_raises(TypeError) { ShopifyAPI::Clients::Graphql::Storefront.new(@shop) }
+          assert_raises(ArgumentError) { ShopifyAPI::Clients::Graphql::Storefront.new(@shop) }
         end
       end
     end
