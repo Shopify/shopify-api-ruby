@@ -3,6 +3,9 @@
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
 
+### 15.0.0
+
+- ⚠️ [Breaking] Removed deprecated `ShopifyAPI::Webhooks::Handler` interface. Apps must migrate to `ShopifyAPI::Webhooks::WebhookHandler` which provides `webhook_id` and `api_version` in addition to `topic`, `shop`, and `body`. See [BREAKING_CHANGES_FOR_V15.md](BREAKING_CHANGES_FOR_V15.md) for migration guide.
 - Add support for 2025-10 API version
   - Removed deprecated REST resources: `AccessScope`, `Product`, `ProductImage`, `PriceRule`, `ProductListing`, `ProductResourceFeedback`
   - Updated `LATEST_SUPPORTED_ADMIN_VERSION` to `2025-10`
