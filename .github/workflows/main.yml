@@ -1,0 +1,279 @@
+            - name: Liquibase Connect Action
+  # You may pin to the exact commit or the version.
+  # uses: liquibase-github-actions/connect@1c0ef25a2b6b2b6469be7252bc1925c5ca693a9e
+  uses: liquibase-github-actions/connect@v4.33.0
+  with:
+    # The default catalog name to use for the database connection
+    defaultCatalogName: # optional
+    # The default schema name to use for the database connection
+    defaultSchemaName: # optional
+    # The JDBC driver class
+    driver: # optional
+    # The JDBC driver properties file
+    driverPropertiesFile: # optional
+    # Password to use to connect to the database
+    password: # optional
+    # *required* The JDBC database connection URL
+    url: 
+    # Username to use to connect to the database
+    username: # optional
+    # If true, a subset of the MdcKeys, as defined by product, will be set to empty strings upon system startup.
+    addEmptyMdcValues: # optional
+    # Allows duplicated changeset identifiers without failing Liquibase execution.
+    allowDuplicatedChangesetIdentifiers: # optional
+    # If true, drop and recreate a view instead of replacing it.
+    alwaysDropInsteadOfReplace: # optional
+    # When generating SQL for createProcedure, should the procedure schema be forced to the default schema if no schemaName attribute is set?
+    alwaysOverrideStoredLogicSchema: # optional
+    # Liquibase caches the results from the config endpoint, and this value determines how long that cache should live for before being refreshed.
+    analyticsConfigCacheTimeoutMillis: # optional
+    # 
+    analyticsConfigEndpointTimeoutMillis: # optional
+    # 
+    analyticsConfigEndpointUrl: # optional
+    # By default, Liquibase will not send analytics in dev (non release) builds. To override this behavior, set this value to true and provide a value for liquibase.analytics.configEndpointUrl
+    analyticsDevOverride: # optional
+    # Enable or disable sending product usage data and analytics to Liquibase. Learn more at https://docs.liquibase.com/analytics.
+    analyticsEnabled: # optional
+    # Number of characters of the license key that should be appended to the userId. This is used in the event that the same customer has multiple license keys associated with them.
+    analyticsLicenseKeyChars: # optional
+    # 
+    analyticsLogLevel: # optional
+    # By default, the timeout for sending data to the remote endpoint is configured in the config endpoint. Any value set here will override that value.
+    analyticsTimeoutMillis: # optional
+    # Should Liquibase automatically include REORG TABLE commands when needed?
+    autoReorg: # optional
+    # Number of seconds wait between checks to the changelog lock when it is locked
+    changelogLockPollRate: # optional
+    # Number of minutes to wait for the changelog lock to be available before giving up
+    changelogLockWaitTimeInMinutes: # optional
+    # Configures how to handle unknown fields in changelog files. Possible values: STRICT which causes parsing to fail, and LAX which continues with the parsing.
+    changelogParseMode: # optional
+    # Enable liquibase-checks extension compatibility check.  Can be used when running tests to turn off the check.
+    checksCompatibilityEnabled: # optional
+    # Additional classpath entries to use
+    classpath: # optional
+    # Should Liquibase convert to/from STANDARD data types. Applies to both snapshot and update commands.
+    convertDataTypes: # optional
+    # [PRO]Relative or fully qualified path to a yaml file containing key:value data to inject or exclude data from JSON structured logs. Learn more at https://docs.liquibase.com/structured-logging
+    customLogDataFile: # optional
+    # [PRO]The frequency that the custom log data will be entered into the logs. Available options are: ONCE,REPEATED
+    customLogDataFrequency: # optional
+    # Name of table to use for tracking concurrent Liquibase usage
+    databaseChangelogLockTableName: # optional
+    # Name of table to use for tracking change history
+    databaseChangelogTableName: # optional
+    # Class to use for Database implementation
+    databaseClass: # optional
+    # The index name for the DATABASECHANGELOG table on DB2 z/OS
+    db2zDatabasechangelogIndex: # optional
+    # The index name for the DATABASECHANGELOGLOCK table on DB2 z/OS
+    db2zDatabasechangeloglockIndex: # optional
+    # The database name for the Liquibase tracking tables on DB2 z/OS
+    db2zTrackingTablesLocationDatabase: # optional
+    # The tablespace name for the Liquibase tracking tables on DB2 z/OS
+    db2zTrackingTablesLocationTablespace: # optional
+    # If true, extensions are captured in the history table
+    dbclhistoryCaptureExtensions: # optional
+    # If true, executed SQL is captured in the history table
+    dbclhistoryCaptureSql: # optional
+    # [PRO]This property enables Liquibase Pro users to store a record of all database changing liquibase operations in a new table DATABASECHANGELOGHISTORY. This table includes records of rollback, dropalls, and repeated runOnChange type activity, which is not available in the standard DATABASECHANGELOG table.
+    dbclhistoryEnabled: # optional
+    # The exit code to use if an exception is encountered while recording history events
+    dbclhistorySeverity: # optional
+    # 
+    dbclhistoryTableName: # optional
+    # The DDL_LOCK_TIMEOUT parameter indicates the number of seconds a DDL command should wait for the locks to become available before throwing the resource busy error message. This applies only to Oracle databases.
+    ddlLockTimeout: # optional
+    # File with default Liquibase properties
+    defaultsFile: # optional
+    # Should Liquibase compare column order in diff operation?
+    diffColumnOrder: # optional
+    # How to handle multiple files being found in the search path that have duplicate paths. Options are SILENT (do not log and choose one at random), DEBUG, INFO, WARN (log at the given level and choose one at random), or ERROR (fail current operation).
+    duplicateFileMode: # optional
+    # Throw an error if Liquibase detects that an includeAll will cause a circular reference (and thus a changelog parse error).
+    errorOnCircularIncludeAll: # optional
+    # Encoding to use when reading files. Valid values include: UTF-8, UTF-16, UTF-16BE, UTF-16LE, US-ASCII, or OS to use the system configured encoding.
+    fileEncoding: # optional
+    # DEPRECATED: No longer used
+    filterLogMessages: # optional
+    # If true, display a more verbose output for the FlowFile toString representation
+    flowVerboseToString: # optional
+    # Should Liquibase include a "created" attribute in diff/generateChangelog changesets with the current datetime
+    generateChangesetCreatedValues: # optional
+    # Should Liquibase include the change description in the id when generating changesets?
+    generatedChangesetIdsContainsDescription: # optional
+    # Force Liquibase to think it has no access to a keyboard
+    headless: # optional
+    # Should Liquibase include the catalog name when determining equality?
+    includeCatalogInSpecification: # optional
+    # If set to true, and there are multiple identical tags in the database changelog table, all of the newer matching tags will be rolled back while rolling back to the oldest tag. The default value for this option was false for all Liquibase versions equal to or older than 4.25.1.
+    includeMatchingTagInRollbackOldest: # optional
+    # If true, the parent relationship for computed columns is preserved in snapshot-dependent commands: snapshot and diff
+    includeRelationsForComputedColumns: # optional
+    # If true, the schema name is included for the default schema when loading a snapshot
+    includeSchemaNameForDefault: # optional
+    # Include the system classpath when resolving classes at runtime
+    includeSystemClasspath: # optional
+    # The name of the integration used to invoke Liquibase, for example, cli, or JavaAPI. It is not required to specify this value. This is primarily used by wrappers around Liquibase (like Gradle), so that analytics can be differentiated for those integrations.
+    integrationName: # optional
+    # If true, then write to a JCL log file
+    jclCreateLogFile: # optional
+    # Log file path for JCL output
+    jclLogFilePath: # optional
+    # Minimum return code recognized as an error
+    jclMinimumErrorReturnCode: # optional
+    # If true, overwrite JCL log file
+    jclOverwriteLogFile: # optional
+    # Enable or disable sending license usage data.
+    licenseUtilityEnabled: # optional
+    # 
+    licenseUtilityLogLevel: # optional
+    # Time, in milliseconds, to wait for HTTP request to complete
+    licenseUtilityTimeout: # optional
+    # Specifies an identifier (e.g., team name, pipeline ID, or environment) to track and analyze Liquibase license usage. If not provided, the hostname and user is used for identification.
+    licenseUtilityTrackingId: # optional
+    # 
+    licenseUtilityUrl: # optional
+    # Liquibase Pro or Liquibase Labs license key used to unlock paid capabilities. Get a free trial at https://liquibase.com/trial and use in CLI or add liquibase.licenseKey=<yourKey> into your defaults file.
+    licenseKey: # optional
+    # Catalog to use for Liquibase objects
+    liquibaseCatalogName: # optional
+    # Schema to use for Liquibase objects
+    liquibaseSchemaName: # optional
+    # Tablespace to use for Liquibase objects
+    liquibaseTablespaceName: # optional
+    # Controls which log channels have their level set by the liquibase.logLevel setting. Comma separate multiple values. To set the level of all channels, use "all". Example: liquibase,org.mariadb.jdbc
+    logChannels: # optional
+    # Users can use .gz file extension to enable log files compression.
+    logFile: # optional
+    # Sets the format of log output to console or log files. Open Source users default to unstructured "TEXT" logs to the console or output log files. Pro users have the option to set value as "JSON" or "JSON_PRETTY" to enable json-structured log files to the console or output log files.
+    logFormat: # optional
+    # Controls which logs get set to stderr AND to any log file. The CLI defaults, if log file set, to SEVERE. Others vary by integration. The official log levels are: OFF, SEVERE, WARNING, INFO, FINE
+    logLevel: # optional
+    # When set to true, the console messages are mirrored to the logs as [liquibase.ui] to provide a more complete picture of liquibase operations to log analysis tools. Set to false to change this behavior.
+    mirrorConsoleMessagesToLog: # optional
+    # [PRO]When set to true, console output will be mirrored to both the specified output-file and the console. If output-file is not set, the "mirror-output-to-console" argument has no effect.
+    mirrorOutputToConsole: # optional
+    # How to handle changelog property expressions where a value is not set. For example, a string "${address}" when no "address" property was defined. Values can be: "preserve" which leaves the string as-is, "empty" which replaces it with an empty string, or "error" which stops processing with an error.
+    missingPropertyMode: # optional
+    # Enable performance tracking. Set to "false" to disable. If set to "true", data is stored to a `liquibase-TIMESTAMP.jfr` file in your working directory. Any other value will enable tracking and be used as the name of the file to write the data to.
+    monitorPerformance: # optional
+    # [PRO]Flag to enable composite primary key for newly added DBCL tables. Disabled by default
+    mysqlEnableDbclPrimaryKey: # optional
+    # Custom executor that can specified
+    nativeExecutor: # optional
+    # If set to WARN, then liquibase will not throw exception on missing changelog file, instead will show a warning message.
+    onMissingIncludeChangelog: # optional
+    # If set to WARN, then Liquibase will not throw exception on missing sqlFile inside a sqlFile change type, instead will show a warning message
+    onMissingSqlFile: # optional
+    # 
+    outputFile: # optional
+    # Encoding to use when writing files
+    outputFileEncoding: # optional
+    # Line separator for output
+    outputLineSeparator: # optional
+    # If true "classpath:" prefix will be preserved in normalized paths, allowing to resolve hierarchical resources under a classpath-based root.
+    preserveClasspathPrefixInNormalizedPaths: # optional
+    # If true, Liquibase treats schema and catalog names as case sensitive
+    preserveSchemaCase: # optional
+    # If true, rollback execution will be forced when having partial changes that needs to be rolled back. Defaults to false.
+    proForceOnPartialChanges: # optional
+    # [PRO]The default end delimiter to use for all change sets
+    proGlobalEndDelimiter: # optional
+    # [PRO]If true, the global end delimiter overrides all other settings
+    proGlobalEndDelimiterPrioritized: # optional
+    # [PRO]The default strip comments to use for all change sets
+    proGlobalStripComments: # optional
+    # [PRO]If true, the global strip comments overrides all other settings
+    proGlobalStripCommentsPrioritized: # optional
+    # DEPRECATED: Liquibase Pro license key used to unlock paid capabilities. Get a free trial at https://www.liquibase.com/protrial and use in CLI or add liquibase.pro.licenseKey=<yourKey> into your defaults file.
+    proLicenseKey: # optional
+    # If a column would be dropped in a diffChangeLog, call markUnused instead if set to true
+    proMarkUnusedNotDrop: # optional
+    # If true, generate changeSets with SQL-based changes inlined instead of saving them to an external file
+    proSqlInline: # optional
+    # If false, do not drop public synonyms in diffChangeLog/dropAll
+    proSynonymsDropPublic: # optional
+    # [PRO]If true, the Liquibase operations will fail when specified paths to Pro resource files (flow files, checks settings files, native executor conf files, etc) or rollback scripts are missing or empty.
+    proStrict: # optional
+    # Should Liquibase prompt if a non-local database is being accessed
+    promptForNonLocalDatabase: # optional
+    # Implementation of Properties class to provide additional driver properties
+    propertyProviderClass: # optional
+    # [PRO]Enable or disable reporting.
+    reportsEnabled: # optional
+    # [PRO]The format of the report. Currently, can only be set to "html".
+    reportsFormat: # optional
+    # [PRO]The name of the reports.
+    reportsName: # optional
+    # [PRO]Open the newly generated report in your default browser.
+    reportsOpen: # optional
+    # [PRO]The path to the directory to generate the reports.
+    reportsPath: # optional
+    # [PRO]Minimize the amount of logging when generating reports.
+    reportsQuiet: # optional
+    # [PRO]Global setting to prevent the display of exceptions in operation reports.
+    reportsSuppressException: # optional
+    # [PRO]Global setting to prevent the display of changeset SQL in operation reports.
+    reportsSuppressSql: # optional
+    # Path to a Python executable associated with a virtual environment
+    scriptPythonExecutablePath: # optional
+    # Complete list of Location(s) to search for files such as changelog files in. Multiple paths can be specified by separating them with commas.
+    searchPath: # optional
+    # If true, remove functionality from file parsers which could be used insecurely. Examples include (but not limited to) disabling remote XML entity support.
+    secureParsing: # optional
+    # Should Liquibase commands execute
+    shouldRun: # optional
+    # Should Liquibase snapshot data by default?
+    shouldSnapshotData: # optional
+    # If true, show a Liquibase banner on startup.
+    showBanner: # optional
+    # If true, all command arguments marked as hidden will be shown in the help output, ignoring the hidden flag. NOTE, due to the order of value provider loading at such an early point in Liquibase startup, you MUST set this as a environment variable. Command line parameters will not be recognized.
+    showHiddenArgs: # optional
+    # [PRO]Path to private key used for PKI Authentication type. Usually requires "snowflake-auth-type" property configured.
+    snowflakeAuthPrivateKeyPassphrase: # optional
+    # [PRO]Path to private key used for PKI Authentication type. Usually requires "snowflake-auth-type" property configured.
+    snowflakeAuthPrivateKeyPath: # optional
+    # [PRO]Value of the token used for specified Authentication type. Usually requires "snowflake-auth-type" property configured.
+    snowflakeAuthToken: # optional
+    # [PRO]The type or mechanism of Snowflake database authentication
+    snowflakeAuthType: # optional
+    # If true, all queries will have their fetch size set to the fetch size defined in their database implementation. This has the effect of informing the driver how many rows should be fetched when processing the result set. This is not guaranteed to be respected by the driver, but if respected, should improve query performance significantly.
+    sqlAlwaysSetFetchSize: # optional
+    # Level to log SQL statements to
+    sqlLogLevel: # optional
+    # Show SQLWarning messages
+    sqlShowSqlWarnings: # optional
+    # If true, Liquibase enforces certain best practices and proactively looks for common errors
+    strict: # optional
+    # Support escaping changelog parameters using a colon. Example: ${:user.name}
+    supportPropertyEscaping: # optional
+    # Controls the level of validation performed on the supports method of Change classes. Options are OFF, WARN, FAIL.
+    supportsMethodValidationLevel: # optional
+    # When set to true, this global property prevents DBCL and DBCLH sql from being present in console and logs during *-sql commands, such as update-sql, rollback-sql, etc.
+    suppressLiquibaseSql: # optional
+    # If true column headers will be trimmed in case they were specified with spaces in the file.
+    trimLoadDataFileHeader: # optional
+    # Changes the default UI Service Logger used by Liquibase. Options are CONSOLE or LOGGER.
+    uiService: # optional
+    # If set to true (default value), createProcedure tags with a set schemaName will modify the procedure body with the given schema name.
+    useProcedureSchema: # optional
+    # Will perform XSD validation of XML changelog files. When many XML changelog files are included, this validation may impact Liquibase performance. Defaults to true.
+    validateXmlChangelogFiles: # optional
+    # If true, long strings in Oracle will be chunked at 4000 characters when an insert statement is run, to avoid running afoul of Oracle"s 4000 character limit for insert statements to clob type columns (which appears as "ORA-01704: string literal too long.")
+    workaroundOracleClobCharacterLimit: # optional
+
+name: Test site for publicly known js vulnerabilities
+
+on: push
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test for public javascript library vulnerabilities 
+        uses: lirantal/is-website-vulnerable@main
+        with:
+          scan-url: "https://*.*.com"
+    
+          
