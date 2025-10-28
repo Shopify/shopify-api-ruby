@@ -1,4 +1,4 @@
-            - name: Sauce Security Action
+name: Sauce Security Action
   # You may pin to the exact commit or the version.
   # uses: saucelabs/sauce-security-action@5008ddffb96db501fc71486cad3950304a73a2d5
   uses: saucelabs/sauce-security-action@v0.3.0
