@@ -1,13 +1,28 @@
- name: Test site for publicly known js vulnerabilities
-
-on: push
-jobs:
-  security:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Test for public javascript library vulnerabilities 
-        uses: lirantal/is-website-vulnerable@main
-        with:
-          scan-url: "https://*.*.com"
-    
+            - name: Sauce Security Action
+  # You may pin to the exact commit or the version.
+  # uses: saucelabs/sauce-security-action@5008ddffb96db501fc71486cad3950304a73a2d5
+  uses: saucelabs/sauce-security-action@v0.3.0
+  with:
+    # Sauce Labs user name.
+    username: 
+    # Sauce Labs API Key.
+    accessKey: 
+    # Url to the application under test.
+    target: 
+    # An url to an OpenAPI specification to help scan the full API.
+    openapi: # optional
+    # An url to a graphql schema to help scan the full API.
+    graphql: # optional
+    # Amount of severe vulnerabilities that are allowed to be discovered - if set to `-1` these will be ignored. (Default: 0)
+    allowedSevereVulnerabilties: # optional, default is 0
+    # Amount of medium vulnerabilities that are allowed to be discovered - if set to `-1` these will be ignored. (Default: 0)
+    allowedMediumVulnerabilties: # optional, default is 0
+    # Amount of low vulnerabilities that are allowed to be discovered - if set to `-1` these will be ignored. (Default: 0)
+    allowedLowVulnerabilties: # optional, default is 0
+    # Amount of informational vulnerabilities that are allowed to be discovered - if set to `-1` these will be ignored. (Default: 0)
+    allowedInformationalVulnerabilties: # optional, default is -1
+    # If set to true, this action will download Zap reports for you to attach to the job via actions/upload-artifact
+    downloadReports: # optional
+    # If set to true, this action will download all Sauce Labs job assets for you  to attach to the job via actions/upload-artifact
+    downloadJobAssets: # optional
           
