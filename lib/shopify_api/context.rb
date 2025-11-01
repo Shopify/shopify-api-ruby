@@ -26,6 +26,8 @@ module ShopifyAPI
 
     @rest_resource_loader = T.let(nil, T.nilable(Zeitwerk::Loader))
 
+    @httparty_params = T.let({}, T::Hash[Symbol, T.untyped])
+
     class << self
       extend T::Sig
 
@@ -47,6 +49,7 @@ module ShopifyAPI
           api_host: T.nilable(String),
           response_as_struct: T.nilable(T::Boolean),
           rest_disabled: T.nilable(T::Boolean),
+          httparty_params: T::Hash[Symbol, T.untyped]
         ).void
       end
       def setup(
@@ -65,7 +68,8 @@ module ShopifyAPI
         old_api_secret_key: nil,
         api_host: nil,
         response_as_struct: false,
-        rest_disabled: false
+        rest_disabled: false,
+        httparty_params: {}
       )
         unless ShopifyAPI::AdminVersions::SUPPORTED_ADMIN_VERSIONS.include?(api_version)
           raise Errors::UnsupportedVersionError,
@@ -93,6 +97,7 @@ module ShopifyAPI
         end
 
         load_rest_resources(api_version: api_version)
+        @httparty_params = httparty_params
       end
 
       sig { params(api_version: String).void }
@@ -147,6 +152,9 @@ module ShopifyAPI
 
       sig { returns(T.nilable(String)) }
       attr_reader :private_shop, :user_agent_prefix, :old_api_secret_key, :host, :api_host
+
+      sig { returns(T::Hash[Symbol, T.untyped]) }
+      attr_reader :httparty_params
 
       sig { returns(T::Boolean) }
       def embedded?

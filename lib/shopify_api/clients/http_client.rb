@@ -51,6 +51,7 @@ module ShopifyAPI
           res = T.cast(HTTParty.send(
             request.http_method,
             parsed_uri.to_s,
+            **Context.httparty_params,
             headers: headers,
             query: request.query,
             body: request.body.class == Hash ? T.unsafe(request.body).to_json : request.body,

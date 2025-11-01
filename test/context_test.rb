@@ -46,6 +46,7 @@ module ShopifyAPITest
       assert_equal("http", ShopifyAPI::Context.host_scheme)
       assert_equal("localhost", ShopifyAPI::Context.host_name)
       assert_equal("example.com", ShopifyAPI::Context.api_host)
+      assert_equal({}, ShopifyAPI::Context.httparty_params)
 
       ShopifyAPI::Context.setup(
         api_key: "key",
@@ -144,6 +145,49 @@ module ShopifyAPITest
       assert_equal("https://tunnel-o-security.com", ShopifyAPI::Context.host)
       assert_equal("tunnel-o-security.com", ShopifyAPI::Context.host_name)
       ENV["HOST"] = old_host
+    end
+
+    def test_with_httparty_params
+      clear_context
+
+      ShopifyAPI::Context.setup(
+        api_key: "key",
+        api_secret_key: "secret",
+        api_version: "2023-10",
+        scope: ["scope1", "scope2"],
+        is_private: true,
+        is_embedded: true,
+        log_level: :off,
+        private_shop: "privateshop.myshopify.com",
+        user_agent_prefix: "user_agent_prefix1",
+        old_api_secret_key: "old_secret",
+        api_host: "example.com",
+        httparty_params: {
+          timeout: 10,
+          open_timeout: 20,
+          read_timeout: 30,
+          write_timeout: 40,
+          debug_output: true,
+          http_proxyaddr: "my.proxy.server",
+          http_proxyport: 8000,
+          http_proxyuser: "user",
+          http_proxypass: "pass",
+        },
+      )
+      assert_equal(
+        {
+          timeout: 10,
+          open_timeout: 20,
+          read_timeout: 30,
+          write_timeout: 40,
+          debug_output: true,
+          http_proxyaddr: "my.proxy.server",
+          http_proxyport: 8000,
+          http_proxyuser: "user",
+          http_proxypass: "pass",
+        },
+        ShopifyAPI::Context.httparty_params,
+      )
     end
 
     def test_send_a_warning_if_log_level_is_invalid
