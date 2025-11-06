@@ -201,6 +201,29 @@ module ShopifyAPITest
       assert(ShopifyAPI::Context.rest_disabled)
     end
 
+    def test_expiring_offline_access_tokens_defaults_to_false
+      ShopifyAPI::Context.setup(
+        api_key: "test-key",
+        api_secret_key: "test-secret-key",
+        api_version: "2023-01",
+        is_private: true,
+        is_embedded: false,
+      )
+      refute(ShopifyAPI::Context.expiring_offline_access_tokens)
+    end
+
+    def test_expiring_offline_access_tokens_can_be_configured
+      ShopifyAPI::Context.setup(
+        api_key: "test-key",
+        api_secret_key: "test-secret-key",
+        api_version: "2023-01",
+        is_private: true,
+        is_embedded: false,
+        expiring_offline_access_tokens: true,
+      )
+      assert(ShopifyAPI::Context.expiring_offline_access_tokens)
+    end
+
     def teardown
       ShopifyAPI::Context.deactivate_session
     end
