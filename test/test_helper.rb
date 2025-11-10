@@ -53,6 +53,7 @@ module Test
           old_api_secret_key: T.nilable(String),
           response_as_struct: T.nilable(T::Boolean),
           api_host: T.nilable(String),
+          expiring_offline_access_tokens: T.nilable(T::Boolean),
         ).void
       end
       def modify_context(
@@ -68,7 +69,8 @@ module Test
         user_agent_prefix: nil,
         old_api_secret_key: nil,
         response_as_struct: nil,
-        api_host: nil
+        api_host: nil,
+        expiring_offline_access_tokens: nil
       )
         ShopifyAPI::Context.setup(
           api_key: api_key ? api_key : ShopifyAPI::Context.api_key,
@@ -85,6 +87,7 @@ module Test
           log_level: :off,
           response_as_struct: response_as_struct || ShopifyAPI::Context.response_as_struct,
           api_host: api_host || ShopifyAPI::Context.api_host,
+          expiring_offline_access_tokens: expiring_offline_access_tokens || ShopifyAPI::Context.expiring_offline_access_tokens,
         )
       end
     end

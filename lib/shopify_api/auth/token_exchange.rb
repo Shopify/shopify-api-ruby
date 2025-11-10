@@ -49,6 +49,10 @@ module ShopifyAPI
             requested_token_type: requested_token_type.serialize,
           }
 
+          if requested_token_type == RequestedTokenType::OFFLINE_ACCESS_TOKEN
+            body.merge!({ expiring: ShopifyAPI::Context.expiring_offline_access_tokens ? 1 : 0 })
+          end
+
           client = Clients::HttpClient.new(session: shop_session, base_path: "/admin/oauth")
           response = begin
             client.request(
