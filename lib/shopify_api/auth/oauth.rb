@@ -71,7 +71,12 @@ module ShopifyAPI
             "Invalid state in OAuth callback." unless state == auth_query.state
 
           null_session = Auth::Session.new(shop: auth_query.shop)
-          body = { client_id: Context.api_key, client_secret: Context.api_secret_key, code: auth_query.code }
+          body = {
+            client_id: Context.api_key,
+            client_secret: Context.api_secret_key,
+            code: auth_query.code,
+            expiring: Context.expiring_offline_access_tokens ? 1 : 0, # Only applicable for offline tokens
+          }
 
           client = Clients::HttpClient.new(session: null_session, base_path: "/admin/oauth")
           response = begin
@@ -100,7 +105,7 @@ module ShopifyAPI
           else
             SessionCookie.new(
               value: session.id,
-              expires: session.online? ? session.expires : nil,
+              expires: session.expires ? session.expires : nil,
             )
           end
 

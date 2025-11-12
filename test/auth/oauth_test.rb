@@ -40,12 +40,24 @@ module ShopifyAPITest
           client_id: ShopifyAPI::Context.api_key,
           client_secret: ShopifyAPI::Context.api_secret_key,
           code: @callback_code,
+          expiring: 0,
         }
+
+        @expiring_access_token_request = @access_token_request.merge({ expiring: 1 })
 
         @offline_token_response = {
           access_token: SecureRandom.alphanumeric(10),
           scope: "scope1,scope2",
         }
+
+        @expiring_offline_token_response = @offline_token_response.merge(
+          {
+            expires_in: 1000,
+            refresh_token: SecureRandom.alphanumeric(10),
+            refresh_token_expires_in: 2000,
+          },
+        )
+
         @online_token_response = {
           access_token: SecureRandom.alphanumeric(10),
           scope: "scope1,scope2",
@@ -123,7 +135,7 @@ module ShopifyAPITest
       end
 
       def test_validate_auth_callback_offline
-        modify_context(is_embedded: false)
+        modify_context(is_embedded: false, expiring_offline_access_tokens: false)
 
         stub_request(:post, "https://#{@shop}/admin/oauth/access_token")
           .with(body: @access_token_request)
@@ -155,13 +167,41 @@ module ShopifyAPITest
         )
         expected_cookie = ShopifyAPI::Auth::Oauth::SessionCookie.new(value: "", expires: @stubbed_time_now)
 
-        modify_context(is_embedded: true)
+        modify_context(is_embedded: true, expiring_offline_access_tokens: false)
 
         got = Time.stub(:now, @stubbed_time_now) do
           ShopifyAPI::Auth::Oauth.validate_auth_callback(cookies: @cookies, auth_query: @auth_query)
         end
 
         verify_oauth_complete(got: got, expected_session: expected_session, expected_cookie: expected_cookie)
+      end
+
+      def test_validate_auth_callback_offline_token_with_expiring_token_enabled
+        modify_context(expiring_offline_access_tokens: true)
+
+        stub_request(:post, "https://#{@shop}/admin/oauth/access_token")
+          .with(body: @expiring_access_token_request)
+          .to_return(body: @expiring_offline_token_response.to_json, headers: { content_type: "application/json" })
+
+        expected_session = ShopifyAPI::Auth::Session.new(
+          id: "offline_#{@shop}",
+          shop: @shop,
+          access_token: @offline_token_response[:access_token],
+          scope: @offline_token_response[:scope],
+          expires: @stubbed_time_now + @online_token_response[:expires_in].to_i,
+          refresh_token: @expiring_offline_token_response[:refresh_token],
+          refresh_token_expires: @stubbed_time_now + @expiring_offline_token_response[:refresh_token_expires_in].to_i,
+        )
+        expected_cookie = ShopifyAPI::Auth::Oauth::SessionCookie.new(
+          value: "offline_#{@shop}",
+          expires: expected_session.expires,
+        )
+
+        got = Time.stub(:now, @stubbed_time_now) do
+          ShopifyAPI::Auth::Oauth.validate_auth_callback(cookies: @cookies, auth_query: @auth_query)
+        end
+
+        verify_oauth_complete(got:, expected_session:, expected_cookie:)
       end
 
       def test_validate_auth_callback_online
