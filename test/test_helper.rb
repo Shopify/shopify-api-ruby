@@ -87,7 +87,8 @@ module Test
           log_level: :off,
           response_as_struct: response_as_struct || ShopifyAPI::Context.response_as_struct,
           api_host: api_host || ShopifyAPI::Context.api_host,
-          expiring_offline_access_tokens: expiring_offline_access_tokens || ShopifyAPI::Context.expiring_offline_access_tokens,
+          expiring_offline_access_tokens:
+            expiring_offline_access_tokens || ShopifyAPI::Context.expiring_offline_access_tokens,
         )
       end
     end
