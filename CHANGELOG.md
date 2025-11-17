@@ -3,6 +3,8 @@
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
 
+- Add support for expiring offline access tokens with refresh tokens. See [OAuth documentation](docs/usage/oauth.md#expiring-offline-access-tokens) for details.
+
 ### 15.0.0
 
 - ⚠️ [Breaking] Removed deprecated `ShopifyAPI::Webhooks::Handler` interface. Apps must migrate to `ShopifyAPI::Webhooks::WebhookHandler` which provides `webhook_id` and `api_version` in addition to `topic`, `shop`, and `body`. See [BREAKING_CHANGES_FOR_V15.md](BREAKING_CHANGES_FOR_V15.md) for migration guide.
