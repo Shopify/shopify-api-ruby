@@ -81,26 +81,28 @@ module ShopifyAPI
 
         sig do
           params(
-            non_expiring_offline_session: ShopifyAPI::Auth::Session,
+            shop: String,
+            non_expiring_offline_token: String,
           ).returns(ShopifyAPI::Auth::Session)
         end
-        def migrate_to_expiring_token(non_expiring_offline_session:)
+        def migrate_to_expiring_token(shop:, non_expiring_offline_token:)
           unless ShopifyAPI::Context.setup?
             raise ShopifyAPI::Errors::ContextNotSetupError,
               "ShopifyAPI::Context not setup, please call ShopifyAPI::Context.setup"
           end
 
+          shop_session = ShopifyAPI::Auth::Session.new(shop: shop)
           body = {
             client_id: ShopifyAPI::Context.api_key,
             client_secret: ShopifyAPI::Context.api_secret_key,
             grant_type: TOKEN_EXCHANGE_GRANT_TYPE,
-            subject_token: non_expiring_offline_session.access_token,
+            subject_token: non_expiring_offline_token,
             subject_token_type: RequestedTokenType::OFFLINE_ACCESS_TOKEN.serialize,
             requested_token_type: RequestedTokenType::OFFLINE_ACCESS_TOKEN.serialize,
             expiring: "1",
           }
 
-          client = Clients::HttpClient.new(session: non_expiring_offline_session, base_path: "/admin/oauth")
+          client = Clients::HttpClient.new(session: shop_session, base_path: "/admin/oauth")
           response = begin
             client.request(
               Clients::HttpRequest.new(
@@ -118,7 +120,7 @@ module ShopifyAPI
           session_params = T.cast(response.body, T::Hash[String, T.untyped]).to_h
 
           Session.from(
-            shop: non_expiring_offline_session.shop,
+            shop: shop,
             access_token_response: Oauth::AccessTokenResponse.from_hash(session_params),
           )
         end

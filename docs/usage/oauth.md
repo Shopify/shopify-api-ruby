@@ -14,7 +14,6 @@ For more information on authenticating a Shopify app please see the [Types of Au
   - [Authorization Code Grant](#authorization-code-grant)
   - [Client Credentials Grant](#client-credentials-grant)
 - [Expiring Offline Access Tokens](#expiring-offline-access-tokens)
-  - [Enabling Expiring Offline Access Tokens](#enabling-expiring-offline-access-tokens)
   - [Refreshing Access Tokens](#refreshing-access-tokens)
   - [Migrating Non-Expiring Tokens to Expiring Tokens](#migrating-non-expiring-tokens-to-expiring-tokens)
 - [Using OAuth Session to make authenticated API calls](#using-oauth-session-to-make-authenticated-api-calls)
@@ -398,7 +397,8 @@ If you have existing non-expiring offline access tokens and want to migrate them
 #### Input
 | Parameter      | Type     | Required? | Notes                                                                                           |
 | -------------- | -------- | :-------: | ----------------------------------------------------------------------------------------------- |
-| `non_expiring_offline_session` | `ShopifyAPI::Auth::Session` | Yes | A Session object containing the non-expiring offline access token to migrate. |
+| `shop`         | `String` | Yes       | A Shopify domain name in the form `{exampleshop}.myshopify.com`.                               |
+| `non_expiring_offline_token` | `String` | Yes | The non-expiring offline access token to migrate. |
 
 #### Output
 This method returns a new `ShopifyAPI::Auth::Session` object with an expiring access token and refresh token. Your app should store this new session to replace the non-expiring one.
@@ -411,7 +411,8 @@ def migrate_shop_to_expiring_offline_token(shop)
 
   # Migrate to expiring token
   new_session = ShopifyAPI::Auth::TokenExchange.migrate_to_expiring_token(
-    non_expiring_offline_session: old_session
+    shop: shop,
+    non_expiring_offline_token: old_session.access_token
   )
 
   # Store the new expiring session, replacing the old one

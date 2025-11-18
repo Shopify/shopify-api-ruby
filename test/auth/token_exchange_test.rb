@@ -231,24 +231,17 @@ module ShopifyAPITest
 
       def test_migrate_to_expiring_token_context_not_setup
         modify_context(api_key: "", api_secret_key: "", host: "")
-        non_expiring_session = ShopifyAPI::Auth::Session.new(
-          shop: @shop,
-          access_token: "old-offline-token-123",
-        )
 
         assert_raises(ShopifyAPI::Errors::ContextNotSetupError) do
           ShopifyAPI::Auth::TokenExchange.migrate_to_expiring_token(
-            non_expiring_offline_session: non_expiring_session,
+            shop: @shop,
+            non_expiring_offline_token: "old-offline-token-123",
           )
         end
       end
 
       def test_migrate_to_expiring_token_success
         non_expiring_token = "old-offline-token-123"
-        non_expiring_session = ShopifyAPI::Auth::Session.new(
-          shop: @shop,
-          access_token: non_expiring_token,
-        )
         migration_request = {
           client_id: ShopifyAPI::Context.api_key,
           client_secret: ShopifyAPI::Context.api_secret_key,
@@ -280,7 +273,8 @@ module ShopifyAPITest
 
         session = Time.stub(:now, @stubbed_time_now) do
           ShopifyAPI::Auth::TokenExchange.migrate_to_expiring_token(
-            non_expiring_offline_session: non_expiring_session,
+            shop: @shop,
+            non_expiring_offline_token: non_expiring_token,
           )
         end
 
@@ -289,10 +283,6 @@ module ShopifyAPITest
 
       def test_migrate_to_expiring_token_http_error
         non_expiring_token = "old-offline-token-123"
-        non_expiring_session = ShopifyAPI::Auth::Session.new(
-          shop: @shop,
-          access_token: non_expiring_token,
-        )
         migration_request = {
           client_id: ShopifyAPI::Context.api_key,
           client_secret: ShopifyAPI::Context.api_secret_key,
@@ -316,7 +306,8 @@ module ShopifyAPITest
 
         assert_raises(ShopifyAPI::Errors::HttpResponseError) do
           ShopifyAPI::Auth::TokenExchange.migrate_to_expiring_token(
-            non_expiring_offline_session: non_expiring_session,
+            shop: @shop,
+            non_expiring_offline_token: non_expiring_token,
           )
         end
       end
