@@ -4,6 +4,7 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
 
 - Add support for expiring offline access tokens with refresh tokens. See [OAuth documentation](docs/usage/oauth.md#expiring-offline-access-tokens) for details.
+- Add `ShopifyAPI::Auth::TokenExchange.migrate_to_expiring_token` method to migrate existing non-expiring offline tokens to expiring tokens. See [migration documentation](docs/usage/oauth.md#migrating-non-expiring-tokens-to-expiring-tokens) for details.
 
 ### 15.0.0
 

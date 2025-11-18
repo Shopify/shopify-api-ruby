@@ -228,6 +228,98 @@ module ShopifyAPITest
 
         assert_equal(expected_session, session)
       end
+
+      def test_migrate_to_expiring_token_context_not_setup
+        modify_context(api_key: "", api_secret_key: "", host: "")
+        non_expiring_session = ShopifyAPI::Auth::Session.new(
+          shop: @shop,
+          access_token: "old-offline-token-123",
+        )
+
+        assert_raises(ShopifyAPI::Errors::ContextNotSetupError) do
+          ShopifyAPI::Auth::TokenExchange.migrate_to_expiring_token(
+            non_expiring_offline_session: non_expiring_session,
+          )
+        end
+      end
+
+      def test_migrate_to_expiring_token_success
+        non_expiring_token = "old-offline-token-123"
+        non_expiring_session = ShopifyAPI::Auth::Session.new(
+          shop: @shop,
+          access_token: non_expiring_token,
+        )
+        migration_request = {
+          client_id: ShopifyAPI::Context.api_key,
+          client_secret: ShopifyAPI::Context.api_secret_key,
+          grant_type: "urn:ietf:params:oauth:grant-type:token-exchange",
+          subject_token: non_expiring_token,
+          subject_token_type: "urn:shopify:params:oauth:token-type:offline-access-token",
+          requested_token_type: "urn:shopify:params:oauth:token-type:offline-access-token",
+          expiring: "1",
+        }
+
+        stub_request(:post, "https://#{@shop}/admin/oauth/access_token")
+          .with(
+            body: migration_request,
+            headers: { "Content-Type" => "application/json" },
+          )
+          .to_return(body: @expiring_offline_token_response.to_json, headers: { content_type: "application/json" })
+
+        expected_session = ShopifyAPI::Auth::Session.new(
+          id: "offline_#{@shop}",
+          shop: @shop,
+          access_token: @expiring_offline_token_response[:access_token],
+          scope: @expiring_offline_token_response[:scope],
+          is_online: false,
+          expires: @stubbed_time_now + @expiring_offline_token_response[:expires_in].to_i,
+          shopify_session_id: @expiring_offline_token_response[:session],
+          refresh_token: @expiring_offline_token_response[:refresh_token],
+          refresh_token_expires: @stubbed_time_now + @expiring_offline_token_response[:refresh_token_expires_in].to_i,
+        )
+
+        session = Time.stub(:now, @stubbed_time_now) do
+          ShopifyAPI::Auth::TokenExchange.migrate_to_expiring_token(
+            non_expiring_offline_session: non_expiring_session,
+          )
+        end
+
+        assert_equal(expected_session, session)
+      end
+
+      def test_migrate_to_expiring_token_http_error
+        non_expiring_token = "old-offline-token-123"
+        non_expiring_session = ShopifyAPI::Auth::Session.new(
+          shop: @shop,
+          access_token: non_expiring_token,
+        )
+        migration_request = {
+          client_id: ShopifyAPI::Context.api_key,
+          client_secret: ShopifyAPI::Context.api_secret_key,
+          grant_type: "urn:ietf:params:oauth:grant-type:token-exchange",
+          subject_token: non_expiring_token,
+          subject_token_type: "urn:shopify:params:oauth:token-type:offline-access-token",
+          requested_token_type: "urn:shopify:params:oauth:token-type:offline-access-token",
+          expiring: "1",
+        }
+
+        stub_request(:post, "https://#{@shop}/admin/oauth/access_token")
+          .with(
+            body: migration_request,
+            headers: { "Content-Type" => "application/json" },
+          )
+          .to_return(
+            status: 400,
+            body: { error: "invalid_subject_token" }.to_json,
+            headers: { content_type: "application/json" },
+          )
+
+        assert_raises(ShopifyAPI::Errors::HttpResponseError) do
+          ShopifyAPI::Auth::TokenExchange.migrate_to_expiring_token(
+            non_expiring_offline_session: non_expiring_session,
+          )
+        end
+      end
     end
   end
 end

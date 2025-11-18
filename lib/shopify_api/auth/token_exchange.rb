@@ -78,6 +78,50 @@ module ShopifyAPI
             access_token_response: Oauth::AccessTokenResponse.from_hash(session_params),
           )
         end
+
+        sig do
+          params(
+            non_expiring_offline_session: ShopifyAPI::Auth::Session,
+          ).returns(ShopifyAPI::Auth::Session)
+        end
+        def migrate_to_expiring_token(non_expiring_offline_session:)
+          unless ShopifyAPI::Context.setup?
+            raise ShopifyAPI::Errors::ContextNotSetupError,
+              "ShopifyAPI::Context not setup, please call ShopifyAPI::Context.setup"
+          end
+
+          body = {
+            client_id: ShopifyAPI::Context.api_key,
+            client_secret: ShopifyAPI::Context.api_secret_key,
+            grant_type: TOKEN_EXCHANGE_GRANT_TYPE,
+            subject_token: non_expiring_offline_session.access_token,
+            subject_token_type: RequestedTokenType::OFFLINE_ACCESS_TOKEN.serialize,
+            requested_token_type: RequestedTokenType::OFFLINE_ACCESS_TOKEN.serialize,
+            expiring: "1",
+          }
+
+          client = Clients::HttpClient.new(session: non_expiring_offline_session, base_path: "/admin/oauth")
+          response = begin
+            client.request(
+              Clients::HttpRequest.new(
+                http_method: :post,
+                path: "access_token",
+                body: body,
+                body_type: "application/json",
+              ),
+            )
+          rescue ShopifyAPI::Errors::HttpResponseError => error
+            ShopifyAPI::Context.logger.debug("Failed to migrate to expiring offline token: #{error.message}")
+            raise error
+          end
+
+          session_params = T.cast(response.body, T::Hash[String, T.untyped]).to_h
+
+          Session.from(
+            shop: non_expiring_offline_session.shop,
+            access_token_response: Oauth::AccessTokenResponse.from_hash(session_params),
+          )
+        end
       end
     end
   end
