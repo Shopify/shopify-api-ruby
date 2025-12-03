@@ -48,7 +48,7 @@ module ShopifyAPI
 
       sig { returns(T::Boolean) }
       def refresh_token_expired?
-        @refresh_token_expires ? @refresh_token_expires < Time.now : false
+        @refresh_token_expires ? @refresh_token_expires < Time.now + 60 : false
       end
 
       sig do

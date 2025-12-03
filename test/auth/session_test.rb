@@ -55,19 +55,31 @@ module ShopifyAPITest
       def test_refresh_token_expired_with_no_expiry_date
         session = ShopifyAPI::Auth::Session.new(shop: "test-shop", refresh_token_expires: nil)
 
-        assert_equal(false, session.refresh_token_expired?)
+        refute(session.refresh_token_expired?)
       end
 
       def test_refresh_token_expired_with_future_expiry_date
         session = ShopifyAPI::Auth::Session.new(shop: "test-shop", refresh_token_expires: Time.now + 1 * 60 * 60)
 
-        assert_equal(false, session.refresh_token_expired?)
+        refute(session.refresh_token_expired?)
       end
 
       def test_refresh_token_expired_with_passed_expiry_date
         session = ShopifyAPI::Auth::Session.new(shop: "test-shop", refresh_token_expires: Time.now - 1)
 
         assert(session.refresh_token_expired?)
+      end
+
+      def test_refresh_token_expiring_within_buffer
+        session = ShopifyAPI::Auth::Session.new(shop: "test-shop", refresh_token_expires: Time.now + 59)
+
+        assert(session.refresh_token_expired?)
+      end
+
+      def test_refresh_token_expiring_immediately_before_buffer
+        session = ShopifyAPI::Auth::Session.new(shop: "test-shop", refresh_token_expires: Time.now + 61)
+
+        refute(session.refresh_token_expired?)
       end
 
       def test_temp
