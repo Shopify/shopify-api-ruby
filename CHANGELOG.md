@@ -2,6 +2,7 @@
 
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
+- ⚠️ [Breaking] Removed `Session#serialize` and `Session.deserialize` methods due to security concerns (RCE vulnerability via `Oj.load`). These methods were not used internally by the library. If your application relies on session serialization, use `Session.new()` to reconstruct sessions from stored attributes instead.
 
 ### 15.0.0
 
