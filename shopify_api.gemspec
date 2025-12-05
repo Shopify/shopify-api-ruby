@@ -30,7 +30,7 @@ Gem::Specification.new do |s|
 
   s.license = "MIT"
 
-  s.required_ruby_version = ">= 3.0"
+  s.required_ruby_version = ">= 3.2"
 
   s.add_runtime_dependency("activesupport")
   s.add_runtime_dependency("concurrent-ruby")

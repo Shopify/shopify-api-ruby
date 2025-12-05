@@ -138,27 +138,20 @@ module ShopifyAPI
             refresh_token_expires: refresh_token_expires,
           )
         end
-
-        sig { params(str: String).returns(Session) }
-        def deserialize(str)
-          Oj.load(str)
-        end
       end
 
       sig { params(other: Session).returns(Session) }
       def copy_attributes_from(other)
-        JSON.parse(other.serialize).keys.each do |key|
-          next if key.include?("^")
-
-          variable_name = "@#{key}"
-          instance_variable_set(variable_name, other.instance_variable_get(variable_name))
-        end
+        @shop = other.shop
+        @state = other.state
+        @access_token = other.access_token
+        @scope = other.scope
+        @associated_user_scope = other.associated_user_scope
+        @expires = other.expires
+        @associated_user = other.associated_user
+        @is_online = other.online?
+        @shopify_session_id = other.shopify_session_id
         self
-      end
-
-      sig { returns(String) }
-      def serialize
-        Oj.dump(self)
       end
 
       alias_method :eql?, :==
