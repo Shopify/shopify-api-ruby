@@ -25,6 +25,7 @@ module ShopifyAPI
     @rest_disabled = T.let(false, T.nilable(T::Boolean))
 
     @rest_resource_loader = T.let(nil, T.nilable(Zeitwerk::Loader))
+    @expiring_offline_access_tokens = T.let(false, T::Boolean)
 
     class << self
       extend T::Sig
@@ -47,6 +48,7 @@ module ShopifyAPI
           api_host: T.nilable(String),
           response_as_struct: T.nilable(T::Boolean),
           rest_disabled: T.nilable(T::Boolean),
+          expiring_offline_access_tokens: T.nilable(T::Boolean),
         ).void
       end
       def setup(
@@ -65,7 +67,8 @@ module ShopifyAPI
         old_api_secret_key: nil,
         api_host: nil,
         response_as_struct: false,
-        rest_disabled: false
+        rest_disabled: false,
+        expiring_offline_access_tokens: false
       )
         unless ShopifyAPI::AdminVersions::SUPPORTED_ADMIN_VERSIONS.include?(api_version)
           raise Errors::UnsupportedVersionError,
@@ -86,6 +89,7 @@ module ShopifyAPI
         @old_api_secret_key = old_api_secret_key
         @response_as_struct = response_as_struct
         @rest_disabled = rest_disabled
+        @expiring_offline_access_tokens = T.must(expiring_offline_access_tokens)
         @log_level = if valid_log_level?(log_level)
           log_level.to_sym
         else
@@ -147,6 +151,9 @@ module ShopifyAPI
 
       sig { returns(T.nilable(String)) }
       attr_reader :private_shop, :user_agent_prefix, :old_api_secret_key, :host, :api_host
+
+      sig { returns(T::Boolean) }
+      attr_reader :expiring_offline_access_tokens
 
       sig { returns(T::Boolean) }
       def embedded?

@@ -13,6 +13,9 @@ For more information on authenticating a Shopify app please see the [Types of Au
   - [Token Exchange](#token-exchange)
   - [Authorization Code Grant](#authorization-code-grant)
   - [Client Credentials Grant](#client-credentials-grant)
+- [Expiring Offline Access Tokens](#expiring-offline-access-tokens)
+  - [Refreshing Access Tokens](#refreshing-access-tokens)
+  - [Migrating Non-Expiring Tokens to Expiring Tokens](#migrating-non-expiring-tokens-to-expiring-tokens)
 - [Using OAuth Session to make authenticated API calls](#using-oauth-session-to-make-authenticated-api-calls)
 
 ## Session Persistence
@@ -304,6 +307,132 @@ def authenticate(shop)
 end
 
 ```
+
+## Expiring Offline Access Tokens
+
+
+To start requesting expiring offline access tokens, set the `expiring_offline_access_tokens` parameter to `true` when setting up the Shopify context:
+
+```ruby
+ShopifyAPI::Context.setup(
+  api_key: <SHOPIFY_API_KEY>,
+  api_secret_key: <SHOPIFY_API_SECRET>,
+  api_version: <SHOPIFY_API_VERSION>,
+  scope: <SHOPIFY_API_SCOPES>,
+  expiring_offline_access_tokens: true, # Enable expiring offline access tokens
+  ...
+)
+```
+
+When enabled:
+- **Authorization Code Grant**: The OAuth flow will request expiring offline access tokens by sending `expiring: 1` parameter
+- **Token Exchange**: When requesting offline access tokens via token exchange, the flow will request expiring tokens
+
+The resulting `Session` object will contain:
+- `access_token`: The access token that will eventually expire
+- `expires`: The expiration time for the access token
+- `refresh_token`: A token that can be used to refresh the access token
+- `refresh_token_expires`: The expiration time for the refresh token
+
+### Refreshing Access Tokens
+
+When your access token expires, you can use the refresh token to obtain a new access token using the `ShopifyAPI::Auth::RefreshToken.refresh_access_token` method.
+
+#### Input
+| Parameter      | Type     | Required? | Notes                                                                                           |
+| -------------- | -------- | :-------: | ----------------------------------------------------------------------------------------------- |
+| `shop`         | `String` | Yes       | A Shopify domain name in the form `{exampleshop}.myshopify.com`.                               |
+| `refresh_token`| `String` | Yes       | The refresh token from the session.                                                             |
+
+#### Output
+This method returns a new `ShopifyAPI::Auth::Session` object with a fresh access token and a new refresh token. Your app should store this new session to replace the expired one.
+
+#### Example
+```ruby
+def refresh_session(shop, refresh_token)
+  begin
+    # Refresh the access token using the refresh token
+    new_session = ShopifyAPI::Auth::RefreshToken.refresh_access_token(
+      shop: shop,
+      refresh_token: refresh_token
+    )
+
+    # Store the new session, replacing the old one
+    MyApp::SessionRepository.store_shop_session(new_session)
+  rescue ShopifyAPI::Errors::HttpResponseError => e
+    puts("Failed to refresh access token: #{e.message}")
+    raise e
+  end
+end
+```
+#### Checking Token Expiration
+The `Session` object provides helper methods to check if tokens have expired:
+
+```ruby
+session = MyApp::SessionRepository.retrieve_shop_session_by_shopify_domain(shop)
+
+# Check if the access token has expired
+if session.expired?
+  # Access token has expired, refresh it
+  new_session = ShopifyAPI::Auth::RefreshToken.refresh_access_token(
+    shop: session.shop,
+    refresh_token: session.refresh_token
+  )
+  MyApp::SessionRepository.store_shop_session(new_session)
+end
+
+# Check if the refresh token has expired
+if session.refresh_token_expired?
+  # Refresh token has expired, need to re-authenticate with OAuth
+end
+```
+
+### Migrating Non-Expiring Tokens to Expiring Tokens
+
+If you have existing non-expiring offline access tokens and want to migrate them to expiring tokens, you can use the `ShopifyAPI::Auth::TokenExchange.migrate_to_expiring_token` method. This performs a token exchange that converts your non-expiring offline token into an expiring one with a refresh token.
+
+> [!WARNING]
+> This is a **one-time, irreversible migration** per shop. Once you migrate a shop's token to an expiring token, you cannot convert it back to a non-expiring token. The shop would need to reinstall your app with `expiring_offline_access_tokens: false` in your Context configuration to obtain a new non-expiring token.
+
+#### Input
+| Parameter      | Type     | Required? | Notes                                                                                           |
+| -------------- | -------- | :-------: | ----------------------------------------------------------------------------------------------- |
+| `shop`         | `String` | Yes       | A Shopify domain name in the form `{exampleshop}.myshopify.com`.                               |
+| `non_expiring_offline_token` | `String` | Yes | The non-expiring offline access token to migrate. |
+
+#### Output
+This method returns a new `ShopifyAPI::Auth::Session` object with an expiring access token and refresh token. Your app should store this new session to replace the non-expiring one.
+
+#### Example
+```ruby
+def migrate_shop_to_expiring_offline_token(shop)
+  # Retrieve the existing non-expiring session
+  old_session = MyApp::SessionRepository.retrieve_shop_session_by_shopify_domain(shop)
+
+  # Migrate to expiring token
+  new_session = ShopifyAPI::Auth::TokenExchange.migrate_to_expiring_token(
+    shop: shop,
+    non_expiring_offline_token: old_session.access_token
+  )
+
+  # Store the new expiring session, replacing the old one
+  MyApp::SessionRepository.store_shop_session(new_session)
+end
+```
+
+#### Migration Strategy
+When migrating your app to use expiring tokens, follow this order:
+
+1. **Update your database schema** to add `expires_at` (timestamp), `refresh_token` (string) and `refresh_token_expires` (timestamp) columns to your session storage
+2. **Implement refresh logic** in your app to handle token expiration using `ShopifyAPI::Auth::RefreshToken.refresh_access_token`
+3. **Enable expiring tokens in your Context setup** so new installations will request and receive expiring tokens:
+   ```ruby
+   ShopifyAPI::Context.setup(
+     expiring_offline_access_tokens: true,
+     # ... other config
+   )
+   ```
+4. **Migrate existing non-expiring tokens** for shops that have already installed your app using the migration method above
 
 ## Using OAuth Session to make authenticated API calls
 Once your OAuth flow is complete, and you have persisted your `Session` object, you may use that `Session` object to make authenticated API calls.

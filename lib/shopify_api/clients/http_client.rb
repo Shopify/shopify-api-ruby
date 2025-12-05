@@ -112,6 +112,8 @@ module ShopifyAPI
       def serialized_error(response)
         body = {}
         body["errors"] = response.body["errors"] if response.body["errors"]
+        body["error"] = response.body["error"] if response.body["error"]
+        body["error_description"] = response.body["error_description"] if response.body["error"]
 
         if response.headers["x-request-id"]
           id = T.must(response.headers["x-request-id"])[0]
