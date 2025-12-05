@@ -2,6 +2,7 @@
 
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
+- ⚠️ [Breaking] Minimum required Ruby version is now 3.2. Ruby 3.0 and 3.1 are no longer supported.
 
 ### 15.0.0
 
