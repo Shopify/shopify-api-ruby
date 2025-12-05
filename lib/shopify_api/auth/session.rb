@@ -151,6 +151,8 @@ module ShopifyAPI
         @associated_user = other.associated_user
         @is_online = other.online?
         @shopify_session_id = other.shopify_session_id
+        @refresh_token = other.refresh_token
+        @refresh_token_expires = other.refresh_token_expires
         self
       end
 
