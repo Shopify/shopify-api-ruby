@@ -30,6 +30,12 @@ module ShopifyAPI
       sig { returns(T.nilable(String)) }
       attr_accessor :shopify_session_id
 
+      sig { returns(T.nilable(String)) }
+      attr_accessor :refresh_token
+
+      sig { returns(T.nilable(Time)) }
+      attr_accessor :refresh_token_expires
+
       sig { returns(T::Boolean) }
       def online?
         @is_online
@@ -38,6 +44,11 @@ module ShopifyAPI
       sig { returns(T::Boolean) }
       def expired?
         @expires ? @expires < Time.now : false
+      end
+
+      sig { returns(T::Boolean) }
+      def refresh_token_expired?
+        @refresh_token_expires ? @refresh_token_expires < Time.now + 60 : false
       end
 
       sig do
@@ -52,10 +63,12 @@ module ShopifyAPI
           is_online: T.nilable(T::Boolean),
           associated_user: T.nilable(AssociatedUser),
           shopify_session_id: T.nilable(String),
+          refresh_token: T.nilable(String),
+          refresh_token_expires: T.nilable(Time),
         ).void
       end
       def initialize(shop:, id: nil, state: nil, access_token: "", scope: [], associated_user_scope: nil, expires: nil,
-        is_online: nil, associated_user: nil, shopify_session_id: nil)
+        is_online: nil, associated_user: nil, shopify_session_id: nil, refresh_token: nil, refresh_token_expires: nil)
         @id = T.let(id || SecureRandom.uuid, String)
         @shop = shop
         @state = state
@@ -68,6 +81,8 @@ module ShopifyAPI
         @associated_user = associated_user
         @is_online = T.let(is_online || !associated_user.nil?, T::Boolean)
         @shopify_session_id = shopify_session_id
+        @refresh_token = refresh_token
+        @refresh_token_expires = refresh_token_expires
       end
 
       class << self
@@ -105,6 +120,10 @@ module ShopifyAPI
             expires = Time.now + access_token_response.expires_in.to_i
           end
 
+          if access_token_response.refresh_token_expires_in
+            refresh_token_expires = Time.now + access_token_response.refresh_token_expires_in.to_i
+          end
+
           new(
             id: id,
             shop: shop,
@@ -115,29 +134,26 @@ module ShopifyAPI
             associated_user: associated_user,
             expires: expires,
             shopify_session_id: access_token_response.session,
+            refresh_token: access_token_response.refresh_token,
+            refresh_token_expires: refresh_token_expires,
           )
-        end
-
-        sig { params(str: String).returns(Session) }
-        def deserialize(str)
-          Oj.load(str)
         end
       end
 
       sig { params(other: Session).returns(Session) }
       def copy_attributes_from(other)
-        JSON.parse(other.serialize).keys.each do |key|
-          next if key.include?("^")
-
-          variable_name = "@#{key}"
-          instance_variable_set(variable_name, other.instance_variable_get(variable_name))
-        end
+        @shop = other.shop
+        @state = other.state
+        @access_token = other.access_token
+        @scope = other.scope
+        @associated_user_scope = other.associated_user_scope
+        @expires = other.expires
+        @associated_user = other.associated_user
+        @is_online = other.online?
+        @shopify_session_id = other.shopify_session_id
+        @refresh_token = other.refresh_token
+        @refresh_token_expires = other.refresh_token_expires
         self
-      end
-
-      sig { returns(String) }
-      def serialize
-        Oj.dump(self)
       end
 
       alias_method :eql?, :==
@@ -153,8 +169,9 @@ module ShopifyAPI
             (!(expires.nil? ^ other.expires.nil?) && (expires.nil? || expires.to_i == other.expires.to_i)) &&
             online? == other.online? &&
             associated_user == other.associated_user &&
-            shopify_session_id == other.shopify_session_id
-
+            shopify_session_id == other.shopify_session_id &&
+            refresh_token == other.refresh_token &&
+            refresh_token_expires&.to_i == other.refresh_token_expires&.to_i
         else
           false
         end

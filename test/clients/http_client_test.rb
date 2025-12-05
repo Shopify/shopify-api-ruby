@@ -175,6 +175,27 @@ module ShopifyAPITest
         assert(parsed_error["error_reference"])
       end
 
+      def test_error_message_with_oauth_error_and_description
+        error_response_body = {
+          "error": "invalid_subject_token",
+          "error_description": "The subject token is invalid or has expired",
+        }.to_json
+        response_headers = {
+          "x-request-id": 9012,
+        }
+        stub_request(@request.http_method, "https://#{@shop}#{@base_path}/#{@request.path}")
+          .with(body: @request.body.to_json, query: @request.query, headers: @expected_headers)
+          .to_return(body: error_response_body, status: 400, headers: response_headers)
+
+        response = assert_raises(ShopifyAPI::Errors::HttpResponseError) do
+          @client.request(@request)
+        end
+        parsed_error = JSON.parse(response.message)
+        assert_equal("invalid_subject_token", parsed_error["error"])
+        assert_equal("The subject token is invalid or has expired", parsed_error["error_description"])
+        assert(parsed_error["error_reference"])
+      end
+
       def test_non_retriable_error_code
         stub_request(@request.http_method, "https://#{@shop}#{@base_path}/#{@request.path}")
           .with(body: @request.body.to_json, query: @request.query, headers: @expected_headers)

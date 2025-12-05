@@ -8,21 +8,15 @@ module ShopifyAPI
         sig do
           params(
             shop: String,
-            storefront_access_token: T.nilable(String),
             private_token: T.nilable(String),
             public_token: T.nilable(String),
             api_version: T.nilable(String),
           ).void
         end
-        def initialize(shop, storefront_access_token = nil, private_token: nil, public_token: nil, api_version: nil)
-          unless storefront_access_token.nil?
-            warning = <<~WARNING
-              DEPRECATED: Use the named parameters for the Storefront token instead of passing
-              the public token as the second argument. Also, you may want to look into using
-              the Storefront private access token instead:
-              https://shopify.dev/docs/api/usage/authentication#getting-started-with-private-access
-            WARNING
-            ShopifyAPI::Logger.deprecated(warning, "15.0.0")
+        def initialize(shop, private_token: nil, public_token: nil, api_version: nil)
+          token = private_token || public_token
+          if token.nil?
+            raise ArgumentError, "Storefront client requires either private_token or public_token to be provided"
           end
 
           session = Auth::Session.new(
@@ -32,7 +26,7 @@ module ShopifyAPI
             is_online: false,
           )
           super(session: session, base_path: "/api", api_version: api_version)
-          @storefront_access_token = T.let(T.must(private_token || public_token || storefront_access_token), String)
+          @storefront_access_token = T.let(token, String)
           @storefront_auth_header = T.let(
             private_token.nil? ? "X-Shopify-Storefront-Access-Token" : "Shopify-Storefront-Private-Token",
             String,

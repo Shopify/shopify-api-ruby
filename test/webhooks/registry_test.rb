@@ -194,7 +194,7 @@ module ShopifyAPITest
               delivery_method: protocol,
               path: address,
               handler: TestHelpers::FakeWebhookHandler.new(
-                lambda do |topic, shop, body|
+                lambda do |data|
                 end,
               ),
             )
@@ -219,10 +219,12 @@ module ShopifyAPITest
         handler_called = false
 
         handler = TestHelpers::FakeWebhookHandler.new(
-          lambda do |topic, shop, body,|
-            assert_equal(@topic, topic)
-            assert_equal(@shop, shop)
-            assert_equal({}, body)
+          lambda do |data|
+            assert_equal(@topic, data.topic)
+            assert_equal(@shop, data.shop)
+            assert_equal({}, data.body)
+            assert_equal(@headers["x-shopify-webhook-id"], data.webhook_id)
+            assert_equal(@headers["x-shopify-api-version"], data.api_version)
             handler_called = true
           end,
         )
@@ -242,33 +244,12 @@ module ShopifyAPITest
         handler_called = false
 
         handler = TestHelpers::FakeWebhookHandler.new(
-          lambda do |topic, shop, body,|
-            assert_equal(@topic, topic)
-            assert_equal(@shop, shop)
-            assert_equal({}, body)
-            handler_called = true
-          end,
-        )
-
-        ShopifyAPI::Webhooks::Registry.add_registration(
-          topic: @topic, path: "path", delivery_method: :http, handler: handler,
-        )
-
-        ShopifyAPI::Webhooks::Registry.process(@webhook_request)
-
-        assert(handler_called)
-      end
-
-      def test_process_new_handler
-        handler_called = false
-
-        handler = TestHelpers::NewFakeWebhookHandler.new(
           lambda do |data|
             assert_equal(@topic, data.topic)
             assert_equal(@shop, data.shop)
             assert_equal({}, data.body)
-            assert_equal("b1234-eefd-4c9e-9520-049845a02082", data.webhook_id)
-            assert_equal("2024-01", data.api_version)
+            assert_equal(@headers["x-shopify-webhook-id"], data.webhook_id)
+            assert_equal(@headers["x-shopify-api-version"], data.api_version)
             handler_called = true
           end,
         )
@@ -441,7 +422,7 @@ module ShopifyAPITest
           delivery_method: protocol,
           path: address,
           handler: TestHelpers::FakeWebhookHandler.new(
-            lambda do |topic, shop, body|
+            lambda do |data|
             end,
           ),
           fields: fields,

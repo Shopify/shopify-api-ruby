@@ -13,7 +13,7 @@ module ShopifyAPI
       sig { returns(String) }
       attr_reader :topic
 
-      sig { returns(T.nilable(T.any(Handler, WebhookHandler))) }
+      sig { returns(T.nilable(WebhookHandler)) }
       attr_reader :handler
 
       sig { returns(T.nilable(T::Array[String])) }
@@ -26,7 +26,7 @@ module ShopifyAPI
       attr_reader :filter
 
       sig do
-        params(topic: String, path: String, handler: T.nilable(T.any(Handler, WebhookHandler)),
+        params(topic: String, path: String, handler: T.nilable(WebhookHandler),
           fields: T.nilable(T.any(String, T::Array[String])),
           metafield_namespaces: T.nilable(T::Array[String]),
           filter: T.nilable(String)).void

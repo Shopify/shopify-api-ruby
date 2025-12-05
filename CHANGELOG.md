@@ -2,6 +2,18 @@
 
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
+- ⚠️ [Breaking] Minimum required Ruby version is now 3.2. Ruby 3.0 and 3.1 are no longer supported.
+- ⚠️ [Breaking] Removed `Session#serialize` and `Session.deserialize` methods due to security concerns (RCE vulnerability via `Oj.load`). These methods were not used internally by the library. If your application relies on session serialization, use `Session.new()` to reconstruct sessions from stored attributes instead.
+
+- Add support for expiring offline access tokens with refresh tokens. See [OAuth documentation](docs/usage/oauth.md#expiring-offline-access-tokens) for details.
+- Add `ShopifyAPI::Auth::TokenExchange.migrate_to_expiring_token` method to migrate existing non-expiring offline tokens to expiring tokens. See [migration documentation](docs/usage/oauth.md#migrating-non-expiring-tokens-to-expiring-tokens) for details.
+
+### 15.0.0
+
+- ⚠️ [Breaking] Removed deprecated `ShopifyAPI::Webhooks::Handler` interface. Apps must migrate to `ShopifyAPI::Webhooks::WebhookHandler` which provides `webhook_id` and `api_version` in addition to `topic`, `shop`, and `body`. See [BREAKING_CHANGES_FOR_V15.md](BREAKING_CHANGES_FOR_V15.md) for migration guide.
+- Add support for 2025-10 API version
+  - Updated `LATEST_SUPPORTED_ADMIN_VERSION` to `2025-10`
+- [#1411](https://github.com/Shopify/shopify-api-ruby/pull/1411) Remove `LATEST_SUPPORTED_ADMIN_VERSION` and `RELEASE_CANDIDATE_ADMIN_VERSION` constants to prevent semver violations. Developers must now explicitly specify API versions. See the [migration guide](BREAKING_CHANGES_FOR_V15.md#removal-of-latest_supported_admin_version-and-release_candidate_admin_version-constants) for details.
 
 - [#1405](https://github.com/Shopify/shopify-api-ruby/pull/1405) Fix webhook registration for topics containing dots (e.g., `customer.tags_added`, `customer.tags_removed`)
 
