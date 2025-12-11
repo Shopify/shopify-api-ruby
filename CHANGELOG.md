@@ -1,7 +1,7 @@
 # Changelog
 
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
-## Unreleased
+## 16.0.0 (2025-12-10)
 - ⚠️ [Breaking] Minimum required Ruby version is now 3.2. Ruby 3.0 and 3.1 are no longer supported.
 - ⚠️ [Breaking] Removed `Session#serialize` and `Session.deserialize` methods due to security concerns (RCE vulnerability via `Oj.load`). These methods were not used internally by the library. If your application relies on session serialization, use `Session.new()` to reconstruct sessions from stored attributes instead.
 
