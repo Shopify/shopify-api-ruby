@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: close-issues
-        uses: actions-cool/issues-helper@45d75b6cf72bf4f254be6230cb887ad002702491 # v3.6.3
+        uses: actions-cool/issues-helper@d1d51fccf39469b5458203b1369060db0ff0c0db # v3.7.4
         with:
           actions: 'close-issues'
           token: ${{ secrets.GITHUB_TOKEN }}
