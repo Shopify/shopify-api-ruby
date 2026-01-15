@@ -2,6 +2,8 @@
 
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
+
+## 16.1.0 (2026-01-15)
 - Add support for 2026-01 API version
 
 ## 16.0.0 (2025-12-10)
