@@ -9,27 +9,27 @@ module ShopifyAPI
 
       sig { override.returns(String) }
       def hmac
-        Digest.hexencode(Base64.decode64(T.cast(@headers["x-shopify-hmac-sha256"], String)))
+        Digest.hexencode(Base64.decode64(T.cast(shopify_header("hmac-sha256"), String)))
       end
 
       sig { returns(String) }
       def topic
-        T.cast(@headers["x-shopify-topic"], String)
+        T.cast(shopify_header("topic"), String)
       end
 
       sig { returns(String) }
       def shop
-        T.cast(@headers["x-shopify-shop-domain"], String)
+        T.cast(shopify_header("shop-domain"), String)
       end
 
       sig { returns(String) }
       def api_version
-        T.cast(@headers["x-shopify-api-version"], String)
+        T.cast(shopify_header("api-version"), String)
       end
 
       sig { returns(String) }
       def webhook_id
-        T.cast(@headers["x-shopify-webhook-id"], String)
+        T.cast(shopify_header("webhook-id"), String)
       end
 
       sig { override.returns(String) }
@@ -48,11 +48,11 @@ module ShopifyAPI
         headers = headers.to_h { |k, v| [k.to_s.downcase.sub("http_", "").gsub("_", "-"), v] }
 
         missing_headers = []
-        [
-          "x-shopify-topic",
-          "x-shopify-hmac-sha256",
-          "x-shopify-shop-domain",
-        ].each { |header| missing_headers << header unless headers.include?(header) }
+        ["topic", "hmac-sha256", "shop-domain"].each do |name|
+          unless headers.key?("shopify-#{name}") || headers.key?("x-shopify-#{name}")
+            missing_headers << "shopify-#{name} or x-shopify-#{name}"
+          end
+        end
         unless missing_headers.empty?
           raise Errors::InvalidWebhookError,
             "Missing one or more of the required HTTP headers to process webhooks: #{missing_headers}"
@@ -60,6 +60,13 @@ module ShopifyAPI
 
         @headers = headers
         @raw_body = raw_body
+      end
+
+      private
+
+      sig { params(name: String).returns(T.untyped) }
+      def shopify_header(name)
+        @headers["shopify-#{name}"] || @headers["x-shopify-#{name}"]
       end
     end
   end

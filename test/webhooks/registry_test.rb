@@ -263,6 +263,44 @@ module ShopifyAPITest
         assert(handler_called)
       end
 
+      def test_process_with_new_format_headers
+        handler_called = false
+
+        handler = TestHelpers::FakeWebhookHandler.new(
+          lambda do |data|
+            assert_equal(@topic, data.topic)
+            assert_equal(@shop, data.shop)
+            assert_equal({}, data.body)
+            assert_equal("b1234-eefd-4c9e-9520-049845a02082", data.webhook_id)
+            assert_equal("2024-01", data.api_version)
+            handler_called = true
+          end,
+        )
+
+        ShopifyAPI::Webhooks::Registry.add_registration(
+          topic: @topic, path: "path", delivery_method: :http, handler: handler,
+        )
+
+        hmac = OpenSSL::HMAC.digest(
+          OpenSSL::Digest.new("sha256"),
+          ShopifyAPI::Context.api_secret_key,
+          "{}",
+        )
+
+        new_format_headers = {
+          "shopify-topic" => @topic,
+          "shopify-hmac-sha256" => Base64.encode64(hmac),
+          "shopify-shop-domain" => @shop,
+          "shopify-webhook-id" => "b1234-eefd-4c9e-9520-049845a02082",
+          "shopify-api-version" => "2024-01",
+        }
+
+        webhook_request = ShopifyAPI::Webhooks::Request.new(raw_body: "{}", headers: new_format_headers)
+        ShopifyAPI::Webhooks::Registry.process(webhook_request)
+
+        assert(handler_called)
+      end
+
       def test_process_hmac_validation_fails
         headers = {
           "x-shopify-topic" => "some/topic",
