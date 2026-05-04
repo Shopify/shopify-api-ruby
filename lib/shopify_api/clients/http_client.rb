@@ -80,7 +80,7 @@ module ShopifyAPI
 
           error_message = serialized_error(response)
 
-          unless [429, 500].include?(response.code)
+          unless [429, 500, 502, 503, 504].include?(response.code)
             raise ShopifyAPI::Errors::HttpResponseError.new(response: response), error_message
           end
 
@@ -91,7 +91,7 @@ module ShopifyAPI
               "Exceeded maximum retry count of #{request.tries}. Last message: #{error_message}"
           end
 
-          if response.code == 500 || response.headers["retry-after"].nil?
+          if [500, 502, 503, 504].include?(response.code) || response.headers["retry-after"].nil?
             sleep(RETRY_WAIT_TIME)
           else
             sleep(T.must(response.headers["retry-after"])[0].to_i)

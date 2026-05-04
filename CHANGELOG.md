@@ -4,6 +4,7 @@ Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
 - [#1443](https://github.com/Shopify/shopify-api-ruby/pull/1443) Add `ShopifyAPI::Utils::ShopValidator` (module) with `sanitize_shop_domain` and `sanitize!`.
 - [#1443](https://github.com/Shopify/shopify-api-ruby/pull/1443) `ShopifyAPI::Auth::TokenExchange.exchange_token` always uses the session token's `dest` claim, instead of the `shop` parameter, that is now deprecated. It will show a deprecation warning and the argument will be removed in the next major version.
+- [#1446](https://github.com/Shopify/shopify-api-ruby/pull/1446) `ShopifyAPI::Clients::HttpClient` requests now apply retry logic to 502/503/504 responses alongside 500s.
 
 ## 16.2.0 (2026-04-13)
 - [#1442](https://github.com/Shopify/shopify-api-ruby/pull/1442) Add support for 2026-04 API version
