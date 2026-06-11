@@ -71,7 +71,7 @@ ShopifyAPI::Context.setup(
     read_timeout: 60, # Set the read timeout for HTTP requests
     write_timeout: 60, # Set the write timeout for HTTP requests
     debug_output: false, # Set to true to enable debug output for HTTP requests
-    http_proxyaddr: "http://proxy.example.com:8080", # Set the HTTP proxy address
+    http_proxyaddr: "proxy.example.com", # Set the HTTP proxy address (hostname only, no scheme or port)
     http_proxyport: 8080, # Set the HTTP proxy port
     http_proxyuser: "username", # Set the HTTP proxy username
     http_proxypass: "password", # Set the HTTP proxy password

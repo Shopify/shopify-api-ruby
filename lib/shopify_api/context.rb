@@ -51,7 +51,7 @@ module ShopifyAPI
           response_as_struct: T.nilable(T::Boolean),
           rest_disabled: T.nilable(T::Boolean),
           expiring_offline_access_tokens: T.nilable(T::Boolean),
-          httparty_params: T::Hash[Symbol, T.untyped]
+          httparty_params: T.nilable(T::Hash[Symbol, T.untyped])
         ).void
       end
       def setup(
@@ -72,7 +72,7 @@ module ShopifyAPI
         response_as_struct: false,
         rest_disabled: false,
         expiring_offline_access_tokens: false,
-        httparty_params: {}
+        httparty_params: nil
       )
         unless ShopifyAPI::AdminVersions::SUPPORTED_ADMIN_VERSIONS.include?(api_version)
           raise Errors::UnsupportedVersionError,
@@ -101,7 +101,7 @@ module ShopifyAPI
         end
 
         load_rest_resources(api_version: api_version)
-        @httparty_params = httparty_params
+        @httparty_params = httparty_params || {}
       end
 
       sig { params(api_version: String).void }
