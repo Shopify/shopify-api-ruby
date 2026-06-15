@@ -94,7 +94,7 @@ Determine the current latest major version:
 
 ```bash
 gh release list --limit 10
-git tag -l 'v*'
+git tag -l 'v*' --sort=-v:refname
 ```
 
 Also consult:
