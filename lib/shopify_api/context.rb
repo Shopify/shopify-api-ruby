@@ -114,7 +114,11 @@ module ShopifyAPI
 
         unless Dir.exist?(path)
           unless @notified_missing_resources_folder.key?(api_version)
-            @logger.warn("Cannot autoload REST resources for API version '#{version_folder_name}', folder is missing")
+            @logger.warn(
+              "shopify_api #{ShopifyAPI::VERSION} does not bundle REST resources for API version " \
+                "'#{api_version}', so REST resource classes are unavailable. The GraphQL Admin API and " \
+                "the REST client are unaffected.",
+            )
             @notified_missing_resources_folder[api_version] = true
           end
 
