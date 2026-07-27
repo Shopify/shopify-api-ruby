@@ -8,6 +8,7 @@ require "sorbet-runtime"
 require "securerandom"
 require "cgi"
 require "uri"
+require "logger"
 require "openssl"
 require "httparty"
 require "zeitwerk"
@@ -37,7 +38,9 @@ module ShopifyAPI
     sig { params(name: Symbol).returns(T.untyped) }
     def const_missing(name)
       if bundled_rest_resource_names.include?(name.to_s)
-        raise Errors::RestResourceNotLoadedError, rest_resource_not_loaded_message(name)
+        # Pass `name` through so NameError#name still returns the missing
+        # constant, as it does for the NameError Ruby would have raised.
+        raise Errors::RestResourceNotLoadedError.new(rest_resource_not_loaded_message(name), name)
       end
 
       super

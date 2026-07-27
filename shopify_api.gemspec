@@ -38,6 +38,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency("hash_diff")
   s.add_runtime_dependency("httparty")
   s.add_runtime_dependency("jwt")
+  s.add_runtime_dependency("logger")
   s.add_runtime_dependency("oj")
   s.add_runtime_dependency("openssl")
   s.add_runtime_dependency("securerandom")

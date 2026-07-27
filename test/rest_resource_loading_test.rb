@@ -34,6 +34,41 @@ module ShopifyAPITest
       assert_includes(error.message, "GraphQL Admin API")
     end
 
+    def test_preserves_name_error_name_for_consumers_that_inspect_it
+      setup_context(api_version: UNBUNDLED_VERSION)
+
+      error = assert_raises(ShopifyAPI::Errors::RestResourceNotLoadedError) do
+        ShopifyAPI::Product
+      end
+
+      assert_equal(:Product, error.name)
+    end
+
+    def test_reports_the_missing_resource_in_a_process_that_only_requires_the_gem
+      lib = File.expand_path("../lib", __dir__)
+      output = IO.popen(
+        [RbConfig.ruby, "-I#{lib}", "-e", 'require "shopify_api"; ShopifyAPI::Product'],
+        err: [:child, :out],
+        &:read
+      )
+
+      refute_includes(output, "uninitialized constant Logger")
+      assert_includes(output, "RestResourceNotLoadedError")
+      assert_includes(output, "Context has not been set up")
+    end
+
+    # Context builds a Logger at class-definition time, and the error message
+    # above reads Context.api_version - so autoloading Context needs Logger to be
+    # defined. Whether it happens to be defined transitively depends on the
+    # resolved dependency set, which is why the entrypoint must require it. The
+    # subprocess test above cannot catch a regression here on its own: under this
+    # gem's own bundle, a locked dependency loads logger anyway.
+    def test_entrypoint_requires_logger_rather_than_relying_on_a_transitive_require
+      entrypoint = File.read(File.expand_path("../lib/shopify_api.rb", __dir__))
+
+      assert_includes(entrypoint, %(require "logger"))
+    end
+
     def test_names_the_latest_bundled_version_so_the_gap_is_obvious
       setup_context(api_version: UNBUNDLED_VERSION)
 
