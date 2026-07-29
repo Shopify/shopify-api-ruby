@@ -8,6 +8,7 @@ PATH
       hash_diff
       httparty
       jwt
+      logger
       oj
       openssl
       securerandom
