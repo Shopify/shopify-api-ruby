@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    shopify_api (16.2.0)
+    shopify_api (16.3.0)
       activesupport
       addressable (~> 2.7)
       concurrent-ruby
