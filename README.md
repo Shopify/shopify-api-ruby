@@ -77,6 +77,10 @@ Once your app can perform OAuth, it can now make authenticated Shopify API calls
 * Making [Admin GraphQL API](docs/usage/graphql.md) requests
 * Making [Storefront GraphQL API](docs/usage/graphql_storefront.md) requests
 
+### Log App Events
+
+Use [`ShopifyAPI.log`](docs/usage/app_events.md) to send App Events for shops where your app is installed. The library uses the app credentials configured in `ShopifyAPI::Context` and caches the Global API access token.
+
 ## Breaking Change Notices
 
 ### Breaking change notice for version 15.0.0

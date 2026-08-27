@@ -30,6 +30,27 @@ module ShopifyAPI
   class << self
     extend T::Sig
 
+    # Sends an App Event to Shopify using the app's client credentials. Unrelated to
+    # ShopifyAPI::Logger, which writes this library's own diagnostic output.
+    sig do
+      params(
+        shop_id: T.any(String, Integer),
+        event_handle: String,
+        idempotency_key: String,
+        attributes: T::Hash[T.any(String, Symbol), T.untyped],
+        timestamp: T.nilable(Time),
+      ).returns(AppEvents::LogResult)
+    end
+    def log(shop_id:, event_handle:, idempotency_key:, attributes:, timestamp: nil)
+      AppEvents.log(
+        shop_id: shop_id,
+        event_handle: event_handle,
+        idempotency_key: idempotency_key,
+        attributes: attributes,
+        timestamp: timestamp,
+      )
+    end
+
     # REST resources are only autoloaded for API versions this gem bundles (see
     # Context.load_rest_resources). Without this hook, using a version whose
     # resources aren't bundled - a newly released version, or `unstable` - fails

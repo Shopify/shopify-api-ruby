@@ -4,7 +4,11 @@
 module ShopifyAPI
   class Context
     extend T::Sig
+    DEFAULT_GLOBAL_API_VERSION = "2026-07"
+    DEFAULT_GLOBAL_API_URL = "https://api.shopify.com"
 
+    @global_api_version = T.let(DEFAULT_GLOBAL_API_VERSION, String)
+    @global_api_url = T.let(DEFAULT_GLOBAL_API_URL, String)
     @api_key = T.let("", String)
     @api_secret_key = T.let("", String)
     @api_version = T.let("", String)
@@ -37,6 +41,8 @@ module ShopifyAPI
           api_version: String,
           is_private: T::Boolean,
           is_embedded: T::Boolean,
+          global_api_version: String,
+          global_api_url: String,
           scope: T.any(T::Array[String], String),
           log_level: T.any(String, Symbol),
           logger: T.untyped,
@@ -57,6 +63,8 @@ module ShopifyAPI
         api_version:,
         is_private:,
         is_embedded:,
+        global_api_version: DEFAULT_GLOBAL_API_VERSION,
+        global_api_url: DEFAULT_GLOBAL_API_URL,
         scope: [],
         log_level: :info,
         logger: ::Logger.new($stdout),
@@ -75,9 +83,18 @@ module ShopifyAPI
             "Invalid version #{api_version}, supported versions: #{ShopifyAPI::AdminVersions::SUPPORTED_ADMIN_VERSIONS}"
         end
 
+        unless ShopifyAPI::GlobalApiVersions::SUPPORTED_GLOBAL_API_VERSIONS.include?(global_api_version)
+          raise Errors::UnsupportedVersionError,
+            "Invalid Global API version #{global_api_version}, supported versions: " \
+              "#{ShopifyAPI::GlobalApiVersions::SUPPORTED_GLOBAL_API_VERSIONS}"
+        end
+        validated_global_api_url = validate_global_api_url(global_api_url)
+
         @api_key = api_key
         @api_secret_key = api_secret_key
         @api_version = api_version
+        @global_api_version = global_api_version
+        @global_api_url = validated_global_api_url
         @api_host = api_host
         @host = T.let(host, T.nilable(String))
         @is_private = is_private
@@ -95,6 +112,8 @@ module ShopifyAPI
         else
           :info
         end
+
+        Auth::GlobalApiClientCredentials.clear_cached_token!
 
         load_rest_resources(api_version: api_version)
       end
@@ -134,7 +153,7 @@ module ShopifyAPI
       end
 
       sig { returns(String) }
-      attr_reader :api_key, :api_secret_key, :api_version
+      attr_reader :api_key, :api_secret_key, :api_version, :global_api_version, :global_api_url
 
       sig { returns(Auth::AuthScopes) }
       attr_reader :scope
@@ -200,6 +219,22 @@ module ShopifyAPI
       end
 
       private
+
+      sig { params(url: String).returns(String) }
+      def validate_global_api_url(url)
+        parsed = begin
+          URI.parse(url)
+        rescue URI::InvalidURIError
+          nil
+        end
+
+        unless parsed.is_a?(URI::HTTPS) && !parsed.host.nil? && !T.must(parsed.host).empty?
+          raise Errors::InvalidGlobalApiUrlError,
+            "global_api_url must be an absolute HTTPS URL with a host, got #{url.inspect}"
+        end
+
+        url.sub(%r{/+\z}, "")
+      end
 
       sig { params(log_level: T.any(Symbol, String)).returns(T::Boolean) }
       def valid_log_level?(log_level)
