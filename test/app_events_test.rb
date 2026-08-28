@@ -137,6 +137,52 @@ module ShopifyAPITest
       assert_equal(30.0, error.response.retry_request_after)
     end
 
+    def test_log_retries_an_in_progress_idempotency_conflict
+      stub_token_request
+      event_stub = stub_request(:post, @events_url)
+        .to_return(
+          status: 409,
+          headers: { "Retry-After" => "0" },
+          body: { success: false, error: "duplicate_request" }.to_json,
+        )
+        .then.to_return(status: 202, body: { success: true }.to_json)
+
+      result = ShopifyAPI.log(**event_attributes)
+
+      refute(result.replayed)
+      assert_requested(event_stub, times: 2)
+    end
+
+    def test_log_uses_a_one_second_default_wait_for_an_idempotency_conflict
+      stub_token_request
+      event_stub = stub_request(:post, @events_url)
+        .to_return(status: 409, body: { success: false, error: "duplicate_request" }.to_json)
+        .then.to_return(status: 202, body: { success: true }.to_json)
+      ShopifyAPI::AppEvents.expects(:sleep).with(1).once
+
+      result = ShopifyAPI.log(**event_attributes)
+
+      refute(result.replayed)
+      assert_requested(event_stub, times: 2)
+    end
+
+    def test_log_propagates_an_idempotency_conflict_after_retries
+      stub_token_request
+      event_stub = stub_request(:post, @events_url)
+        .to_return(
+          status: 409,
+          headers: { "Retry-After" => "0" },
+          body: { success: false, error: "duplicate_request" }.to_json,
+        )
+
+      error = assert_raises(ShopifyAPI::Errors::HttpResponseError) do
+        ShopifyAPI.log(**event_attributes)
+      end
+
+      assert_equal(409, error.code)
+      assert_requested(event_stub, times: 3)
+    end
+
     def test_log_raises_an_http_error_for_an_empty_forbidden_response
       stub_token_request
       stub_request(:post, @events_url).to_return(status: 403, body: "")
@@ -235,6 +281,20 @@ module ShopifyAPITest
 
       assert_raises(ShopifyAPI::Errors::InvalidAppEventError) do
         ShopifyAPI.log(**event_attributes(shop_id: "shop.myshopify.com"))
+      end
+
+      assert_not_requested(token_stub)
+      assert_not_requested(event_stub)
+    end
+
+    def test_log_rejects_an_invalid_idempotency_key_without_an_http_request
+      token_stub = stub_token_request
+      event_stub = stub_successful_event_request
+
+      ["", " \t", "a" * 65].each do |idempotency_key|
+        assert_raises(ShopifyAPI::Errors::InvalidAppEventError) do
+          ShopifyAPI.log(**event_attributes(idempotency_key: idempotency_key))
+        end
       end
 
       assert_not_requested(token_stub)
