@@ -95,14 +95,12 @@ module ShopifyAPI
       def post_event_with_retries(payload:, token:)
         retries = 0
         loop do
-          begin
-            return post_event(payload: payload, token: token)
-          rescue ShopifyAPI::Errors::HttpResponseError => error
-            raise unless error.code == 409 && retries < IDEMPOTENCY_CONFLICT_MAX_RETRIES
+          return post_event(payload: payload, token: token)
+        rescue ShopifyAPI::Errors::HttpResponseError => error
+          raise unless error.code == 409 && retries < IDEMPOTENCY_CONFLICT_MAX_RETRIES
 
-            retries += 1
-            sleep(error.response.retry_request_after || IDEMPOTENCY_CONFLICT_RETRY_WAIT_TIME)
-          end
+          retries += 1
+          sleep(error.response.retry_request_after || IDEMPOTENCY_CONFLICT_RETRY_WAIT_TIME)
         end
       end
 
