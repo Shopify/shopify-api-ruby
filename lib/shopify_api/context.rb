@@ -4,7 +4,7 @@
 module ShopifyAPI
   class Context
     extend T::Sig
-    DEFAULT_GLOBAL_API_VERSION = "2026-07"
+    DEFAULT_GLOBAL_API_VERSION = "2026-10"
     DEFAULT_GLOBAL_API_URL = "https://api.shopify.com"
 
     @global_api_version = T.let(DEFAULT_GLOBAL_API_VERSION, String)

@@ -43,13 +43,13 @@ The `idempotency_key` must be unique across all shops for your app. Shopify keys
 
 App Events is served by the Global API, which is versioned separately from the Admin API. Configure `global_api_version` independently from `ShopifyAPI::Context.api_version`.
 
-The supported Global API versions are `unstable`, `2026-10`, and `2026-07`. The current default is `2026-07`.
+The supported Global API versions are `unstable`, `2026-10`, and `2026-07`. The current default is `2026-10`.
 
 ```ruby
 ShopifyAPI::Context.setup(
   # ...
   api_version: "2026-07",
-  global_api_version: "2026-07",
+  global_api_version: "2026-10",
 )
 ```
 
@@ -65,3 +65,11 @@ ShopifyAPI::Context.setup(
 ```
 
 `global_api_url` must be an absolute HTTPS URL.
+
+## Errors and retries
+
+`ShopifyAPI.log` returns `ShopifyAPI::AppEvents::LogResult` after Shopify accepts the event. It raises `ShopifyAPI::Errors::HttpResponseError` for HTTP errors, including `429` responses, which it does not retry.
+
+It refreshes the Global API token once after an event request returns `401`. It retries `409` idempotency conflicts twice and caps each `Retry-After` wait at five seconds.
+
+It raises `ShopifyAPI::Errors::RequestAccessTokenError` when a successful token response does not contain an access token.

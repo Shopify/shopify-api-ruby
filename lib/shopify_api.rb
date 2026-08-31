@@ -17,6 +17,7 @@ require "concurrent"
 
 require_relative "shopify_api/inflector"
 require_relative "shopify_api/admin_versions"
+require_relative "shopify_api/global_api_versions"
 require_relative "shopify_api/webhooks/webhook_handler"
 
 loader = Zeitwerk::Loader.for_gem

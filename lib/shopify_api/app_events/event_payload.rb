@@ -6,11 +6,6 @@ module ShopifyAPI
     module EventPayload
       extend T::Sig
 
-      MAX_IDEMPOTENCY_KEY_LENGTH = 64
-      MAX_ATTRIBUTE_KEYS = 15
-      MAX_ATTRIBUTE_KEY_LENGTH = 64
-      MAX_ATTRIBUTE_STRING_VALUE_LENGTH = 128
-      MAX_FUTURE_TIMESTAMP_SECONDS = 300
       ATTRIBUTE_KEY_PATTERN = /\A[a-zA-Z0-9_.\-]+\z/
       SHOP_GID_PREFIX = "gid://shopify/Shop/"
       NUMERIC_ID_PATTERN = /\A\d+\z/
@@ -45,16 +40,7 @@ module ShopifyAPI
             raise Errors::InvalidAppEventError, "idempotency_key must not be blank"
           end
 
-          if idempotency_key.length > MAX_IDEMPOTENCY_KEY_LENGTH
-            raise Errors::InvalidAppEventError,
-              "idempotency_key must be at most #{MAX_IDEMPOTENCY_KEY_LENGTH} characters"
-          end
-
           event_timestamp = timestamp || Time.now
-          if event_timestamp > Time.now + MAX_FUTURE_TIMESTAMP_SECONDS
-            raise Errors::InvalidAppEventError,
-              "timestamp must not be more than #{MAX_FUTURE_TIMESTAMP_SECONDS} seconds in the future"
-          end
 
           payload = {
             shop_id: normalized_shop_id,
@@ -86,10 +72,6 @@ module ShopifyAPI
             normalized[key] = value
           end
 
-          if normalized.length > MAX_ATTRIBUTE_KEYS
-            raise Errors::InvalidAppEventError, "attributes must contain at most #{MAX_ATTRIBUTE_KEYS} keys"
-          end
-
           normalized.each do |key, value|
             validate_attribute_key(key)
             validate_attribute_value(key, value)
@@ -104,10 +86,6 @@ module ShopifyAPI
             raise Errors::InvalidAppEventError,
               "attributes key #{key.inspect} may contain only letters, numbers, underscores, periods, and hyphens"
           end
-          if key.length > MAX_ATTRIBUTE_KEY_LENGTH
-            raise Errors::InvalidAppEventError,
-              "attributes key #{key.inspect} must be at most #{MAX_ATTRIBUTE_KEY_LENGTH} characters"
-          end
         end
 
         sig { params(key: String, value: T.untyped).void }
@@ -118,12 +96,6 @@ module ShopifyAPI
           end
           if value.is_a?(Float) && !value.finite?
             raise Errors::InvalidAppEventError, "attributes Float value for #{key.inspect} must be finite"
-          end
-
-          if value.is_a?(String) && value.length > MAX_ATTRIBUTE_STRING_VALUE_LENGTH
-            raise Errors::InvalidAppEventError,
-              "attributes String value for #{key.inspect} must be at most " \
-                "#{MAX_ATTRIBUTE_STRING_VALUE_LENGTH} characters"
           end
         end
       end

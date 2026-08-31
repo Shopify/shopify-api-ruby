@@ -64,6 +64,7 @@ module ShopifyAPI
             headers: headers,
             query: request.query,
             body: request.body.class == Hash ? T.unsafe(request.body).to_json : request.body,
+            timeout: request.timeout,
           ), HTTParty::Response)
 
           begin

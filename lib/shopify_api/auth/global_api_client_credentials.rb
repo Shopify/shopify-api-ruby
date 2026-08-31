@@ -12,6 +12,8 @@ module ShopifyAPI
       EXPIRY_SKEW_SECONDS = 60
       # Used only when the token is not a decodable JWT and the body has no `expires_in`.
       FALLBACK_TTL_SECONDS = 300
+      # Bound time spent holding the cache mutex while the token endpoint responds.
+      TOKEN_REQUEST_TIMEOUT_SECONDS = 10
 
       @mutex = T.let(Mutex.new, Mutex)
       @cached_token = T.let(nil, T.nilable(GlobalApiToken))
@@ -21,20 +23,20 @@ module ShopifyAPI
 
         sig do
           params(
-            force_refresh: T::Boolean,
             rejected_access_token: T.nilable(String),
           ).returns(GlobalApiToken)
         end
-        def global_api_client_credentials(force_refresh: false, rejected_access_token: nil)
+        def global_api_client_credentials(rejected_access_token: nil)
           unless ShopifyAPI::Context.setup?
             raise ShopifyAPI::Errors::ContextNotSetupError,
               "ShopifyAPI::Context not setup, please call ShopifyAPI::Context.setup"
           end
 
+          # Serialize token minting so concurrent callers do not stampede the token endpoint.
           @mutex.synchronize do
             cached = @cached_token
             if cached && usable?(cached) &&
-                (rejected_access_token ? cached.access_token != rejected_access_token : !force_refresh)
+                (rejected_access_token.nil? || cached.access_token != rejected_access_token)
               return cached
             end
 
@@ -75,6 +77,7 @@ module ShopifyAPI
                 grant_type: CLIENT_CREDENTIALS_GRANT_TYPE,
               },
               body_type: "application/json",
+              timeout: TOKEN_REQUEST_TIMEOUT_SECONDS,
             ),
           )
           body = T.cast(response.body, T::Hash[String, T.untyped])
@@ -84,12 +87,11 @@ module ShopifyAPI
             raise ShopifyAPI::Errors::RequestAccessTokenError,
               "Global API token response did not include an access_token"
           end
-
           claims = decode_claims(access_token)
+
           GlobalApiToken.new(
             access_token: access_token,
             expires_at: expires_at_from(claims, body),
-            scopes: scopes_from(claims, body),
           )
         end
 
@@ -115,20 +117,6 @@ module ShopifyAPI
           return Time.at(exp).utc if exp.is_a?(Numeric) && exp.to_f.finite?
 
           Time.now.utc + FALLBACK_TTL_SECONDS
-        end
-
-        sig do
-          params(
-            claims: T.nilable(T::Hash[String, T.untyped]),
-            body: T::Hash[String, T.untyped],
-          ).returns(T::Array[String])
-        end
-        def scopes_from(claims, body)
-          # The JWT claim is `scopes` (plural, space-separated); the documented - but currently
-          # absent - response field is `scope` (singular).
-          raw = body["scope"]
-          raw = claims && claims["scopes"] unless raw.is_a?(String)
-          raw.is_a?(String) ? raw.split : []
         end
       end
     end

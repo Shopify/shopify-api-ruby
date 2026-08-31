@@ -9,6 +9,7 @@ module ShopifyAPI
     EVENTS_PATH = "events"
     IDEMPOTENCY_CONFLICT_MAX_RETRIES = 2
     IDEMPOTENCY_CONFLICT_RETRY_WAIT_TIME = 1
+    MAX_IDEMPOTENCY_CONFLICT_RETRY_WAIT_TIME = 5
     # The server sets `Idempotent-Replayed`; shopify.dev documents `Idempotent-Replay`.
     # Both carry the string `true`. HttpResponse#headers keys are downcased by Net::HTTPHeader#to_h.
     REPLAY_HEADERS = T.let(["idempotent-replayed", "idempotent-replay"], T::Array[String])
@@ -38,14 +39,13 @@ module ShopifyAPI
           attributes: attributes,
           timestamp: timestamp,
         )
-        token = Auth::GlobalApiClientCredentials.global_api_client_credentials(force_refresh: false)
+        token = Auth::GlobalApiClientCredentials.global_api_client_credentials
         response = begin
           post_event_with_retries(payload: payload, token: token)
         rescue ShopifyAPI::Errors::HttpResponseError => error
           raise unless error.code == 401
 
           replacement_token = Auth::GlobalApiClientCredentials.global_api_client_credentials(
-            force_refresh: true,
             rejected_access_token: token.access_token,
           )
           begin
@@ -100,7 +100,8 @@ module ShopifyAPI
           raise unless error.code == 409 && retries < IDEMPOTENCY_CONFLICT_MAX_RETRIES
 
           retries += 1
-          sleep(error.response.retry_request_after || IDEMPOTENCY_CONFLICT_RETRY_WAIT_TIME)
+          retry_after = error.response.retry_request_after || IDEMPOTENCY_CONFLICT_RETRY_WAIT_TIME
+          sleep(retry_after.clamp(0, MAX_IDEMPOTENCY_CONFLICT_RETRY_WAIT_TIME))
         end
       end
 

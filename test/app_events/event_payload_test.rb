@@ -29,18 +29,19 @@ module ShopifyAPITest
         end
       end
 
-      def test_build_rejects_a_blank_or_oversized_idempotency_key
-        ["", " \t", "a" * 65].each do |idempotency_key|
+      def test_build_rejects_a_blank_idempotency_key
+        ["", " \t"].each do |idempotency_key|
           assert_raises(ShopifyAPI::Errors::InvalidAppEventError) do
             build_payload(idempotency_key: idempotency_key)
           end
         end
       end
 
-      def test_build_accepts_a_64_character_idempotency_key
-        payload = build_payload(idempotency_key: "a" * 64)
+      def test_build_accepts_an_idempotency_key_longer_than_the_previous_limit
+        idempotency_key = "a" * 65
+        payload = build_payload(idempotency_key: idempotency_key)
 
-        assert_equal("a" * 64, payload[:idempotency_key])
+        assert_equal(idempotency_key, payload[:idempotency_key])
       end
 
       def test_build_uses_the_current_time_when_timestamp_is_omitted
@@ -61,13 +62,15 @@ module ShopifyAPITest
         assert_equal("2026-01-27T14:30:00.000Z", offset_payload[:timestamp])
       end
 
-      def test_build_rejects_a_timestamp_more_than_300_seconds_in_the_future
-        assert_raises(ShopifyAPI::Errors::InvalidAppEventError) do
-          build_payload(timestamp: Time.now + 301)
-        end
+      def test_build_accepts_a_timestamp_beyond_the_previous_limit
+        timestamp = Time.now + 301
+
+        payload = build_payload(timestamp: timestamp)
+
+        assert_equal(timestamp.utc.strftime("%FT%T.%LZ"), payload[:timestamp])
       end
 
-      def test_build_accepts_a_timestamp_within_300_seconds_of_the_future
+      def test_build_accepts_a_timestamp_within_the_previous_limit
         timestamp = Time.now + 299
 
         payload = build_payload(timestamp: timestamp)
@@ -75,15 +78,12 @@ module ShopifyAPITest
         assert_equal(timestamp.utc.strftime("%FT%T.%LZ"), payload[:timestamp])
       end
 
-      def test_build_accepts_15_attributes_and_rejects_16
-        attributes = 15.times.to_h { |index| ["key_#{index}", index] }
+      def test_build_accepts_more_than_the_previous_attribute_count_limit
+        attributes = 16.times.to_h { |index| ["key_#{index}", index] }
 
         payload = build_payload(attributes: attributes)
 
         assert_equal(attributes, payload[:attributes])
-        assert_raises(ShopifyAPI::Errors::InvalidAppEventError) do
-          build_payload(attributes: attributes.merge("key_15" => 15))
-        end
       end
 
       def test_build_stringifies_symbol_attribute_keys
@@ -98,30 +98,24 @@ module ShopifyAPITest
         end
       end
 
-      def test_build_rejects_invalid_or_oversized_attribute_keys
-        ["bad key", "a" * 65].each do |key|
-          assert_raises(ShopifyAPI::Errors::InvalidAppEventError) do
-            build_payload(attributes: { key => 1 })
-          end
-        end
-      end
-
-      def test_build_accepts_a_64_character_attribute_key
-        payload = build_payload(attributes: { "a" * 64 => 1 })
-
-        assert_equal({ "a" * 64 => 1 }, payload[:attributes])
-      end
-
-      def test_build_rejects_an_oversized_attribute_string_value
+      def test_build_rejects_attribute_keys_with_invalid_characters
         assert_raises(ShopifyAPI::Errors::InvalidAppEventError) do
-          build_payload(attributes: { value: "a" * 129 })
+          build_payload(attributes: { "bad key" => 1 })
         end
       end
 
-      def test_build_accepts_a_128_character_attribute_string_value
-        payload = build_payload(attributes: { value: "a" * 128 })
+      def test_build_accepts_an_attribute_key_longer_than_the_previous_limit
+        key = "a" * 65
+        payload = build_payload(attributes: { key => 1 })
 
-        assert_equal({ "value" => "a" * 128 }, payload[:attributes])
+        assert_equal({ key => 1 }, payload[:attributes])
+      end
+
+      def test_build_accepts_an_attribute_string_value_longer_than_the_previous_limit
+        value = "a" * 129
+        payload = build_payload(attributes: { value: value })
+
+        assert_equal({ "value" => value }, payload[:attributes])
       end
 
       def test_build_rejects_unsupported_and_non_finite_attribute_values

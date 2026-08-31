@@ -35,7 +35,7 @@ module ShopifyAPITest
       assert_equal("key", ShopifyAPI::Context.api_key)
       assert_equal("secret", ShopifyAPI::Context.api_secret_key)
       assert_equal("2023-10", ShopifyAPI::Context.api_version)
-      assert_equal("2026-07", ShopifyAPI::Context.global_api_version)
+      assert_equal("2026-10", ShopifyAPI::Context.global_api_version)
       assert_equal(ShopifyAPI::Auth::AuthScopes.new(["scope1", "scope2"]), ShopifyAPI::Context.scope)
       assert(ShopifyAPI::Context.private?)
       ShopifyAPI::Context.logger.info("test log")

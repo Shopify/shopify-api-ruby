@@ -8,9 +8,9 @@ module ShopifyAPITest
     def setup
       super()
 
-      @access_token = fake_jwt(exp: Time.now.to_i + 3600, scopes: "write_global_api_app_events")
+      @access_token = fake_jwt(exp: Time.now.to_i + 3600)
       @token_url = "https://api.shopify.com/auth/access_token"
-      @events_url = "https://api.shopify.com/app/2026-07/events"
+      @events_url = "https://api.shopify.com/app/2026-10/events"
     end
 
     def test_log_posts_the_app_event_contract_with_a_bearer_token
@@ -166,6 +166,23 @@ module ShopifyAPITest
       assert_requested(event_stub, times: 2)
     end
 
+    def test_log_caps_a_server_controlled_idempotency_wait
+      stub_token_request
+      event_stub = stub_request(:post, @events_url)
+        .to_return(
+          status: 409,
+          headers: { "Retry-After" => "300" },
+          body: { success: false, error: "duplicate_request" }.to_json,
+        )
+        .then.to_return(status: 202, body: { success: true }.to_json)
+      ShopifyAPI::AppEvents.expects(:sleep).with(5).once
+
+      result = ShopifyAPI.log(**event_attributes)
+
+      refute(result.replayed)
+      assert_requested(event_stub, times: 2)
+    end
+
     def test_log_propagates_an_idempotency_conflict_after_retries
       stub_token_request
       event_stub = stub_request(:post, @events_url)
@@ -287,11 +304,11 @@ module ShopifyAPITest
       assert_not_requested(event_stub)
     end
 
-    def test_log_rejects_an_invalid_idempotency_key_without_an_http_request
+    def test_log_rejects_blank_but_accepts_a_long_idempotency_key
       token_stub = stub_token_request
       event_stub = stub_successful_event_request
 
-      ["", " \t", "a" * 65].each do |idempotency_key|
+      ["", " \t"].each do |idempotency_key|
         assert_raises(ShopifyAPI::Errors::InvalidAppEventError) do
           ShopifyAPI.log(**event_attributes(idempotency_key: idempotency_key))
         end
@@ -299,6 +316,11 @@ module ShopifyAPITest
 
       assert_not_requested(token_stub)
       assert_not_requested(event_stub)
+
+      ShopifyAPI.log(**event_attributes(idempotency_key: "a" * 65))
+
+      assert_requested(token_stub)
+      assert_requested(event_stub)
     end
 
     def test_log_requires_context_setup
