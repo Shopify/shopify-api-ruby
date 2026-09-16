@@ -57,73 +57,19 @@ module ShopifyAPITest
         assert_in_delta(started_at + 900, token.expires_at, 2)
       end
 
-      def test_global_api_client_credentials_reuses_a_cached_token
-        access_token = fake_jwt(exp: Time.now.to_i + 3600)
-        stub = stub_token_request(access_token: access_token)
+      def test_global_api_client_credentials_mints_a_new_token_on_every_call
+        first_token = fake_jwt(exp: Time.now.to_i + 3600)
+        second_token = fake_jwt(exp: Time.now.to_i + 7200)
+        stub = stub_request(:post, @token_url)
+          .with(body: @request_body)
+          .to_return(status: 200, body: { access_token: first_token }.to_json)
+          .then.to_return(status: 200, body: { access_token: second_token }.to_json)
 
         first = ShopifyAPI::Auth::GlobalApiClientCredentials.global_api_client_credentials
         second = ShopifyAPI::Auth::GlobalApiClientCredentials.global_api_client_credentials
 
-        assert_equal(access_token, first.access_token)
-        assert_equal(access_token, second.access_token)
-        assert_requested(stub, times: 1)
-      end
-
-      def test_global_api_client_credentials_reuses_a_replacement_for_a_late_rejected_token
-        old_access_token = fake_jwt(exp: Time.now.to_i + 3600)
-        replacement_access_token = fake_jwt(exp: Time.now.to_i + 7200)
-        stub = stub_request(:post, @token_url)
-          .with(body: @request_body)
-          .to_return(status: 200, body: { access_token: old_access_token }.to_json)
-          .then.to_return(status: 200, body: { access_token: replacement_access_token }.to_json)
-
-        ShopifyAPI::Auth::GlobalApiClientCredentials.global_api_client_credentials
-        first_replacement = ShopifyAPI::Auth::GlobalApiClientCredentials.global_api_client_credentials(
-          rejected_access_token: old_access_token,
-        )
-        late_replacement = ShopifyAPI::Auth::GlobalApiClientCredentials.global_api_client_credentials(
-          rejected_access_token: old_access_token,
-        )
-
-        assert_equal(replacement_access_token, first_replacement.access_token)
-        assert_equal(replacement_access_token, late_replacement.access_token)
-        assert_requested(stub, times: 2)
-      end
-
-      def test_global_api_client_credentials_clears_a_rejected_token_when_refresh_fails
-        old_access_token = fake_jwt(exp: Time.now.to_i + 3600)
-        fresh_access_token = fake_jwt(exp: Time.now.to_i + 7200)
-        stub = stub_request(:post, @token_url)
-          .with(body: @request_body)
-          .to_return(status: 200, body: { access_token: old_access_token }.to_json)
-          .then.to_return(status: 401, body: { error: "unauthorized" }.to_json)
-          .then.to_return(status: 200, body: { access_token: fresh_access_token }.to_json)
-
-        ShopifyAPI::Auth::GlobalApiClientCredentials.global_api_client_credentials
-        assert_raises(ShopifyAPI::Errors::HttpResponseError) do
-          ShopifyAPI::Auth::GlobalApiClientCredentials.global_api_client_credentials(
-            rejected_access_token: old_access_token,
-          )
-        end
-        token = ShopifyAPI::Auth::GlobalApiClientCredentials.global_api_client_credentials
-
-        assert_equal(fresh_access_token, token.access_token)
-        assert_requested(stub, times: 3)
-      end
-
-      def test_global_api_client_credentials_refreshes_a_token_inside_expiry_skew
-        expiring_token = fake_jwt(exp: Time.now.to_i + 30)
-        fresh_token = fake_jwt(exp: Time.now.to_i + 3600)
-        stub = stub_request(:post, @token_url)
-          .with(body: @request_body)
-          .to_return(status: 200, body: { access_token: expiring_token }.to_json)
-          .then.to_return(status: 200, body: { access_token: fresh_token }.to_json)
-
-        first = ShopifyAPI::Auth::GlobalApiClientCredentials.global_api_client_credentials
-        second = ShopifyAPI::Auth::GlobalApiClientCredentials.global_api_client_credentials
-
-        assert_equal(expiring_token, first.access_token)
-        assert_equal(fresh_token, second.access_token)
+        assert_equal(first_token, first.access_token)
+        assert_equal(second_token, second.access_token)
         assert_requested(stub, times: 2)
       end
 
@@ -169,18 +115,6 @@ module ShopifyAPITest
 
         assert_equal(access_token, token.access_token)
         assert_requested(stub, times: 1)
-      end
-
-      def test_context_setup_clears_the_cached_global_api_token
-        access_token = fake_jwt(exp: Time.now.to_i + 3600)
-        stub = stub_token_request(access_token: access_token)
-        ShopifyAPI::Auth::GlobalApiClientCredentials.global_api_client_credentials
-
-        modify_context
-        token = ShopifyAPI::Auth::GlobalApiClientCredentials.global_api_client_credentials
-
-        assert_equal(access_token, token.access_token)
-        assert_requested(stub, times: 2)
       end
 
       def test_global_api_client_credentials_requires_context_setup

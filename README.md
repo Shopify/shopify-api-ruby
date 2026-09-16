@@ -79,7 +79,7 @@ Once your app can perform OAuth, it can now make authenticated Shopify API calls
 
 ### Log App Events
 
-Use [`ShopifyAPI.log`](docs/usage/app_events.md) to send App Events for shops where your app is installed. The library uses the app credentials configured in `ShopifyAPI::Context` and caches the Global API access token.
+Use [`ShopifyAPI.log`](docs/usage/app_events.md) to send App Events for shops where your app is installed. Pass a Global API access token minted by `ShopifyAPI::Auth::GlobalApiClientCredentials.global_api_client_credentials`; the library sends one request per call and does not cache tokens.
 
 ## Breaking Change Notices
 

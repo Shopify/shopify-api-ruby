@@ -113,8 +113,6 @@ module ShopifyAPI
           :info
         end
 
-        Auth::GlobalApiClientCredentials.clear_cached_token!
-
         load_rest_resources(api_version: api_version)
       end
 

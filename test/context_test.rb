@@ -257,18 +257,7 @@ module ShopifyAPITest
       assert_equal("https://api.my-spin.shopify.io", ShopifyAPI::Context.global_api_url)
     end
 
-    def test_invalid_global_api_url_preserves_credentials_url_and_cached_token
-      token_stub = stub_request(:post, "https://api.shopify.com/auth/access_token")
-        .with(
-          body: {
-            client_id: "key",
-            client_secret: "secret",
-            grant_type: "client_credentials",
-          },
-        )
-        .to_return(status: 200, body: { access_token: "cached-token", expires_in: 900 }.to_json)
-      cached_token = ShopifyAPI::Auth::GlobalApiClientCredentials.global_api_client_credentials
-
+    def test_invalid_global_api_url_preserves_credentials_and_url
       assert_raises(ShopifyAPI::Errors::InvalidGlobalApiUrlError) do
         ShopifyAPI::Context.setup(
           api_key: "new-key",
@@ -279,14 +268,9 @@ module ShopifyAPITest
           global_api_url: "http://invalid.example.com",
         )
       end
-
-      current_token = ShopifyAPI::Auth::GlobalApiClientCredentials.global_api_client_credentials
-
       assert_equal("key", ShopifyAPI::Context.api_key)
       assert_equal("secret", ShopifyAPI::Context.api_secret_key)
       assert_equal("https://api.shopify.com", ShopifyAPI::Context.global_api_url)
-      assert_equal(cached_token.access_token, current_token.access_token)
-      assert_requested(token_stub, times: 1)
     end
 
     def test_global_api_url_rejects_non_https_and_relative_urls

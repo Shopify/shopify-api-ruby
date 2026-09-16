@@ -7,17 +7,31 @@ require_relative "../test_helper"
 module ShopifyAPITest
   module AppEvents
     class EventPayloadTest < Test::Unit::TestCase
-      def test_build_normalizes_numeric_and_gid_shop_ids
-        [23423423, "23423423", "gid://shopify/Shop/23423423"].each do |shop_id|
-          payload = build_payload(shop_id: shop_id)
+      def test_build_normalizes_admin_urls_to_the_myshopify_domain
+        [
+          "example.myshopify.com",
+          "Example.MyShopify.com",
+          "https://example.myshopify.com",
+          "https://example.myshopify.com/admin",
+          "https://admin.shopify.com/store/example",
+        ].each do |myshopify_domain|
+          payload = build_payload(myshopify_domain: myshopify_domain)
 
-          assert_equal("23423423", payload[:shop_id])
+          assert_equal("example.myshopify.com", payload[:myshopify_domain])
         end
       end
 
-      def test_build_rejects_a_non_numeric_shop_id
-        assert_raises(ShopifyAPI::Errors::InvalidAppEventError) do
-          build_payload(shop_id: "shop.myshopify.com")
+      def test_build_rejects_ids_and_untrusted_domains
+        ["23423423", "gid://shopify/Shop/23423423", "attacker.example", "", "myshopify.com"].each do |myshopify_domain|
+          assert_raises(ShopifyAPI::Errors::InvalidShopError) do
+            build_payload(myshopify_domain: myshopify_domain)
+          end
+        end
+      end
+
+      def test_build_rejects_a_non_string_myshopify_domain_at_the_typed_boundary
+        assert_raises(TypeError) do
+          build_payload(myshopify_domain: 23423423)
         end
       end
 
@@ -128,7 +142,6 @@ module ShopifyAPITest
 
       def test_build_accepts_float_and_boolean_attribute_values
         payload = build_payload(attributes: { ratio: 1.5, complete: true })
-
         assert_equal({ "ratio" => 1.5, "complete" => true }, payload[:attributes])
       end
 
@@ -148,7 +161,7 @@ module ShopifyAPITest
 
       def build_payload(**overrides)
         ShopifyAPI::AppEvents::EventPayload.build(
-          shop_id: 23423423,
+          myshopify_domain: "example.myshopify.com",
           event_handle: "onboarding_completed",
           idempotency_key: "onboard_23423423_v3",
           attributes: {},

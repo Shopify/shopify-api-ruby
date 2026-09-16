@@ -8,61 +8,25 @@ module ShopifyAPI
 
       CLIENT_CREDENTIALS_GRANT_TYPE = "client_credentials"
       ACCESS_TOKEN_PATH = "auth/access_token"
-      # Treat a token as expired this many seconds early, to absorb clock skew and flight time.
-      EXPIRY_SKEW_SECONDS = 60
       # Used only when the token is not a decodable JWT and the body has no `expires_in`.
       FALLBACK_TTL_SECONDS = 300
-      # Bound time spent holding the cache mutex while the token endpoint responds.
+      # Bound time spent waiting for the token endpoint.
       TOKEN_REQUEST_TIMEOUT_SECONDS = 10
-
-      @mutex = T.let(Mutex.new, Mutex)
-      @cached_token = T.let(nil, T.nilable(GlobalApiToken))
 
       class << self
         extend T::Sig
 
-        sig do
-          params(
-            rejected_access_token: T.nilable(String),
-          ).returns(GlobalApiToken)
-        end
-        def global_api_client_credentials(rejected_access_token: nil)
+        sig { returns(GlobalApiToken) }
+        def global_api_client_credentials
           unless ShopifyAPI::Context.setup?
             raise ShopifyAPI::Errors::ContextNotSetupError,
               "ShopifyAPI::Context not setup, please call ShopifyAPI::Context.setup"
           end
 
-          # Serialize token minting so concurrent callers do not stampede the token endpoint.
-          @mutex.synchronize do
-            cached = @cached_token
-            if cached && usable?(cached) &&
-                (rejected_access_token.nil? || cached.access_token != rejected_access_token)
-              return cached
-            end
-
-            @cached_token = nil if rejected_access_token && cached&.access_token == rejected_access_token
-            @cached_token = mint_token
-          end
-        end
-
-        sig { params(access_token: String).void }
-        def clear_cached_token_if_matches!(access_token:)
-          @mutex.synchronize do
-            @cached_token = nil if @cached_token&.access_token == access_token
-          end
-        end
-
-        sig { void }
-        def clear_cached_token!
-          @mutex.synchronize { @cached_token = nil }
+          mint_token
         end
 
         private
-
-        sig { params(token: GlobalApiToken).returns(T::Boolean) }
-        def usable?(token)
-          token.expires_at - Time.now > EXPIRY_SKEW_SECONDS
-        end
 
         sig { returns(GlobalApiToken) }
         def mint_token

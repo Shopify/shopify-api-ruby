@@ -31,23 +31,25 @@ module ShopifyAPI
   class << self
     extend T::Sig
 
-    # Sends an App Event to Shopify using the app's client credentials. Unrelated to
+    # Sends one App Event to Shopify with the given Global API access token. Unrelated to
     # ShopifyAPI::Logger, which writes this library's own diagnostic output.
     sig do
       params(
-        shop_id: T.any(String, Integer),
+        myshopify_domain: String,
         event_handle: String,
         idempotency_key: String,
         attributes: T::Hash[T.any(String, Symbol), T.untyped],
+        access_token: String,
         timestamp: T.nilable(Time),
       ).returns(AppEvents::LogResult)
     end
-    def log(shop_id:, event_handle:, idempotency_key:, attributes:, timestamp: nil)
+    def log(myshopify_domain:, event_handle:, idempotency_key:, attributes:, access_token:, timestamp: nil)
       AppEvents.log(
-        shop_id: shop_id,
+        myshopify_domain: myshopify_domain,
         event_handle: event_handle,
         idempotency_key: idempotency_key,
         attributes: attributes,
+        access_token: access_token,
         timestamp: timestamp,
       )
     end

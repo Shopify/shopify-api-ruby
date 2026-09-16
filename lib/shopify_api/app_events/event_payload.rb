@@ -7,8 +7,6 @@ module ShopifyAPI
       extend T::Sig
 
       ATTRIBUTE_KEY_PATTERN = /\A[a-zA-Z0-9_.\-]+\z/
-      SHOP_GID_PREFIX = "gid://shopify/Shop/"
-      NUMERIC_ID_PATTERN = /\A\d+\z/
       ALLOWED_ATTRIBUTE_VALUE_TYPES = T.let(
         [String, Integer, Float, TrueClass, FalseClass],
         T::Array[Module],
@@ -19,18 +17,15 @@ module ShopifyAPI
 
         sig do
           params(
-            shop_id: T.any(String, Integer),
+            myshopify_domain: String,
             event_handle: String,
             idempotency_key: String,
             attributes: T::Hash[T.any(String, Symbol), T.untyped],
             timestamp: T.nilable(Time),
           ).returns(T::Hash[Symbol, T.untyped])
         end
-        def build(shop_id:, event_handle:, idempotency_key:, attributes:, timestamp: nil)
-          normalized_shop_id = String(shop_id).delete_prefix(SHOP_GID_PREFIX)
-          unless NUMERIC_ID_PATTERN.match?(normalized_shop_id)
-            raise Errors::InvalidAppEventError, "shop_id must be a numeric ID or Shopify Shop GID"
-          end
+        def build(myshopify_domain:, event_handle:, idempotency_key:, attributes:, timestamp: nil)
+          validated_domain = Utils::ShopValidator.sanitize!(myshopify_domain)
 
           if event_handle.strip.empty?
             raise Errors::InvalidAppEventError, "event_handle must not be blank"
@@ -43,7 +38,7 @@ module ShopifyAPI
           event_timestamp = timestamp || Time.now
 
           payload = {
-            shop_id: normalized_shop_id,
+            myshopify_domain: validated_domain,
             event_handle: event_handle,
             timestamp: event_timestamp.utc.strftime("%FT%T.%LZ"),
             idempotency_key: idempotency_key,

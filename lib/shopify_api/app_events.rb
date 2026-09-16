@@ -7,9 +7,6 @@ module ShopifyAPI
 
     # App Events is served by the Global API, which is versioned independently from the Admin API.
     EVENTS_PATH = "events"
-    IDEMPOTENCY_CONFLICT_MAX_RETRIES = 2
-    IDEMPOTENCY_CONFLICT_RETRY_WAIT_TIME = 1
-    MAX_IDEMPOTENCY_CONFLICT_RETRY_WAIT_TIME = 5
     # The server sets `Idempotent-Replayed`; shopify.dev documents `Idempotent-Replay`.
     # Both carry the string `true`. HttpResponse#headers keys are downcased by Net::HTTPHeader#to_h.
     REPLAY_HEADERS = T.let(["idempotent-replayed", "idempotent-replay"], T::Array[String])
@@ -19,46 +16,32 @@ module ShopifyAPI
 
       sig do
         params(
-          shop_id: T.any(String, Integer),
+          myshopify_domain: String,
           event_handle: String,
           idempotency_key: String,
           attributes: T::Hash[T.any(String, Symbol), T.untyped],
+          access_token: String,
           timestamp: T.nilable(Time),
         ).returns(LogResult)
       end
-      def log(shop_id:, event_handle:, idempotency_key:, attributes:, timestamp: nil)
+      def log(myshopify_domain:, event_handle:, idempotency_key:, attributes:, access_token:, timestamp: nil)
         unless ShopifyAPI::Context.setup?
           raise ShopifyAPI::Errors::ContextNotSetupError,
             "ShopifyAPI::Context not setup, please call ShopifyAPI::Context.setup"
         end
 
+        if access_token.strip.empty?
+          raise ShopifyAPI::Errors::MissingRequiredArgumentError, "access_token argument is required"
+        end
+
         payload = EventPayload.build(
-          shop_id: shop_id,
+          myshopify_domain: myshopify_domain,
           event_handle: event_handle,
           idempotency_key: idempotency_key,
           attributes: attributes,
           timestamp: timestamp,
         )
-        token = Auth::GlobalApiClientCredentials.global_api_client_credentials
-        response = begin
-          post_event_with_retries(payload: payload, token: token)
-        rescue ShopifyAPI::Errors::HttpResponseError => error
-          raise unless error.code == 401
-
-          replacement_token = Auth::GlobalApiClientCredentials.global_api_client_credentials(
-            rejected_access_token: token.access_token,
-          )
-          begin
-            post_event_with_retries(payload: payload, token: replacement_token)
-          rescue ShopifyAPI::Errors::HttpResponseError => retry_error
-            if retry_error.code == 401
-              Auth::GlobalApiClientCredentials.clear_cached_token_if_matches!(
-                access_token: replacement_token.access_token,
-              )
-            end
-            raise
-          end
-        end
+        response = post_event(payload: payload, access_token: access_token)
 
         LogResult.new(replayed: replayed?(response))
       end
@@ -68,13 +51,13 @@ module ShopifyAPI
       sig do
         params(
           payload: T::Hash[Symbol, T.untyped],
-          token: Auth::GlobalApiToken,
+          access_token: String,
         ).returns(Clients::HttpResponse)
       end
-      def post_event(payload:, token:)
+      def post_event(payload:, access_token:)
         client = Clients::GlobalApiClient.new(
           base_path: "/app/#{Context.global_api_version}",
-          access_token: token.access_token,
+          access_token: access_token,
         )
         client.request(
           Clients::HttpRequest.new(
@@ -84,25 +67,6 @@ module ShopifyAPI
             body_type: "application/json",
           ),
         )
-      end
-
-      sig do
-        params(
-          payload: T::Hash[Symbol, T.untyped],
-          token: Auth::GlobalApiToken,
-        ).returns(Clients::HttpResponse)
-      end
-      def post_event_with_retries(payload:, token:)
-        retries = 0
-        loop do
-          return post_event(payload: payload, token: token)
-        rescue ShopifyAPI::Errors::HttpResponseError => error
-          raise unless error.code == 409 && retries < IDEMPOTENCY_CONFLICT_MAX_RETRIES
-
-          retries += 1
-          retry_after = error.response.retry_request_after || IDEMPOTENCY_CONFLICT_RETRY_WAIT_TIME
-          sleep(retry_after.clamp(0, MAX_IDEMPOTENCY_CONFLICT_RETRY_WAIT_TIME))
-        end
       end
 
       sig { params(response: Clients::HttpResponse).returns(T::Boolean) }

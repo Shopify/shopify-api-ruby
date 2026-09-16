@@ -1,38 +1,31 @@
 # Logging App Events
 
-Use `ShopifyAPI.log` to send an App Event to Shopify for a shop where your app is installed. The library mints and caches the app-level Global API access token from the `api_key` and `api_secret_key` configured in `ShopifyAPI::Context`.
+`ShopifyAPI.log` sends one App Events request using the Global API access token you pass in. Mint the token with `ShopifyAPI::Auth::GlobalApiClientCredentials.global_api_client_credentials`, which returns a `ShopifyAPI::Auth::GlobalApiToken` (`access_token`, `expires_at`) and mints a new token on every call. The library does not cache tokens; cache `access_token` until `expires_at` in your application.
 
 `ShopifyAPI.log` is unrelated to `ShopifyAPI::Logger`. `ShopifyAPI::Logger` writes diagnostic output from this library; `ShopifyAPI.log` sends partner-facing App Events to Shopify.
 
-## Find the shop ID
+## Identify the shop
 
-The App Events API requires a numeric shop ID or a Shop GID. If your application only stores the shop domain, query the Admin GraphQL API for the ID:
+Pass `myshopify_domain:` as `example.myshopify.com`. The library also accepts `https://example.myshopify.com` and `https://admin.shopify.com/store/example` and normalizes them to `example.myshopify.com`.
 
-```graphql
-{
-  shop {
-    id
-  }
-}
-```
-
-The response contains a value such as `gid://shopify/Shop/23423423`. This library does not resolve a shop domain to an ID.
+Numeric IDs, Shop GIDs, and untrusted domains raise `ShopifyAPI::Errors::InvalidShopError`.
 
 ## Log an event
 
 ```ruby
+token = ShopifyAPI::Auth::GlobalApiClientCredentials.global_api_client_credentials
+
 result = ShopifyAPI.log(
-  shop_id: "gid://shopify/Shop/23423423",
+  myshopify_domain: "example.myshopify.com",
   event_handle: "onboarding_completed",
   idempotency_key: "onboard_23423423_v3",
   attributes: {
     onboarding_version: 3,
     source: "embedded_app",
   },
+  access_token: token.access_token,
   timestamp: Time.now,
 )
-
-puts "Shopify replayed this event" if result.replayed
 ```
 
 The app must be installed on the target shop. The App Events API requires `attributes`, so pass `{}` when the event carries no data. `timestamp` is optional; the library uses the current time when you omit it.
@@ -66,10 +59,10 @@ ShopifyAPI::Context.setup(
 
 `global_api_url` must be an absolute HTTPS URL.
 
-## Errors and retries
+## Errors
 
-`ShopifyAPI.log` returns `ShopifyAPI::AppEvents::LogResult` after Shopify accepts the event. It raises `ShopifyAPI::Errors::HttpResponseError` for HTTP errors, including `429` responses, which it does not retry.
+`ShopifyAPI.log` returns `ShopifyAPI::AppEvents::LogResult` after Shopify accepts the event. It raises `ShopifyAPI::Errors::HttpResponseError` for every HTTP error, including `401`, `409`, and `429`. It sends exactly one request and never retries.
 
-It refreshes the Global API token once after an event request returns `401`. It retries `409` idempotency conflicts twice and caps each `Retry-After` wait at five seconds.
+It raises `ShopifyAPI::Errors::MissingRequiredArgumentError` for a blank `access_token`. After a `401`, mint a new token in your application and call `ShopifyAPI.log` again.
 
 It raises `ShopifyAPI::Errors::RequestAccessTokenError` when a successful token response does not contain an access token.
