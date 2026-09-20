@@ -67,6 +67,29 @@ module ShopifyAPITest
         assert_equal(expected_session, session)
       end
 
+      def test_refresh_access_token_exposes_request_id
+        request_id = "req-#{SecureRandom.hex(8)}"
+
+        stub_request(:post, "https://#{@shop}/admin/oauth/access_token")
+          .with(body: @refresh_token_request)
+          .to_return(
+            body: @refresh_token_response.to_json,
+            headers: {
+              "Content-Type" => "application/json",
+              "x-request-id" => request_id,
+            },
+          )
+
+        session = Time.stub(:now, @stubbed_time_now) do
+          ShopifyAPI::Auth::RefreshToken.refresh_access_token(
+            shop: @shop,
+            refresh_token: @refresh_token,
+          )
+        end
+
+        assert_equal(request_id, session.request_id)
+      end
+
       def test_refresh_access_token_context_not_setup
         modify_context(api_key: "", api_secret_key: "", host: "")
 
@@ -95,6 +118,32 @@ module ShopifyAPITest
             refresh_token: @refresh_token,
           )
         end
+      end
+
+      def test_refresh_access_token_error_exposes_request_id
+        request_id = "req-#{SecureRandom.hex(8)}"
+
+        stub_request(:post, "https://#{@shop}/admin/oauth/access_token")
+          .with(body: @refresh_token_request)
+          .to_return(
+            status: 401,
+            body: { error: "unauthorized" }.to_json,
+            headers: {
+              "Content-Type" => "application/json",
+              "x-request-id" => request_id,
+            },
+          )
+
+        ShopifyAPI::Context.logger.expects(:debug).with(regexp_matches(/Failed to refresh access token/))
+
+        error = assert_raises(ShopifyAPI::Errors::HttpResponseError) do
+          ShopifyAPI::Auth::RefreshToken.refresh_access_token(
+            shop: @shop,
+            refresh_token: @refresh_token,
+          )
+        end
+
+        assert_equal(request_id, error.request_id)
       end
     end
   end

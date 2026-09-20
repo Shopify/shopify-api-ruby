@@ -47,10 +47,12 @@ module ShopifyAPI
 
           session_params = T.cast(response.body, T::Hash[String, T.untyped]).to_h
 
-          Session.from(
+          session = Session.from(
             shop: validated_shop,
             access_token_response: Oauth::AccessTokenResponse.from_hash(session_params),
           )
+          session.request_id = response.request_id
+          session
         end
       end
     end

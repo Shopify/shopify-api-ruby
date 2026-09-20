@@ -2,6 +2,7 @@
 
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
+- [#1463](https://github.com/Shopify/shopify-api-ruby/pull/1463) Expose Shopify request ID on refreshed sessions and HTTP response errors.
 
 ## 16.3.0 (2026-08-04)
 - [#1443](https://github.com/Shopify/shopify-api-ruby/pull/1443) Add `ShopifyAPI::Utils::ShopValidator` with `sanitize_shop_domain` and `sanitize!`.

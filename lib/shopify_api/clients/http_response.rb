@@ -51,6 +51,11 @@ module ShopifyAPI
         code >= 200 && code <= 299
       end
 
+      sig { returns(T.nilable(String)) }
+      def request_id
+        headers["x-request-id"]&.first
+      end
+
       private
 
       sig { returns(T::Array[T.nilable(String)]) }
