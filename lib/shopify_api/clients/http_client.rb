@@ -8,14 +8,20 @@ module ShopifyAPI
 
       RETRY_WAIT_TIME = 1
 
-      sig { params(base_path: String, session: T.nilable(Auth::Session)).void }
-      def initialize(base_path:, session: nil)
-        session ||= Context.active_session
-        raise Errors::NoActiveSessionError, "No passed or active session" unless session
+      sig do
+        params(
+          base_path: String,
+          session: T.nilable(Auth::Session),
+          base_uri: T.nilable(String),
+          access_token: T.nilable(String),
+        ).void
+      end
+      def initialize(base_path:, session: nil, base_uri: nil, access_token: nil)
+        session ||= Context.active_session unless base_uri
+        raise Errors::NoActiveSessionError, "No passed or active session" unless session || base_uri
 
         api_host = Context.api_host
-
-        @base_uri = T.let("https://#{api_host || session.shop}", String)
+        @base_uri = T.let(base_uri || "https://#{api_host || T.must(session).shop}", String)
         @base_uri_and_path = T.let("#{@base_uri}#{base_path}", String)
 
         user_agent_prefix = Context.user_agent_prefix.nil? ? "" : "#{Context.user_agent_prefix} | "
@@ -25,10 +31,14 @@ module ShopifyAPI
           "Accept": "application/json",
         }, T::Hash[T.any(Symbol, String), T.untyped])
 
-        @headers["Host"] = session.shop unless api_host.nil?
+        if base_uri
+          @headers["Authorization"] = "Bearer #{access_token}" if access_token
+        else
+          @headers["Host"] = T.must(session).shop unless api_host.nil?
 
-        unless session.access_token.nil? || T.must(session.access_token).empty?
-          @headers["X-Shopify-Access-Token"] = T.cast(session.access_token, String)
+          unless T.must(session).access_token.nil? || T.must(T.must(session).access_token).empty?
+            @headers["X-Shopify-Access-Token"] = T.cast(T.must(session).access_token, String)
+          end
         end
       end
 
@@ -54,6 +64,7 @@ module ShopifyAPI
             headers: headers,
             query: request.query,
             body: request.body.class == Hash ? T.unsafe(request.body).to_json : request.body,
+            timeout: request.timeout,
           ), HTTParty::Response)
 
           begin

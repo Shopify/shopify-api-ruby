@@ -13,6 +13,7 @@ module ShopifyAPI
       prop :query, T.nilable(T::Hash[T.any(Symbol, String), T.untyped])
       prop :extra_headers, T.nilable(T::Hash[T.any(Symbol, String), T.untyped])
       prop :tries, Integer, default: 1
+      prop :timeout, T.nilable(T.any(Integer, Float)), default: nil
 
       sig { void }
       def verify

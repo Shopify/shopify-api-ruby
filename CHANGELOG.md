@@ -2,6 +2,7 @@
 
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
+- [#1459](https://github.com/Shopify/shopify-api-ruby/pull/1459) Add `ShopifyAPI.log` and Global API client credentials for App Events.
 
 ## 16.3.0 (2026-08-04)
 - [#1443](https://github.com/Shopify/shopify-api-ruby/pull/1443) Add `ShopifyAPI::Utils::ShopValidator` with `sanitize_shop_domain` and `sanitize!`.

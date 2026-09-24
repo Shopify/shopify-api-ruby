@@ -9,4 +9,5 @@ You can follow our getting started guide to learn how to use this library.
 - [REST Admin API](usage/rest.md)
 - [Make a GraphQL API call](usage/graphql.md)
 - [Make a Storefront API call](usage/graphql_storefront.md)
+- [App Events](usage/app_events.md)
 - [Webhooks](usage/webhooks.md)
