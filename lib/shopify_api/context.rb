@@ -26,6 +26,8 @@ module ShopifyAPI
 
     @rest_resource_loader = T.let(nil, T.nilable(Zeitwerk::Loader))
     @expiring_offline_access_tokens = T.let(false, T::Boolean)
+    @open_timeout = T.let(nil, T.nilable(T.any(Integer, Float)))
+    @read_timeout = T.let(nil, T.nilable(T.any(Integer, Float)))
 
     class << self
       extend T::Sig
@@ -49,6 +51,8 @@ module ShopifyAPI
           response_as_struct: T.nilable(T::Boolean),
           rest_disabled: T.nilable(T::Boolean),
           expiring_offline_access_tokens: T.nilable(T::Boolean),
+          open_timeout: T.nilable(T.any(Integer, Float)),
+          read_timeout: T.nilable(T.any(Integer, Float)),
         ).void
       end
       def setup(
@@ -68,7 +72,9 @@ module ShopifyAPI
         api_host: nil,
         response_as_struct: false,
         rest_disabled: false,
-        expiring_offline_access_tokens: false
+        expiring_offline_access_tokens: false,
+        open_timeout: nil,
+        read_timeout: nil
       )
         unless ShopifyAPI::AdminVersions::SUPPORTED_ADMIN_VERSIONS.include?(api_version)
           raise Errors::UnsupportedVersionError,
@@ -90,6 +96,8 @@ module ShopifyAPI
         @response_as_struct = response_as_struct
         @rest_disabled = rest_disabled
         @expiring_offline_access_tokens = T.must(expiring_offline_access_tokens)
+        @open_timeout = open_timeout
+        @read_timeout = read_timeout
         @log_level = if valid_log_level?(log_level)
           log_level.to_sym
         else
@@ -158,6 +166,10 @@ module ShopifyAPI
 
       sig { returns(T::Boolean) }
       attr_reader :expiring_offline_access_tokens
+
+      # Seconds to wait for a connection to open, and for each read, on API requests. nil keeps Net::HTTP's default.
+      sig { returns(T.nilable(T.any(Integer, Float))) }
+      attr_reader :open_timeout, :read_timeout
 
       sig { returns(T::Boolean) }
       def embedded?

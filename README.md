@@ -61,6 +61,18 @@ ShopifyAPI::Context.setup(
 )
 ```
 
+By default, API requests use Net::HTTP's timeouts (60 seconds per read). To fail faster when Shopify is slow to respond, set `open_timeout` and/or `read_timeout` in seconds:
+
+```ruby
+ShopifyAPI::Context.setup(
+  # other params...
+  open_timeout: 5,
+  read_timeout: 10,
+)
+```
+
+A request that times out raises `Net::OpenTimeout` or `Net::ReadTimeout`. It is not retried.
+
 ### Performing OAuth
 
 You need to go through OAuth as described [here](https://shopify.dev/docs/apps/auth/oauth) to create sessions for shops using your app.
