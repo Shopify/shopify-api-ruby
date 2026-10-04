@@ -2,7 +2,7 @@
 
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
-- [#PR](https://github.com/Shopify/shopify-api-ruby/pull/PR) Add optional `open_timeout` and `read_timeout` to `ShopifyAPI::Context.setup`, applied to every API request. Unset, requests keep Net::HTTP's defaults.
+- [#1467](https://github.com/Shopify/shopify-api-ruby/pull/1467) Add optional `open_timeout` and `read_timeout` to `ShopifyAPI::Context.setup`, applied to every API request. Unset, requests keep Net::HTTP's defaults.
 
 ## 16.3.0 (2026-08-04)
 - [#1443](https://github.com/Shopify/shopify-api-ruby/pull/1443) Add `ShopifyAPI::Utils::ShopValidator` with `sanitize_shop_domain` and `sanitize!`.
