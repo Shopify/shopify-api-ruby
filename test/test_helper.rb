@@ -54,6 +54,8 @@ module Test
           response_as_struct: T.nilable(T::Boolean),
           api_host: T.nilable(String),
           expiring_offline_access_tokens: T.nilable(T::Boolean),
+          open_timeout: T.nilable(T.any(Integer, Float)),
+          read_timeout: T.nilable(T.any(Integer, Float)),
         ).void
       end
       def modify_context(
@@ -70,7 +72,9 @@ module Test
         old_api_secret_key: nil,
         response_as_struct: nil,
         api_host: nil,
-        expiring_offline_access_tokens: nil
+        expiring_offline_access_tokens: nil,
+        open_timeout: nil,
+        read_timeout: nil
       )
         ShopifyAPI::Context.setup(
           api_key: api_key ? api_key : ShopifyAPI::Context.api_key,
@@ -93,6 +97,8 @@ module Test
             else
               ShopifyAPI::Context.expiring_offline_access_tokens
             end,
+          open_timeout: open_timeout || ShopifyAPI::Context.open_timeout,
+          read_timeout: read_timeout || ShopifyAPI::Context.read_timeout,
         )
       end
     end

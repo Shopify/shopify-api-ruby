@@ -310,6 +310,34 @@ module ShopifyAPITest
         assert_equal("nested_value", response.body.key.nested_key)
       end
 
+      def test_request_applies_timeouts_from_context
+        modify_context(open_timeout: 5, read_timeout: 10)
+        apply_simple_http_stub
+
+        Net::HTTP.any_instance.expects(:open_timeout=).with(5)
+        Net::HTTP.any_instance.expects(:read_timeout=).with(10)
+
+        verify_http_request
+      end
+
+      def test_request_keeps_net_http_timeouts_when_context_has_none
+        apply_simple_http_stub
+
+        Net::HTTP.any_instance.expects(:open_timeout=).never
+        Net::HTTP.any_instance.expects(:read_timeout=).never
+
+        verify_http_request
+      end
+
+      def test_request_does_not_retry_a_timeout
+        stub_request(@request.http_method, "https://#{@shop}#{@base_path}/#{@request.path}")
+          .with(query: @request.query)
+          .to_raise(Net::ReadTimeout).then
+          .to_return(body: @success_body.to_json, headers: @response_headers)
+
+        assert_raises(Net::ReadTimeout) { @client.request(@request) }
+      end
+
       private
 
       def simple_http_test(http_method)
