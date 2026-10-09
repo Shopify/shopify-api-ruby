@@ -2,6 +2,7 @@
 
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
+- [#1468](https://github.com/Shopify/shopify-api-ruby/pull/1468) Support local shops on `my.shop.devns.shop` using the optional `dev_server` shop helpers, with compatibility for older versions. `devns.shop` hosts are accepted only when running under `dev`; `my.shop.dev` hosts keep working whenever `DevServer` is loaded, but only exact `<shop>.my.shop.dev` hosts are now rewritten for local development.
 
 ## 16.3.0 (2026-08-04)
 - [#1443](https://github.com/Shopify/shopify-api-ruby/pull/1443) Add `ShopifyAPI::Utils::ShopValidator` with `sanitize_shop_domain` and `sanitize!`.

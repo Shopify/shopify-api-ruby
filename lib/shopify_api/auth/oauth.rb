@@ -116,9 +116,12 @@ module ShopifyAPI
 
         sig { params(shop: String).returns(String) }
         def auth_base_uri(shop)
-          return "https://#{shop}/admin" unless defined?(DevServer) && shop.include?(".my.shop.dev")
+          return "https://#{shop}/admin" unless Utils::FirstPartyDevelopment.shop_domain?(shop)
 
-          # For first-party apps in development only, we leverage DevServer to build the admin base URI
+          dev_core = Utils::FirstPartyDevelopment.core
+          return dev_core.admin_url(shop) if dev_core.respond_to?(:admin_url)
+
+          # Older dev_server versions do not have the shared admin URL helper.
           admin_web = T.unsafe(Object.const_get("DevServer")) # rubocop:disable Sorbet/ConstantsFromStrings
             .new("admin-web")
           admin_host = admin_web.host!(nonstandard_host_prefix: "admin")
