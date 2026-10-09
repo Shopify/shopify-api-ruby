@@ -29,6 +29,7 @@ module ShopifyAPI
         def sanitize_shop_domain(shop_domain, myshopify_domain: nil)
           uri = uri_from_shop_domain(shop_domain, myshopify_domain)
           return nil if uri.nil? || uri.host.nil? || uri.host.empty?
+          return uri.host if FirstPartyDevelopment.shop_domain?(uri.host)
 
           trusted_domains(myshopify_domain).each do |trusted_domain|
             host = T.cast(uri.host, String)

@@ -131,17 +131,27 @@ module ShopifyAPI
         ).returns(T::Hash[T.any(Symbol, String), T.untyped])
       end
       def append_first_party_development_headers(headers, parsed_uri)
-        return headers unless defined?(DevServer)
-        return headers unless headers["Host"]&.include?(".my.shop.dev") || parsed_uri.host&.include?(".my.shop.dev")
-        return headers if headers["x-forwarded-host"]&.include?(".my.shop.dev")
+        shop = headers["Host"] || parsed_uri.host
+        return headers unless Utils::FirstPartyDevelopment.shop_domain?(shop)
+
+        forwarded_host = headers.find { |name, _| name.to_s.downcase == "x-forwarded-host" }&.last
+        return headers if Utils::FirstPartyDevelopment.shop_domain?(forwarded_host)
+
+        headers = headers.reject { |name, _| name.to_s.downcase == "x-forwarded-host" }
+        dev_core = Utils::FirstPartyDevelopment.core
+        if dev_core.respond_to?(:shop_request)
+          shop_uri = parsed_uri.dup
+          shop_uri.host = shop
+          rewritten = dev_core.shop_request(shop_uri.to_s, headers)
+          return headers unless rewritten
+
+          # Keep the connection URL (including an explicit api_host). The local
+          # proxy selects Core using Host and the shop using X-Forwarded-Host.
+          return rewritten.headers.merge("Host" => URI(rewritten.url).host)
+        end
 
         # These headers are only used for first party applications in development mode
-        headers["x-forwarded-host"] = headers["Host"] || parsed_uri.host
-        headers["Host"] = T.unsafe(
-          Object.const_get("DevServer::Core"), # rubocop:disable Sorbet/ConstantsFromStrings
-        ).new.host!(:app)
-
-        headers
+        headers.merge("x-forwarded-host" => shop, "Host" => dev_core.host!(:app))
       end
     end
   end
