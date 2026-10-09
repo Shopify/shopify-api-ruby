@@ -148,6 +148,80 @@ module ShopifyAPITest
       end
     end
 
+    def test_shop_dev_requests_keep_working_without_using_dev
+      shop = "shop1.my.shop.dev"
+      core = mock("Core")
+      core.expects(:host!).with(:app).returns("app.shop.dev")
+      with_dev_server(core, enabled: false) do
+        assert_local_request(shop, target: shop, core_host: "app.shop.dev")
+      end
+    end
+
+    def test_shop_dev_oauth_keeps_working_without_using_dev
+      shop = "shop1.my.shop.dev"
+      with_dev_server(mock("Core"), enabled: false) do |dev_server|
+        admin = mock("admin-web")
+        dev_server.expects(:new).with("admin-web").returns(admin)
+        admin.expects(:host!).with(nonstandard_host_prefix: "admin").returns("admin.shop.dev")
+        assert_oauth_route(shop, "admin.shop.dev", "/store/shop1/oauth/authorize")
+      end
+    end
+
+    def test_devns_requests_are_not_rewritten_without_using_dev
+      shop = "shop1.my.shop.devns.shop"
+      with_dev_server(mock("Core"), enabled: false) do
+        stub_request(:get, "https://#{shop}/admin/api/test.json")
+          .with { |req| !req.headers.key?("X-Forwarded-Host") }.to_return(body: "{}")
+        client_for(shop).request(request)
+        assert_oauth_route(shop, shop, "/admin/oauth/authorize")
+      end
+    end
+
+    def test_dev_server_without_a_core_helper_uses_dev_server_core
+      SHOP_HOSTS.each do |shop|
+        core = mock("Oldest Core")
+        core.expects(:host!).with(:app).returns("app.shop.dev")
+        with_dev_server(core, core_method: false) do
+          assert_equal(shop, ShopifyAPI::Utils::ShopValidator.sanitize!(shop))
+          assert_local_request(shop, target: shop, core_host: "app.shop.dev")
+        end
+      end
+    end
+
+    def test_requests_fall_back_to_the_app_host_when_the_shared_rewrite_declines
+      shop = "shop1.my.shop.devns.shop"
+      core = mock("Core")
+      core.stubs(:shop_domain?).with(shop).returns(true)
+      core.expects(:shop_request).returns(nil)
+      core.expects(:host!).with(:app).returns("app.shop.devns.shop")
+      with_dev_server(core) do
+        assert_local_request(shop, target: shop, core_host: "app.shop.devns.shop")
+      end
+    end
+
+    def test_shared_rewrite_keeps_other_headers_and_the_core_port
+      shop = "shop1.my.shop.devns.shop"
+      core = mock("Core")
+      core.stubs(:shop_domain?).with(shop).returns(true)
+      core.expects(:shop_request).returns(
+        Struct.new(:url, :headers).new("https://app.shop.devns.shop:8443/admin/api/test.json", {
+          "host" => "ignored.example.com",
+          "x-forwarded-host" => shop,
+          "x-shopify-access-token" => "rewritten-token",
+        }),
+      )
+      with_dev_server(core) do
+        expected = stub_request(:get, "https://#{shop}/admin/api/test.json").with(headers: {
+          "Host" => "app.shop.devns.shop:8443",
+          "X-Forwarded-Host" => shop,
+          "X-Shopify-Access-Token" => "rewritten-token",
+          "Accept" => "application/json",
+        }).to_return(body: "{}")
+        client_for(shop).request(request)
+        assert_requested(expected)
+      end
+    end
+
     private
 
     def client_for(shop)

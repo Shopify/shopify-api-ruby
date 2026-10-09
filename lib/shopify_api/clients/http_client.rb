@@ -131,27 +131,47 @@ module ShopifyAPI
         ).returns(T::Hash[T.any(Symbol, String), T.untyped])
       end
       def append_first_party_development_headers(headers, parsed_uri)
-        shop = headers["Host"] || parsed_uri.host
+        shop = header_value(headers, "Host") || parsed_uri.host
         return headers unless Utils::FirstPartyDevelopment.shop_domain?(shop)
+        return headers if Utils::FirstPartyDevelopment.shop_domain?(header_value(headers, "X-Forwarded-Host"))
 
-        forwarded_host = headers.find { |name, _| name.to_s.downcase == "x-forwarded-host" }&.last
-        return headers if Utils::FirstPartyDevelopment.shop_domain?(forwarded_host)
-
-        headers = headers.reject { |name, _| name.to_s.downcase == "x-forwarded-host" }
         dev_core = Utils::FirstPartyDevelopment.core
+        return headers unless dev_core
+
+        headers = without_headers(headers, ["X-Forwarded-Host"])
         if dev_core.respond_to?(:shop_request)
           shop_uri = parsed_uri.dup
           shop_uri.host = shop
           rewritten = dev_core.shop_request(shop_uri.to_s, headers)
-          return headers unless rewritten
-
-          # Keep the connection URL (including an explicit api_host). The local
-          # proxy selects Core using Host and the shop using X-Forwarded-Host.
-          return rewritten.headers.merge("Host" => URI(rewritten.url).host)
+          if rewritten
+            # Keep the connection URL (including an explicit api_host). The local
+            # proxy selects Core using Host and the shop using X-Forwarded-Host.
+            rewritten_headers = T.let(rewritten.headers.to_h, T::Hash[T.any(Symbol, String), T.untyped])
+            core_uri = URI(rewritten.url)
+            core_host = core_uri.port == core_uri.default_port ? core_uri.host : "#{core_uri.host}:#{core_uri.port}"
+            headers = without_headers(headers, [*rewritten_headers.keys.map(&:to_s), "Host"])
+            return headers.merge(without_headers(rewritten_headers, ["Host"]), "Host" => core_host)
+          end
         end
 
         # These headers are only used for first party applications in development mode
-        headers.merge("x-forwarded-host" => shop, "Host" => dev_core.host!(:app))
+        without_headers(headers, ["Host"]).merge("x-forwarded-host" => shop, "Host" => dev_core.host!(:app))
+      end
+
+      sig { params(headers: T::Hash[T.any(Symbol, String), T.untyped], name: String).returns(T.untyped) }
+      def header_value(headers, name)
+        headers.find { |key, _| key.to_s.casecmp?(name) }&.last
+      end
+
+      sig do
+        params(
+          headers: T::Hash[T.any(Symbol, String), T.untyped],
+          names: T::Array[String],
+        ).returns(T::Hash[T.any(Symbol, String), T.untyped])
+      end
+      def without_headers(headers, names)
+        names = names.map(&:downcase)
+        headers.reject { |key, _| names.include?(key.to_s.downcase) }
       end
     end
   end
