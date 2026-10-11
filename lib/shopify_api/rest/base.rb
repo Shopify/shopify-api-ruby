@@ -87,17 +87,21 @@ module ShopifyAPI
         end
         def base_find(session: nil, ids: {}, params: {})
           session ||= ShopifyAPI::Context.active_session
+          response_state_generation = ShopifyAPI::Context.rest_response_state_generation
 
           client = ShopifyAPI::Clients::Rest::Admin.new(session: session)
 
           path = T.must(get_path(http_method: :get, operation: :get, ids: ids))
           response = client.get(path: path, query: params.compact, headers: headers)
 
-          instance_variable_get(:"@prev_page_info").value = response.prev_page_info
-          instance_variable_get(:"@next_page_info").value = response.next_page_info
+          instance_variable_get(:"@prev_page_info").value = [response_state_generation, response.prev_page_info]
+          instance_variable_get(:"@next_page_info").value = [response_state_generation, response.next_page_info]
 
-          instance_variable_get(:"@retry_request_after").value = response.retry_request_after
-          instance_variable_get(:"@api_call_limit").value = response.api_call_limit
+          instance_variable_get(:"@retry_request_after").value = [
+            response_state_generation,
+            response.retry_request_after,
+          ]
+          instance_variable_get(:"@api_call_limit").value = [response_state_generation, response.api_call_limit]
 
           create_instances_from_response(response: response, session: T.must(session))
         end
@@ -124,38 +128,47 @@ module ShopifyAPI
 
         sig { returns(T.nilable(String)) }
         def prev_page_info
-          instance_variable_get(:"@prev_page_info").value
+          response_metadata(:@prev_page_info)
         end
 
         sig { returns(T.nilable(String)) }
         def next_page_info
-          instance_variable_get(:"@next_page_info").value
+          response_metadata(:@next_page_info)
         end
 
         sig { returns(T::Boolean) }
         def prev_page?
-          !instance_variable_get(:"@prev_page_info").value.nil?
+          !prev_page_info.nil?
         end
 
         sig { returns(T::Boolean) }
         def next_page?
-          !instance_variable_get(:"@next_page_info").value.nil?
+          !next_page_info.nil?
         end
 
         sig { returns T.nilable(Float) }
         def retry_request_after
-          instance_variable_get(:"@retry_request_after").value
+          response_metadata(:@retry_request_after)
         end
 
         sig { returns T.nilable(T::Hash[String, Integer]) }
         def api_call_limit
-          instance_variable_get(:"@api_call_limit").value
+          response_metadata(:@api_call_limit)
         end
 
         sig { params(attribute: Symbol).returns(T::Boolean) }
         def has_many?(attribute)
           @has_many.include?(attribute)
         end
+
+        sig { params(attribute: Symbol).returns(T.untyped) }
+        def response_metadata(attribute)
+          value = instance_variable_get(attribute).value
+          return nil unless value.is_a?(Array) && value[0] == ShopifyAPI::Context.rest_response_state_generation
+
+          value[1]
+        end
+        private :response_metadata
 
         sig { params(attribute: Symbol).returns(T::Boolean) }
         def has_one?(attribute)
