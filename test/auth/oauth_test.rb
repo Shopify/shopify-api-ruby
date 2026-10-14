@@ -134,6 +134,63 @@ module ShopifyAPITest
         end
       end
 
+      def test_begin_auth_rejects_untrusted_shops
+        [
+          "example.com",
+          "myshopify.com",
+          "test-shop.notmyshopify.com",
+          "test-shop.myshopify.com.example.com",
+          "example.com/.myshopify.com",
+          "test-shop.myshopify.com@example.com",
+          "",
+        ].each do |shop|
+          assert_raises(ShopifyAPI::Errors::InvalidShopError, "expected #{shop.inspect} to be rejected") do
+            ShopifyAPI::Auth::Oauth.begin_auth(shop: shop, redirect_path: "/redirect")
+          end
+        end
+      end
+
+      def test_begin_auth_normalizes_full_shop_urls
+        [
+          "https://test-shop.myshopify.com",
+          "https://Test-Shop.MyShopify.com/",
+          "  test-shop.myshopify.com  ",
+          "https://admin.shopify.com/store/test-shop",
+        ].each do |shop|
+          result = ShopifyAPI::Auth::Oauth.begin_auth(shop: shop, redirect_path: "/redirect")
+          verify_oauth_begin(auth_route: result[:auth_route], cookie: result[:cookie], is_online: true)
+        end
+      end
+
+      def test_begin_auth_supports_my_shop_dev_without_dev_server
+        result = ShopifyAPI::Auth::Oauth.begin_auth(shop: "test-shop.my.shop.dev", redirect_path: "/redirect")
+        result_uri = URI.parse(result[:auth_route])
+
+        assert_equal("test-shop.my.shop.dev", result_uri.host)
+        assert_equal("/admin/oauth/authorize", result_uri.path)
+      end
+
+      def test_begin_auth_supports_my_shop_dev_with_dev_server
+        dev_server = Class.new do
+          def initialize(name)
+            @name = name
+          end
+
+          def host!(nonstandard_host_prefix:)
+            "#{nonstandard_host_prefix}.#{@name}.shop.dev"
+          end
+        end
+        Object.const_set(:DevServer, dev_server)
+
+        result = ShopifyAPI::Auth::Oauth.begin_auth(shop: "test-shop.my.shop.dev", redirect_path: "/redirect")
+        result_uri = URI.parse(result[:auth_route])
+
+        assert_equal("admin.admin-web.shop.dev", result_uri.host)
+        assert_equal("/store/test-shop/oauth/authorize", result_uri.path)
+      ensure
+        Object.send(:remove_const, :DevServer) if Object.const_defined?(:DevServer, false)
+      end
+
       def test_validate_auth_callback_offline
         modify_context(is_embedded: false, expiring_offline_access_tokens: false)
 

@@ -2,6 +2,8 @@
 
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
+- `ShopifyAPI::Auth.embedded_app_url` now raises `ShopifyAPI::Errors::InvalidShopError` unless the decoded `host` is a trusted Shopify Admin host (see `ShopifyAPI::Utils::ShopValidator`). URLs for supported Admin hosts are unchanged.
+- `ShopifyAPI::Auth::Oauth.begin_auth` now validates and normalizes `shop` with `ShopifyAPI::Utils::ShopValidator.sanitize!`, and raises `ShopifyAPI::Errors::InvalidShopError` for untrusted domains.
 
 ## 16.3.0 (2026-08-04)
 - [#1443](https://github.com/Shopify/shopify-api-ruby/pull/1443) Add `ShopifyAPI::Utils::ShopValidator` with `sanitize_shop_domain` and `sanitize!`.
