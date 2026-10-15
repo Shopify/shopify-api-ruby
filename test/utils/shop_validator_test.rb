@@ -93,6 +93,59 @@ module ShopifyAPITest
         )
       end
 
+      def test_unified_admin_store_url_accepts_valid_handles
+        {
+          "https://admin.shopify.com/store/shop1" => "shop1.myshopify.com",
+          "https://admin.shopify.com/store/cool-shop/" => "cool-shop.myshopify.com",
+          "https://Admin.Shopify.com/store/Cool-Shop" => "cool-shop.myshopify.com",
+          "admin.shopify.com/store/1-shop" => "1-shop.myshopify.com",
+          "https://admin.shopify.com/store/shop1/apps/cool_app_hansel" => "shop1.myshopify.com",
+          "https://admin.web.my-spin.user.us.spin.dev/store/shop1" => "shop1.myshopify.com",
+        }.each do |shop, expected|
+          assert_equal(expected, ShopifyAPI::Utils::ShopValidator.sanitize!(shop))
+        end
+      end
+
+      def test_unified_admin_store_url_rejects_invalid_handles
+        [
+          "https://admin.shopify.com/store/bad.handle",
+          "https://admin.shopify.com/store/bad_handle",
+          "https://admin.shopify.com/store/-bad-handle",
+          "https://admin.shopify.com/store/bad%2Ehandle",
+          "https://admin.shopify.com/store/bad\\handle",
+          "https://admin.shopify.com/store/bad:handle",
+          "https://admin.shopify.com/store/",
+          "https://admin.shopify.com/apps/cool-app",
+          "https://admin.shopify.com",
+        ].each do |shop|
+          assert_nil(
+            ShopifyAPI::Utils::ShopValidator.sanitize_shop_domain(shop),
+            "expected #{shop.inspect} to be rejected",
+          )
+          assert_raises(ShopifyAPI::Errors::InvalidShopError, "expected #{shop.inspect} to be rejected") do
+            ShopifyAPI::Utils::ShopValidator.sanitize!(shop)
+          end
+        end
+      end
+
+      def test_rejects_hosts_with_non_hostname_characters
+        [
+          "bad%5Chost.myshopify.com",
+          "bad%2Fhost.myshopify.com",
+          "bad%40host.myshopify.com",
+          "bad;host.myshopify.com",
+          "bad,host.myshopify.com",
+          "bad!host.myshopify.com",
+          "bad+host.myshopify.com",
+          "bad=host.myshopify.com",
+        ].each do |shop|
+          assert_nil(
+            ShopifyAPI::Utils::ShopValidator.sanitize_shop_domain(shop),
+            "expected #{shop.inspect} to be rejected",
+          )
+        end
+      end
+
       def test_sanitize_shop_domain_with_custom_myshopify_domain
         assert_equal(
           "mystore.myshopify.com",

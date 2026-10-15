@@ -140,6 +140,17 @@ module ShopifyAPITest
         end
       end
 
+      def test_begin_auth_rejects_unified_admin_urls_with_invalid_handles
+        [
+          "admin.shopify.com/store/bad.handle",
+          "https://admin.shopify.com/store/bad\\handle",
+        ].each do |shop|
+          assert_raises(ShopifyAPI::Errors::InvalidShopError, "expected #{shop.inspect} to be rejected") do
+            ShopifyAPI::Auth::Oauth.begin_auth(shop: shop, redirect_path: "/redirect")
+          end
+        end
+      end
+
       def test_begin_auth_normalizes_full_shop_urls
         [
           "https://test-shop.myshopify.com",
