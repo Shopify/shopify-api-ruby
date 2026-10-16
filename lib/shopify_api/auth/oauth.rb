@@ -33,6 +33,8 @@ module ShopifyAPI
           end
           raise Errors::UnsupportedOauthError, "Cannot perform OAuth for private apps." if Context.private?
 
+          shop = Utils::ShopValidator.sanitize!(shop)
+
           state = SecureRandom.alphanumeric(NONCE_LENGTH)
 
           cookie = SessionCookie.new(value: state, expires: Time.now + 60)
