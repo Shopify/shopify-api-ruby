@@ -17,6 +17,10 @@ module ShopifyAPI
         T::Array[String],
       )
 
+      HOSTNAME_REGEX = T.let(/\A[a-z0-9_-]+(\.[a-z0-9_-]+)*\.?\z/, Regexp)
+      STORE_HANDLE_REGEX = T.let(/\A[a-z0-9][a-z0-9-]*\z/, Regexp)
+      private_constant :HOSTNAME_REGEX, :STORE_HANDLE_REGEX
+
       class << self
         extend T::Sig
 
@@ -29,6 +33,7 @@ module ShopifyAPI
         def sanitize_shop_domain(shop_domain, myshopify_domain: nil)
           uri = uri_from_shop_domain(shop_domain, myshopify_domain)
           return nil if uri.nil? || uri.host.nil? || uri.host.empty?
+          return nil unless T.cast(uri.host, String).match?(HOSTNAME_REGEX)
 
           trusted_domains(myshopify_domain).each do |trusted_domain|
             host = T.cast(uri.host, String)
@@ -107,9 +112,13 @@ module ShopifyAPI
           T.cast(uri.host, String).split(".").first == "admin"
         end
 
-        sig { params(uri: Addressable::URI).returns(String) }
+        sig { params(uri: Addressable::URI).returns(T.nilable(String)) }
         def myshopify_domain_from_unified_admin(uri)
-          shop = uri.path.to_s.split("/").last
+          segments = uri.path.to_s.split("/")
+          store_index = segments.index("store")
+          shop = store_index && segments[store_index + 1]
+          return unless shop&.match?(STORE_HANDLE_REGEX)
+
           "#{shop}.myshopify.com"
         end
       end
