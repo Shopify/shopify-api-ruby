@@ -44,6 +44,7 @@ module Test
           api_secret_key: T.nilable(String),
           api_version: T.nilable(String),
           host: T.nilable(String),
+          global_api_version: T.nilable(String),
           scope: T.nilable(T.any(T::Array[String], String)),
           is_private: T.nilable(T::Boolean),
           is_embedded: T.nilable(T::Boolean),
@@ -53,6 +54,7 @@ module Test
           old_api_secret_key: T.nilable(String),
           response_as_struct: T.nilable(T::Boolean),
           api_host: T.nilable(String),
+          global_api_url: T.nilable(String),
           expiring_offline_access_tokens: T.nilable(T::Boolean),
         ).void
       end
@@ -61,6 +63,7 @@ module Test
         api_secret_key: nil,
         api_version: nil,
         host: nil,
+        global_api_version: nil,
         scope: nil,
         is_private: nil,
         is_embedded: nil,
@@ -70,6 +73,7 @@ module Test
         old_api_secret_key: nil,
         response_as_struct: nil,
         api_host: nil,
+        global_api_url: nil,
         expiring_offline_access_tokens: nil
       )
         ShopifyAPI::Context.setup(
@@ -77,6 +81,7 @@ module Test
           api_secret_key: api_secret_key ? api_secret_key : ShopifyAPI::Context.api_secret_key,
           api_version: api_version ? api_version : ShopifyAPI::Context.api_version,
           host: host ? host : ShopifyAPI::Context.host,
+          global_api_version: global_api_version ? global_api_version : ShopifyAPI::Context.global_api_version,
           scope: scope ? scope : ShopifyAPI::Context.scope.to_s,
           is_private: !is_private.nil? ? is_private : ShopifyAPI::Context.private?,
           is_embedded: !is_embedded.nil? ? is_embedded : ShopifyAPI::Context.embedded?,
@@ -87,6 +92,7 @@ module Test
           log_level: :off,
           response_as_struct: response_as_struct || ShopifyAPI::Context.response_as_struct,
           api_host: api_host || ShopifyAPI::Context.api_host,
+          global_api_url: global_api_url || ShopifyAPI::Context.global_api_url,
           expiring_offline_access_tokens:
             if !expiring_offline_access_tokens.nil?
               expiring_offline_access_tokens

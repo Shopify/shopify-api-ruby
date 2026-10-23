@@ -17,6 +17,7 @@ require "concurrent"
 
 require_relative "shopify_api/inflector"
 require_relative "shopify_api/admin_versions"
+require_relative "shopify_api/global_api_versions"
 require_relative "shopify_api/webhooks/webhook_handler"
 
 loader = Zeitwerk::Loader.for_gem
@@ -29,6 +30,29 @@ module ShopifyAPI
 
   class << self
     extend T::Sig
+
+    # Sends one App Event to Shopify with the given Global API access token. Unrelated to
+    # ShopifyAPI::Logger, which writes this library's own diagnostic output.
+    sig do
+      params(
+        myshopify_domain: String,
+        event_handle: String,
+        idempotency_key: String,
+        attributes: T::Hash[T.any(String, Symbol), T.untyped],
+        access_token: String,
+        timestamp: T.nilable(Time),
+      ).returns(AppEvents::LogResult)
+    end
+    def log(myshopify_domain:, event_handle:, idempotency_key:, attributes:, access_token:, timestamp: nil)
+      AppEvents.log(
+        myshopify_domain: myshopify_domain,
+        event_handle: event_handle,
+        idempotency_key: idempotency_key,
+        attributes: attributes,
+        access_token: access_token,
+        timestamp: timestamp,
+      )
+    end
 
     # REST resources are only autoloaded for API versions this gem bundles (see
     # Context.load_rest_resources). Without this hook, using a version whose

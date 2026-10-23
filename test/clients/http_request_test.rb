@@ -13,6 +13,12 @@ module ShopifyAPITest
         ).verify
       end
 
+      def test_timeout_is_optional
+        request = ShopifyAPI::Clients::HttpRequest.new(http_method: :get, path: "path", timeout: 10)
+
+        assert_equal(10, request.timeout)
+      end
+
       def test_invalid_http_method
         assert_raises(ShopifyAPI::Errors::InvalidHttpRequestError) do
           ShopifyAPI::Clients::HttpRequest.new(

@@ -35,7 +35,7 @@ module ShopifyAPITest
       assert_equal("key", ShopifyAPI::Context.api_key)
       assert_equal("secret", ShopifyAPI::Context.api_secret_key)
       assert_equal("2023-10", ShopifyAPI::Context.api_version)
-      assert_equal("http://localhost:3000", ShopifyAPI::Context.host)
+      assert_equal("2026-10", ShopifyAPI::Context.global_api_version)
       assert_equal(ShopifyAPI::Auth::AuthScopes.new(["scope1", "scope2"]), ShopifyAPI::Context.scope)
       assert(ShopifyAPI::Context.private?)
       ShopifyAPI::Context.logger.info("test log")
@@ -113,6 +113,22 @@ module ShopifyAPITest
           api_key: "key",
           api_secret_key: "secret",
           api_version: "unsupported",
+          host_name: "host",
+          scope: ["scope1", "scope2"],
+          is_private: false,
+          is_embedded: true,
+          logger: Logger.new($stdout),
+        )
+      end
+    end
+
+    def test_unsupported_global_api_version
+      assert_raises(ShopifyAPI::Errors::UnsupportedVersionError) do
+        ShopifyAPI::Context.setup(
+          api_key: "key",
+          api_secret_key: "secret",
+          api_version: "2023-10",
+          global_api_version: "unsupported",
           host_name: "host",
           scope: ["scope1", "scope2"],
           is_private: false,
@@ -222,6 +238,54 @@ module ShopifyAPITest
         expiring_offline_access_tokens: true,
       )
       assert(ShopifyAPI::Context.expiring_offline_access_tokens)
+    end
+
+    def test_global_api_url_defaults_to_production
+      assert_equal("https://api.shopify.com", ShopifyAPI::Context.global_api_url)
+    end
+
+    def test_global_api_url_removes_trailing_slashes
+      ShopifyAPI::Context.setup(
+        api_key: "key",
+        api_secret_key: "secret",
+        api_version: "2023-10",
+        is_private: false,
+        is_embedded: false,
+        global_api_url: "https://api.my-spin.shopify.io/",
+      )
+
+      assert_equal("https://api.my-spin.shopify.io", ShopifyAPI::Context.global_api_url)
+    end
+
+    def test_invalid_global_api_url_preserves_credentials_and_url
+      assert_raises(ShopifyAPI::Errors::InvalidGlobalApiUrlError) do
+        ShopifyAPI::Context.setup(
+          api_key: "new-key",
+          api_secret_key: "new-secret",
+          api_version: "2023-10",
+          is_private: false,
+          is_embedded: false,
+          global_api_url: "http://invalid.example.com",
+        )
+      end
+      assert_equal("key", ShopifyAPI::Context.api_key)
+      assert_equal("secret", ShopifyAPI::Context.api_secret_key)
+      assert_equal("https://api.shopify.com", ShopifyAPI::Context.global_api_url)
+    end
+
+    def test_global_api_url_rejects_non_https_and_relative_urls
+      ["http://api.shopify.com", "api.shopify.com", ""].each do |global_api_url|
+        assert_raises(ShopifyAPI::Errors::InvalidGlobalApiUrlError) do
+          ShopifyAPI::Context.setup(
+            api_key: "key",
+            api_secret_key: "secret",
+            api_version: "2023-10",
+            is_private: false,
+            is_embedded: false,
+            global_api_url: global_api_url,
+          )
+        end
+      end
     end
 
     def teardown

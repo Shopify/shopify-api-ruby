@@ -9,6 +9,21 @@ module ShopifyAPITest
       assert_instance_of(Array, ShopifyAPI::AdminVersions::SUPPORTED_ADMIN_VERSIONS)
     end
 
+    def test_supported_global_api_versions_are_available_at_the_top_level
+      lib = File.expand_path("../lib", __dir__)
+      script = 'require "shopify_api"; ' \
+        'puts ShopifyAPI::SUPPORTED_GLOBAL_API_VERSIONS.join(",")'
+      output = IO.popen(
+        [RbConfig.ruby, "-I#{lib}", "-e", script],
+        &:read
+      )
+
+      assert_equal(
+        ShopifyAPI::GlobalApiVersions::SUPPORTED_GLOBAL_API_VERSIONS.join(","),
+        output.strip,
+      )
+    end
+
     def test_unstable_is_first_and_dated_versions_are_newest_first
       versions = ShopifyAPI::AdminVersions::SUPPORTED_ADMIN_VERSIONS
 

@@ -2,6 +2,7 @@
 
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
+- [#1459](https://github.com/Shopify/shopify-api-ruby/pull/1459) Add `ShopifyAPI.log` and Global API client credentials for App Events.
 
 ## 16.3.1 (2026-10-22)
 - [#1472](https://github.com/Shopify/shopify-api-ruby/pull/1472) `ShopifyAPI::Auth.embedded_app_url` now raises `ShopifyAPI::Errors::InvalidShopError` unless the decoded `host` is a trusted Shopify Admin host (see `ShopifyAPI::Utils::ShopValidator`). URLs for supported Admin hosts are unchanged.
