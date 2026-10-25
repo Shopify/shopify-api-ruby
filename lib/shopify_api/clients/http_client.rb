@@ -44,6 +44,8 @@ module ShopifyAPI
 
         headers = append_first_party_development_headers(headers, parsed_uri)
 
+        timeouts = { open_timeout: Context.open_timeout, read_timeout: Context.read_timeout }.compact
+
         tries = 0
         response = HttpResponse.new(code: 0, headers: {}, body: "")
         while tries < request.tries
@@ -54,6 +56,7 @@ module ShopifyAPI
             headers: headers,
             query: request.query,
             body: request.body.class == Hash ? T.unsafe(request.body).to_json : request.body,
+            **timeouts,
           ), HTTParty::Response)
 
           begin
