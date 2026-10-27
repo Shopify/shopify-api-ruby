@@ -3,6 +3,8 @@
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
 - Scope REST resource response metadata to the active session lifecycle.
+
+## 16.3.1 (2026-10-22)
 - [#1472](https://github.com/Shopify/shopify-api-ruby/pull/1472) `ShopifyAPI::Auth.embedded_app_url` now raises `ShopifyAPI::Errors::InvalidShopError` unless the decoded `host` is a trusted Shopify Admin host (see `ShopifyAPI::Utils::ShopValidator`). URLs for supported Admin hosts are unchanged.
 - [#1472](https://github.com/Shopify/shopify-api-ruby/pull/1472) `ShopifyAPI::Auth::Oauth.begin_auth` now validates and normalizes `shop` with `ShopifyAPI::Utils::ShopValidator.sanitize!`, and raises `ShopifyAPI::Errors::InvalidShopError` for untrusted domains.
 - [#1472](https://github.com/Shopify/shopify-api-ruby/pull/1472) `ShopifyAPI::Utils::ShopValidator` now rejects hosts with non-hostname characters and reads the store handle from the segment after `/store/` in Admin URLs (`admin.shopify.com/store/<handle>`), rejecting a missing or invalid handle.
