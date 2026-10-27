@@ -214,6 +214,20 @@ Each method can take the parameters outlined in the table below.
 
 **Note:** _These parameters can still be used in all methods regardless of if they are required._
 
+#### Automatic Retries
+
+When `tries` is greater than `1`, the client will automatically retry requests that receive one of the following HTTP status codes:
+
+- `429 Too Many Requests`
+- `500 Internal Server Error`
+- `502 Bad Gateway`
+- `503 Service Unavailable`
+- `504 Gateway Timeout`
+
+For `429` responses, the sleep duration between retries is taken from the `Retry-After` response header if present. For all other retryable status codes, or if that header is not present, the client waits 1 second between attempts.
+
+If all retries are exhausted, a `ShopifyAPI::Errors::MaxHttpRetriesExceededError` is raised.
+
 #### Output
 ##### Success
 If the request is successful these methods will all return a [`ShopifyAPI::Clients::HttpResponse`](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/clients/http_response.rb) object, which has the following methods:

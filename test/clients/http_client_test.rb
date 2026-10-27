@@ -240,6 +240,48 @@ module ShopifyAPITest
         verify_http_request
       end
 
+      def test_retry_bad_gateway
+        @request.tries = 2
+
+        @client.expects(:sleep).with(1).times(1)
+
+        stub_request(@request.http_method, "https://#{@shop}#{@base_path}/#{@request.path}")
+          .with(body: @request.body.to_json, query: @request.query, headers: @expected_headers)
+          .to_return(body: { errors: "Bad gateway" }.to_json, headers: @response_headers, status: 502)
+          .times(1)
+          .then.to_return(body: @success_body.to_json, headers: @response_headers)
+
+        verify_http_request
+      end
+
+      def test_retry_service_unavailable
+        @request.tries = 2
+
+        @client.expects(:sleep).with(1).times(1)
+
+        stub_request(@request.http_method, "https://#{@shop}#{@base_path}/#{@request.path}")
+          .with(body: @request.body.to_json, query: @request.query, headers: @expected_headers)
+          .to_return(body: { errors: "Service unavailable" }.to_json, headers: @response_headers, status: 503)
+          .times(1)
+          .then.to_return(body: @success_body.to_json, headers: @response_headers)
+
+        verify_http_request
+      end
+
+      def test_retry_gateway_timeout
+        @request.tries = 2
+
+        @client.expects(:sleep).with(1).times(1)
+
+        stub_request(@request.http_method, "https://#{@shop}#{@base_path}/#{@request.path}")
+          .with(body: @request.body.to_json, query: @request.query, headers: @expected_headers)
+          .to_return(body: { errors: "Gateway timeout" }.to_json, headers: @response_headers, status: 504)
+          .times(1)
+          .then.to_return(body: @success_body.to_json, headers: @response_headers)
+
+        verify_http_request
+      end
+
       def test_retries_exceeded
         @request.tries = 3
 
