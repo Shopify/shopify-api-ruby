@@ -32,11 +32,16 @@ module ShopifyAPI
         end
       end
 
-      sig { params(request: HttpRequest, response_as_struct: T::Boolean).returns(HttpResponse) }
+      sig do
+        params(
+          request: HttpRequest,
+          response_as_struct: T::Boolean,
+        ).returns(HttpResponse)
+      end
       def request(request, response_as_struct: false)
         request.verify
 
-        headers = @headers
+        headers = @headers.dup
         headers["Content-Type"] = T.must(request.body_type) if request.body_type
         headers = headers.merge(T.must(request.extra_headers)) if request.extra_headers
 
@@ -48,13 +53,29 @@ module ShopifyAPI
         response = HttpResponse.new(code: 0, headers: {}, body: "")
         while tries < request.tries
           tries += 1
-          res = T.cast(HTTParty.send(
-            request.http_method,
-            parsed_uri.to_s,
+          request_options = {
             headers: headers,
             query: request.query,
             body: request.body.class == Hash ? T.unsafe(request.body).to_json : request.body,
+          }
+          request_options[:follow_redirects] = request.follow_redirects unless request.follow_redirects.nil?
+
+          if request.suppress_inherited_http_auth
+            verify_no_url_credentials!(parsed_uri)
+            request_options.merge!(basic_auth: nil, digest_auth: nil)
+          end
+
+          res = T.cast(HTTParty.send(
+            request.http_method,
+            parsed_uri.to_s,
+            **request_options,
           ), HTTParty::Response)
+
+          if request.follow_redirects == false && res.code.to_i.between?(300, 399)
+            blocked_response = HttpResponse.new(code: res.code.to_i, headers: res.headers.to_h, body: res.body.to_s)
+            raise ShopifyAPI::Errors::HttpResponseError.new(response: blocked_response),
+              blocked_redirect_message(res)
+          end
 
           begin
             body = res.body.nil? || res.body.empty? ? {} : JSON.parse(res.body)
@@ -111,9 +132,14 @@ module ShopifyAPI
       sig { params(response: HttpResponse).returns(String) }
       def serialized_error(response)
         body = {}
-        body["errors"] = response.body["errors"] if response.body["errors"]
-        body["error"] = response.body["error"] if response.body["error"]
-        body["error_description"] = response.body["error_description"] if response.body["error"]
+        # Only a parsed JSON object has error members. On an unparsed body `response.body["errors"]` is
+        # `String#[]`, so an HTML page containing the word "errors" would report `{"errors":"errors"}`.
+        if response.body.is_a?(Hash)
+          error_body = T.cast(response.body, T::Hash[String, T.untyped])
+          body["errors"] = error_body["errors"] if error_body["errors"]
+          body["error"] = error_body["error"] if error_body["error"]
+          body["error_description"] = error_body["error_description"] if error_body["error_description"]
+        end
 
         if response.headers["x-request-id"]
           id = T.must(response.headers["x-request-id"])[0]
@@ -123,6 +149,30 @@ module ShopifyAPI
       end
 
       private
+
+      # A redirect on a credential-bearing request is the one error here a developer cannot diagnose from
+      # the status alone, so it says what happened, what was not sent, and what to check.
+      sig { params(res: HTTParty::Response).returns(String) }
+      def blocked_redirect_message(res)
+        location = res.headers["location"]
+        target = location.nil? || location.empty? ? "an unnamed location" : location
+
+        "Refused to follow the #{res.code} redirect to #{target}, because this request was sent with " \
+          "redirects disabled: following it would forward the request body, and any credentials in it, to " \
+          "the redirect target. Nothing was sent there. Check any proxy or ShopifyAPI::Context.api_host " \
+          "configuration in front of the endpoint, and retry with a newly created client assertion if you " \
+          "are using one."
+      end
+
+      # HTTParty's `set_basic_auth_from_uri` rebuilds `basic_auth` from the URL after an explicit `nil`
+      # override, so suppressing inherited authentication is not enough on its own.
+      sig { params(parsed_uri: URI::Generic).void }
+      def verify_no_url_credentials!(parsed_uri)
+        return unless parsed_uri.userinfo
+
+        raise ShopifyAPI::Errors::InvalidHttpRequestError,
+          "Cannot send a request with HTTP authentication disabled to a URL containing credentials."
+      end
 
       sig do
         params(
