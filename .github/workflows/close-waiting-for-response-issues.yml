@@ -3,18 +3,24 @@ on:
   schedule:
     - cron: "30 1 * * *"
   workflow_dispatch:
+
+permissions:
+  actions: write
+  issues: write
+
 jobs:
   check-need-info:
     runs-on: ubuntu-latest
     steps:
-      - name: close-issues
-        uses: actions-cool/issues-helper@45d75b6cf72bf4f254be6230cb887ad002702491 # v3.6.3
+      - name: Close inactive issues
+        uses: actions/stale@1e223db275d687790206a7acac4d1a11bd6fe629 # v10.4.0
         with:
-          actions: 'close-issues'
-          token: ${{ secrets.GITHUB_TOKEN }}
-          labels: 'Waiting for Response'
-          inactive-day: 14
-          body: |
+          days-before-stale: -1
+          days-before-close: -1
+          days-before-issue-close: 14
+          stale-issue-label: "Waiting for Response"
+          remove-issue-stale-when-updated: false
+          close-issue-message: |
             We are closing this issue because we did not hear back regarding additional details we needed to resolve this issue. If the issue persists and you are able to provide the missing clarification we need, feel free to create a new issue with the additional information.
 
             We appreciate your understanding as we try to manage our number of open issues.
