@@ -3,7 +3,30 @@
 
 require_relative "../test_helper"
 module ShopifyAPITest
-  class BaseErrorsTest < Minitest::Test
+  class BaseErrorsTest < Test::Unit::TestCase
+    def test_discount_code_errors_attribute_does_not_replace_base_errors
+      session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "token")
+      ShopifyAPI::Context.activate_session(session)
+      stub_request(:post, "https://test-shop.myshopify.io/admin/api/2023-10/price_rules/507328175/discount_codes.json")
+        .to_return(status: 500, body: { errors: "Something went wrong" }.to_json, headers: {})
+
+      discount_code = ShopifyAPI::DiscountCode.new
+      discount_code.price_rule_id = 507328175
+      discount_code.code = "SUMMERSALE10OFF"
+
+      error = assert_raises(ShopifyAPI::Errors::HttpResponseError) { discount_code.save! }
+
+      assert_nil(discount_code.errors)
+      assert_equal([error], discount_code.instance_variable_get(:@base_errors).errors)
+    ensure
+      ShopifyAPI::Context.deactivate_session
+    end
+
+    def test_resource_errors_returns_base_errors
+      session = ShopifyAPI::Auth::Session.new(id: "id", shop: "test-shop.myshopify.io", access_token: "token")
+
+      assert_instance_of(ShopifyAPI::Rest::BaseErrors, ShopifyAPI::Fulfillment.new(session: session).errors)
+    end
 
     def test_outputs_error_message
       errors = ShopifyAPI::Rest::BaseErrors.new
