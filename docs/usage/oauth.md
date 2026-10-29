@@ -277,18 +277,29 @@ end
 ### Client Credentials Grant
 
 > [!NOTE]
-> You can only use the client credentials grant when building apps for your own organization.
+> Existing client-secret eligibility rules are unchanged. Assertion authentication also supports eligible
+> public apps with a registered public key and an existing installation on the target shop, when the
+> Shopify token endpoint supports this authentication method.
 
 > [!WARNING]
 > [token exchange](#token-exchange) (for embedded apps) or the [authorization code grant](#authorization-code-grant) should be used instead of the client credentials grant, if your app is a browser based web app.
 
 #### Perform Client Credentials Grant
 Use [`ShopifyAPI::Auth::ClientCredentials`](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/auth/client_credentials.rb) to
-exchange the [app's client ID and client secret](https://shopify.dev/docs/apps/build/authentication-authorization/client-secrets) for an access token.
+obtain an application-only access token using the [app's client ID and client secret](https://shopify.dev/docs/apps/build/authentication-authorization/client-secrets),
+or a [signed client assertion](#client-assertion-authentication).
+
+Client-credentials requests do not follow HTTP redirects, with either authentication method. A redirect
+raises `ShopifyAPI::Errors::HttpResponseError`; no request is sent to its target. This prevents a 307/308
+from forwarding the credential-bearing POST body. This intentionally changes the previous secret-path
+behavior, including when global HTTParty defaults enable redirects. Explicit routing and connection
+settings remain supported, and other operations keep their redirect policy.
+
 #### Input
 | Parameter      | Type                   | Required? | Default Value | Notes                                                                                                       |
 | -------------- | ---------------------- | :-------: | :-----------: | ----------------------------------------------------------------------------------------------------------- |
 | `shop`         | `String` | Yes | - | A Shopify domain name in the form `{exampleshop}.myshopify.com`. |
+| `client_assertion` | `String` | No | `nil` | A signed JWT client assertion. When omitted or `nil`, the grant authenticates with the app's client secret as before. Leading or trailing whitespace is rejected rather than trimmed. See [Client Assertion Authentication](#client-assertion-authentication). |
 
 #### Output
 This method returns the new `ShopifyAPI::Auth::Session` object from the client credentials grant, your app should store this `Session` object to be used later [when making authenticated API calls](#using-oauth-session-to-make-authenticated-api-calls).
@@ -306,6 +317,119 @@ def authenticate(shop)
 end
 
 ```
+
+### Client Assertion Authentication
+
+Instead of the app's client secret, the client credentials grant can authenticate with a short-lived JWT
+client assertion signed by a private key your app owns. Pass the assertion as `client_assertion:`; the
+request then sends only `client_id`, `grant_type`, `client_assertion_type` and `client_assertion`, and no
+client secret.
+
+To generate a key pair, register its public key with your app and see the claims Shopify expects, read
+[Get application-only access tokens](https://shopify.dev/docs/apps/build/authentication-authorization/application-only-access-tokens).
+
+> [!IMPORTANT]
+> An assertion is **single use**. Every token request — including every retry after a failure — needs a
+> newly created assertion, because a second use of the same assertion is refused. This library makes one
+> HTTP attempt per call and does not follow redirects on the assertion request, so a consumed assertion is
+> never replayed on your behalf.
+
+The assertion request uses the same HTTP transport as other requests. For this call only, it sends
+`basic_auth` and `digest_auth` as `nil`, so inherited Basic or digest credentials are never attached and
+HTTParty cannot replay the single-use assertion against a digest challenge. Global HTTParty defaults are
+not modified, connection settings such as proxy, CA, and timeout configuration remain in effect, and so do
+non-credential headers. Requests without an assertion keep their authentication and connection settings,
+but follow the same no-redirect policy.
+
+The request also fails before I/O with `ShopifyAPI::Errors::InvalidHttpRequestError` if
+`ShopifyAPI::Context.api_host` contains URL userinfo (`user:password@host`). HTTParty rebuilds Basic
+credentials from the URL after the `nil` override, so those credentials would otherwise be sent.
+
+Everything else in global HTTParty state is yours to control, and this library neither inspects nor changes
+it. Two cases are worth calling out: a `logger` with `log_format: :curl` writes `request.raw_body`, and
+therefore the assertion, into your application log; and default headers such as `Cookie` or
+`Proxy-Authorization`, along with `HTTParty.cookies`, are attached to this request like any other. Custom
+connection adapters and diagnostic logging must not add OAuth credentials, replay the assertion, or log it.
+
+Your app owns the key pair. This library never generates, imports, stores, or rotates keys, and never reads
+a key from `ShopifyAPI::Context`. Register the matching public key with Shopify and pass its key ID as
+`kid`. Omitting `client_assertion` keeps the existing client-secret behavior, and a blank or non-`String`
+value raises `ShopifyAPI::Errors::InvalidClientAssertionError` rather than silently falling back to the
+secret.
+
+> [!IMPORTANT]
+> **You must supply the target shop's permanent domain.** The helper normalizes case and surrounding
+> whitespace only; it does not look up the permanent domain or verify the shop's identity. Every domain that
+> is not a `myshopify.com` domain is rejected, including custom storefront domains and the development
+> domains `ShopifyAPI::Utils::ShopValidator` trusts. A valid
+> `myshopify.com` domain is used as supplied, so you must select the correct shop and use the same canonical
+> domain when exchanging the assertion.
+
+#### Creating an assertion
+
+[`ShopifyAPI::Auth::ClientAssertion.create`](https://github.com/Shopify/shopify-api-ruby/blob/main/lib/shopify_api/auth/client_assertion.rb)
+is an optional helper that signs an assertion with a key your app already holds in memory. It modifies
+nothing, needs no client secret, and the only value it reads from `ShopifyAPI::Context` is `api_key`, as the
+default for `client_id`.
+
+| Parameter | Type | Required? | Default Value | Notes |
+| --------- | ---- | :-------: | :-----------: | ----- |
+| `shop` | `String` | Yes | - | The shop's permanent `{shop}.myshopify.com` domain, which becomes the assertion's `aud`. Only case and surrounding whitespace are normalized; a bare shop handle, a full URL, an `admin.shopify.com/store/{shop}` URL, and anything that is not a `myshopify.com` domain are all rejected. Not used when `audience` is supplied. |
+| `client_id` | `String` | No | `ShopifyAPI::Context.api_key` | Your app's client ID. Becomes both `iss` and `sub`, which Shopify requires to match the `client_id` the token request sends — so the default is normally the right value. |
+| `kid` | `String` | Yes | - | The key ID of the registered public key. Surrounding whitespace is trimmed, and a `kid` longer than 255 characters is rejected, since Shopify cannot store one. |
+| `private_key` | `OpenSSL::PKey::RSA` or `OpenSSL::PKey::EC` | Yes | - | A private key object. RSA keys must be at least 2048 bits (`RS256`); EC keys must use the P-256 curve (`ES256`). Anything else is rejected. |
+| `lifetime_seconds` | `Integer` | No | `60` | Must be between 1 and 300. Out-of-range values are rejected, not clamped. |
+| `audience` | `String` | No | `nil` | Sets the `aud` claim directly and skips all `shop` validation. For development environments only, where the shop's permanent domain is not a `myshopify.com` domain; you are responsible for the value. |
+
+```ruby
+# `private_key` is an OpenSSL::PKey::RSA or OpenSSL::PKey::EC private key your app loaded itself.
+def authenticate_with_assertion(shop, private_key)
+  assertion = ShopifyAPI::Auth::ClientAssertion.create(
+    shop: shop,
+    kid: "my-registered-key-id",
+    private_key: private_key,
+  )
+
+  session = ShopifyAPI::Auth::ClientCredentials.client_credentials(
+    shop: shop,
+    client_assertion: assertion,
+  )
+  SessionRepository.store_session(session)
+end
+```
+
+The algorithm is derived from the key, and the claims (`iss`, `sub`, `aud`, `iat`, `exp`, and a fresh `jti`
+per call) are built by the library. Supplying your own claims, headers, or algorithm is not supported. If
+you sign elsewhere — with a KMS or HSM, for example — skip this helper and pass the finished assertion
+string straight to `client_credentials`.
+
+Keep the signing host's clock synchronized. Shopify checks `iat` and `exp` against its own clock, so a host
+whose clock is off can sign assertions that are rejected. If the clock may drift, raise `lifetime_seconds`
+toward 300.
+
+Pass the full `{shop}.myshopify.com` domain to both calls, as the example above does. The signer and
+`client_credentials` accept the same canonical domain, so one value works for both.
+
+A development store whose permanent domain is not a `myshopify.com` domain is rejected by the signer. Pass
+`audience:` in that case, built as
+`https://{permanent domain}/admin/oauth/access_token`, and keep it out of production code paths.
+
+Your app still needs its real client secret configured: `ShopifyAPI::Context.setup` requires
+`api_secret_key`, and other parts of this library use it, such as webhook HMAC and session-token
+verification. On the assertion path it is never read, never sent, and never used.
+
+#### Troubleshooting
+
+A `401 invalid_client` response means the assertion was rejected. The response doesn't say why, so check
+that:
+
+- the `kid` names an active key registered for this app
+- the assertion was signed with that key's private key
+- `aud` is `https://{the shop's permanent domain}/admin/oauth/access_token`
+- `iss` and `sub` are the `client_id` the request sends
+- the assertion is new: each one can only be used once
+
+A `5xx` response is temporary. Sign a new assertion before you retry.
 
 ## Expiring Offline Access Tokens
 
