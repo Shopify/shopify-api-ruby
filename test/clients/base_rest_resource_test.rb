@@ -315,6 +315,55 @@ module ShopifyAPITest
         assert_requested(stubbed_request)
       end
 
+      def test_saves_in_place_mutations_to_nested_attributes
+        resource = TestHelpers::FakeResource.create_instance(
+          session: @session,
+          data: {
+            "id" => 1,
+            "details" => { "address" => { "first_name" => "John" }, "tags" => ["original"] },
+          },
+        )
+        stubbed_request = stub_request(:put, "#{@prefix}/fake_resources/1.json")
+          .with(body: hash_including(
+            "fake_resource" => hash_including(
+              "details" => { "address" => { "first_name" => "Jane" } },
+            ),
+          ))
+          .to_return(status: 200)
+
+        resource.details["address"]["first_name"] = "Jane"
+        resource.save
+
+        assert_requested(stubbed_request)
+      end
+
+      def test_preserves_nested_mutations_until_save_succeeds
+        resource = TestHelpers::FakeResource.create_instance(
+          session: @session,
+          data: { "id" => 1, "details" => { "address" => { "first_name" => "John" } } },
+        )
+        resource.details["address"]["first_name"] = "Jane"
+
+        changed_attributes = { "fake_resource" => { "details" => { "address" => { "first_name" => "Jane" } }, "id" => 1 } }
+        changed_request = stub_request(:put, "#{@prefix}/fake_resources/1.json")
+          .with(body: changed_attributes)
+          .to_return(status: 422, body: { errors: "Invalid details" }.to_json)
+          .then
+          .to_return(status: 200, body: { fake_resource: { id: 1, details: { address: { first_name: "Jane" } } } }.to_json)
+
+        assert_raises(ShopifyAPI::Errors::HttpResponseError) { resource.save! }
+        resource.save!
+
+        assert_requested(changed_request, times: 2)
+
+        stubbed_request = stub_request(:put, "#{@prefix}/fake_resources/1.json")
+          .with(body: { "fake_resource" => { "id" => 1 } })
+          .to_return(status: 200)
+        resource.save
+
+        assert_requested(stubbed_request)
+      end
+
       def test_loads_unknown_attribute_with_special_character
         body = { fake_resource: { id: 1, attribute: "attribute", "unknown?": "some-value" } }.to_json
 
