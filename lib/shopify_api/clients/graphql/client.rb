@@ -52,6 +52,7 @@ module ShopifyAPI
               extra_headers: headers,
               body_type: "application/json",
               tries: tries,
+              retry_on_graphql_throttled: true,
             ),
             response_as_struct: response_as_struct || false,
           )
