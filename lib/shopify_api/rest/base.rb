@@ -12,7 +12,7 @@ module ShopifyAPI
       abstract!
 
       INTERNAL_PROPERTIES = T.let(
-        %w[session client custom_prefix forced_nils aliased_properties].freeze,
+        ["session", "client", "custom_prefix", "forced_nils", "aliased_properties"].freeze,
         T::Array[String],
       )
       private_constant :INTERNAL_PROPERTIES
@@ -191,7 +191,7 @@ module ShopifyAPI
 
             url_ids = ids.transform_keys(&:to_sym)
             path_ids.each do |id|
-              if url_ids[id].nil? && (entity_id = entity&.send(:get_property, id))
+              if url_ids[id].nil? && (entity_id = entity&.send(:get_optional_property, id))
                 url_ids[id] = entity_id
               end
             end
@@ -440,14 +440,14 @@ module ShopifyAPI
       def build_required_attributes(http_method:)
         required_attributes = {}
 
-        primary_key_value = get_property(self.class.primary_key)
+        primary_key_value = get_optional_property(self.class.primary_key, include_private: true)
         unless primary_key_value.nil?
           required_attributes[self.class.primary_key] = primary_key_value
         end
 
         path_ids = deduce_path_ids(http_method)
         path_ids&.each do |path_id|
-          path_id_value = get_property(path_id)
+          path_id_value = get_optional_property(path_id, include_private: true)
           required_attributes[path_id.to_s] = path_id_value unless path_id_value.nil?
         end
 
@@ -456,7 +456,7 @@ module ShopifyAPI
 
       sig { returns(Symbol) }
       def deduce_write_verb
-        get_property(self.class.primary_key) ? :put : :post
+        get_optional_property(self.class.primary_key, include_private: true) ? :put : :post
       end
 
       sig { params(method: Symbol).returns(T.nilable(String)) }
@@ -504,6 +504,13 @@ module ShopifyAPI
         instance_variable_set("@#{clean_key}", val)
       end
 
+      sig { params(key: T.any(String, Symbol), include_private: T::Boolean).returns(T.untyped) }
+      def get_optional_property(key, include_private: false)
+        return nil unless respond_to?(key, include_private)
+
+        include_private ? send(key) : public_send(key)
+      end
+
       sig { params(key: T.any(String, Symbol)).returns(T.untyped) }
       def get_property(key)
         clean_key = @aliased_properties.key?(key.to_s) ? @aliased_properties[key.to_s] : key
@@ -515,6 +522,8 @@ module ShopifyAPI
       def dynamic_property_defined?(key)
         property = @aliased_properties[key] || key
         !INTERNAL_PROPERTIES.include?(property) && instance_variable_defined?("@#{property}")
+      rescue NameError
+        false
       end
 
       sig do

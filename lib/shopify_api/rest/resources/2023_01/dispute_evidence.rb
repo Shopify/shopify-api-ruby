@@ -30,7 +30,7 @@ module ShopifyAPI
       @fulfillments = T.let(nil, T.nilable(T::Array[T.untyped]))
       @id = T.let(nil, T.nilable(Integer))
       @payments_dispute_id = T.let(nil, T.nilable(Integer))
-      @product_description = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
+      @product_description = T.let(nil, T.nilable(String))
       @refund_policy_disclosure = T.let(nil, T.nilable(String))
       @refund_refusal_explanation = T.let(nil, T.nilable(String))
       @shipping_address = T.let(nil, T.nilable(T::Hash[T.untyped, T.untyped]))
@@ -74,7 +74,7 @@ module ShopifyAPI
     attr_reader :id
     sig { returns(T.nilable(Integer)) }
     attr_reader :payments_dispute_id
-    sig { returns(T.nilable(T::Hash[T.untyped, T.untyped])) }
+    sig { returns(T.nilable(String)) }
     attr_reader :product_description
     sig { returns(T.nilable(String)) }
     attr_reader :refund_policy_disclosure
