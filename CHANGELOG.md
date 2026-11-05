@@ -3,6 +3,7 @@
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
 
+## 16.4.0 (2026-11-05)
 - [#1481](https://github.com/Shopify/shopify-api-ruby/pull/1481) `ShopifyAPI::Auth::TokenExchange.exchange_token` now raises `ShopifyAPI::Errors::InvalidJwtTokenError` when token exchange rejects the session token with `invalid_identity_session`, matching the existing `invalid_subject_token` handling.
 - [#1475](https://github.com/Shopify/shopify-api-ruby/pull/1475) Add an optional `client_assertion:` argument to `ShopifyAPI::Auth::ClientCredentials.client_credentials`. When supplied, the token request authenticates with a JWT client assertion and sends no client secret. Omitting it, or passing `nil`, keeps the existing client-secret behavior. See the [OAuth documentation](docs/usage/oauth.md#client-assertion-authentication).
 - [#1475](https://github.com/Shopify/shopify-api-ruby/pull/1475) Add `ShopifyAPI::Auth::ClientAssertion.create`, an optional helper that signs a client assertion with an `RS256` (RSA, 2048-bit minimum) or `ES256` (EC P-256) private key your app owns. `client_id` defaults to `ShopifyAPI::Context.api_key`, the only value the helper reads from the context, and it never generates, imports, stores, or rotates keys.
