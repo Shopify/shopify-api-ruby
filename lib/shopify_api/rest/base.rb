@@ -3,6 +3,7 @@
 
 require "active_support/inflector"
 require "active_support/core_ext/hash/indifferent_access"
+require "active_support/core_ext/object/deep_dup"
 
 module ShopifyAPI
   module Rest
@@ -301,6 +302,7 @@ module ShopifyAPI
             end
           end
 
+          instance.original_state = instance.original_state.deep_dup
           instance
         end
       end
