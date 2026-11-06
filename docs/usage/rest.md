@@ -306,6 +306,8 @@ _For more information on the `products` endpoint, [check out our API reference g
 
 The REST resources have `api_call_limit` and `retry_after` can be found on the Resource class. These values correspond to the `X-Shopify-Shop-Api-Call-Limit` and `Retry-After` [headers](https://shopify.dev/docs/api/usage/rate-limits#rest-admin-api-rate-limits) respectively.
 
+The REST resource response metadata is thread-local and scoped to the active session lifecycle. After activating or deactivating a session, these values return `nil` until another REST resource request is made on that thread.
+
 ```ruby
 product = ShopifyAPI::Product.find(session: session, id: 12345)
 

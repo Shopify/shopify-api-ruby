@@ -19,6 +19,9 @@ module ShopifyAPI
     @log_level = T.let(:info, Symbol)
     @notified_missing_resources_folder = T.let({}, T::Hash[String, T::Boolean])
     @active_session = T.let(Concurrent::ThreadLocalVar.new { nil }, T.nilable(Concurrent::ThreadLocalVar))
+    # REST resource response metadata is stored per thread. This generation makes values from a previous
+    # session lifecycle invisible when a worker thread is reused.
+    @rest_response_state_generation = T.let(Concurrent::ThreadLocalVar.new { 0 }, Concurrent::ThreadLocalVar)
     @user_agent_prefix = T.let(nil, T.nilable(String))
     @old_api_secret_key = T.let(nil, T.nilable(String))
     @response_as_struct = T.let(false, T.nilable(T::Boolean))
@@ -177,11 +180,18 @@ module ShopifyAPI
       sig { params(session: T.nilable(Auth::Session)).void }
       def activate_session(session)
         T.must(@active_session).value = session
+        @rest_response_state_generation.value += 1
       end
 
       sig { void }
       def deactivate_session
         T.must(@active_session).value = nil
+        @rest_response_state_generation.value += 1
+      end
+
+      sig { returns(Integer) }
+      def rest_response_state_generation
+        @rest_response_state_generation.value
       end
 
       sig { returns(String) }

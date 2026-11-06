@@ -438,6 +438,44 @@ module ShopifyAPITest
         assert(TestHelpers::FakeResource.api_call_limit[:bucket_size], 40)
       end
 
+      def test_response_metadata_is_scoped_to_active_session
+        body = { fake_resources: [] }.to_json
+
+        stub_request(:get, "#{@prefix}/fake_resources.json")
+          .to_return(body: body, headers: {
+            "link" => "<#{@prefix}/fake_resources.json?page_info=next-page>; rel=\"next\", " \
+              "<#{@prefix}/fake_resources.json?page_info=previous-page>; rel=\"previous\"",
+            "X-Shopify-Shop-Api-Call-Limit" => "40/40",
+            "Retry-After" => "2.0",
+          })
+
+        other_session = ShopifyAPI::Auth::Session.new(shop: "another-shop.myshopify.com",
+          access_token: SecureRandom.alphanumeric(10))
+
+        ShopifyAPI::Context.deactivate_session
+        ShopifyAPI::Context.activate_session(@session)
+        TestHelpers::FakeResource.base_find
+
+        assert(TestHelpers::FakeResource.next_page?)
+        assert(TestHelpers::FakeResource.prev_page?)
+        assert_equal("next-page", TestHelpers::FakeResource.next_page_info)
+        assert_equal("previous-page", TestHelpers::FakeResource.prev_page_info)
+        assert_equal(2.0, TestHelpers::FakeResource.retry_request_after)
+        assert_equal({ request_count: 40, bucket_size: 40 }, TestHelpers::FakeResource.api_call_limit)
+
+        ShopifyAPI::Context.deactivate_session
+        ShopifyAPI::Context.activate_session(other_session)
+
+        refute(TestHelpers::FakeResource.next_page?)
+        refute(TestHelpers::FakeResource.prev_page?)
+        assert_nil(TestHelpers::FakeResource.next_page_info)
+        assert_nil(TestHelpers::FakeResource.prev_page_info)
+        assert_nil(TestHelpers::FakeResource.retry_request_after)
+        assert_nil(TestHelpers::FakeResource.api_call_limit)
+      ensure
+        ShopifyAPI::Context.deactivate_session
+      end
+
       def test_pagination_is_thread_safe
         response_body = { fake_resources: [] }.to_json
         request_made = false
