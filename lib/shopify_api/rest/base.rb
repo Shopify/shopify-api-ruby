@@ -24,7 +24,9 @@ module ShopifyAPI
       attr_accessor :original_state
 
       sig { returns(T.any(Rest::BaseErrors, T.nilable(T::Hash[T.untyped, T.untyped]))) }
-      attr_reader :errors
+      def errors
+        @base_errors
+      end
 
       sig do
         params(
@@ -44,7 +46,7 @@ module ShopifyAPI
 
         @session = T.let(T.must(session), Auth::Session)
         @client = T.let(client, Clients::Rest::Admin)
-        @errors = T.let(Rest::BaseErrors.new, Rest::BaseErrors)
+        @base_errors = T.let(Rest::BaseErrors.new, Rest::BaseErrors)
 
         from_hash&.each do |key, value|
           set_property(key, value)
@@ -337,6 +339,7 @@ module ShopifyAPI
             :"@client",
             :"@forced_nils",
             :"@errors",
+            :"@base_errors",
             :"@aliased_properties",
           ].include?(var)
           next if saving && self.class.read_only_attributes&.include?(var)
@@ -376,7 +379,7 @@ module ShopifyAPI
           headers: self.class.headers,
         )
       rescue ShopifyAPI::Errors::HttpResponseError => e
-        @errors.errors << e
+        @base_errors.errors << e
         raise
       end
 
@@ -405,7 +408,7 @@ module ShopifyAPI
           self.class.create_instance(data: response.body[response_name.first], session: @session, instance: self)
         end
       rescue ShopifyAPI::Errors::HttpResponseError => e
-        @errors.errors << e
+        @base_errors.errors << e
         raise
       end
 

@@ -2,6 +2,7 @@
 
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
+- Keep REST fields named `errors` separate from internal HTTP error tracking.
 
 ## 16.4.0 (2026-11-05)
 - [#1481](https://github.com/Shopify/shopify-api-ruby/pull/1481) `ShopifyAPI::Auth::TokenExchange.exchange_token` now raises `ShopifyAPI::Errors::InvalidJwtTokenError` when token exchange rejects the session token with `invalid_identity_session`, matching the existing `invalid_subject_token` handling.
