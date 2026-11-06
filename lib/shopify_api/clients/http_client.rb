@@ -202,7 +202,7 @@ module ShopifyAPI
           return RETRY_WAIT_TIME
         end
 
-        [((requested_cost - available_cost).to_f / restore_rate).ceil, RETRY_WAIT_TIME].max
+        [((requested_cost - available_cost).to_f / restore_rate.to_f).ceil, RETRY_WAIT_TIME].max
       end
 
       # A redirect on a credential-bearing request is the one error here a developer cannot diagnose from

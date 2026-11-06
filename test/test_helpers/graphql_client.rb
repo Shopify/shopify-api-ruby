@@ -83,6 +83,35 @@ module TestHelpers
       assert_requested(:post, url, times: 2)
     end
 
+    def test_retries_throttled_graphql_response_with_fractional_restore_rate
+      query = "{ shop { name } }"
+      throttled_body = {
+        "errors" => [{ "message" => "Throttled", "extensions" => { "code" => "THROTTLED" } }],
+        "extensions" => {
+          "cost" => {
+            "requestedQueryCost" => 10,
+            "throttleStatus" => { "currentlyAvailable" => 1, "restoreRate" => 2.5 },
+          },
+        },
+      }
+      success_body = { "data" => { "shop" => { "name" => "Test shop" } } }
+      response_headers = { "content-type" => "application/json" }
+      url = "https://test-shop.myshopify.com/#{@path}/#{ShopifyAPI::Context.api_version}/graphql.json"
+
+      @client.instance_variable_get(:@http_client).expects(:sleep).with(4).once
+
+      stub_request(:post, url)
+        .with(body: { query: query, variables: nil }, headers: @expected_headers)
+        .to_return(body: throttled_body.to_json, headers: response_headers)
+        .times(1)
+        .then.to_return(body: success_body.to_json, headers: response_headers)
+
+      response = @client.query(query: query, tries: 2)
+
+      assert_equal(success_body, response.body)
+      assert_requested(:post, url, times: 2)
+    end
+
     def test_returns_throttled_graphql_response_without_retrying_by_default
       query = "{ shop { name } }"
       throttled_body = {
