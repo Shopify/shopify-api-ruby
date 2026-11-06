@@ -143,6 +143,24 @@ module ShopifyAPITest
         end
       end
 
+      def test_exchange_token_rejected_identity_session
+        modify_context(is_embedded: true)
+        stub_request(:post, "https://#{@shop}/admin/oauth/access_token")
+          .with(body: @non_expiring_offline_token_exchange_request)
+          .to_return(
+            status: 400,
+            body: { error: "invalid_identity_session" }.to_json,
+            headers: { content_type: "application/json" },
+          )
+
+        assert_raises(ShopifyAPI::Errors::InvalidJwtTokenError) do
+          ShopifyAPI::Auth::TokenExchange.exchange_token(
+            session_token: @session_token,
+            requested_token_type: ShopifyAPI::Auth::TokenExchange::RequestedTokenType::OFFLINE_ACCESS_TOKEN,
+          )
+        end
+      end
+
       def test_exchange_token_deprecates_shop_argument
         modify_context(is_embedded: true, expiring_offline_access_tokens: false)
         ShopifyAPI::Logger.expects(:deprecated).with(
