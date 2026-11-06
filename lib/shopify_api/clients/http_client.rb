@@ -1,6 +1,8 @@
 # typed: strict
 # frozen_string_literal: true
 
+require "time"
+
 module ShopifyAPI
   module Clients
     class HttpClient
@@ -85,6 +87,12 @@ module ShopifyAPI
             body = res.body
           end
 
+          graphql_throttled = request.retry_on_graphql_throttled && graphql_throttled?(body)
+          graphql_retry_wait_time = T.let(nil, T.nilable(Integer))
+          if graphql_throttled && tries < request.tries
+            graphql_retry_wait_time = graphql_throttle_retry_wait_time(T.cast(body, T::Hash[String, T.untyped]))
+          end
+
           if response_as_struct && body.is_a?(Hash)
             json_body = body.to_json
             body = JSON.parse(json_body, object_class: OpenStruct)
@@ -97,7 +105,13 @@ module ShopifyAPI
             Context.logger.warn("Deprecated request to Shopify API at #{request.path}, received reason: #{reason}")
           end
 
-          break if response.ok?
+          if response.ok?
+            break unless graphql_throttled
+            break if tries == request.tries
+
+            sleep(T.must(graphql_retry_wait_time))
+            next
+          end
 
           error_message = serialized_error(response)
 
@@ -149,6 +163,47 @@ module ShopifyAPI
       end
 
       private
+
+      sig { params(body: T.untyped).returns(T::Boolean) }
+      def graphql_throttled?(body)
+        return false unless body.is_a?(Hash)
+
+        errors = body["errors"]
+        return false unless errors.is_a?(Array)
+
+        errors.any? do |error|
+          error.is_a?(Hash) && error.dig("extensions", "code") == "THROTTLED"
+        end
+      end
+
+      sig { params(body: T::Hash[String, T.untyped]).returns(Integer) }
+      def graphql_throttle_retry_wait_time(body)
+        errors = body["errors"]
+        throttle_error = errors.find do |error|
+          error.is_a?(Hash) && error.dig("extensions", "code") == "THROTTLED"
+        end
+        reset_at = throttle_error&.dig("extensions", "cost", "windowResetAt")
+        if reset_at.is_a?(String)
+          begin
+            return [(Time.iso8601(reset_at) - Time.now).ceil, RETRY_WAIT_TIME].max
+          rescue ArgumentError
+            # Fall back to the shared GraphQL cost budget when the reset time is malformed.
+          end
+        end
+
+        cost = body.dig("extensions", "cost")
+        throttle_status = cost.is_a?(Hash) ? cost["throttleStatus"] : nil
+        requested_cost = cost.is_a?(Hash) ? cost["requestedQueryCost"] : nil
+        available_cost = throttle_status.is_a?(Hash) ? throttle_status["currentlyAvailable"] : nil
+        restore_rate = throttle_status.is_a?(Hash) ? throttle_status["restoreRate"] : nil
+
+        unless requested_cost.is_a?(Numeric) && available_cost.is_a?(Numeric) &&
+            restore_rate.is_a?(Numeric) && restore_rate.positive?
+          return RETRY_WAIT_TIME
+        end
+
+        [((requested_cost - available_cost).to_f / restore_rate.to_f).ceil, RETRY_WAIT_TIME].max
+      end
 
       # A redirect on a credential-bearing request is the one error here a developer cannot diagnose from
       # the status alone, so it says what happened, what was not sent, and what to check.

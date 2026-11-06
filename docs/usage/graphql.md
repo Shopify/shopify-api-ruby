@@ -25,6 +25,9 @@ client = ShopifyAPI::Clients::Graphql::Admin.new(session: session, api_version: 
 ```
 
 ### Making Authenticated API calls
+
+`query` accepts `tries` to set the maximum number of HTTP requests (default `1`). When greater than `1`, the client retries `THROTTLED` GraphQL responses using Shopify's returned throttle budget or reset time. If the attempts are exhausted, the last response is returned.
+
 #### Basic example
 
 ```ruby

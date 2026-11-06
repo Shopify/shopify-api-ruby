@@ -3,6 +3,8 @@
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
 
+- [#1478](https://github.com/Shopify/shopify-api-ruby/pull/1478) Retry throttled GraphQL responses within the configured attempt limit, using Shopify's reported cost budget or reset time. Cost-based waits support integer and fractional restore rates while passing Sorbet type checking. The default remains one attempt.
+
 ## 16.4.0 (2026-11-05)
 - [#1481](https://github.com/Shopify/shopify-api-ruby/pull/1481) `ShopifyAPI::Auth::TokenExchange.exchange_token` now raises `ShopifyAPI::Errors::InvalidJwtTokenError` when token exchange rejects the session token with `invalid_identity_session`, matching the existing `invalid_subject_token` handling.
 - [#1475](https://github.com/Shopify/shopify-api-ruby/pull/1475) Add an optional `client_assertion:` argument to `ShopifyAPI::Auth::ClientCredentials.client_credentials`. When supplied, the token request authenticates with a JWT client assertion and sends no client secret. Omitting it, or passing `nil`, keeps the existing client-secret behavior. See the [OAuth documentation](docs/usage/oauth.md#client-assertion-authentication).

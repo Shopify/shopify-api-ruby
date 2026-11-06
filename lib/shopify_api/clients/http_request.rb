@@ -13,6 +13,7 @@ module ShopifyAPI
       prop :query, T.nilable(T::Hash[T.any(Symbol, String), T.untyped])
       prop :extra_headers, T.nilable(T::Hash[T.any(Symbol, String), T.untyped])
       prop :tries, Integer, default: 1
+      prop :retry_on_graphql_throttled, T::Boolean, default: false
       # Unset leaves redirect handling to HTTParty, including any policy the app set in default_options.
       prop :follow_redirects, T.nilable(T::Boolean)
       # Sends this one request with HTTParty's inherited Basic and digest authentication turned off. Digest
