@@ -73,7 +73,8 @@ module ShopifyAPI
               ),
             )
           rescue ShopifyAPI::Errors::HttpResponseError => error
-            if error.code == 400 && error.response.body["error"] == "invalid_subject_token"
+            if error.code == 400 &&
+                ["invalid_subject_token", "invalid_identity_session"].include?(error.response.body["error"])
               raise ShopifyAPI::Errors::InvalidJwtTokenError, "Session token was rejected by token exchange"
             end
 
