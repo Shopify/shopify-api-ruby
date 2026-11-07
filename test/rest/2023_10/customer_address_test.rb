@@ -89,6 +89,12 @@ class CustomerAddress202310Test < Test::Unit::TestCase
     # Assert attributes are correctly typed preventing Sorbet errors downstream
     if response.respond_to?(:original_state)
       response&.original_state&.each do |key, value|
+        if key.to_s == "default"
+          assert_equal(true, value)
+          assert_equal(value, response.to_hash.fetch("default"))
+          next
+        end
+
         begin
           response.send(key)
         rescue TypeError => error

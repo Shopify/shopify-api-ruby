@@ -11,6 +11,12 @@ module ShopifyAPI
       extend T::Helpers
       abstract!
 
+      INTERNAL_PROPERTIES = T.let(
+        ["session", "client", "custom_prefix", "forced_nils", "aliased_properties"].freeze,
+        T::Array[String],
+      )
+      private_constant :INTERNAL_PROPERTIES
+
       @headers = T.let(nil, T.nilable(T::Hash[T.any(Symbol, String), String]))
       @has_one = T.let({}, T::Hash[Symbol, T::Class[T.anything]])
       @has_many = T.let({}, T::Hash[Symbol, T::Class[T.anything]])
@@ -185,7 +191,7 @@ module ShopifyAPI
 
             url_ids = ids.transform_keys(&:to_sym)
             path_ids.each do |id|
-              if url_ids[id].nil? && (entity_id = entity&.public_send(id))
+              if url_ids[id].nil? && (entity_id = entity&.send(:get_optional_property, id))
                 url_ids[id] = entity_id
               end
             end
@@ -315,16 +321,20 @@ module ShopifyAPI
           set_property(var, val)
           @forced_nils[var] = val.nil?
         else
+          return super unless dynamic_property_defined?(var)
+
           get_property(var)
         end
       end
 
-      sig { params(meth_id: Symbol, args: T.untyped).void }
-      def respond_to_missing?(meth_id, *args)
+      sig { params(meth_id: Symbol, include_private: T::Boolean).returns(T::Boolean) }
+      def respond_to_missing?(meth_id, include_private = false)
         str = meth_id.id2name
         match = str.match(/([^=]+)=/)
 
-        match.nil? ? true : super
+        return true unless match.nil?
+
+        dynamic_property_defined?(str) || super(meth_id, include_private)
       end
 
       sig { params(saving: T::Boolean).returns(T::Hash[String, T.untyped]) }
@@ -430,14 +440,14 @@ module ShopifyAPI
       def build_required_attributes(http_method:)
         required_attributes = {}
 
-        primary_key_value = send(self.class.primary_key)
+        primary_key_value = get_optional_property(self.class.primary_key, include_private: true)
         unless primary_key_value.nil?
           required_attributes[self.class.primary_key] = primary_key_value
         end
 
         path_ids = deduce_path_ids(http_method)
         path_ids&.each do |path_id|
-          path_id_value = send(path_id)
+          path_id_value = get_optional_property(path_id, include_private: true)
           required_attributes[path_id.to_s] = path_id_value unless path_id_value.nil?
         end
 
@@ -446,7 +456,7 @@ module ShopifyAPI
 
       sig { returns(Symbol) }
       def deduce_write_verb
-        send(self.class.primary_key) ? :put : :post
+        get_optional_property(self.class.primary_key, include_private: true) ? :put : :post
       end
 
       sig { params(method: Symbol).returns(T.nilable(String)) }
@@ -488,10 +498,17 @@ module ShopifyAPI
         # variables. To work around that, we're cleaning them up here but keeping track of the properties that were
         # aliased this way. When loading up the property, we can map back from the "invalid" field so that it is
         # transparent to outside callers
-        clean_key = key.to_s.gsub(/[\?\s]/, "")
+        clean_key = key.to_s.gsub(/[?\s]/, "")
         @aliased_properties[key.to_s] = clean_key if clean_key != key
 
         instance_variable_set("@#{clean_key}", val)
+      end
+
+      sig { params(key: T.any(String, Symbol), include_private: T::Boolean).returns(T.untyped) }
+      def get_optional_property(key, include_private: false)
+        return nil unless respond_to?(key, include_private)
+
+        include_private ? send(key) : public_send(key)
       end
 
       sig { params(key: T.any(String, Symbol)).returns(T.untyped) }
@@ -499,6 +516,14 @@ module ShopifyAPI
         clean_key = @aliased_properties.key?(key.to_s) ? @aliased_properties[key.to_s] : key
 
         instance_variable_get("@#{clean_key}")
+      end
+
+      sig { params(key: String).returns(T::Boolean) }
+      def dynamic_property_defined?(key)
+        property = @aliased_properties[key] || key
+        !INTERNAL_PROPERTIES.include?(property) && instance_variable_defined?("@#{property}")
+      rescue NameError
+        false
       end
 
       sig do

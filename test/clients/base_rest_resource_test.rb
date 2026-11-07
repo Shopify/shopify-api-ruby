@@ -493,7 +493,7 @@ module ShopifyAPITest
 
         product = ShopifyAPI::Product.find(id: 632910392, session: @session)
 
-        product.client.expects(:put).with(
+        product.instance_variable_get(:@client).expects(:put).with(
           body: { "product" => { "metafields" => [{ "key" => "new", "value" => "newvalue", "type" => "single_line_text_field",
                                                     "namespace" => "global", }], "id" => 632910392, } },
           path: "products/632910392.json",
@@ -519,7 +519,7 @@ module ShopifyAPITest
           id: 207119551,
           session: @session,
         )
-        customer.client.expects(:put).with(
+        customer.instance_variable_get(:@client).expects(:put).with(
           body: { "customer" => { "tags" => "New Customer, Repeat Customer", "id" => 207119551 } },
           path: "customers/207119551.json",
           headers: nil,
@@ -539,7 +539,7 @@ module ShopifyAPITest
           id: 207119551,
           session: @session,
         )
-        customer.client.expects(:put).with(
+        customer.instance_variable_get(:@client).expects(:put).with(
           body: { "customer" => {
             "id" => 207119551,
             "email_marketing_consent" => { "state" => "subscribed", "opt_in_level" => "single_opt_in", "consent_updated_at" => "2024-01-01T00:00:00.000Z" },
@@ -595,7 +595,7 @@ module ShopifyAPITest
           )
 
         variant = ShopifyAPI::Variant.find(id: 169, session: @session)
-        variant.client.expects(:put).with(
+        variant.instance_variable_get(:@client).expects(:put).with(
           body: { "variant" => { "barcode" => "1234", "id" => 169 } },
           path: "variants/169.json",
           headers: nil,

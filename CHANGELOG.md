@@ -3,6 +3,8 @@
 Note: For changes to the API, see https://shopify.dev/changelog?filter=api
 ## Unreleased
 
+- [#1272](https://github.com/Shopify/shopify-api-ruby/issues/1272) and [#1273](https://github.com/Shopify/shopify-api-ruby/issues/1273) Raise `NoMethodError` for unknown REST property getters and report dynamic properties consistently from `respond_to?`.
+
 ## 16.4.0 (2026-11-05)
 - [#1481](https://github.com/Shopify/shopify-api-ruby/pull/1481) `ShopifyAPI::Auth::TokenExchange.exchange_token` now raises `ShopifyAPI::Errors::InvalidJwtTokenError` when token exchange rejects the session token with `invalid_identity_session`, matching the existing `invalid_subject_token` handling.
 - [#1475](https://github.com/Shopify/shopify-api-ruby/pull/1475) Add an optional `client_assertion:` argument to `ShopifyAPI::Auth::ClientCredentials.client_credentials`. When supplied, the token request authenticates with a JWT client assertion and sends no client secret. Omitting it, or passing `nil`, keeps the existing client-secret behavior. See the [OAuth documentation](docs/usage/oauth.md#client-assertion-authentication).
