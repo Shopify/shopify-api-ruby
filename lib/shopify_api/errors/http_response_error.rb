@@ -18,6 +18,11 @@ module ShopifyAPI
         @code = T.let(response.code, Integer)
         @response = response
       end
+
+      sig { returns(T.nilable(String)) }
+      def request_id
+        response.request_id
+      end
     end
   end
 end

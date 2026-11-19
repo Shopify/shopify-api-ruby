@@ -36,6 +36,9 @@ module ShopifyAPI
       sig { returns(T.nilable(Time)) }
       attr_accessor :refresh_token_expires
 
+      sig { returns(T.nilable(String)) }
+      attr_accessor :request_id
+
       sig { returns(T::Boolean) }
       def online?
         @is_online
@@ -83,6 +86,7 @@ module ShopifyAPI
         @shopify_session_id = shopify_session_id
         @refresh_token = refresh_token
         @refresh_token_expires = refresh_token_expires
+        @request_id = T.let(nil, T.nilable(String))
       end
 
       class << self
