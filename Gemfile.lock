@@ -11,6 +11,7 @@ PATH
       logger
       oj
       openssl
+      ostruct
       securerandom
       sorbet-runtime
       zeitwerk (~> 2.5)

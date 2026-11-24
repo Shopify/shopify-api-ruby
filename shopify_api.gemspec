@@ -41,6 +41,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency("logger")
   s.add_runtime_dependency("oj")
   s.add_runtime_dependency("openssl")
+  s.add_runtime_dependency("ostruct")
   s.add_runtime_dependency("securerandom")
   s.add_runtime_dependency("sorbet-runtime")
   s.add_runtime_dependency("zeitwerk", "~> 2.5")
