@@ -1,6 +1,8 @@
 # typed: strict
 # frozen_string_literal: true
 
+require "ostruct"
+
 module ShopifyAPI
   module Clients
     class HttpResponse

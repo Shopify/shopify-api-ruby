@@ -11,6 +11,20 @@ module ShopifyAPITest
           access_token: SecureRandom.alphanumeric(10))
       end
 
+      def test_loads_ostruct_before_evaluating_the_response_signature
+        lib = File.expand_path("../../lib", __dir__)
+        script = <<~RUBY
+          require "shopify_api"
+          Object.send(:remove_const, :OpenStruct) if Object.const_defined?(:OpenStruct)
+          $LOADED_FEATURES.delete_if { |feature| feature.end_with?("/ostruct.rb") }
+          ShopifyAPI::Clients::HttpResponse.new(code: 200, headers: {}, body: {})
+        RUBY
+
+        output = IO.popen([RbConfig.ruby, "-I#{lib}", "-e", script], err: [:child, :out], &:read)
+
+        assert_predicate(Process.last_status, :success?, output)
+      end
+
       def test_ok
         assert(ShopifyAPI::Clients::HttpResponse.new(code: 200, headers: {}, body: "").ok?)
       end
